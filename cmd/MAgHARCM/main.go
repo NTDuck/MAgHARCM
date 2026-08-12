@@ -3,7 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
+
+	"github.com/cloudwego/eino-ext/components/model/ollama"
+	"github.com/cloudwego/eino/schema"
 
 	"MAgHARCM/internal/MAgHARCM"
 )
@@ -11,10 +13,14 @@ import (
 func main() {
 	ctx := context.Background()
 
-	ans, err := MAgHARCM.Ask(ctx, "http://localhost:11434", "Whats the capital of France?")
-	if err != nil {
-		log.Fatal(err)
-	}
+	model := MAgHARCM.Must(ollama.NewChatModel(ctx, &ollama.ChatModelConfig{
+		BaseURL: "http://localhost:11434",
+		Model:   "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4_K_XL",
+	}))
 
-	fmt.Println(ans)
+	res := MAgHARCM.Must(model.Generate(ctx, []*schema.Message{
+		schema.UserMessage("9.11 or 9.9 which is bigger"),
+	}))
+
+	fmt.Println(res.Content)
 }
