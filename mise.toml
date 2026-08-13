@@ -1,0 +1,20 @@
+[tools]
+go = "1.26.5"
+
+[tasks.build]
+run = "go build -o bin/MAgHARCM ./cmd/MAgHARCM"
+
+[tasks.start]
+run = "go run ./cmd/MAgHARCM"
+
+[tasks.test]
+run = "go test ./..."
+
+[tasks.fmt]
+run = "go fmt ./..."
+
+[tasks.lint]
+run = "go vet ./..."
+
+[tasks.clean]
+run = "rm -rf bin"
