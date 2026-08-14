@@ -8,6 +8,7 @@ import (
 	"github.com/cloudwego/eino/adk/prebuilt/deep"
 
 	. "MAgHARCM/internal/patterns"
+	"MAgHARCM/internal/print"
 )
 
 func main() {
@@ -43,6 +44,7 @@ func main() {
 	})
 
 	// https://mindyourdecisions.com/blog/2024/08/07/9-11-is-larger-than-9-9-according-to-ai/
-	events := runner.Query(ctx, "9.11 or 9.9 which is bigger")
-
+	// events := runner.Query(ctx, "9.11 or 9.9 which is bigger")
+	events := runner.Query(ctx, "Create a Todolist CRUD TUI in C++/xmake, output to /home/ayin/projs/MAgHARCM/examples/01-todolist")
+	print.Events(events)
 }
