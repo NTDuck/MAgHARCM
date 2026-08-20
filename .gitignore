@@ -35,4 +35,4 @@ go.work.sum
 examples/
 
 # Artifacts
-**/GildedRose-RefactoringKata/rust/target/
+**/GildedRose-Refactoring-Kata/rust/target/

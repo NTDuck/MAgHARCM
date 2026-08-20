@@ -17,4 +17,8 @@ run = "go fmt ./..."
 run = "go vet ./..."
 
 [tasks.clean]
-run = "rm -rf bin"
+run = '''
+mkdir -p experiments/0001-SA-DeepAgent-MinimalTools/artifacts/GildedRose-Refactoring-Kata/rust
+rm -rf experiments/*/artifacts/GildedRose-Refactoring-Kata/rust/* experiments/*/artifacts/GildedRose-Refactoring-Kata/rust/.[!.]* experiments/*/artifacts/GildedRose-Refactoring-Kata/rust/..?* 2>/dev/null || true
+touch experiments/0001-SA-DeepAgent-MinimalTools/artifacts/GildedRose-Refactoring-Kata/rust/.gitkeep
+'''

@@ -2,7 +2,7 @@
 
 ## Overview
 
-This experiment evaluates the automated translation of the classic **Gilded Rose Refactoring Kata** from C (`experiments/0001-SA-DeepAgent-MinimalTools/assets/samples/GildedRose-Refactoring-Kata/C`) into Rust (`experiments/0001-SA-DeepAgent-MinimalTools/artifacts/GildedRose-RefactoringKata/rust`) using Eino's **DeepAgent** architecture powered by Ollama models.
+This experiment evaluates the automated translation of the classic **Gilded Rose Refactoring Kata** from C (`experiments/0001-SA-DeepAgent-MinimalTools/assets/samples/GildedRose-Refactoring-Kata/C`) into Rust (`experiments/0001-SA-DeepAgent-MinimalTools/artifacts/GildedRose-Refactoring-Kata/rust`) using Eino's **DeepAgent** architecture powered by Ollama models.
 
 ## System Architecture & Conventions
 
@@ -10,10 +10,9 @@ This experiment evaluates the automated translation of the classic **Gilded Rose
    - Built on top of `github.com/cloudwego/eino/adk` and `github.com/cloudwego/eino/adk/prebuilt/deep`.
    - Utilizes `github.com/cloudwego/eino-ext/adk/backend/local` for minimal local filesystem access (`read_file`, `write_file`, `edit_file`, `glob`, `grep`) and shell execution (`execute`).
    - Integrated with `github.com/cloudwego/eino-ext/components/model/ollama` for Ollama model inference.
-
 2. **Conventions**:
    - **Must Pattern**: Error handling follows Go's Must pattern (`internal/patterns/Must.go`).
-   - **Externalized Prompts**: System and task prompts are decoupled into dedicated Markdown files under `prompts/` (`prompts/system_instruction.md` and `prompts/c_to_rust_translation.md`).
+   - **Externalized Prompts**: System and task prompts are decoupled into dedicated Markdown files under `assets/prompts/` (`assets/prompts/system_instruction.md` and `assets/prompts/c_to_rust_translation.md`).
    - **Observable Stream**: `internal/print/print.go` renders real-time streaming agent outputs, thinking steps, tool invocations, and tool results to the console.
    - **Robust Tool Handling**: Eino's `compose.ToolsNodeConfig` is configured with `ToolAliases`, `ToolArgumentsHandler`, and `ToolCallMiddlewares` for argument normalization and error recovery.
 
