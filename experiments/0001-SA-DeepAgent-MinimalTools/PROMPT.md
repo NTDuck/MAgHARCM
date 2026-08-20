@@ -1,0 +1,5 @@
+# Prompts
+
+### #1
+
+Update the codebase so that it successfully translate @experiments/0001-SA-DeepAgent-MinimalTools/assets/samples/GildedRose-Refactoring-Kata/C into Rust to @experiments/0001-SA-DeepAgent-MinimalTools/artifacts/GildedRose-RefactoringKata. Use ollama models in @cmd/MAgHARCM/main.go. Conventions: use idiomatic Eino constructs (try querying installed eino skills); use the Must pattern (as exemplified); all prompts/instructions should be stored in separate .md files in a dedicated directory (do not pollute the codebase with such verbosity). Expected behaviour: the program should mutate the filesystem and provide observable progress report/thinking step/etc. via console. Proposed directions: add minimal tool support so that the DeepAgent can access the filesystem. Measure the final compilation rate, test pass rate, compare it with the baselines in @assets/samples/GildedRose-Refactoring-Kata, and output to experiments/0001-SA-DeepAgent-MinimalTools/report/GildedRose-RefactoringKata/rust/README.md.
