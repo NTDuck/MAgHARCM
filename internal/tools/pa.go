@@ -1,16 +1,19 @@
 package tools
 
 import (
-	"bufio"
 	"context"
 	"fmt"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 
 	"github.com/cloudwego/eino/components/tool"
 	"github.com/cloudwego/eino/components/tool/utils"
+	tree_sitter "github.com/tree-sitter/go-tree-sitter"
+	tree_sitter_c "github.com/tree-sitter/tree-sitter-c/bindings/go"
+	tree_sitter_cpp "github.com/tree-sitter/tree-sitter-cpp/bindings/go"
+	tree_sitter_go "github.com/tree-sitter/tree-sitter-go/bindings/go"
+	tree_sitter_rust "github.com/tree-sitter/tree-sitter-rust/bindings/go"
 
 	. "MAgHARCM/internal/patterns"
 )
@@ -30,12 +33,13 @@ type DirectoryTreeOutput struct {
 	DirCount  int    `json:"dir_count"`
 }
 
-// CodeElement key structural element extracted from a source file.
+// CodeElement key structural element extracted from a source file via tree-sitter AST.
 type CodeElement struct {
-	Type      string `json:"type"` // "function", "struct", "class", "enum", "trait", "impl", "variable", "macro"
+	Type      string `json:"type"` // "function", "struct", "enum", "trait", "impl", "type", "variable", "include"
 	Name      string `json:"name"`
-	Line      int    `json:"line"`
-	Signature string `json:"signature"`
+	StartLine uint   `json:"start_line"`
+	EndLine   uint   `json:"end_line"`
+	Signature string `json:"signature,omitempty"`
 }
 
 // FileStructureInput parameters for file structure analysis.
@@ -52,11 +56,204 @@ type FileStructureOutput struct {
 	LineCount int           `json:"line_count"`
 }
 
-// NewPATools constructs the Project Analysis (PA) tool group (ReCodeAgent 3.1.2).
+// getTreeSitterLanguage returns the tree-sitter language for a given file extension.
+func getTreeSitterLanguage(ext string) (*tree_sitter.Language, string) {
+	switch strings.ToLower(ext) {
+	case ".rs":
+		return tree_sitter.NewLanguage(tree_sitter_rust.Language()), "rust"
+	case ".c", ".h":
+		return tree_sitter.NewLanguage(tree_sitter_c.Language()), "c"
+	case ".cc", ".cpp", ".cxx", ".hpp":
+		return tree_sitter.NewLanguage(tree_sitter_cpp.Language()), "cpp"
+	case ".go":
+		return tree_sitter.NewLanguage(tree_sitter_go.Language()), "go"
+	default:
+		return nil, "unknown"
+	}
+}
+
+// extractElementsFromAST traverses tree-sitter AST to extract top-level code elements.
+func extractElementsFromAST(root *tree_sitter.Node, src []byte, lang string) ([]CodeElement, []string) {
+	var elements []CodeElement
+	var imports []string
+
+	childCount := root.NamedChildCount()
+	for i := uint(0); i < childCount; i++ {
+		child := root.NamedChild(i)
+		if child == nil {
+			continue
+		}
+
+		kind := child.Kind()
+		startRow := child.StartPosition().Row + 1
+		endRow := child.EndPosition().Row + 1
+
+		switch lang {
+		case "rust":
+			switch kind {
+			case "function_item":
+				nameNode := child.ChildByFieldName("name")
+				name := extractNodeText(nameNode, src)
+				elements = append(elements, CodeElement{
+					Type:      "function",
+					Name:      name,
+					StartLine: startRow,
+					EndLine:   endRow,
+					Signature: firstLineOf(child.Utf8Text(src)),
+				})
+			case "struct_item":
+				nameNode := child.ChildByFieldName("name")
+				name := extractNodeText(nameNode, src)
+				elements = append(elements, CodeElement{
+					Type:      "struct",
+					Name:      name,
+					StartLine: startRow,
+					EndLine:   endRow,
+					Signature: firstLineOf(child.Utf8Text(src)),
+				})
+			case "enum_item":
+				nameNode := child.ChildByFieldName("name")
+				name := extractNodeText(nameNode, src)
+				elements = append(elements, CodeElement{
+					Type:      "enum",
+					Name:      name,
+					StartLine: startRow,
+					EndLine:   endRow,
+					Signature: firstLineOf(child.Utf8Text(src)),
+				})
+			case "trait_item":
+				nameNode := child.ChildByFieldName("name")
+				name := extractNodeText(nameNode, src)
+				elements = append(elements, CodeElement{
+					Type:      "trait",
+					Name:      name,
+					StartLine: startRow,
+					EndLine:   endRow,
+					Signature: firstLineOf(child.Utf8Text(src)),
+				})
+			case "impl_item":
+				typeNode := child.ChildByFieldName("type")
+				traitNode := child.ChildByFieldName("trait")
+				name := extractNodeText(typeNode, src)
+				if traitNode != nil {
+					name = extractNodeText(traitNode, src) + " for " + name
+				}
+				elements = append(elements, CodeElement{
+					Type:      "impl",
+					Name:      name,
+					StartLine: startRow,
+					EndLine:   endRow,
+					Signature: firstLineOf(child.Utf8Text(src)),
+				})
+			case "use_declaration":
+				imports = append(imports, strings.TrimSpace(child.Utf8Text(src)))
+			}
+		case "c", "cpp":
+			switch kind {
+			case "function_definition":
+				decl := child.ChildByFieldName("declarator")
+				name := extractDeclaratorName(decl, src)
+				elements = append(elements, CodeElement{
+					Type:      "function",
+					Name:      name,
+					StartLine: startRow,
+					EndLine:   endRow,
+					Signature: firstLineOf(child.Utf8Text(src)),
+				})
+			case "declaration":
+				text := strings.TrimSpace(child.Utf8Text(src))
+				if strings.Contains(text, "typedef") || strings.Contains(text, "struct") {
+					elements = append(elements, CodeElement{
+						Type:      "struct",
+						Name:      firstLineOf(text),
+						StartLine: startRow,
+						EndLine:   endRow,
+						Signature: firstLineOf(text),
+					})
+				} else {
+					elements = append(elements, CodeElement{
+						Type:      "declaration",
+						Name:      firstLineOf(text),
+						StartLine: startRow,
+						EndLine:   endRow,
+						Signature: firstLineOf(text),
+					})
+				}
+			case "preproc_include":
+				imports = append(imports, strings.TrimSpace(child.Utf8Text(src)))
+			}
+		case "go":
+			switch kind {
+			case "function_declaration", "method_declaration":
+				nameNode := child.ChildByFieldName("name")
+				name := extractNodeText(nameNode, src)
+				elements = append(elements, CodeElement{
+					Type:      "function",
+					Name:      name,
+					StartLine: startRow,
+					EndLine:   endRow,
+					Signature: firstLineOf(child.Utf8Text(src)),
+				})
+			case "type_declaration":
+				text := strings.TrimSpace(child.Utf8Text(src))
+				elements = append(elements, CodeElement{
+					Type:      "type",
+					Name:      firstLineOf(text),
+					StartLine: startRow,
+					EndLine:   endRow,
+					Signature: firstLineOf(text),
+				})
+			case "import_declaration":
+				imports = append(imports, strings.TrimSpace(child.Utf8Text(src)))
+			}
+		}
+	}
+
+	return elements, imports
+}
+
+func extractNodeText(n *tree_sitter.Node, src []byte) string {
+	if n == nil {
+		return ""
+	}
+	return strings.TrimSpace(n.Utf8Text(src))
+}
+
+func extractDeclaratorName(n *tree_sitter.Node, src []byte) string {
+	if n == nil {
+		return ""
+	}
+	if n.Kind() == "identifier" {
+		return strings.TrimSpace(n.Utf8Text(src))
+	}
+	if n.Kind() == "function_declarator" {
+		direct := n.ChildByFieldName("declarator")
+		if direct != nil {
+			return extractDeclaratorName(direct, src)
+		}
+	}
+	for i := uint(0); i < n.NamedChildCount(); i++ {
+		child := n.NamedChild(i)
+		if child != nil && child.Kind() == "identifier" {
+			return strings.TrimSpace(child.Utf8Text(src))
+		}
+	}
+	return strings.TrimSpace(n.Utf8Text(src))
+}
+
+func firstLineOf(s string) string {
+	idx := strings.Index(s, "\n")
+	if idx >= 0 {
+		return strings.TrimSpace(s[:idx])
+	}
+	return strings.TrimSpace(s)
+}
+
+// NewPATools constructs Project Analysis tools (ReCodeAgent 3.1.2) using tree-sitter AST parsing.
 func NewPATools() []tool.BaseTool {
 	directoryTreeTool := Must(utils.InferTool(
 		"get_directory_tree",
-		"Project Analysis: Returns a structured ASCII directory tree representation of the project",
+		"Project Analysis: Returns a structured ASCII directory tree representation of the project hierarchy",
 		func(ctx context.Context, input *DirectoryTreeInput) (*DirectoryTreeOutput, error) {
 			basePath := input.Path
 			if basePath == "" {
@@ -70,8 +267,7 @@ func NewPATools() []tool.BaseTool {
 
 			var sb strings.Builder
 			sb.WriteString(basePath + "\n")
-			fileCount := 0
-			dirCount := 0
+			fileCount, dirCount := 0, 0
 
 			var walk func(dir string, prefix string, depth int) error
 			walk = func(dir string, prefix string, depth int) error {
@@ -83,7 +279,6 @@ func NewPATools() []tool.BaseTool {
 					return nil
 				}
 
-				// Filter out ignored / heavy directories
 				var validEntries []os.DirEntry
 				for _, e := range entries {
 					name := e.Name()
@@ -135,7 +330,7 @@ func NewPATools() []tool.BaseTool {
 
 	fileStructureTool := Must(utils.InferTool(
 		"get_file_structure",
-		"Project Analysis: Generates a structured representation of a source file, identifying functions, structs, classes, globals, and imports",
+		"Project Analysis: Generates tree-sitter AST structured representation of source files (C, C++, Rust, Go), identifying functions, structs, enums, traits, and imports",
 		func(ctx context.Context, input *FileStructureInput) (*FileStructureOutput, error) {
 			path := filepath.Clean(input.FilePath)
 			if path == "" {
@@ -146,92 +341,35 @@ func NewPATools() []tool.BaseTool {
 				return nil, fmt.Errorf("failed to read file %s: %w", path, err)
 			}
 
-			ext := strings.ToLower(filepath.Ext(path))
-			language := "unknown"
-			switch ext {
-			case ".rs":
-				language = "rust"
-			case ".c", ".h":
-				language = "c"
-			case ".cc", ".cpp", ".hpp":
-				language = "cpp"
-			case ".go":
-				language = "go"
-			case ".py":
-				language = "python"
+			ext := filepath.Ext(path)
+			langObj, langName := getTreeSitterLanguage(ext)
+			if langObj == nil {
+				return &FileStructureOutput{
+					FilePath:  path,
+					Language:  langName,
+					LineCount: len(strings.Split(string(data), "\n")),
+				}, nil
 			}
 
-			var elements []CodeElement
-			var imports []string
+			parser := tree_sitter.NewParser()
+			defer parser.Close()
+			_ = parser.SetLanguage(langObj)
 
-			scanner := bufio.NewScanner(strings.NewReader(string(data)))
-			lineNo := 1
-
-			// Regex matchers for code elements across languages
-			reRustFn := regexp.MustCompile(`^\s*(?:pub(?:\([^)]+\))?\s+)?(?:async\s+)?fn\s+([a-zA-Z0-9_]+)`)
-			reRustStruct := regexp.MustCompile(`^\s*(?:pub(?:\([^)]+\))?\s+)?struct\s+([a-zA-Z0-9_]+)`)
-			reRustEnum := regexp.MustCompile(`^\s*(?:pub(?:\([^)]+\))?\s+)?enum\s+([a-zA-Z0-9_]+)`)
-			reRustTrait := regexp.MustCompile(`^\s*(?:pub(?:\([^)]+\))?\s+)?trait\s+([a-zA-Z0-9_]+)`)
-			reRustImpl := regexp.MustCompile(`^\s*impl(?:\s*<[^>]+>)?\s+(?:([a-zA-Z0-9_]+)\s+for\s+)?([a-zA-Z0-9_]+)`)
-			reRustUse := regexp.MustCompile(`^\s*use\s+([^;]+);`)
-
-			reCFn := regexp.MustCompile(`^(?:[a-zA-Z0-9_*]+\s+)+([a-zA-Z0-9_]+)\s*\([^)]*\)\s*[{;]`)
-			reCStruct := regexp.MustCompile(`^(?:typedef\s+)?struct\s*(?:([a-zA-Z0-9_]+))?\s*[{]?`)
-			reCInclude := regexp.MustCompile(`^\s*#include\s+([<"][^>"]+[>"])`)
-
-			reGoFunc := regexp.MustCompile(`^\s*func\s+(?:\([^)]+\)\s+)?([a-zA-Z0-9_]+)`)
-			reGoType := regexp.MustCompile(`^\s*type\s+([a-zA-Z0-9_]+)\s+(struct|interface)`)
-
-			for scanner.Scan() {
-				line := scanner.Text()
-				trimmed := strings.TrimSpace(line)
-
-				switch language {
-				case "rust":
-					if m := reRustUse.FindStringSubmatch(trimmed); len(m) > 1 {
-						imports = append(imports, m[1])
-					} else if m := reRustFn.FindStringSubmatch(trimmed); len(m) > 1 {
-						elements = append(elements, CodeElement{Type: "function", Name: m[1], Line: lineNo, Signature: trimmed})
-					} else if m := reRustStruct.FindStringSubmatch(trimmed); len(m) > 1 {
-						elements = append(elements, CodeElement{Type: "struct", Name: m[1], Line: lineNo, Signature: trimmed})
-					} else if m := reRustEnum.FindStringSubmatch(trimmed); len(m) > 1 {
-						elements = append(elements, CodeElement{Type: "enum", Name: m[1], Line: lineNo, Signature: trimmed})
-					} else if m := reRustTrait.FindStringSubmatch(trimmed); len(m) > 1 {
-						elements = append(elements, CodeElement{Type: "trait", Name: m[1], Line: lineNo, Signature: trimmed})
-					} else if m := reRustImpl.FindStringSubmatch(trimmed); len(m) > 2 {
-						target := m[2]
-						if m[1] != "" {
-							target = m[1] + " for " + m[2]
-						}
-						elements = append(elements, CodeElement{Type: "impl", Name: target, Line: lineNo, Signature: trimmed})
-					}
-				case "c", "cpp":
-					if m := reCInclude.FindStringSubmatch(trimmed); len(m) > 1 {
-						imports = append(imports, m[1])
-					} else if m := reCStruct.FindStringSubmatch(trimmed); len(m) > 1 && m[1] != "" {
-						elements = append(elements, CodeElement{Type: "struct", Name: m[1], Line: lineNo, Signature: trimmed})
-					} else if m := reCFn.FindStringSubmatch(trimmed); len(m) > 1 && !strings.HasPrefix(trimmed, "if") && !strings.HasPrefix(trimmed, "for") && !strings.HasPrefix(trimmed, "while") {
-						elements = append(elements, CodeElement{Type: "function", Name: m[1], Line: lineNo, Signature: trimmed})
-					}
-				case "go":
-					if strings.HasPrefix(trimmed, "import") {
-						imports = append(imports, trimmed)
-					} else if m := reGoFunc.FindStringSubmatch(trimmed); len(m) > 1 {
-						elements = append(elements, CodeElement{Type: "function", Name: m[1], Line: lineNo, Signature: trimmed})
-					} else if m := reGoType.FindStringSubmatch(trimmed); len(m) > 2 {
-						elements = append(elements, CodeElement{Type: m[2], Name: m[1], Line: lineNo, Signature: trimmed})
-					}
-				}
-
-				lineNo++
+			tree := parser.Parse(data, nil)
+			if tree == nil {
+				return nil, fmt.Errorf("failed to parse %s with tree-sitter", path)
 			}
+			defer tree.Close()
+
+			root := tree.RootNode()
+			elements, imports := extractElementsFromAST(root, data, langName)
 
 			return &FileStructureOutput{
 				FilePath:  path,
-				Language:  language,
+				Language:  langName,
 				Elements:  elements,
 				Imports:   imports,
-				LineCount: lineNo - 1,
+				LineCount: len(strings.Split(string(data), "\n")),
 			}, nil
 		},
 	))

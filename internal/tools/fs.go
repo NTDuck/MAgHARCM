@@ -1,17 +1,10 @@
 package tools
 
 import (
-	"bufio"
 	"context"
 	"fmt"
-	"io"
-	"os"
 	"path/filepath"
-	"regexp"
-	"sort"
-	"strings"
 
-	"github.com/bmatcuk/doublestar/v4"
 	"github.com/cloudwego/eino/adk/filesystem"
 	"github.com/cloudwego/eino/components/tool"
 	"github.com/cloudwego/eino/components/tool/utils"
@@ -28,10 +21,8 @@ type ReadFileInput struct {
 
 // ReadFileOutput result of reading a file.
 type ReadFileOutput struct {
-	FilePath   string `json:"file_path"`
-	Content    string `json:"content"`
-	StartLine  int    `json:"start_line"`
-	LinesCount int    `json:"lines_count"`
+	FilePath string `json:"file_path"`
+	Content  string `json:"content"`
 }
 
 // WriteFileInput parameters for writing a file.
@@ -43,7 +34,6 @@ type WriteFileInput struct {
 // WriteFileOutput result of writing a file.
 type WriteFileOutput struct {
 	FilePath string `json:"file_path"`
-	Bytes    int    `json:"bytes_written"`
 	Success  bool   `json:"success"`
 	Message  string `json:"message"`
 }
@@ -53,7 +43,7 @@ type EditFileInput struct {
 	FilePath   string `json:"file_path" jsonschema_description:"The path of the file to edit"`
 	OldString  string `json:"old_string" jsonschema_description:"The exact string to find and replace"`
 	NewString  string `json:"new_string" jsonschema_description:"The new replacement string"`
-	ReplaceAll bool   `json:"replace_all,omitempty" jsonschema_description:"If true, replaces all occurrences; if false, fails unless exactly one match is found"`
+	ReplaceAll bool   `json:"replace_all,omitempty" jsonschema_description:"If true, replaces all occurrences"`
 }
 
 // EditFileOutput result of editing a file.
@@ -85,18 +75,11 @@ type GrepInput struct {
 	CaseInsensitive bool   `json:"case_insensitive,omitempty" jsonschema_description:"Ignore case in search"`
 }
 
-// GrepMatchItem single grep match result.
-type GrepMatchItem struct {
-	Path    string `json:"path"`
-	Line    int    `json:"line"`
-	Content string `json:"content"`
-}
-
 // GrepOutput result of grep search.
 type GrepOutput struct {
-	Pattern string          `json:"pattern"`
-	Matches []GrepMatchItem `json:"matches"`
-	Count   int             `json:"count"`
+	Pattern string                 `json:"pattern"`
+	Matches []filesystem.GrepMatch `json:"matches"`
+	Count   int                    `json:"count"`
 }
 
 // ListDirInput parameters for listing directory entries.
@@ -106,12 +89,12 @@ type ListDirInput struct {
 
 // ListDirOutput result of listing directory.
 type ListDirOutput struct {
-	Path    string   `json:"path"`
-	Entries []string `json:"entries"`
-	Count   int      `json:"count"`
+	Path    string                `json:"path"`
+	Entries []filesystem.FileInfo `json:"entries"`
+	Count   int                   `json:"count"`
 }
 
-// NewFSTools constructs the filesystem tool group.
+// NewFSTools constructs the filesystem tool group by delegating to Eino's filesystem.Backend.
 func NewFSTools(backend filesystem.Backend) []tool.BaseTool {
 	readFileTool := Must(utils.InferTool(
 		"read_file",
@@ -121,45 +104,17 @@ func NewFSTools(backend filesystem.Backend) []tool.BaseTool {
 			if path == "" || path == "." {
 				return nil, fmt.Errorf("file_path is required")
 			}
-			file, err := os.Open(path)
+			res, err := backend.Read(ctx, &filesystem.ReadRequest{
+				FilePath: path,
+				Offset:   input.Offset,
+				Limit:    input.Limit,
+			})
 			if err != nil {
-				return nil, fmt.Errorf("failed to open file %s: %w", path, err)
+				return nil, err
 			}
-			defer file.Close()
-
-			offset := input.Offset
-			if offset <= 0 {
-				offset = 1
-			}
-			limit := input.Limit
-			if limit <= 0 {
-				limit = 2000
-			}
-
-			scanner := bufio.NewScanner(file)
-			var sb strings.Builder
-			lineNum := 1
-			linesRead := 0
-
-			for scanner.Scan() {
-				if lineNum >= offset {
-					sb.WriteString(fmt.Sprintf("%6d\t%s\n", lineNum, scanner.Text()))
-					linesRead++
-					if linesRead >= limit {
-						break
-					}
-				}
-				lineNum++
-			}
-			if err := scanner.Err(); err != nil && err != io.EOF {
-				return nil, fmt.Errorf("error reading file %s: %w", path, err)
-			}
-
 			return &ReadFileOutput{
-				FilePath:   path,
-				Content:    sb.String(),
-				StartLine:  offset,
-				LinesCount: linesRead,
+				FilePath: path,
+				Content:  res.Content,
 			}, nil
 		},
 	))
@@ -172,15 +127,15 @@ func NewFSTools(backend filesystem.Backend) []tool.BaseTool {
 			if path == "" || path == "." {
 				return nil, fmt.Errorf("file_path is required for write_file")
 			}
-			if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
-				return nil, fmt.Errorf("failed to create directory for %s: %w", path, err)
-			}
-			if err := os.WriteFile(path, []byte(input.Content), 0644); err != nil {
-				return nil, fmt.Errorf("failed to write file %s: %w", path, err)
+			err := backend.Write(ctx, &filesystem.WriteRequest{
+				FilePath: path,
+				Content:  input.Content,
+			})
+			if err != nil {
+				return nil, err
 			}
 			return &WriteFileOutput{
 				FilePath: path,
-				Bytes:    len(input.Content),
 				Success:  true,
 				Message:  fmt.Sprintf("Successfully wrote %d bytes to %s", len(input.Content), path),
 			}, nil
@@ -195,25 +150,14 @@ func NewFSTools(backend filesystem.Backend) []tool.BaseTool {
 			if path == "" || path == "." {
 				return nil, fmt.Errorf("file_path is required for edit_file")
 			}
-			data, err := os.ReadFile(path)
+			err := backend.Edit(ctx, &filesystem.EditRequest{
+				FilePath:   path,
+				OldString:  input.OldString,
+				NewString:  input.NewString,
+				ReplaceAll: input.ReplaceAll,
+			})
 			if err != nil {
-				return nil, fmt.Errorf("failed to read file %s: %w", path, err)
-			}
-			content := string(data)
-			if !strings.Contains(content, input.OldString) {
-				return nil, fmt.Errorf("old_string not found in %s", path)
-			}
-			var newContent string
-			if input.ReplaceAll {
-				newContent = strings.ReplaceAll(content, input.OldString, input.NewString)
-			} else {
-				if strings.Count(content, input.OldString) > 1 {
-					return nil, fmt.Errorf("old_string matched multiple times in %s; set replace_all=true or provide more context", path)
-				}
-				newContent = strings.Replace(content, input.OldString, input.NewString, 1)
-			}
-			if err := os.WriteFile(path, []byte(newContent), 0644); err != nil {
-				return nil, fmt.Errorf("failed to write edited file %s: %w", path, err)
+				return nil, err
 			}
 			return &EditFileOutput{
 				FilePath: path,
@@ -237,31 +181,22 @@ func NewFSTools(backend filesystem.Backend) []tool.BaseTool {
 				pattern = "*"
 			}
 
-			var matches []string
-			err := filepath.WalkDir(basePath, func(p string, d os.DirEntry, err error) error {
-				if err != nil {
-					return nil
-				}
-				rel, err := filepath.Rel(basePath, p)
-				if err != nil || rel == "." {
-					return nil
-				}
-				relSlash := filepath.ToSlash(rel)
-				matched, _ := doublestar.Match(pattern, relSlash)
-				if matched {
-					matches = append(matches, filepath.ToSlash(filepath.Join(basePath, rel)))
-				}
-				return nil
+			matches, err := backend.GlobInfo(ctx, &filesystem.GlobInfoRequest{
+				Path:    basePath,
+				Pattern: pattern,
 			})
 			if err != nil {
-				return nil, fmt.Errorf("glob walk error: %w", err)
+				return nil, err
 			}
-			sort.Strings(matches)
+			var list []string
+			for _, m := range matches {
+				list = append(list, m.Path)
+			}
 			return &GlobOutput{
 				Path:    basePath,
 				Pattern: pattern,
-				Matches: matches,
-				Count:   len(matches),
+				Matches: list,
+				Count:   len(list),
 			}, nil
 		},
 	))
@@ -276,49 +211,14 @@ func NewFSTools(backend filesystem.Backend) []tool.BaseTool {
 			}
 			basePath = filepath.Clean(basePath)
 
-			flags := ""
-			if input.CaseInsensitive {
-				flags = "(?i)"
-			}
-			re, err := regexp.Compile(flags + input.Pattern)
-			if err != nil {
-				return nil, fmt.Errorf("invalid regex pattern %s: %w", input.Pattern, err)
-			}
-
-			var matches []GrepMatchItem
-			err = filepath.WalkDir(basePath, func(p string, d os.DirEntry, err error) error {
-				if err != nil || d.IsDir() {
-					return nil
-				}
-				if input.Glob != "" {
-					matched, _ := doublestar.Match(input.Glob, d.Name())
-					if !matched {
-						return nil
-					}
-				}
-				file, err := os.Open(p)
-				if err != nil {
-					return nil
-				}
-				defer file.Close()
-
-				scanner := bufio.NewScanner(file)
-				lineNo := 1
-				for scanner.Scan() {
-					text := scanner.Text()
-					if re.MatchString(text) {
-						matches = append(matches, GrepMatchItem{
-							Path:    filepath.ToSlash(p),
-							Line:    lineNo,
-							Content: text,
-						})
-					}
-					lineNo++
-				}
-				return nil
+			matches, err := backend.GrepRaw(ctx, &filesystem.GrepRequest{
+				Path:            basePath,
+				Pattern:         input.Pattern,
+				Glob:            input.Glob,
+				CaseInsensitive: input.CaseInsensitive,
 			})
 			if err != nil {
-				return nil, fmt.Errorf("grep error: %w", err)
+				return nil, err
 			}
 
 			return &GrepOutput{
@@ -338,22 +238,16 @@ func NewFSTools(backend filesystem.Backend) []tool.BaseTool {
 				path = "."
 			}
 			path = filepath.Clean(path)
-			entries, err := os.ReadDir(path)
+			entries, err := backend.LsInfo(ctx, &filesystem.LsInfoRequest{
+				Path: path,
+			})
 			if err != nil {
-				return nil, fmt.Errorf("failed to list directory %s: %w", path, err)
-			}
-			var list []string
-			for _, e := range entries {
-				name := e.Name()
-				if e.IsDir() {
-					name += "/"
-				}
-				list = append(list, name)
+				return nil, err
 			}
 			return &ListDirOutput{
 				Path:    path,
-				Entries: list,
-				Count:   len(list),
+				Entries: entries,
+				Count:   len(entries),
 			}, nil
 		},
 	))
