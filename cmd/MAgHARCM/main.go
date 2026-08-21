@@ -28,22 +28,26 @@ func main() {
 		Shell:   backend,
 	}))
 
+	// Centralized tool registry exposing all tool groups (fs, lsp, pa, execution, git, validation)
+	allTools := tools.AllTools(backend, backend)
+	toolsConfig := tools.NewToolsConfig(allTools...)
+	retryConfig := agent.NewRetryConfig()
+
+	// Reasoning model: gpt-oss:20b
 	reasoningModel := Must(ollama.NewChatModel(ctx, &ollama.ChatModelConfig{
 		BaseURL: "http://localhost:11434",
-		Model:   "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4_K_XL",
+		Model:   "gpt-oss:20b",
 	}))
 
+	// Coding sub-agent model
 	codingModel := Must(ollama.NewChatModel(ctx, &ollama.ChatModelConfig{
 		BaseURL: "http://localhost:11434",
 		Model:   "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4_K_XL",
 	}))
 
-	toolsConfig := tools.NewConfig()
-	retryConfig := agent.NewRetryConfig()
-
 	codingAgent := Must(adk.NewChatModelAgent(ctx, &adk.ChatModelAgentConfig{
 		Name:             "coding-agent",
-		Description:      "Expert coding agent that writes code, creates files, and runs builds/tests using filesystem tools.",
+		Description:      "Autonomous coding and refactoring agent with access to full tool suite (LSP, PA, FS, Git, Validation, Execution).",
 		Instruction:      systemPrompt,
 		Model:            codingModel,
 		ToolsConfig:      toolsConfig,

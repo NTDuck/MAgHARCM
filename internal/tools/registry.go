@@ -4,36 +4,50 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"strings"
 
 	"github.com/cloudwego/eino/adk"
+	"github.com/cloudwego/eino/adk/filesystem"
+	"github.com/cloudwego/eino/components/tool"
 	"github.com/cloudwego/eino/compose"
 )
 
-// NewConfig creates an idiomatic ToolsConfig with tool aliases, argument normalizers,
-// and error recovery middleware.
-func NewConfig() adk.ToolsConfig {
+// AllTools returns the full suite of tools across all groups (fs, lsp, pa, execution, git, validation).
+func AllTools(backend filesystem.Backend, shell filesystem.Shell) []tool.BaseTool {
+	var list []tool.BaseTool
+	list = append(list, NewFSTools(backend)...)
+	list = append(list, NewLSPTools()...)
+	list = append(list, NewPATools()...)
+	list = append(list, NewExecutionTools(shell)...)
+	list = append(list, NewGitTools()...)
+	list = append(list, NewValidationTools()...)
+	return list
+}
+
+// NewToolsConfig creates a centralized ToolsConfig for all tool groups,
+// including comprehensive aliases, argument normalization, and error recovery middleware.
+func NewToolsConfig(tools ...tool.BaseTool) adk.ToolsConfig {
 	return adk.ToolsConfig{
 		ToolsNodeConfig: compose.ToolsNodeConfig{
+			Tools:               tools,
 			ExecuteSequentially: true,
 			ToolAliases: map[string]compose.ToolAliasConfig{
 				"read_file": {
 					NameAliases: []string{"read", "cat", "view_file", "readFile"},
 					ArgumentsAliases: map[string][]string{
-						"file_path": {"path", "filepath", "file", "filename"},
+						"file_path": {"path", "filepath", "file", "filename", "target"},
 					},
 				},
 				"write_file": {
 					NameAliases: []string{"write", "create_file", "save_file", "writeFile"},
 					ArgumentsAliases: map[string][]string{
-						"file_path": {"path", "filepath", "file", "filename"},
-						"content":   {"text", "data", "contents", "code"},
+						"file_path": {"path", "filepath", "file", "filename", "target"},
+						"content":   {"text", "data", "contents", "code", "body"},
 					},
 				},
 				"edit_file": {
 					NameAliases: []string{"edit", "replace_in_file", "patch_file", "editFile"},
 					ArgumentsAliases: map[string][]string{
-						"file_path": {"path", "filepath", "file", "filename"},
+						"file_path": {"path", "filepath", "file", "filename", "target"},
 					},
 				},
 				"glob": {
@@ -56,6 +70,32 @@ func NewConfig() adk.ToolsConfig {
 						"command": {"cmd", "script", "code", "input"},
 					},
 				},
+				"definition": {
+					NameAliases: []string{"goto_definition", "find_definition", "get_definition"},
+					ArgumentsAliases: map[string][]string{
+						"symbol":    {"name", "identifier"},
+						"file_path": {"path", "file"},
+					},
+				},
+				"diagnostics": {
+					NameAliases: []string{"check_diagnostics", "get_diagnostics", "lint"},
+					ArgumentsAliases: map[string][]string{
+						"file_path":   {"path", "file"},
+						"project_dir": {"dir", "project"},
+					},
+				},
+				"get_directory_tree": {
+					NameAliases: []string{"tree", "directory_tree", "project_tree"},
+					ArgumentsAliases: map[string][]string{
+						"path": {"dir", "root"},
+					},
+				},
+				"get_file_structure": {
+					NameAliases: []string{"file_structure", "outline", "symbols"},
+					ArgumentsAliases: map[string][]string{
+						"file_path": {"path", "file"},
+					},
+				},
 			},
 			ToolArgumentsHandler: func(ctx context.Context, name, arguments string) (string, error) {
 				var m map[string]any
@@ -63,41 +103,29 @@ func NewConfig() adk.ToolsConfig {
 					return arguments, nil
 				}
 				changed := false
-				if name == "read_file" || name == "write_file" || name == "edit_file" {
-					for _, key := range []string{"path", "filepath", "file", "filename", "target"} {
-						if val, ok := m[key].(string); ok && val != "" {
-							if _, exists := m["file_path"]; !exists {
-								m["file_path"] = val
-								changed = true
-							}
+
+				// Generic file path normalization
+				for _, key := range []string{"path", "filepath", "file", "filename", "target"} {
+					if val, ok := m[key].(string); ok && val != "" {
+						if _, exists := m["file_path"]; !exists {
+							m["file_path"] = val
+							changed = true
 						}
 					}
 				}
-				if name == "write_file" {
-					for _, key := range []string{"text", "data", "contents", "code", "body"} {
-						if val, ok := m[key].(string); ok && val != "" {
-							if _, exists := m["content"]; !exists {
-								m["content"] = val
-								changed = true
-							}
-						}
-					}
-					if _, hasPath := m["file_path"]; !hasPath || m["file_path"] == "" {
-						if content, ok := m["content"].(string); ok {
-							if strings.Contains(content, "[package]") {
-								m["file_path"] = "experiments/0001-SA-DeepAgent-MinimalTools/artifacts/GildedRose-Refactoring-Kata/rust/Cargo.toml"
-								changed = true
-							} else if strings.Contains(content, "struct Item") || strings.Contains(content, "GildedRose") {
-								m["file_path"] = "experiments/0001-SA-DeepAgent-MinimalTools/artifacts/GildedRose-Refactoring-Kata/rust/src/gildedrose.rs"
-								changed = true
-							} else if strings.Contains(content, "fn main") {
-								m["file_path"] = "experiments/0001-SA-DeepAgent-MinimalTools/artifacts/GildedRose-Refactoring-Kata/rust/src/main.rs"
-								changed = true
-							}
+
+				// Generic content normalization
+				for _, key := range []string{"text", "data", "contents", "code", "body"} {
+					if val, ok := m[key].(string); ok && val != "" {
+						if _, exists := m["content"]; !exists {
+							m["content"] = val
+							changed = true
 						}
 					}
 				}
-				if name == "glob" || name == "grep" || name == "ls" {
+
+				// Path defaulting for directory / glob / tree tools
+				if name == "glob" || name == "grep" || name == "list_dir" || name == "get_directory_tree" {
 					if p, ok := m["path"].(string); !ok || p == "" || p == "/" {
 						m["path"] = "."
 						changed = true
@@ -111,6 +139,8 @@ func NewConfig() adk.ToolsConfig {
 						}
 					}
 				}
+
+				// Execute command normalization
 				if name == "execute" {
 					for _, key := range []string{"cmd", "script", "code", "input"} {
 						if val, ok := m[key].(string); ok && val != "" {
@@ -121,6 +151,7 @@ func NewConfig() adk.ToolsConfig {
 						}
 					}
 				}
+
 				if changed {
 					b, _ := json.Marshal(m)
 					return string(b), nil
@@ -128,7 +159,7 @@ func NewConfig() adk.ToolsConfig {
 				return arguments, nil
 			},
 			UnknownToolsHandler: func(ctx context.Context, name, input string) (string, error) {
-				return fmt.Sprintf("Tool %s not found. Available tools: read_file, write_file, edit_file, glob, grep, execute", name), nil
+				return fmt.Sprintf("Tool %s not found. Please use available tools (fs, lsp, pa, execution, git, validation)", name), nil
 			},
 			ToolCallMiddlewares: []compose.ToolMiddleware{
 				{
