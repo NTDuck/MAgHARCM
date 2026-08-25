@@ -71,7 +71,18 @@ func TestToolGroups(t *testing.T) {
 		t.Fatalf("expected 20 tools in ToolsConfig, got %d", len(cfg.Tools))
 	}
 
-	// 8. Test tree-sitter file structure parser directly
+	// 8. Test runtime tree-sitter language loader via purego
+	loader := NewLanguageLoader()
+	cLang, err := loader.LoadLanguage("c")
+	if err != nil || cLang == nil {
+		t.Fatalf("failed to load C language grammar at runtime: %v", err)
+	}
+	rustLang, err := loader.LoadLanguage("rust")
+	if err != nil || rustLang == nil {
+		t.Fatalf("failed to load Rust language grammar at runtime: %v", err)
+	}
+
+	// 9. Test tree-sitter AST parsing with dynamically loaded grammar
 	rustCode := []byte("pub struct GildedRose { pub items: Vec<Item> }\npub fn update_quality() {}\n")
 	lang, langName := getTreeSitterLanguage(".rs")
 	if lang == nil || langName != "rust" {

@@ -10,10 +10,6 @@ import (
 	"github.com/cloudwego/eino/components/tool"
 	"github.com/cloudwego/eino/components/tool/utils"
 	tree_sitter "github.com/tree-sitter/go-tree-sitter"
-	tree_sitter_c "github.com/tree-sitter/tree-sitter-c/bindings/go"
-	tree_sitter_cpp "github.com/tree-sitter/tree-sitter-cpp/bindings/go"
-	tree_sitter_go "github.com/tree-sitter/tree-sitter-go/bindings/go"
-	tree_sitter_rust "github.com/tree-sitter/tree-sitter-rust/bindings/go"
 
 	. "MAgHARCM/internal/patterns"
 )
@@ -56,20 +52,27 @@ type FileStructureOutput struct {
 	LineCount int           `json:"line_count"`
 }
 
-// getTreeSitterLanguage returns the tree-sitter language for a given file extension.
+// getTreeSitterLanguage returns the dynamically loaded tree-sitter language for a given file extension.
 func getTreeSitterLanguage(ext string) (*tree_sitter.Language, string) {
+	var langName string
 	switch strings.ToLower(ext) {
 	case ".rs":
-		return tree_sitter.NewLanguage(tree_sitter_rust.Language()), "rust"
+		langName = "rust"
 	case ".c", ".h":
-		return tree_sitter.NewLanguage(tree_sitter_c.Language()), "c"
+		langName = "c"
 	case ".cc", ".cpp", ".cxx", ".hpp":
-		return tree_sitter.NewLanguage(tree_sitter_cpp.Language()), "cpp"
+		langName = "cpp"
 	case ".go":
-		return tree_sitter.NewLanguage(tree_sitter_go.Language()), "go"
+		langName = "go"
 	default:
 		return nil, "unknown"
 	}
+
+	lang, err := DefaultLanguageLoader.LoadLanguage(langName)
+	if err != nil {
+		return nil, langName
+	}
+	return lang, langName
 }
 
 // extractElementsFromAST traverses tree-sitter AST to extract top-level code elements.
@@ -249,7 +252,7 @@ func firstLineOf(s string) string {
 	return strings.TrimSpace(s)
 }
 
-// NewPATools constructs Project Analysis tools (ReCodeAgent 3.1.2) using tree-sitter AST parsing.
+// NewPATools constructs Project Analysis tools (ReCodeAgent 3.1.2) using runtime tree-sitter AST parsing.
 func NewPATools() []tool.BaseTool {
 	directoryTreeTool := Must(utils.InferTool(
 		"get_directory_tree",
