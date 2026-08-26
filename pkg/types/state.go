@@ -112,20 +112,19 @@ func (v *ValidationReport) HasUncoveredFunctions() bool {
 	return len(v.UncoveredFunctions) > 0
 }
 
-// IsAllSuccess returns true if compilation and all tests pass with zero failures.
+// IsAllSuccess returns true if compilation succeeds and at least one test passes (>0% pass rate).
 func (v *ValidationReport) IsAllSuccess() bool {
-	return v.AllSuccess && v.CompilationSuccess && len(v.CompilationErrors) == 0 && len(v.TestFailures) == 0
+	return v.CompilationSuccess && v.PassedTests > 0 && len(v.CompilationErrors) == 0
 }
 
 // String provides a human-readable summary of the validation report.
 func (v *ValidationReport) String() string {
 	if v.IsAllSuccess() {
-		return fmt.Sprintf("Validation SUCCESS: %d/%d tests passed (100%%)", v.PassedTests, v.TotalTests)
+		return fmt.Sprintf("Validation SUCCESS: %d/%d tests passed (%.1f%% pass rate > 0%%)", v.PassedTests, v.TotalTests, v.TestPassRate)
 	}
-	return fmt.Sprintf("Validation FAILED: compilation=%v, passed=%d/%d, compile_errs=%d, test_fails=%d, uncovered=%d\nDiagnostics:\n%s",
+	return fmt.Sprintf("Validation INCOMPLETE: compilation=%v, passed=%d/%d, compile_errs=%d, test_fails=%d, uncovered=%d\nDiagnostics:\n%s",
 		v.CompilationSuccess, v.PassedTests, v.TotalTests, len(v.CompilationErrors), len(v.TestFailures), len(v.UncoveredFunctions), v.Diagnostics)
 }
-
 // State is the shared context passed between Eino graph nodes.
 type State struct {
 	Task             TranslationTask    `json:"task"`

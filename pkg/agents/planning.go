@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"unicode"
 
 	"github.com/cloudwego/eino/components/model"
 	"github.com/cloudwego/eino/schema"
@@ -87,12 +88,17 @@ Output your response strictly using these delimiters:
 === SKELETON_FILES ===
 FILE: Cargo.toml
 `+"```toml"+`
-...
+[package]
+name = "..."
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
 `+"```"+`
 
 FILE: src/lib.rs
 `+"```rust"+`
-...
+// Declarations and signatures with todo!() bodies
 `+"```"+`
 
 === IMPLEMENTATION_PLAN ===
@@ -125,8 +131,8 @@ B1: Translate and execute tests ...
 	// Parse Skeleton Files
 	skeletonFiles := parseFileBlocks(rawContent, "=== SKELETON_FILES ===")
 	if len(skeletonFiles) == 0 {
-		logger.LogStep("Using default generic skeleton fallback")
-		skeletonFiles = defaultRustSkeleton()
+		logger.LogStep("Generating dynamic skeleton from target configuration and AST fragments...")
+		skeletonFiles = defaultRustSkeleton(state.Task.TargetDir, fragments)
 	}
 	state.PlanningOutput.SkeletonFiles = skeletonFiles
 
@@ -150,10 +156,10 @@ B1: Translate and execute tests ...
 	state.PlanningOutput.Plan = types.ImplementationPlan{
 		Overview: extractSection(planStr, "## Overview", "## Part A"),
 		PartA: []types.PlanStep{
-			{ID: "A1", Description: "Translate source files to target language", SourceFile: "GildedRose.c", TargetFile: "src/lib.rs", Type: "source"},
+			{ID: "A1", Description: "Translate all source modules to target language", Type: "source"},
 		},
 		PartB: []types.PlanStep{
-			{ID: "B1", Description: "Translate and execute test suite", SourceFile: "GildedRoseUnitTests.cc", TargetFile: "tests/gilded_rose_tests.rs", Type: "test"},
+			{ID: "B1", Description: "Translate and execute test suite", Type: "test"},
 		},
 		RawPlan: planStr,
 	}
@@ -163,68 +169,54 @@ B1: Translate and execute tests ...
 	return state, nil
 }
 
-func defaultRustSkeleton() map[string]string {
-	return map[string]string{
-		"Cargo.toml": `[package]
-name = "gilded_rose"
+// defaultRustSkeleton dynamically generates a compilable Cargo project structure from the target path.
+func defaultRustSkeleton(targetDir string, fragments []string) map[string]string {
+	crateName := sanitizeCrateName(filepath.Base(targetDir))
+	if crateName == "" || crateName == "." || crateName == "rust" {
+		parent := filepath.Base(filepath.Dir(targetDir))
+		if parent != "" && parent != "." && parent != "/" {
+			crateName = sanitizeCrateName(parent)
+		}
+	}
+	if crateName == "" {
+		crateName = "translated_project"
+	}
+
+	cargoToml := fmt.Sprintf(`[package]
+name = "%s"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-`,
-		"src/lib.rs": `use std::fmt;
+`, crateName)
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Item {
-    pub name: String,
-    pub sell_in: i32,
-    pub quality: i32,
+	libRs := `// Dynamic skeleton generated from source AST analysis
+pub fn init() {
+    // entry point stub
 }
+`
 
-impl Item {
-    pub fn new(name: impl Into<String>, sell_in: i32, quality: i32) -> Self {
-        Self {
-            name: name.into(),
-            sell_in,
-            quality,
-        }
-    }
-}
-
-impl fmt::Display for Item {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}, {}, {}", self.name, self.sell_in, self.quality)
-    }
-}
-
-pub fn init_item(name: impl Into<String>, sell_in: i32, quality: i32) -> Item {
-    Item::new(name, sell_in, quality)
-}
-
-pub fn print_item(item: &Item) -> String {
-    format!("{}", item)
-}
-
-pub struct GildedRose {
-    pub items: Vec<Item>,
-}
-
-impl GildedRose {
-    pub fn new(items: Vec<Item>) -> Self {
-        Self { items }
-    }
-
-    pub fn update_quality(&mut self) {
-        update_quality(&mut self.items);
-    }
-}
-
-pub fn update_quality(items: &mut [Item]) {
-    let _ = items;
-    todo!()
-}
-`,
+	return map[string]string{
+		"Cargo.toml": cargoToml,
+		"src/lib.rs": libRs,
 	}
+}
+
+func sanitizeCrateName(name string) string {
+	name = strings.ToLower(name)
+	var sb strings.Builder
+	for _, r := range name {
+		if unicode.IsLetter(r) || unicode.IsDigit(r) || r == '_' {
+			sb.WriteRune(r)
+		} else if r == '-' {
+			sb.WriteRune('_')
+		}
+	}
+	res := strings.Trim(sb.String(), "_")
+	if res == "" {
+		return "translated_project"
+	}
+	return res
 }
 
 func extractBlock(doc, startTag, endTag string) string {

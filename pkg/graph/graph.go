@@ -12,13 +12,13 @@ import (
 	"MAgHARCM/pkg/types"
 )
 
-// ReCodeGraph wraps the compiled Eino runnable for the multi-agent pipeline.
-type ReCodeGraph struct {
+// MAgHARCMGraph wraps the compiled Eino runnable for the multi-agent pipeline.
+type MAgHARCMGraph struct {
 	Runnable compose.Runnable[*types.State, *types.State]
 }
 
-// NewReCodeGraph builds and compiles the 4-agent Eino Graph with the repair loop (§3 & Algorithm 1).
-func NewReCodeGraph(ctx context.Context, models *llm.Models) (*ReCodeGraph, error) {
+// NewMAgHARCMGraph builds and compiles the 4-agent Eino Graph with the repair loop (§3 & Algorithm 1).
+func NewMAgHARCMGraph(ctx context.Context, models *llm.Models) (*MAgHARCMGraph, error) {
 	g := compose.NewGraph[*types.State, *types.State]()
 
 	// 1. Initialize the 4 agents
@@ -58,21 +58,24 @@ func NewReCodeGraph(ctx context.Context, models *llm.Models) (*ReCodeGraph, erro
 	)
 	pattern.Must0(g.AddBranch("validator", repairBranch))
 
-	// 5. Compile runnable graph
-	runnable, err := g.Compile(ctx, compose.WithGraphName("ReCodeAgent"))
+	// 5. Compile runnable graph with higher max steps for repair cycles
+	runnable, err := g.Compile(ctx,
+		compose.WithGraphName("MAgHARCM"),
+		compose.WithMaxRunSteps(50),
+	)
 	if err != nil {
-		return nil, fmt.Errorf("failed to compile ReCodeAgent graph: %w", err)
+		return nil, fmt.Errorf("failed to compile MAgHARCM graph: %w", err)
 	}
 
-	return &ReCodeGraph{Runnable: runnable}, nil
+	return &MAgHARCMGraph{Runnable: runnable}, nil
 }
 
-// MustNewReCodeGraph constructs the graph and panics on failure.
-func MustNewReCodeGraph(ctx context.Context, models *llm.Models) *ReCodeGraph {
-	return pattern.Must(NewReCodeGraph(ctx, models))
+// MustNewMAgHARCMGraph constructs the graph and panics on failure.
+func MustNewMAgHARCMGraph(ctx context.Context, models *llm.Models) *MAgHARCMGraph {
+	return pattern.Must(NewMAgHARCMGraph(ctx, models))
 }
 
 // Execute runs the translation graph with initial state and returns final state.
-func (rg *ReCodeGraph) Execute(ctx context.Context, initialState *types.State) (*types.State, error) {
+func (rg *MAgHARCMGraph) Execute(ctx context.Context, initialState *types.State) (*types.State, error) {
 	return rg.Runnable.Invoke(ctx, initialState)
 }

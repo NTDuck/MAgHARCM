@@ -1,5 +1,5 @@
 {
-  description = "ReCodeAgent: Multi-agent repository-level translation in Go + Eino";
+  description = "MAgHARCM: Multi-agent repository-level translation in Go + Eino";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";

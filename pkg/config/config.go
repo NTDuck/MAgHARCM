@@ -8,7 +8,7 @@ import (
 	"MAgHARCM/pkg/pattern"
 )
 
-// Config holds centralized configuration for the ReCodeAgent translation pipeline.
+// Config holds centralized configuration for the MAgHARCM translation pipeline.
 type Config struct {
 	OllamaBaseURL  string        `json:"ollama_base_url"`
 	ReasoningModel string        `json:"reasoning_model"`
@@ -93,12 +93,12 @@ func New(opts ...Option) (*Config, error) {
 		OllamaBaseURL:  getEnvOrDefault("OLLAMA_BASE_URL", "http://localhost:11434"),
 		ReasoningModel: getEnvOrDefault("OLLAMA_REASONING_MODEL", "gpt-oss:20b"),
 		CodingModel:    getEnvOrDefault("OLLAMA_CODING_MODEL", "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4_K_XL"),
-		MaxIterations:  getEnvIntOrDefault("RECODE_MAX_ITERATIONS", 5),
-		Timeout:        time.Duration(getEnvIntOrDefault("RECODE_TIMEOUT_SECONDS", 5000)) * time.Second,
-		SourceDir:      "assets/samples/GildedRose-Refactoring-Kata/C",
-		TargetDir:      ".artifacts/GildedRose-Refactoring-Kata/rust",
-		SourceLang:     "C",
-		TargetLang:     "Rust",
+		MaxIterations:  getEnvIntOrDefault("MAGHARCM_MAX_ITERATIONS", 10),
+		Timeout:        time.Duration(getEnvIntOrDefault("MAGHARCM_TIMEOUT_SECONDS", 5000)) * time.Second,
+		SourceDir:      getEnvOrDefault("MAGHARCM_SOURCE_DIR", ""),
+		TargetDir:      getEnvOrDefault("MAGHARCM_TARGET_DIR", ""),
+		SourceLang:     getEnvOrDefault("MAGHARCM_SOURCE_LANG", ""),
+		TargetLang:     getEnvOrDefault("MAGHARCM_TARGET_LANG", ""),
 	}
 
 	for _, opt := range opts {

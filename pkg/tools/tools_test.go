@@ -8,12 +8,11 @@ import (
 )
 
 func TestBuildDirectoryTree(t *testing.T) {
-	sampleDir := "../../assets/samples/GildedRose-Refactoring-Kata/C"
-	if _, err := os.Stat(sampleDir); err != nil {
-		sampleDir = "assets/samples/GildedRose-Refactoring-Kata/C"
-	}
+	tmpDir := t.TempDir()
+	sampleC := filepath.Join(tmpDir, "main.c")
+	_ = os.WriteFile(sampleC, []byte("#include <stdio.h>\nint main() { return 0; }\n"), 0644)
 
-	treeStr, files, err := BuildDirectoryTree(sampleDir, 3)
+	treeStr, files, err := BuildDirectoryTree(tmpDir, 3)
 	if err != nil {
 		t.Fatalf("failed to build directory tree: %v", err)
 	}
@@ -27,9 +26,19 @@ func TestBuildDirectoryTree(t *testing.T) {
 }
 
 func TestParseFileStructure(t *testing.T) {
-	cFile := "../../assets/samples/GildedRose-Refactoring-Kata/C/GildedRose.c"
-	if _, err := os.Stat(cFile); err != nil {
-		cFile = "assets/samples/GildedRose-Refactoring-Kata/C/GildedRose.c"
+	tmpDir := t.TempDir()
+	cFile := filepath.Join(tmpDir, "sample.c")
+	sampleCode := `#include <stdio.h>
+struct Item {
+    char *name;
+    int value;
+};
+int calculate(struct Item *item) {
+    return item->value * 2;
+}
+`
+	if err := os.WriteFile(cFile, []byte(sampleCode), 0644); err != nil {
+		t.Fatalf("failed to write test fixture: %v", err)
 	}
 
 	structOut, err := ParseFileStructure(cFile)

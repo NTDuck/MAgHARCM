@@ -13,33 +13,42 @@ import (
 	"MAgHARCM/pkg/config"
 	"MAgHARCM/pkg/graph"
 	"MAgHARCM/pkg/llm"
+	"MAgHARCM/pkg/logger"
 	"MAgHARCM/pkg/types"
 )
 
-const defaultRequirementsPrompt = `Input codebase: assets/samples/GildedRose-Refactoring-Kata/C
-Output directory: .artifacts/GildedRose-Refactoring-Kata/rust
-Input language: C
-Output language: Rust`
-
 func main() {
+	var promptFileFlag string
 	var promptFlag string
 	var sourceFlag string
 	var targetFlag string
 	var srcLangFlag string
 	var tgtLangFlag string
 
-	flag.StringVar(&promptFlag, "prompt", "", "Requirements prompt for code translation")
-	flag.StringVar(&sourceFlag, "source", "", "Source codebase path")
-	flag.StringVar(&targetFlag, "target", "", "Target output directory")
-	flag.StringVar(&srcLangFlag, "source-lang", "", "Source language")
-	flag.StringVar(&tgtLangFlag, "target-lang", "", "Target language")
+	flag.StringVar(&promptFileFlag, "prompt-file", "", "Path to file containing requirements prompt")
+	flag.StringVar(&promptFlag, "prompt", "", "Direct string requirements prompt for code translation")
+	flag.StringVar(&sourceFlag, "source", "", "Source codebase path (overrides prompt)")
+	flag.StringVar(&targetFlag, "target", "", "Target output directory (overrides prompt)")
+	flag.StringVar(&srcLangFlag, "source-lang", "", "Source language (overrides prompt)")
+	flag.StringVar(&tgtLangFlag, "target-lang", "", "Target language (overrides prompt)")
 	flag.Parse()
 
-	// 1. Determine Prompt
+	// 1. Determine Prompt Content
 	prompt := promptFlag
+
+	if prompt == "" && promptFileFlag != "" {
+		data, err := os.ReadFile(promptFileFlag)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error reading prompt file %s: %v\n", promptFileFlag, err)
+			os.Exit(1)
+		}
+		prompt = strings.TrimSpace(string(data))
+	}
+
 	if prompt == "" && len(flag.Args()) > 0 {
 		prompt = strings.Join(flag.Args(), " ")
 	}
+
 	if prompt == "" {
 		// Check stdin if piped
 		stat, _ := os.Stdin.Stat()
@@ -49,14 +58,24 @@ func main() {
 			}
 		}
 	}
+
 	if prompt == "" {
-		prompt = defaultRequirementsPrompt
+		// Fallback to prompts/c_to_rust.txt if it exists in current dir
+		if data, err := os.ReadFile("prompts/c_to_rust.txt"); err == nil {
+			prompt = strings.TrimSpace(string(data))
+		}
+	}
+
+	if prompt == "" {
+		fmt.Fprintln(os.Stderr, "Error: No prompt provided. Specify --prompt-file <path>, --prompt <text>, or pass via stdin.")
+		flag.Usage()
+		os.Exit(1)
 	}
 
 	fmt.Println("==================================================")
-	fmt.Println("ReCodeAgent (arXiv:2604.07341) Translation Pipeline")
+	fmt.Println("MAgHARCM Multi-Agent Translation Pipeline")
 	fmt.Println("==================================================")
-	fmt.Printf("Received Prompt:\n%s\n\n", prompt)
+	fmt.Printf("Input Prompt:\n%s\n\n", prompt)
 
 	// 2. Parse Requirements from Prompt
 	task := parsePromptRequirements(prompt)
@@ -73,7 +92,12 @@ func main() {
 		task.TargetLang = tgtLangFlag
 	}
 
-	fmt.Printf("Parsed Task Configuration:\n")
+	if task.SourceDir == "" || task.TargetDir == "" {
+		fmt.Fprintln(os.Stderr, "Error: Could not extract source codebase and output directory from prompt.")
+		os.Exit(1)
+	}
+
+	fmt.Printf("Parsed Task Specification:\n")
 	fmt.Printf("  • Source Codebase: %s\n", task.SourceDir)
 	fmt.Printf("  • Output Dir:      %s\n", task.TargetDir)
 	fmt.Printf("  • Source Language: %s\n", task.SourceLang)
@@ -87,15 +111,14 @@ func main() {
 	ctx := context.Background()
 
 	// 4. Initialize Ollama Models (Must pattern)
-	fmt.Printf("Initializing Ollama models from %s:\n", cfg.OllamaBaseURL)
-	fmt.Printf("  • Reasoning Model: %s\n", cfg.ReasoningModel)
-	fmt.Printf("  • Coding Model:    %s\n\n", cfg.CodingModel)
+	logger.LogStep("Connecting to Ollama models at %s...", cfg.OllamaBaseURL)
+	logger.LogStep("Reasoning Model: %s", cfg.ReasoningModel)
+	logger.LogStep("Coding Model:    %s", cfg.CodingModel)
 	models := llm.MustNewModels(ctx, cfg)
 
 	// 5. Build Eino Graph with 4 ReCodeAgent agents and repair loop (Must pattern)
-	fmt.Println("Constructing 4-agent Eino Graph (Analyzer -> Planning -> Translator <-> Validator)...")
-	recodeGraph := graph.MustNewReCodeGraph(ctx, models)
-
+	logger.LogStep("Constructing 4-agent Eino Graph (Analyzer -> Planning -> Translator <-> Validator)...")
+	magharcmGraph := graph.MustNewMAgHARCMGraph(ctx, models)
 	// 6. Ensure target directory exists
 	_ = os.MkdirAll(cfg.TargetDir, 0755)
 
@@ -109,16 +132,16 @@ func main() {
 	}
 
 	// 8. Execute Translation Pipeline
-	fmt.Println("Executing multi-agent translation pipeline...")
-	finalState, err := recodeGraph.Execute(ctx, initialState)
+	logger.LogStep("Starting multi-agent translation execution...")
+	finalState, err := magharcmGraph.Execute(ctx, initialState)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error executing ReCodeAgent pipeline: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error executing MAgHARCM pipeline: %v\n", err)
 		os.Exit(1)
 	}
 
 	// 9. Output Results
 	fmt.Println("\n==================================================")
-	fmt.Println("Translation Pipeline Summary")
+	fmt.Println("MAgHARCM Execution Summary")
 	fmt.Println("==================================================")
 	for _, l := range finalState.Logs {
 		fmt.Println(l)
@@ -138,11 +161,7 @@ func main() {
 
 func parsePromptRequirements(prompt string) types.TranslationTask {
 	task := types.TranslationTask{
-		SourceDir:  "assets/samples/GildedRose-Refactoring-Kata/C",
-		TargetDir:  ".artifacts/GildedRose-Refactoring-Kata/rust",
-		SourceLang: "C",
-		TargetLang: "Rust",
-		Prompt:     prompt,
+		Prompt: prompt,
 	}
 
 	lines := strings.Split(prompt, "\n")
@@ -163,25 +182,29 @@ func parsePromptRequirements(prompt string) types.TranslationTask {
 		}
 	}
 
-	// If single line or natural language sentence
-	if task.SourceDir == "" || task.SourceDir == "assets/samples/GildedRose-Refactoring-Kata/C" {
-		if m := regexp.MustCompile(`@?([a-zA-Z0-9_\-\./]+/GildedRose[a-zA-Z0-9_\-\./]*)`).FindStringSubmatch(prompt); len(m) > 1 {
-			clean := strings.TrimPrefix(m[1], "@")
-			if !strings.Contains(clean, ".artifacts") {
-				task.SourceDir = clean
-			}
+	// If prompt is in natural language
+	if task.SourceDir == "" {
+		if m := regexp.MustCompile(`(?i)(?:translate[sd]?|codebase:)\s+@?([a-zA-Z0-9_\-\./]+)`).FindStringSubmatch(prompt); len(m) > 1 {
+			task.SourceDir = strings.TrimPrefix(m[1], "@")
 		}
 	}
 
-	if m := regexp.MustCompile(`(?:output to|into|to|Output directory:?)\s+([a-zA-Z0-9_\-\./]*\.artifacts[a-zA-Z0-9_\-\./]*)`).FindStringSubmatch(prompt); len(m) > 1 {
-		task.TargetDir = m[1]
+	if task.TargetDir == "" {
+		if m := regexp.MustCompile(`(?i)(?:output to|at|directory:)\s+@?([a-zA-Z0-9_\-\./]+)`).FindStringSubmatch(prompt); len(m) > 1 {
+			task.TargetDir = strings.TrimPrefix(m[1], "@")
+		}
 	}
 
-	if strings.Contains(prompt, "from C") || strings.Contains(prompt, "Input language: C") || strings.Contains(prompt, "translates @assets/samples/GildedRose-Refactoring-Kata/C") {
-		task.SourceLang = "C"
+	if task.SourceLang == "" {
+		if m := regexp.MustCompile(`(?i)\bfrom\s+([a-zA-Z\+#]+)\b`).FindStringSubmatch(prompt); len(m) > 1 {
+			task.SourceLang = m[1]
+		}
 	}
-	if strings.Contains(prompt, "Rust") || strings.Contains(prompt, "rust") {
-		task.TargetLang = "Rust"
+
+	if task.TargetLang == "" {
+		if m := regexp.MustCompile(`(?i)\b(?:into|to)\s+(?:a\s+)?([a-zA-Z\+#]+)\b`).FindStringSubmatch(prompt); len(m) > 1 {
+			task.TargetLang = m[1]
+		}
 	}
 
 	return task

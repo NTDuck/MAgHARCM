@@ -1,0 +1,4 @@
+Input codebase: @assets/samples/GildedRose-Refactoring-Kata/C
+Output directory: .artifacts/GildedRose-Refactoring-Kata/rust
+Input language: C
+Output language: Rust

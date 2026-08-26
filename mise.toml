@@ -3,12 +3,12 @@ go = "1.26.5"
 rust = "latest"
 
 [tasks.dev]
-description = "Run the translation script with default requirements prompt"
-run = "go run ./cmd/recode"
+description = "Run MAgHARCM translation with prompt file"
+run = "go run ./cmd/MAgHARCM --prompt-file prompts/c_to_rust.txt"
 
 [tasks.build]
 description = "Build binary"
-run = "go build -o bin/recode ./cmd/recode"
+run = "go build -o bin/MAgHARCM ./cmd/MAgHARCM"
 
 [tasks.test]
 description = "Run tests"

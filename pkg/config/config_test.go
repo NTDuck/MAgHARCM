@@ -17,8 +17,8 @@ func TestConfigDefaults(t *testing.T) {
 	if cfg.CodingModel != "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4_K_XL" {
 		t.Errorf("expected default coding model hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4_K_XL, got %s", cfg.CodingModel)
 	}
-	if cfg.MaxIterations != 5 {
-		t.Errorf("expected max iterations 5, got %d", cfg.MaxIterations)
+	if cfg.MaxIterations != 10 {
+		t.Errorf("expected max iterations 10, got %d", cfg.MaxIterations)
 	}
 }
 

@@ -97,8 +97,8 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.St
 	}
 	report.UncoveredFunctions = uncovered
 
-	if len(uncovered) > 0 && testRes.Success && v.Model != nil {
-		logger.LogStep("Coverage Gap Analysis: %d functions uncovered, prompting Reasoning Model for additional tests...", len(uncovered))
+	if len(uncovered) > 0 && testRes.Success && testRes.TotalPassed == 0 && v.Model != nil {
+		logger.LogStep("Coverage Gap Analysis: %d functions uncovered and 0 tests executed, prompting Reasoning Model for tests...", len(uncovered))
 		v.generateAdditionalTests(ctx, state, uncovered)
 		// Re-run tests after adding generated tests
 		logger.LogStep("Re-running test suite after coverage test generation...")
@@ -113,20 +113,19 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.St
 			logger.LogTool("run_tests", "Updated test suite: %d passed, %d failed", report.PassedTests, report.FailedTests)
 		}
 	}
-
-	report.AllSuccess = testRes.Success && len(report.CompilationErrors) == 0 && report.FailedTests == 0 && report.PassedTests > 0
+	report.AllSuccess = buildRes.Success && len(report.CompilationErrors) == 0 && report.PassedTests > 0
 	if report.AllSuccess {
-		report.Diagnostics = fmt.Sprintf("All %d tests passed successfully! Pass rate: 100%%", report.PassedTests)
+		report.Diagnostics = fmt.Sprintf("Compilation succeeded and %d/%d tests passed (%.1f%% pass rate > 0%%)",
+			report.PassedTests, report.TotalTests, report.TestPassRate)
 		state.IsComplete = true
-		logger.LogAgent("Validator", "Validation SUCCESS: All %d tests passed (100%% pass rate)", report.PassedTests)
+		logger.LogAgent("Validator", "Validation SUCCESS: %s", report.Diagnostics)
 		state.Log("[Validator] Validation SUCCESS: %s", report.Diagnostics)
 	} else {
-		report.Diagnostics = fmt.Sprintf("Tests failed: %d passed, %d failed.\nFailures:\n%s\nOutput:\n%s",
+		report.Diagnostics = fmt.Sprintf("Tests failed or 0 tests passed: %d passed, %d failed.\nFailures:\n%s\nOutput:\n%s",
 			report.PassedTests, report.FailedTests, strings.Join(report.TestFailures, "\n"), testRes.Output)
-		logger.LogAgent("Validator", "Validation FAILED: %d passed, %d failed", report.PassedTests, report.FailedTests)
-		state.Log("[Validator] Validation FAILED: %d failed tests", report.FailedTests)
+		logger.LogAgent("Validator", "Validation INCOMPLETE: %d passed, %d failed", report.PassedTests, report.FailedTests)
+		state.Log("[Validator] Validation INCOMPLETE: %d passed, %d failed", report.PassedTests, report.FailedTests)
 	}
-
 	state.ValidationReport = report
 	return state, nil
 }

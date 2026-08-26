@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/cloudwego/eino/components/model"
@@ -64,12 +65,12 @@ func (t *TranslatorAgent) translate(ctx context.Context, state *types.State) (*t
 Your task is to translate the source codebase (%s) into fully working, idiomatic, safe %s code.
 Translate ALL source data models, structs, classes, functions, and logic directly from the provided source files preserving exact semantic behavior.
 Translate ALL unit tests and characterization tests into the target test framework.
-
 Language-Agnostic Translation Guidelines:
 1. Preserve exact functionality, algorithms, boundary conditions, and control flows from the source code.
-2. In %s, ensure exported functions and structs from the source headers are public and idiomatic.
-3. In Rust, files in tests/ (e.g. tests/integration_tests.rs) are compiled as external crates linking to the library crate defined in Cargo.toml. Therefore, all test files in tests/ MUST import library symbols with 'use <crate_name>::*;' (where crate_name matches the package name in Cargo.toml, e.g. 'use gilded_rose::*;'), and MUST NOT use 'use super::*;'.
-4. Write clean, complete code for all required files without placeholders.
+2. In %s, declare all public structs, fields, and functions with 'pub' and derive standard traits (e.g. '#[derive(Debug, Clone, PartialEq, Eq)]' on data structs).
+3. In Rust, files in tests/ (e.g. tests/integration_tests.rs) are compiled as external crates linking to the library crate defined in Cargo.toml. Therefore, all test files in tests/ MUST import library symbols with 'use <crate_name>::*;' (where crate_name matches the package name in Cargo.toml), and MUST NOT use 'use super::*;'.
+4. When testing in-place mutable functions in Rust (taking '&mut [T]'), create and pass a mutable vector ('let mut items = vec![...]; update_quality(&mut items);') and assert on 'items[0]', 'items[1]', etc.
+5. Write clean, complete code for all required files without placeholders.
 
 === Source Files ===
 %s
@@ -145,8 +146,11 @@ The Validator Agent reported compilation or test failures for the translated %s 
 %s
 
 Please analyze the root cause of each error/failure and output the complete corrected files to fix all issues.
-In Rust, remember that test files in tests/ are separate integration test crates that MUST import library symbols with 'use <crate_name>::*;' (e.g. 'use gilded_rose::*;'), and MUST NOT use 'use super::*;'.
-Do NOT use placeholders. Output full working code.
+In Rust, remember:
+- All exported struct definitions, fields, and functions in src/lib.rs must be 'pub'.
+- Test files in tests/ are separate integration test crates that MUST import library symbols with 'use <crate_name>::*;' (NOT 'use super::*;').
+- When testing in-place mutable functions (&mut [T]), mutate items in an array or vector ('let mut items = vec![...]; update_quality(&mut items); assert_eq!(items[0]...)').
+Do NOT use placeholders. Output full working code inside code blocks.
 
 Format output strictly using file blocks:
 FILE: Cargo.toml
@@ -166,7 +170,7 @@ FILE: tests/integration_tests.rs
 `, state.Task.TargetLang, state.ValidationReport.Diagnostics, strings.Join(targetFilesData, "\n"))
 
 	resp, err := t.Model.Generate(ctx, []*schema.Message{
-		schema.SystemMessage("You are an expert systems programmer debugging compiler errors and test failures."),
+		schema.SystemMessage("You are an expert systems programmer debugging compiler errors and test failures. Output only the requested code files inside fenced code blocks."),
 		schema.UserMessage(prompt),
 	})
 	if err != nil {
@@ -225,9 +229,14 @@ func parseAllFileMarkers(text string) map[string]string {
 	var currentFile string
 	var currentLines []string
 
+	fileHeaderRe := regexp.MustCompile(`(?i)(?:file:?|filepath:?)\s*\*?\*?\s*([a-zA-Z0-9_\-\./]+\.(?:rs|toml|c|h|go|cc|cpp))`)
+	codeFencePathRe := regexp.MustCompile("(?i)```(?:rust|toml|c|cpp)?\\s*(?://|#)?\\s*([a-zA-Z0-9_\\-\\./]+\\.(?:rs|toml|c|h|go|cc|cpp))")
+	boldPathRe := regexp.MustCompile(`(?i)\*\*([a-zA-Z0-9_\-\./]+\.(?:rs|toml|c|h|go|cc|cpp))\*\*`)
+
 	flush := func() {
 		if currentFile != "" && len(currentLines) > 0 {
-			code := tools.CleanCodeContent(strings.Join(currentLines, "\n"))
+			rawContent := strings.Join(currentLines, "\n")
+			code := extractCodeFromSection(rawContent)
 			if code != "\n" && code != "" {
 				files[currentFile] = code
 			}
@@ -236,17 +245,57 @@ func parseAllFileMarkers(text string) map[string]string {
 
 	for _, line := range lines {
 		trimmed := strings.TrimSpace(line)
-		if strings.HasPrefix(trimmed, "FILE:") || strings.HasPrefix(trimmed, "### File:") {
+		var newFile string
+
+		if match := fileHeaderRe.FindStringSubmatch(trimmed); len(match) > 1 {
+			newFile = match[1]
+		} else if match := codeFencePathRe.FindStringSubmatch(trimmed); len(match) > 1 {
+			newFile = match[1]
+		} else if match := boldPathRe.FindStringSubmatch(trimmed); len(match) > 1 {
+			newFile = match[1]
+		}
+
+		if newFile != "" {
 			flush()
-			f := strings.TrimPrefix(trimmed, "FILE:")
-			f = strings.TrimPrefix(f, "### File:")
-			f = strings.TrimSpace(f)
-			currentFile = f
+			currentFile = strings.TrimSpace(strings.Trim(newFile, "*`# :"))
 			currentLines = nil
-		} else if currentFile != "" {
+			continue
+		}
+
+		if currentFile != "" {
 			currentLines = append(currentLines, line)
 		}
 	}
 	flush()
 	return files
+}
+
+func extractCodeFromSection(section string) string {
+	// If section contains a code fence block ```...```, extract only inside the fence
+	lines := strings.Split(section, "\n")
+	var inFence bool
+	var fenceLines []string
+
+	for _, l := range lines {
+		trimmed := strings.TrimSpace(l)
+		if strings.HasPrefix(trimmed, "```") {
+			if inFence {
+				// End of fence
+				inFence = false
+				break
+			}
+			inFence = true
+			continue
+		}
+		if inFence {
+			fenceLines = append(fenceLines, l)
+		}
+	}
+
+	if len(fenceLines) > 0 {
+		return tools.CleanCodeContent(strings.Join(fenceLines, "\n"))
+	}
+
+	// Fallback for unfenced code
+	return tools.CleanCodeContent(section)
 }

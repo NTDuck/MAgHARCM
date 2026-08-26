@@ -14,7 +14,7 @@ func TestDefaultRustSkeletonCompiles(t *testing.T) {
 	}
 
 	tmpDir := t.TempDir()
-	skeleton := defaultRustSkeleton()
+	skeleton := defaultRustSkeleton(".artifacts/sample_project/rust", []string{"foo.c:bar"})
 
 	for relPath, content := range skeleton {
 		fullPath := filepath.Join(tmpDir, relPath)

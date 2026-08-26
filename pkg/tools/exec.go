@@ -109,7 +109,7 @@ func RunProjectTests(ctx context.Context, projectDir, filter string) (*RunTestsO
 
 	cargoToml := filepath.Join(cleanDir, "Cargo.toml")
 	if fileExists(cargoToml) {
-		args := []string{"test"}
+		args := []string{"test", "--lib", "--tests"}
 		if filter != "" {
 			args = append(args, filter)
 		}
