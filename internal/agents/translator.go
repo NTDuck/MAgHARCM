@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 
 	"github.com/cloudwego/eino/components/model"
@@ -209,64 +208,3 @@ func (t *TranslatorAgent) syncFilesToDisk(targetDir string, files map[string]str
 	return nil
 }
 
-func parseAllFileMarkers(text string) map[string]string {
-	files := make(map[string]string)
-	lines := strings.Split(text, "\n")
-	var currentFile string
-	var currentContent strings.Builder
-
-	fileHeaderRegex := regexp.MustCompile(`^(?:###\s+)?(?:File|FILE|Path|PATH):\s*([^\s` + "`" + `]+)`)
-
-	for _, line := range lines {
-		trimmed := strings.TrimSpace(line)
-		matches := fileHeaderRegex.FindStringSubmatch(trimmed)
-		if len(matches) > 1 {
-			if currentFile != "" {
-				files[currentFile] = extractCodeFromSection(currentContent.String())
-				currentContent.Reset()
-			}
-			currentFile = matches[1]
-			continue
-		}
-
-		if currentFile != "" {
-			currentContent.WriteString(line + "\n")
-		}
-	}
-
-	if currentFile != "" {
-		files[currentFile] = extractCodeFromSection(currentContent.String())
-	}
-
-	if len(files) == 0 {
-		altFiles := parseFileBlocks(text, "")
-		for k, v := range altFiles {
-			files[k] = v
-		}
-	}
-
-	return files
-}
-
-func extractCodeFromSection(section string) string {
-	lines := strings.Split(section, "\n")
-	var codeLines []string
-	inFence := false
-
-	for _, line := range lines {
-		trimmed := strings.TrimSpace(line)
-		if strings.HasPrefix(trimmed, "```") {
-			inFence = !inFence
-			continue
-		}
-		if inFence {
-			codeLines = append(codeLines, line)
-		}
-	}
-
-	if len(codeLines) > 0 {
-		return strings.Join(codeLines, "\n")
-	}
-
-	return strings.TrimSpace(section)
-}
