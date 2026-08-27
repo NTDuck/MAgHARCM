@@ -30,11 +30,11 @@ func NewPlanningAgent(m model.BaseChatModel) *PlanningAgent {
 
 // Run executes the planning phase and populates PlanningOutput in state.
 func (p *PlanningAgent) Run(ctx context.Context, state *types.State) (*types.State, error) {
-	logger.LogAgent("Planning", "Decomposing translation into granular translation units and constructing plan...")
+	logger.LogAgent("Planning", "Decomposing translation into granular translation units and constructing plan")
 	state.Log("[Planning] Extracting fragments and building implementation plan")
 
 	// Extract fine-grained AST translation units from all discovered files
-	logger.LogStep("Extracting translation units across source and test files...")
+	logger.LogStep("Extracting translation units across source and test files")
 	_, files, err := tools.BuildDirectoryTree(state.Task.SourceDir, 5)
 	if err != nil {
 		return nil, err
@@ -57,7 +57,7 @@ func (p *PlanningAgent) Run(ctx context.Context, state *types.State) (*types.Sta
 	state.PlanningOutput.Fragments = fragments
 	logger.LogTool("fragment_extraction", "Extracted %d translation fragments from source files", len(fragments))
 	for _, fr := range fragments {
-		logger.LogStep("Fragment: %s", fr)
+		logger.LogStep("Fragment: `%s`", fr)
 	}
 
 	// Request name mapping, project skeleton, and implementation plan from the reasoning model
@@ -90,7 +90,7 @@ func (p *PlanningAgent) Run(ctx context.Context, state *types.State) (*types.Sta
 	logger.LogTool("name_mapping", "Created %d symbol mappings", len(nameMapping))
 	skeletonFiles := parseFileBlocks(rawContent, "=== SKELETON_FILES ===")
 	if len(skeletonFiles) == 0 {
-		logger.LogWarning("Planning LLM did not emit explicit skeleton files; generating fallback skeleton for %s", state.Task.TargetLang)
+		logger.LogWarning("Planning LLM did not emit explicit skeleton files; generating fallback skeleton for `%s`", state.Task.TargetLang)
 		skeletonFiles = defaultProjectSkeleton(state.Task.TargetDir, state.Task.TargetLang, fragments)
 	}
 	state.PlanningOutput.SkeletonFiles = skeletonFiles
@@ -104,7 +104,7 @@ func (p *PlanningAgent) Run(ctx context.Context, state *types.State) (*types.Sta
 		if err := os.WriteFile(fullPath, []byte(content), 0644); err != nil {
 			return nil, fmt.Errorf("failed to write skeleton file %s: %w", fullPath, err)
 		}
-		logger.LogTool("write_file", "Wrote skeleton to %s (%d bytes)", relPath, len(content))
+		logger.LogTool("write_file", "Wrote skeleton to `%s` (%d bytes)", relPath, len(content))
 	}
 
 	// Parse Plan

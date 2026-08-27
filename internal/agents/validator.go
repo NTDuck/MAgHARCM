@@ -28,12 +28,12 @@ func NewValidatorAgent(m model.BaseChatModel) *ValidatorAgent {
 // Run validates the target project and produces a ValidationReport.
 func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.State, error) {
 	state.Iteration++
-	logger.LogAgent("Validator", "Validating target project %s (Iteration %d/%d)",
+	logger.LogAgent("Validator", "Validating target project `%s` (Iteration %d/%d)",
 		state.Task.TargetDir, state.Iteration, state.MaxIterations)
-	state.Log("[Validator] Validating target project %s (Iteration %d/%d)", state.Task.TargetDir, state.Iteration, state.MaxIterations)
+	state.Log("[Validator] Validating target project `%s` (Iteration %d/%d)", state.Task.TargetDir, state.Iteration, state.MaxIterations)
 
 	// Verify compilation using the target toolchain before attempting test execution
-	logger.LogStep("Running compiler check for %s (toolchain: %s)...", state.Task.TargetLang, state.Task.Toolchain)
+	logger.LogStep("Running compiler check for `%s` (toolchain: `%s`)", state.Task.TargetLang, state.Task.Toolchain)
 	buildRes, err := tools.ValidateProjectBuild(ctx, state.Task.TargetDir, state.Task.TargetLang, state.Task.Toolchain)
 	if err != nil {
 		return nil, fmt.Errorf("validator failed to run build check: %w", err)
@@ -57,7 +57,7 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.St
 	logger.LogTool("validate_build", "Compilation SUCCESS: clean build without errors")
 
 	// Execute project tests to measure pass rate and collect failure diagnostics
-	logger.LogStep("Executing test suite for %s (toolchain: %s)...", state.Task.TargetLang, state.Task.Toolchain)
+	logger.LogStep("Executing test suite for `%s` (toolchain: `%s`)", state.Task.TargetLang, state.Task.Toolchain)
 	testRes, err := tools.RunProjectTests(ctx, state.Task.TargetDir, state.Task.TargetLang, state.Task.Toolchain, "")
 	if err != nil {
 		return nil, fmt.Errorf("validator failed to execute tests: %w", err)
@@ -98,10 +98,10 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.St
 	report.UncoveredFunctions = uncovered
 
 	if len(uncovered) > 0 && testRes.Success && testRes.TotalPassed == 0 && v.Model != nil {
-		logger.LogStep("Coverage Gap Analysis: %d functions uncovered and 0 tests executed, prompting Reasoning Model for tests...", len(uncovered))
+		logger.LogStep("Coverage Gap Analysis: %d functions uncovered and 0 tests executed, prompting Reasoning Model for tests", len(uncovered))
 		v.generateAdditionalTests(ctx, state, uncovered)
 		// Re-run tests after adding generated tests
-		logger.LogStep("Re-running test suite after coverage test generation...")
+		logger.LogStep("Re-running test suite after coverage test generation")
 		if reTest, err := tools.RunProjectTests(ctx, state.Task.TargetDir, state.Task.TargetLang, state.Task.Toolchain, ""); err == nil {
 			report.PassedTests = reTest.TotalPassed
 			report.FailedTests = reTest.TotalFailed
@@ -176,7 +176,7 @@ func (v *ValidatorAgent) generateAdditionalTests(ctx context.Context, state *typ
 				testPath := filepath.Join(state.Task.TargetDir, relPath)
 				_ = os.WriteFile(testPath, []byte(cleaned), 0644)
 				state.TranslatedProject.Files[relPath] = cleaned
-				logger.LogTool("write_file", "Updated tests in %s (%d bytes)", relPath, len(cleaned))
+				logger.LogTool("write_file", "Updated tests in `%s` (%d bytes)", relPath, len(cleaned))
 			}
 		}
 	}

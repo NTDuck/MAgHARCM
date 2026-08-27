@@ -126,7 +126,7 @@ func (l *LanguageLoader) LoadGrammar(spec *LanguageSpec) (*tree_sitter.Language,
 							tsLang := tree_sitter.NewLanguage(ptr)
 							if tsLang != nil {
 								l.cache[spec.Name] = tsLang
-								logger.LogStep("Loaded dynamic Tree-Sitter grammar for %s from %s", spec.Name, fullPath)
+								logger.LogStep("Loaded dynamic Tree-Sitter grammar for `%s` from `%s`", spec.Name, fullPath)
 								return tsLang, nil
 							}
 						}

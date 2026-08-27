@@ -7,9 +7,9 @@ Target Package / Module Name: {{.PackageName}}
 
 Translation Guidelines:
 1. Preserve exact functionality, algorithms, boundary conditions, and control flows from the source code.
-2. In {{.TargetLang}}, declare all types, structs, fields, functions, and constructors with public export visibility in the library entrypoint so they are accessible to tests and binaries.
-3. External test suites and main application binaries must import public library symbols from the target package ({{.PackageName}}) according to {{.TargetLang}} package import conventions.
-4. Ensure constructors and function signatures match the calling conventions and types used in the test suites.
+2. In the main library root (e.g. `src/lib.rs` or `lib.go`), declare all types, structs, constructors, and functions with public export visibility. If creating submodules, declare and re-export them publicly in the library root (e.g. `pub mod item; pub use item::*;`).
+3. External test files (e.g. in `tests/`) and main application binaries (e.g. `src/main.rs`) are separate compilation units. They must import all public library symbols from the target package (e.g. `use {{.PackageName}}::*;` in Rust, `package {{.PackageName}}_test` in Go, `#include` in C). Never use `use super::*;` in separate integration test files.
+4. Ensure constructors (e.g. `Item::new`, `init_item`) and function signatures (e.g. `update_quality`, `print_item`) match the calling conventions and types used in the test suites.
 5. Write clean, complete, fully closed code for all required files without placeholders, stubs, or truncation.
 
 === Source Files ===

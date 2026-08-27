@@ -26,22 +26,22 @@ func NewAnalyzerAgent(m model.BaseChatModel) *AnalyzerAgent {
 
 // Run executes the 3-phase analysis workflow and returns updated state.
 func (a *AnalyzerAgent) Run(ctx context.Context, state *types.State) (*types.State, error) {
-	logger.LogAgent("Analyzer", "Starting source project analysis: %s (%s -> %s)",
+	logger.LogAgent("Analyzer", "Starting source project analysis: `%s` (`%s` -> `%s`)",
 		state.Task.SourceDir, state.Task.SourceLang, state.Task.TargetLang)
-	state.Log("[Analyzer] Starting Source Project Research for %s (%s -> %s)", state.Task.SourceDir, state.Task.SourceLang, state.Task.TargetLang)
+	state.Log("[Analyzer] Starting Source Project Research for `%s` (`%s` -> `%s`)", state.Task.SourceDir, state.Task.SourceLang, state.Task.TargetLang)
 
 	// Scan the source repository tree to discover all modules and translation candidates
-	logger.LogStep("Scanning directory hierarchy via get_directory_tree...")
+	logger.LogStep("Scanning directory hierarchy via `get_directory_tree`")
 	treeStr, files, err := tools.BuildDirectoryTree(state.Task.SourceDir, 5)
 	if err != nil {
 		return nil, fmt.Errorf("failed to build directory tree: %w", err)
 	}
-	logger.LogTool("get_directory_tree", "Found %d source/header/test files in %s", len(files), state.Task.SourceDir)
+	logger.LogTool("get_directory_tree", "Found %d source/header/test files in `%s`", len(files), state.Task.SourceDir)
 
 	var fileStructures []string
 	var fileContents []string
 	for _, f := range files {
-		logger.LogStep("Parsing AST structure with Tree-Sitter: %s", filepath.Base(f))
+		logger.LogStep("Parsing AST structure with Tree-Sitter: `%s`", filepath.Base(f))
 		structOut, err := tools.ParseFileStructure(f)
 		if err == nil {
 			elemDesc := fmt.Sprintf("File: %s\nLanguage: %s\nElements:\n", filepath.Base(f), structOut.Language)
@@ -49,7 +49,7 @@ func (a *AnalyzerAgent) Run(ctx context.Context, state *types.State) (*types.Sta
 				elemDesc += fmt.Sprintf("  - [%s] %s (lines %d-%d): %s\n", el.Kind, el.Name, el.Line, el.EndLine, el.Signature)
 			}
 			fileStructures = append(fileStructures, elemDesc)
-			logger.LogTool("get_file_structure", "%s -> %d AST elements, %d imports",
+			logger.LogTool("get_file_structure", "`%s` -> %d AST elements, %d imports",
 				filepath.Base(f), len(structOut.Elements), len(structOut.Imports))
 			if structOut.RawCode != "" {
 				fileContents = append(fileContents, fmt.Sprintf("=== File: %s ===\n%s\n", filepath.Base(f), structOut.RawCode))
@@ -60,7 +60,7 @@ func (a *AnalyzerAgent) Run(ctx context.Context, state *types.State) (*types.Sta
 	allCode := strings.Join(fileContents, "\n")
 	structureSummary := strings.Join(fileStructures, "\n")
 
-	logger.LogStep("Synthesizing Source Research, 3rd-Party Library Analysis, and Target Design with Reasoning Model...")
+	logger.LogStep("Synthesizing Source Research, 3rd-Party Library Analysis, and Target Design with Reasoning Model")
 
 	prompt, err := renderPrompt("analyzer.md", map[string]any{
 		"SourceLang":          state.Task.SourceLang,

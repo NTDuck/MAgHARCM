@@ -13,7 +13,7 @@ flowchart TD
     Planning --> Translator[Translator Agent<br/><i>Qwen3-4B-Instruct</i>]
     Translator --> Validator[Validator Agent<br/><i>gpt-oss:20b</i>]
     
-    Validator --> Branch{Validation Passed?<br/><i>Pass Rate > 0%</i>}
+    Validator --> Branch{Validation Passed?<br/><i>100% Pass Rate</i>}
     Branch -- No & Iteration < 10 --> Translator
     Branch -- Yes or Iteration >= 10 --> Complete([Complete / Target Repository])
 
@@ -76,7 +76,7 @@ sequenceDiagram
             Validator-->>Graph: ValidationReport (Passed/Failed counts, Diagnostics)
         end
 
-        alt Validation Success (>0% pass rate) or Max Iterations Reached
+        alt Validation Success (100% pass rate) or Max Iterations Reached
             Note over Graph: Terminate Loop
         else Validation Failed
             Note over Graph: Increment Iteration & Loop back to Translator
@@ -84,7 +84,7 @@ sequenceDiagram
     end
 
     Graph-->>CLI: Final State
-    CLI-->>User: Output Artifacts in Target Directory & .MAgHARCM/
+    CLI-->>User: Output Translated Repository
 ```
 
 ---
@@ -93,37 +93,33 @@ sequenceDiagram
 
 ### 1. Analyzer Agent (`internal/agents/analyzer.go`)
 - **Model**: `gpt-oss:20b` (Reasoning)
-- **Role**: Explores the source directory, parses AST structures (via Tree-sitter for C, C++, Go, Rust), and outputs:
+- **Role**: Explores the source directory, parses AST structures (via dynamic Tree-sitter grammars and language adapters), and outputs:
   - Source Project Research
   - Third-Party Library Analysis
   - Target Project Architecture Design
-- **Interim Artifacts**: Persisted to `{target_dir}/.MAgHARCM/01_analyzer/`.
 
 ### 2. Planning Agent (`internal/agents/planning.go`)
 - **Model**: `gpt-oss:20b` (Reasoning)
 - **Role**: Bridges source AST to target semantics and initializes the target workspace:
   - Symbol Name Mapping (source $\rightarrow$ target)
-  - Dynamic Target Skeleton Generation (`Cargo.toml` / `go.mod`, module declarations)
+  - Dynamic Target Skeleton Generation via `LanguageRegistry`
   - 2-Part Implementation Plan:
     - **Part A**: Core source module translation
     - **Part B**: Test suite and characterization test translation
-- **Interim Artifacts**: Persisted to `{target_dir}/.MAgHARCM/02_planning/`.
 
 ### 3. Translator Agent (`internal/agents/translator.go`)
 - **Model**: `Qwen3-4B-Instruct` (Coding)
 - **Role**: Generates and iteratively refines target source code and test files:
   - **Initial Translation**: Generates idiomatic, safe target code adhering to the generated plan.
   - **Repair Mode**: Consumes validation diagnostics, compiler errors, and test failure logs to patch target files.
-- **Interim Artifacts**: Persisted to `{target_dir}/.MAgHARCM/03_translation/iteration_NN/`.
 
 ### 4. Validator Agent (`internal/agents/validator.go`)
 - **Model**: `gpt-oss:20b` (Reasoning)
 - **Role**: Validates translation output via multi-toolchain execution:
-  - Supports Rust (`cargo`), Go (`go test`), C/C++ (`make`), CMake (`ctest`).
+  - Supports Rust (`cargo`), Go (`go test`), C/C++ (`make`), CMake (`ctest`), Pytest, Maven/Gradle, and custom toolchains.
   - Parses compiler diagnostics and assertion failures.
   - Triggers Coverage-Guided Test Generation if functions lack coverage.
-  - Evaluates completion: **compilation success with $>0\%$ test pass rate**.
-- **Interim Artifacts**: Persisted to `{target_dir}/.MAgHARCM/04_validation/iteration_NN/`.
+  - Evaluates completion: **100% compilation success and 100% test pass rate**.
 
 ---
 

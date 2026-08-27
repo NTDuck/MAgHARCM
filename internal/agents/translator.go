@@ -39,13 +39,13 @@ func (t *TranslatorAgent) Run(ctx context.Context, state *types.State) (*types.S
 	isRepair := state.Iteration > 0 && !state.ValidationReport.IsAllSuccess()
 
 	if isRepair {
-		logger.LogAgent("Translator", "Repair Mode (Iteration %d/%d): Diagnosing validation errors and fixing code...",
+		logger.LogAgent("Translator", "Repair Mode (Iteration %d/%d): Diagnosing validation errors and fixing code",
 			state.Iteration, state.MaxIterations)
 		state.Log("[Translator] Repair Mode (Iteration %d/%d): Fixing reported validation errors", state.Iteration, state.MaxIterations)
 		return t.repair(ctx, state)
 	}
 
-	logger.LogAgent("Translator", "Initial Translation Mode: Implementing Part A (Source) and Part B (Tests)...")
+	logger.LogAgent("Translator", "Initial Translation Mode: Implementing Part A (Source) and Part B (Tests)")
 	state.Log("[Translator] Implementing Part A (Source) and Part B (Tests)")
 	return t.translate(ctx, state)
 }
@@ -63,7 +63,7 @@ func (t *TranslatorAgent) translate(ctx context.Context, state *types.State) (*t
 		return nil
 	})
 
-	logger.LogStep("Prompting Coding Model for complete %s translation...", state.Task.TargetLang)
+	logger.LogStep("Prompting Coding Model for complete `%s` translation", state.Task.TargetLang)
 
 	packageName := sanitizeProjectName(filepath.Base(state.Task.TargetDir))
 	if packageName == "" || packageName == "." || strings.EqualFold(packageName, state.Task.TargetLang) {
@@ -101,8 +101,8 @@ func (t *TranslatorAgent) translate(ctx context.Context, state *types.State) (*t
 	if err := syncFilesToDisk(state.Task.TargetDir, files, state); err != nil {
 		return nil, err
 	}
-	logger.LogAgent("Translator", "Successfully wrote %d translated files to %s", len(files), state.Task.TargetDir)
-	state.Log("[Translator] Translated %d files to %s", len(files), state.Task.TargetDir)
+	logger.LogAgent("Translator", "Successfully wrote %d translated files to `%s`", len(files), state.Task.TargetDir)
+	state.Log("[Translator] Translated %d files to `%s`", len(files), state.Task.TargetDir)
 	return state, nil
 }
 
@@ -112,7 +112,7 @@ func (t *TranslatorAgent) repair(ctx context.Context, state *types.State) (*type
 		targetFilesData = append(targetFilesData, fmt.Sprintf("=== Current File: %s ===\n%s\n", relPath, content))
 	}
 
-	logger.LogStep("Feeding compiler diagnostics and test failures to Coding Model for targeted repair...")
+	logger.LogStep("Feeding compiler diagnostics and test failures to Coding Model for targeted repair")
 
 	packageName := sanitizeProjectName(filepath.Base(state.Task.TargetDir))
 	if packageName == "" || packageName == "." || strings.EqualFold(packageName, state.Task.TargetLang) {
@@ -184,7 +184,7 @@ func syncFilesToDisk(targetDir string, files map[string]string, state *types.Sta
 		if err := os.WriteFile(fullPath, []byte(content), 0644); err != nil {
 			return fmt.Errorf("failed to write file %s: %w", fullPath, err)
 		}
-		logger.LogTool("write_file", "Wrote %s to %s (%d bytes)", relPath, targetDir, len(content))
+		logger.LogTool("write_file", "Wrote `%s` to `%s` (%d bytes)", relPath, targetDir, len(content))
 	}
 	return nil
 }
