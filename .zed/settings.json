@@ -1,0 +1,23 @@
+{
+  "languages": {
+    "Go": {
+      "language_servers": [
+        "gopls"
+      ]
+    }
+  },
+  "lsp": {
+    "gopls": {
+      "initialization_options": {
+        "directoryFilters": [
+          "-assets",
+          "-.deprecated",
+          "-.artifacts"
+        ],
+        "staticcheck": true,
+        "gofumpt": true,
+        "completeUnimported": true
+      }
+    }
+  }
+}

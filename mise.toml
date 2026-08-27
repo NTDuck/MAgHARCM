@@ -1,0 +1,27 @@
+[tools]
+go = "1.26.5"
+rust = "latest"
+
+[tasks.dev]
+description = "Run MAgHARCM translation with YAML config"
+run = "go run ./cmd/MAgHARCM --config config.yml"
+
+[tasks.build]
+description = "Build binary"
+run = "go build -o bin/MAgHARCM ./cmd/MAgHARCM"
+
+[tasks.test]
+description = "Run tests"
+run = "go test ./..."
+
+[tasks.lint]
+description = "Run go vet"
+run = "go vet ./..."
+
+[tasks.fmt]
+description = "Format Go code"
+run = "go fmt ./..."
+
+[tasks.clean]
+description = "Clean build artifacts"
+run = "rm -rf bin/ .artifacts/"
