@@ -17,7 +17,7 @@ import (
 	"MAgHARCM/internal/types"
 )
 
-// PlanningAgent creates fragment extraction, name mapping, skeleton files, and implementation plan (§3.3).
+// PlanningAgent extracts translation units, maps symbols to target conventions, generates project skeletons, and devises execution plans.
 type PlanningAgent struct {
 	Model model.BaseChatModel
 }
@@ -32,7 +32,7 @@ func (p *PlanningAgent) Run(ctx context.Context, state *types.State) (*types.Sta
 	logger.LogAgent("Planning", "Decomposing translation into granular translation units and constructing plan...")
 	state.Log("[Planning] Extracting fragments and building implementation plan")
 
-	// 1. Fragment Extraction (§3.3.1)
+	// Extract fine-grained AST translation units from all discovered files
 	logger.LogStep("Extracting translation units across source and test files...")
 	_, files, err := tools.BuildDirectoryTree(state.Task.SourceDir, 5)
 	if err != nil {
@@ -59,7 +59,7 @@ func (p *PlanningAgent) Run(ctx context.Context, state *types.State) (*types.Sta
 		logger.LogStep("Fragment: %s", fr)
 	}
 
-	logger.LogStep("Prompting Reasoning Model for Name Mapping, Skeleton Generation, and Implementation Plan...")
+	// Request name mapping, project skeleton, and implementation plan from the reasoning model
 
 	prompt, err := renderPrompt("planning.md", map[string]any{
 		"SourceLang":   state.Task.SourceLang,

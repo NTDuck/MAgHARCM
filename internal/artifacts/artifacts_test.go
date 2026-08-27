@@ -11,7 +11,7 @@ import (
 func TestArtifactPersistence(t *testing.T) {
 	tmpDir := t.TempDir()
 
-	// 1. Analyzer
+	// Validate analyzer artifact persistence
 	analyzerOut := types.AnalyzerOutput{
 		Research: types.DocumentWrapper[types.SourceProjectResearch]{
 			RawMarkdown: "# Research\nOverview",
@@ -30,7 +30,7 @@ func TestArtifactPersistence(t *testing.T) {
 		t.Errorf("expected research.md to exist: %v", err)
 	}
 
-	// 2. Planning
+	// Validate planning artifact persistence
 	planningOut := types.PlanningOutput{
 		NameMapping: map[string]string{"foo": "bar"},
 		SkeletonFiles: map[string]string{
@@ -47,7 +47,7 @@ func TestArtifactPersistence(t *testing.T) {
 		t.Errorf("expected name_mapping.json to exist: %v", err)
 	}
 
-	// 3. Translation
+	// Validate translation snapshot persistence
 	transProj := types.TranslatedProject{
 		Files: map[string]string{
 			"src/lib.rs": "pub fn hello() {}",
@@ -60,7 +60,7 @@ func TestArtifactPersistence(t *testing.T) {
 		t.Errorf("expected files_manifest.json to exist: %v", err)
 	}
 
-	// 4. Validation
+	// Validate validation report persistence
 	valRep := types.ValidationReport{
 		AllSuccess:         true,
 		CompilationSuccess: true,

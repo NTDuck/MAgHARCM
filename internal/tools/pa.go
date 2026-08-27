@@ -327,7 +327,7 @@ func fallbackParseStructure(filePath, content string) *FileStructureOutput {
 	}
 }
 
-// NewPATools creates the Project Analysis tools (§3.1.2).
+// NewPATools creates Tree-Sitter AST inspection and directory hierarchy tools for repository analysis.
 func NewPATools() []tool.BaseTool {
 	treeTool, _ := utils.InferTool("get_directory_tree", "Returns a structured representation of the project directory hierarchy",
 		func(ctx context.Context, input *DirectoryTreeInput) (*DirectoryTreeOutput, error) {

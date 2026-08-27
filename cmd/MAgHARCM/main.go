@@ -135,29 +135,29 @@ func main() {
 	}
 
 	fmt.Printf("Task Specification:\n")
-	fmt.Printf("  • Source Codebase: %s\n", task.SourceDir)
-	fmt.Printf("  • Output Dir:      %s\n", task.TargetDir)
-	fmt.Printf("  • Source Language: %s\n", task.SourceLang)
-	fmt.Printf("  • Target Language: %s\n", task.TargetLang)
+	fmt.Printf("  - Source Codebase: %s\n", task.SourceDir)
+	fmt.Printf("  - Output Dir:      %s\n", task.TargetDir)
+	fmt.Printf("  - Source Language: %s\n", task.SourceLang)
+	fmt.Printf("  - Target Language: %s\n", task.TargetLang)
 	if task.Toolchain != "" {
-		fmt.Printf("  • Toolchain:       %s\n", task.Toolchain)
+		fmt.Printf("  - Toolchain:       %s\n", task.Toolchain)
 	}
 	fmt.Println()
 	ctx := context.Background()
 
-	// 4. Initialize Ollama Models (Must pattern)
+	// Instantiate reasoning and coding model endpoints
 	logger.LogStep("Connecting to Ollama models at %s...", cfg.OllamaBaseURL)
 	logger.LogStep("Reasoning Model: %s", cfg.ReasoningModel)
 	logger.LogStep("Coding Model:    %s", cfg.CodingModel)
 	models := llm.MustNewModels(ctx, cfg)
 
-	// 5. Build Eino Graph with 4 ReCodeAgent agents and repair loop (Must pattern)
+	// Construct the Eino multi-agent graph with automated repair feedback
 	logger.LogStep("Constructing 4-agent Eino Graph (Analyzer -> Planning -> Translator <-> Validator)...")
 	magharcmGraph := graph.MustNewMAgHARCMGraph(ctx, models)
 	_ = os.MkdirAll(filepath.Join(cfg.TargetDir, ".MAgHARCM"), 0o755)
 	_ = logger.SetFileSink(filepath.Join(cfg.TargetDir, ".MAgHARCM", "events.jsonl"))
 
-	// 7. Initial State
+	// Initialize pipeline state with parsed task specification
 	initialState := &types.State{
 		Task:          task,
 		MaxIterations: cfg.MaxIterations,
@@ -166,7 +166,7 @@ func main() {
 		},
 	}
 
-	// 8. Execute Translation Pipeline
+	// Execute translation graph until validation criteria are met or iteration limit reached
 	logger.LogStep("Starting multi-agent translation execution...")
 	finalState, err := magharcmGraph.Execute(ctx, initialState)
 	if err != nil {

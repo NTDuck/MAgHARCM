@@ -16,7 +16,7 @@ import (
 	"MAgHARCM/internal/types"
 )
 
-// TranslatorAgent executes Part A & Part B translation and applies repair fixes (§3.4).
+// TranslatorAgent generates target source and test implementations, and iteratively resolves compiler errors in repair mode.
 type TranslatorAgent struct {
 	Model model.BaseChatModel
 }

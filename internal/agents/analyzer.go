@@ -14,7 +14,7 @@ import (
 	"MAgHARCM/internal/types"
 )
 
-// AnalyzerAgent performs source project research, library analysis, and target project design (§3.2).
+// AnalyzerAgent maps the source codebase hierarchy, identifies third-party library dependencies, and drafts the target architecture.
 type AnalyzerAgent struct {
 	Model model.BaseChatModel
 }
@@ -30,7 +30,7 @@ func (a *AnalyzerAgent) Run(ctx context.Context, state *types.State) (*types.Sta
 		state.Task.SourceDir, state.Task.SourceLang, state.Task.TargetLang)
 	state.Log("[Analyzer] Starting Source Project Research for %s (%s -> %s)", state.Task.SourceDir, state.Task.SourceLang, state.Task.TargetLang)
 
-	// 1. Source Project Research (§3.2.1)
+	// Scan the source repository tree to discover all modules and translation candidates
 	logger.LogStep("Scanning directory hierarchy via get_directory_tree...")
 	treeStr, files, err := tools.BuildDirectoryTree(state.Task.SourceDir, 5)
 	if err != nil {

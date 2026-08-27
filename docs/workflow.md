@@ -4,11 +4,11 @@
 
 ---
 
-## 1. High-Level Agent Graph
+## High-Level Agent Graph
 
 ```mermaid
 flowchart TD
-    START([Start / CLI Prompt]) --> Analyzer[Analyzer Agent<br/><i>gpt-oss:20b</i>]
+    START([Start / YAML Config / Prompt]) --> Analyzer[Analyzer Agent<br/><i>gpt-oss:20b</i>]
     Analyzer --> Planning[Planning Agent<br/><i>gpt-oss:20b</i>]
     Planning --> Translator[Translator Agent<br/><i>Qwen3-4B-Instruct</i>]
     Translator --> Validator[Validator Agent<br/><i>gpt-oss:20b</i>]
@@ -28,7 +28,7 @@ flowchart TD
 
 ---
 
-## 2. Detailed Dataflow & Tool Interaction
+## Detailed Dataflow & Tool Interaction
 
 ```mermaid
 sequenceDiagram
@@ -42,11 +42,11 @@ sequenceDiagram
     participant Validator as Validator Agent
     participant Tools as Tool Layer (FS / LSP / Exec / Tree-Sitter)
 
-    User->>CLI: Run MAgHARCM (--prompt-file prompts/c_to_rust.txt)
+    User->>CLI: Run MAgHARCM (--config configs/c_to_rust.yml)
     CLI->>Graph: Invoke(initialState)
 
     rect rgb(225, 245, 254)
-        Note over Graph,Analyzer: Phase 1: Codebase Analysis
+        Note over Graph,Analyzer: Phase: Codebase Analysis
         Graph->>Analyzer: Run(State)
         Analyzer->>Tools: get_directory_tree(source_dir)
         Analyzer->>Tools: parse_file_structure(ast_nodes)
@@ -54,25 +54,25 @@ sequenceDiagram
     end
 
     rect rgb(255, 243, 224)
-        Note over Graph,Planning: Phase 2: Decomposition & Skeleton
+        Note over Graph,Planning: Phase: Decomposition & Skeleton
         Graph->>Planning: Run(State)
-        Planning->>Tools: write_file(Cargo.toml, src/lib.rs skeleton)
+        Planning->>Tools: write_file(Cargo.toml / go.mod, src skeleton)
         Planning-->>Graph: PlanningOutput (NameMapping, Skeletons, Plan Part A/B)
     end
 
     loop Repair Loop (Up to 10 iterations)
         rect rgb(243, 229, 245)
-            Note over Graph,Translator: Phase 3: Translation / Code Repair
+            Note over Graph,Translator: Phase: Translation / Code Repair
             Graph->>Translator: Run(State)
             Translator->>Tools: write_file() / edit_file() on Target Files
             Translator-->>Graph: TranslatedProject (Source Code & Tests)
         end
 
         rect rgb(255, 235, 238)
-            Note over Graph,Validator: Phase 4: Compilation & Test Validation
+            Note over Graph,Validator: Phase: Compilation & Test Validation
             Graph->>Validator: Run(State)
-            Validator->>Tools: cargo check --tests (Compile verification)
-            Validator->>Tools: cargo test --lib --tests (Test execution)
+            Validator->>Tools: validate_build(TargetDir, TargetLang, Toolchain)
+            Validator->>Tools: run_tests(TargetDir, TargetLang, Toolchain)
             Validator-->>Graph: ValidationReport (Passed/Failed counts, Diagnostics)
         end
 
@@ -84,39 +84,51 @@ sequenceDiagram
     end
 
     Graph-->>CLI: Final State
-    CLI-->>User: Output Artifacts in Target Directory
+    CLI-->>User: Output Artifacts in Target Directory & .MAgHARCM/
 ```
 
 ---
 
-## 3. Subsystem Breakdown
+## Subsystem Breakdown
 
-### 1. Analyzer Agent (`pkg/agents/analyzer.go`)
+### 1. Analyzer Agent (`internal/agents/analyzer.go`)
 - **Model**: `gpt-oss:20b` (Reasoning)
 - **Role**: Explores the source directory, parses AST structures (via Tree-sitter for C, C++, Go, Rust), and outputs:
   - Source Project Research
   - Third-Party Library Analysis
   - Target Project Architecture Design
+- **Interim Artifacts**: Persisted to `{target_dir}/.MAgHARCM/01_analyzer/`.
 
-### 2. Planning Agent (`pkg/agents/planning.go`)
+### 2. Planning Agent (`internal/agents/planning.go`)
 - **Model**: `gpt-oss:20b` (Reasoning)
 - **Role**: Bridges source AST to target semantics and initializes the target workspace:
   - Symbol Name Mapping (source $\rightarrow$ target)
-  - Dynamic Target Skeleton Generation (`Cargo.toml`, module declarations)
+  - Dynamic Target Skeleton Generation (`Cargo.toml` / `go.mod`, module declarations)
   - 2-Part Implementation Plan:
     - **Part A**: Core source module translation
     - **Part B**: Test suite and characterization test translation
+- **Interim Artifacts**: Persisted to `{target_dir}/.MAgHARCM/02_planning/`.
 
-### 3. Translator Agent (`pkg/agents/translator.go`)
+### 3. Translator Agent (`internal/agents/translator.go`)
 - **Model**: `Qwen3-4B-Instruct` (Coding)
 - **Role**: Generates and iteratively refines target source code and test files:
   - **Initial Translation**: Generates idiomatic, safe target code adhering to the generated plan.
   - **Repair Mode**: Consumes validation diagnostics, compiler errors, and test failure logs to patch target files.
+- **Interim Artifacts**: Persisted to `{target_dir}/.MAgHARCM/03_translation/iteration_NN/`.
 
-### 4. Validator Agent (`pkg/agents/validator.go`)
+### 4. Validator Agent (`internal/agents/validator.go`)
 - **Model**: `gpt-oss:20b` (Reasoning)
-- **Role**: Validates translation output via tool feedback:
-  - Runs `cargo check --tests` and `cargo test --lib --tests`.
+- **Role**: Validates translation output via multi-toolchain execution:
+  - Supports Rust (`cargo`), Go (`go test`), C/C++ (`make`), CMake (`ctest`).
   - Parses compiler diagnostics and assertion failures.
   - Triggers Coverage-Guided Test Generation if functions lack coverage.
   - Evaluates completion: **compilation success with $>0\%$ test pass rate**.
+- **Interim Artifacts**: Persisted to `{target_dir}/.MAgHARCM/04_validation/iteration_NN/`.
+
+---
+
+## Language Server Protocol (LSP) Architecture
+
+The `internal/tools/lsp_provider.go` subsystem defines a pluggable `LSPProvider` interface:
+- **Native Provider (`native`)**: Direct local AST parsing, Tree-sitter inspection, and compiler diagnostics.
+- **ABCoder MCP Provider (`abcoder`)**: Integration with [CloudWeGo ABCoder](https://github.com/cloudwego/abcoder) via Model Context Protocol (MCP) JSON-RPC over stdio, with automatic graceful fallback to the Native provider.

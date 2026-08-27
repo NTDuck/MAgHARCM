@@ -125,7 +125,7 @@ func RunProjectTests(ctx context.Context, projectDir, lang, toolchain, filter st
 	goMod := filepath.Join(cleanDir, "go.mod")
 	makefile := filepath.Join(cleanDir, "Makefile")
 
-	// 1. Rust (Cargo)
+	// Test execution for Rust Cargo projects
 	if tcLower == "cargo" || langLower == "rust" || fileExists(cargoToml) {
 		args := []string{"test", "--lib", "--tests"}
 		if filter != "" {
@@ -180,7 +180,7 @@ func RunProjectTests(ctx context.Context, projectDir, lang, toolchain, filter st
 		}, nil
 	}
 
-	// 2. Go (go test)
+	// Test execution for Go modules
 	if tcLower == "go" || langLower == "go" || fileExists(goMod) {
 		args := []string{"test", "-v", "./..."}
 		if filter != "" {
@@ -216,7 +216,7 @@ func RunProjectTests(ctx context.Context, projectDir, lang, toolchain, filter st
 		}, nil
 	}
 
-	// 3. C/C++ (make test)
+	// Test execution for Make / C / C++ projects
 	if tcLower == "make" || langLower == "c" || langLower == "c++" || fileExists(makefile) {
 		cmd := exec.CommandContext(ctx, "make", "test")
 		cmd.Dir = cleanDir
@@ -248,7 +248,7 @@ func RunProjectTests(ctx context.Context, projectDir, lang, toolchain, filter st
 	}, nil
 }
 
-// NewExecutionTools creates execution and testing tools (§3.5).
+// NewExecutionTools provides build verification and test runner tools for the validator agent.
 func NewExecutionTools() []tool.BaseTool {
 	buildTool, _ := utils.InferTool("validate_build", "Validates that the project compiles and checks for syntax and type errors",
 		func(ctx context.Context, input *ValidateBuildInput) (*ValidateBuildOutput, error) {

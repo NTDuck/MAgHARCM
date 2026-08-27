@@ -15,7 +15,7 @@ import (
 	"MAgHARCM/internal/types"
 )
 
-// ValidatorAgent performs compilation checks, test execution, coverage-gap analysis, and test generation (§3.5).
+// ValidatorAgent executes build and test suites, detects coverage gaps, and triggers test synthesis.
 type ValidatorAgent struct {
 	Model model.BaseChatModel
 }
@@ -32,7 +32,7 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.St
 		state.Task.TargetDir, state.Iteration, state.MaxIterations)
 	state.Log("[Validator] Validating target project %s (Iteration %d/%d)", state.Task.TargetDir, state.Iteration, state.MaxIterations)
 
-	// 1. Validate build compilation
+	// Verify compilation using the target toolchain before attempting test execution
 	logger.LogStep("Running compiler check for %s (toolchain: %s)...", state.Task.TargetLang, state.Task.Toolchain)
 	buildRes, err := tools.ValidateProjectBuild(ctx, state.Task.TargetDir, state.Task.TargetLang, state.Task.Toolchain)
 	if err != nil {
@@ -56,7 +56,7 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.St
 	}
 	logger.LogTool("validate_build", "Compilation SUCCESS: clean build without errors")
 
-	// 2. Run unit tests
+	// Execute project tests to measure pass rate and collect failure diagnostics
 	logger.LogStep("Executing test suite for %s (toolchain: %s)...", state.Task.TargetLang, state.Task.Toolchain)
 	testRes, err := tools.RunProjectTests(ctx, state.Task.TargetDir, state.Task.TargetLang, state.Task.Toolchain, "")
 	if err != nil {
@@ -72,7 +72,7 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.St
 	}
 	logger.LogTool("run_tests", "Test suite finished: %d passed, %d failed", report.PassedTests, report.FailedTests)
 
-	// 3. Coverage-Guided Test Generation (§3.5.2)
+	// Identify untested functions and invoke reasoning model to generate supplemental tests
 	var testFilesContent []string
 	_ = filepath.Walk(filepath.Join(state.Task.TargetDir, "tests"), func(path string, info os.FileInfo, err error) error {
 		if err != nil || info.IsDir() {
@@ -109,7 +109,6 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.St
 			if report.TotalTests > 0 {
 				report.TestPassRate = float64(report.PassedTests) / float64(report.TotalTests) * 100.0
 			}
-			logger.LogTool("run_tests", "Updated test suite: %d passed, %d failed", report.PassedTests, report.FailedTests)
 		}
 	}
 	report.AllSuccess = buildRes.Success && len(report.CompilationErrors) == 0 && report.PassedTests > 0
