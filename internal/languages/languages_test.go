@@ -1,7 +1,9 @@
 package languages
 
 import (
+	"context"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"testing"
 )
@@ -51,6 +53,52 @@ func TestDynamicLanguageLoader(t *testing.T) {
 	} else {
 		t.Logf("Dynamic grammar fallback active: %v", err)
 	}
+}
+
+func TestRuntimePuregoDlopenDlsym(t *testing.T) {
+	gccPath, err := exec.LookPath("gcc")
+	if err != nil {
+		t.Skip("gcc not available for compiling dynamic shared library test")
+	}
+
+	tmpDir := t.TempDir()
+	cSource := filepath.Join(tmpDir, "grammar.c")
+	soPath := filepath.Join(tmpDir, "libtree-sitter-runtimetest.so")
+
+	// C source exporting the Tree-Sitter grammar symbol
+	cCode := `
+#include <stdint.h>
+const void* tree_sitter_runtimetest(void) {
+    return (const void*)0x12345678;
+}
+`
+	if err := os.WriteFile(cSource, []byte(cCode), 0644); err != nil {
+		t.Fatalf("failed to write C source: %v", err)
+	}
+
+	cmd := exec.CommandContext(context.Background(), gccPath, "-shared", "-fPIC", "-o", soPath, cSource)
+	if out, err := cmd.CombinedOutput(); err != nil {
+		t.Fatalf("failed to compile shared library: %v, output: %s", err, string(out))
+	}
+
+	// Register runtime test language
+	spec := LanguageSpec{
+		Name:             "runtimetest",
+		TreeSitterSymbol: "tree_sitter_runtimetest",
+	}
+
+	loader := GetLoader()
+	loader.AddSearchPath(tmpDir)
+
+	tsLang, err := loader.LoadGrammar(&spec)
+	if err != nil {
+		t.Fatalf("purego runtime Dlopen/Dlsym failed on %s: %v", soPath, err)
+	}
+	if tsLang == nil {
+		t.Fatalf("expected non-nil tree_sitter.Language from dynamic runtime loading")
+	}
+
+	t.Logf("Successfully verified runtime purego Dlopen and Dlsym on %s", soPath)
 }
 
 func TestExtractFileStructureMultiLanguage(t *testing.T) {
