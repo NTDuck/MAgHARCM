@@ -120,7 +120,7 @@ func main() {
 	logger.LogStep("Constructing 4-agent Eino Graph (Analyzer -> Planning -> Translator <-> Validator)...")
 	magharcmGraph := graph.MustNewMAgHARCMGraph(ctx, models)
 	// 6. Ensure target directory exists
-	_ = os.MkdirAll(cfg.TargetDir, 0755)
+	_ = os.MkdirAll(cfg.TargetDir, 0o755)
 
 	// 7. Initial State
 	initialState := &types.State{
