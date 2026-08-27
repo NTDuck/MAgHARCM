@@ -65,7 +65,7 @@ func (c *ConsoleSink) WriteEvent(e Event) {
 	case EventAgentStart, EventAgentEnd:
 		fmt.Fprintf(c.out, "[%s] [%s] %s\n", ts, e.Agent, e.Message)
 	case EventToolCall:
-		fmt.Fprintf(c.out, "[%s] [Tool: %s] %s\n", ts, e.Tool, e.Message)
+		fmt.Fprintf(c.out, "[%s] [Tool: `%s`] %s\n", ts, e.Tool, e.Message)
 	case EventStep:
 		fmt.Fprintf(c.out, "[%s] %s\n", ts, e.Message)
 	case EventValidation:

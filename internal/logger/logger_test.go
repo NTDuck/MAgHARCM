@@ -16,10 +16,18 @@ func TestConsoleSink(t *testing.T) {
 		Agent:   "Analyzer",
 		Message: "Starting analysis",
 	})
+	sink.WriteEvent(Event{
+		Type:    EventToolCall,
+		Tool:    "get_file_structure",
+		Message: "Extracted elements",
+	})
 
 	out := buf.String()
 	if out == "" {
 		t.Errorf("expected console sink output")
+	}
+	if !bytes.Contains(buf.Bytes(), []byte("[Tool: `get_file_structure`]")) {
+		t.Errorf("expected backticked tool format [Tool: `get_file_structure`], got: %s", out)
 	}
 }
 
