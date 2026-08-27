@@ -65,7 +65,19 @@ func (t *TranslatorAgent) translate(ctx context.Context, state *types.State) (*t
 
 	logger.LogStep("Prompting Coding Model for complete %s translation...", state.Task.TargetLang)
 
+	packageName := sanitizeProjectName(filepath.Base(state.Task.TargetDir))
+	if packageName == "" || packageName == "." || strings.EqualFold(packageName, state.Task.TargetLang) {
+		parent := filepath.Base(filepath.Dir(state.Task.TargetDir))
+		if parent != "" && parent != "." && parent != "/" {
+			packageName = sanitizeProjectName(parent)
+		}
+	}
+	if packageName == "" {
+		packageName = "translated_project"
+	}
+
 	prompt, err := renderPrompt("translator_translate.md", map[string]any{
+		"PackageName":        packageName,
 		"SourceLang":         state.Task.SourceLang,
 		"TargetLang":         state.Task.TargetLang,
 		"TargetLangLower":    strings.ToLower(state.Task.TargetLang),
@@ -102,7 +114,19 @@ func (t *TranslatorAgent) repair(ctx context.Context, state *types.State) (*type
 
 	logger.LogStep("Feeding compiler diagnostics and test failures to Coding Model for targeted repair...")
 
+	packageName := sanitizeProjectName(filepath.Base(state.Task.TargetDir))
+	if packageName == "" || packageName == "." || strings.EqualFold(packageName, state.Task.TargetLang) {
+		parent := filepath.Base(filepath.Dir(state.Task.TargetDir))
+		if parent != "" && parent != "." && parent != "/" {
+			packageName = sanitizeProjectName(parent)
+		}
+	}
+	if packageName == "" {
+		packageName = "translated_project"
+	}
+
 	prompt, err := renderPrompt("translator_repair.md", map[string]any{
+		"PackageName":     packageName,
 		"TargetLang":      state.Task.TargetLang,
 		"TargetLangLower": strings.ToLower(state.Task.TargetLang),
 		"Diagnostics":     state.ValidationReport.Diagnostics,
