@@ -62,48 +62,17 @@ func (a *AnalyzerAgent) Run(ctx context.Context, state *types.State) (*types.Sta
 
 	logger.LogStep("Synthesizing Source Research, 3rd-Party Library Analysis, and Target Design with Reasoning Model...")
 
-	prompt := fmt.Sprintf(`You are the Analyzer Agent in the ReCodeAgent multi-agent repository-level translation workflow.
-Your goal is to perform analysis of the source project and generate 3 documents:
-1. Source Project Research
-2. Third-Party Library Analysis
-3. Target Project Design
-
-Source Language: %s
-Target Language: %s
-Source Codebase Directory: %s
-
-Directory Tree:
-%s
-
-AST File Structure Summary:
-%s
-
-Source Files Content:
-%s
-
-Generate the 3 documents in structured markdown format with exact headers:
-
-# Source Project Research
-## Overview
-## Directory Structure
-## Structs and Interfaces
-## Data Models
-## Error Handling
-## Dependencies
-
-# Third-Party Library Analysis
-## Standard and Third-Party Libraries
-Identify all libraries/headers used and their idiomatic equivalents in %s.
-
-# Target Project Design
-## Overview
-## Translation Requirements
-## Source Files to Translate
-## Module Structure
-## Error Handling
-## Third-Party Libraries
-`, state.Task.SourceLang, state.Task.TargetLang, state.Task.SourceDir, treeStr, structureSummary, allCode, state.Task.TargetLang)
-
+	prompt, err := renderPrompt("analyzer.md", map[string]any{
+		"SourceLang":          state.Task.SourceLang,
+		"TargetLang":          state.Task.TargetLang,
+		"SourceDir":           state.Task.SourceDir,
+		"DirectoryTree":       treeStr,
+		"StructureSummary":    structureSummary,
+		"SourceFilesContent":  allCode,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to render analyzer prompt: %w", err)
+	}
 	resp, err := a.Model.Generate(ctx, []*schema.Message{
 		schema.SystemMessage("You are an expert software architect and compiler researcher specializing in repository-level code translation."),
 		schema.UserMessage(prompt),

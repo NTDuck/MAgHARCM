@@ -156,22 +156,17 @@ func (v *ValidatorAgent) generateAdditionalTests(ctx context.Context, state *typ
 		return nil
 	})
 
-	prompt := fmt.Sprintf(`You are the Validator Agent in ReCodeAgent performing Coverage-Guided Test Generation (§3.5.2).
-The following functions or modules are uncovered or need more test assertions:
-%s
-
-Target Source Files:
-%s
-
-Generate additional comprehensive unit test cases in the target test framework to thoroughly exercise all uncovered functions and edge cases.
-Output the complete updated test file:
-
-FILE: %s
-`+"```rust"+`
-// Complete updated test suite with additional test assertions
-`+"```"+`
-`, strings.Join(uncovered, "\n"), strings.Join(targetFilesContent, "\n"), testRelPath)
-
+	prompt, err := renderPrompt("validator_coverage.md", map[string]any{
+		"TargetLang":         state.Task.TargetLang,
+		"TargetLangLower":    strings.ToLower(state.Task.TargetLang),
+		"UncoveredFunctions": strings.Join(uncovered, "\n"),
+		"SourceFiles":        strings.Join(targetFilesContent, "\n"),
+		"TestFileRelPath":    testRelPath,
+	})
+	if err != nil {
+		logger.LogError("Failed to render validator coverage prompt: %v", err)
+		return
+	}
 	resp, err := v.Model.Generate(ctx, []*schema.Message{
 		schema.SystemMessage("You are an expert test engineer writing thorough unit tests."),
 		schema.UserMessage(prompt),

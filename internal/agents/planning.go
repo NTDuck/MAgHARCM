@@ -59,57 +59,17 @@ func (p *PlanningAgent) Run(ctx context.Context, state *types.State) (*types.Sta
 		logger.LogStep("Fragment: %s", fr)
 	}
 
-	// 2. Name Mapping, Skeleton Generation, and Implementation Plan via LLM (§3.3.2 - §3.3.4)
 	logger.LogStep("Prompting Reasoning Model for Name Mapping, Skeleton Generation, and Implementation Plan...")
 
-	prompt := fmt.Sprintf(`You are the Planning Agent in the ReCodeAgent multi-agent repository-level translation workflow.
-Using the Analyzer's Target Project Design and source fragments, you must output:
-1. Name Mapping: A JSON map of source symbol -> target %s symbol name.
-2. Skeleton Generation: Complete skeleton files for the target %s project (Cargo.toml, src/lib.rs, etc.) containing all module declarations, struct/type definitions, and function signatures.
-3. Implementation Plan:
-   - Part A: Source code translation steps (dependency ordered)
-   - Part B: Test code translation and validation steps
-
-Source Language: %s
-Target Language: %s
-
-Source Files Content:
-%s
-
-Target Design Document:
-%s
-
-Output your response strictly using these delimiters:
-=== NAME_MAPPING_JSON ===
-{
-  "source_symbol": "target_symbol"
-}
-
-=== SKELETON_FILES ===
-FILE: Cargo.toml
-`+"```toml"+`
-[package]
-name = "..."
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-`+"```"+`
-
-FILE: src/lib.rs
-`+"```rust"+`
-// Declarations and signatures with todo!() bodies
-`+"```"+`
-
-=== IMPLEMENTATION_PLAN ===
-## Overview
-## Part A: Source Code Translation
-A1: Translate ...
-## Part B: Test Code Translation & Validation
-B1: Translate and execute tests ...
-`, state.Task.TargetLang, state.Task.TargetLang, state.Task.SourceLang, state.Task.TargetLang,
-		strings.Join(sourceSummaries, "\n"), state.AnalyzerOutput.Design.RawMarkdown)
-
+	prompt, err := renderPrompt("planning.md", map[string]any{
+		"SourceLang":   state.Task.SourceLang,
+		"TargetLang":   state.Task.TargetLang,
+		"SourceFiles":  strings.Join(sourceSummaries, "\n"),
+		"TargetDesign": state.AnalyzerOutput.Design.RawMarkdown,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to render planning prompt: %w", err)
+	}
 	resp, err := p.Model.Generate(ctx, []*schema.Message{
 		schema.SystemMessage("You are an expert software engineer and project planner specializing in language-agnostic code translation."),
 		schema.UserMessage(prompt),

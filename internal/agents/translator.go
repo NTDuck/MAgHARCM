@@ -61,54 +61,17 @@ func (t *TranslatorAgent) translate(ctx context.Context, state *types.State) (*t
 
 	logger.LogStep("Prompting Coding Model for complete %s translation...", state.Task.TargetLang)
 
-	prompt := fmt.Sprintf(`You are the Translator Agent in the ReCodeAgent multi-agent repository-level translation workflow.
-Your task is to translate the source codebase (%s) into fully working, idiomatic, safe %s code.
-Translate ALL source data models, structs, classes, functions, and logic directly from the provided source files preserving exact semantic behavior.
-Translate ALL unit tests and characterization tests into the target test framework.
-Language-Agnostic Translation Guidelines:
-1. Preserve exact functionality, algorithms, boundary conditions, and control flows from the source code.
-2. In %s, declare all public structs, fields, and functions with 'pub' and derive standard traits (e.g. '#[derive(Debug, Clone, PartialEq, Eq)]' on data structs).
-3. In Rust, files in tests/ (e.g. tests/integration_tests.rs) are compiled as external crates linking to the library crate defined in Cargo.toml. Therefore, all test files in tests/ MUST import library symbols with 'use <crate_name>::*;' (where crate_name matches the package name in Cargo.toml), and MUST NOT use 'use super::*;'.
-4. When testing in-place mutable functions in Rust (taking '&mut [T]'), create and pass a mutable vector ('let mut items = vec![...]; update_quality(&mut items);') and assert on 'items[0]', 'items[1]', etc.
-5. Write clean, complete code for all required files without placeholders.
-
-=== Source Files ===
-%s
-
-=== Target Project Design ===
-%s
-
-=== Implementation Plan ===
-%s
-
-Generate the complete, working, compilable, and tested %s codebase.
-Format output strictly using file blocks:
-FILE: Cargo.toml
-`+"```toml"+`
-[package]
-name = "..."
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-`+"```"+`
-
-FILE: src/lib.rs
-`+"```rust"+`
-// Full source translation
-`+"```"+`
-
-FILE: tests/integration_tests.rs
-`+"```rust"+`
-// Full test suite translation
-`+"```"+`
-`, state.Task.SourceLang, state.Task.TargetLang,
-		state.Task.TargetLang,
-		strings.Join(sourceFilesData, "\n"),
-		state.AnalyzerOutput.Design.RawMarkdown,
-		state.PlanningOutput.Plan.RawPlan,
-		state.Task.TargetLang)
-
+	prompt, err := renderPrompt("translator_translate.md", map[string]any{
+		"SourceLang":         state.Task.SourceLang,
+		"TargetLang":         state.Task.TargetLang,
+		"TargetLangLower":    strings.ToLower(state.Task.TargetLang),
+		"SourceFiles":        strings.Join(sourceFilesData, "\n"),
+		"TargetDesign":       state.AnalyzerOutput.Design.RawMarkdown,
+		"ImplementationPlan": state.PlanningOutput.Plan.RawPlan,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to render translator prompt: %w", err)
+	}
 	resp, err := t.Model.Generate(ctx, []*schema.Message{
 		schema.SystemMessage("You are an expert systems programmer translating source code into idiomatic, safe target code."),
 		schema.UserMessage(prompt),
@@ -137,38 +100,15 @@ func (t *TranslatorAgent) repair(ctx context.Context, state *types.State) (*type
 
 	logger.LogStep("Feeding compiler diagnostics and test failures to Coding Model for targeted repair...")
 
-	prompt := fmt.Sprintf(`You are the Translator Agent in ReCodeAgent repair mode.
-The Validator Agent reported compilation or test failures for the translated %s codebase.
-
-=== Validation Diagnostics and Errors ===
-%s
-
-=== Current Codebase Files ===
-%s
-
-Please analyze the root cause of each error/failure and output the complete corrected files to fix all issues.
-In Rust, remember:
-- All exported struct definitions, fields, and functions in src/lib.rs must be 'pub'.
-- Test files in tests/ are separate integration test crates that MUST import library symbols with 'use <crate_name>::*;' (NOT 'use super::*;').
-- When testing in-place mutable functions (&mut [T]), mutate items in an array or vector ('let mut items = vec![...]; update_quality(&mut items); assert_eq!(items[0]...)').
-Do NOT use placeholders. Output full working code inside code blocks.
-
-Format output strictly using file blocks:
-FILE: Cargo.toml
-`+"```toml"+`
-...
-`+"```"+`
-
-FILE: src/lib.rs
-`+"```rust"+`
-...
-`+"```"+`
-
-FILE: tests/integration_tests.rs
-`+"```rust"+`
-...
-`+"```"+`
-`, state.Task.TargetLang, state.ValidationReport.Diagnostics, strings.Join(targetFilesData, "\n"))
+	prompt, err := renderPrompt("translator_repair.md", map[string]any{
+		"TargetLang":      state.Task.TargetLang,
+		"TargetLangLower": strings.ToLower(state.Task.TargetLang),
+		"Diagnostics":     state.ValidationReport.Diagnostics,
+		"CurrentFiles":    strings.Join(targetFilesData, "\n"),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to render repair prompt: %w", err)
+	}
 
 	resp, err := t.Model.Generate(ctx, []*schema.Message{
 		schema.SystemMessage("You are an expert systems programmer debugging compiler errors and test failures. Output only the requested code files inside fenced code blocks."),
