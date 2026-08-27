@@ -12,9 +12,9 @@ import (
 	"github.com/cloudwego/eino/components/model"
 	"github.com/cloudwego/eino/schema"
 
-	"MAgHARCM/pkg/logger"
-	"MAgHARCM/pkg/tools"
-	"MAgHARCM/pkg/types"
+	"MAgHARCM/internal/logger"
+	"MAgHARCM/internal/tools"
+	"MAgHARCM/internal/types"
 )
 
 // PlanningAgent creates fragment extraction, name mapping, skeleton files, and implementation plan (§3.3).

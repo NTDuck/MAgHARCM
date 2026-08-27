@@ -4,11 +4,13 @@ import "fmt"
 
 // TranslationTask defines the input specification for the translation pipeline.
 type TranslationTask struct {
-	SourceDir  string `json:"source_dir"`
-	TargetDir  string `json:"target_dir"`
-	SourceLang string `json:"source_lang"`
-	TargetLang string `json:"target_lang"`
-	Prompt     string `json:"prompt,omitempty"`
+	SourceDir   string `json:"source_dir"`
+	TargetDir   string `json:"target_dir"`
+	SourceLang  string `json:"source_lang"`
+	TargetLang  string `json:"target_lang"`
+	Toolchain   string `json:"toolchain,omitempty"`
+	LSPProvider string `json:"lsp_provider,omitempty"`
+	Prompt      string `json:"prompt,omitempty"`
 }
 
 // SourceProjectResearch represents the research document produced in phase 3.2.1.

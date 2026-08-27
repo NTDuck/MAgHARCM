@@ -1,0 +1,18 @@
+# MAgHARCM Translation Configuration
+translation:
+  source:
+    dir: "assets/samples/GildedRose-Refactoring-Kata/C"
+    language: "C"
+  target:
+    dir: ".artifacts/GildedRose-Refactoring-Kata/rust"
+    language: "Rust"
+    toolchain: "cargo"
+  models:
+    reasoning: "gpt-oss:20b"
+    coding: "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4_K_XL"
+    ollama_url: "http://localhost:11434"
+  execution:
+    max_iterations: 10
+    timeout_seconds: 600
+  lsp:
+    provider: "native"

@@ -11,9 +11,9 @@ import (
 	"github.com/cloudwego/eino/components/model"
 	"github.com/cloudwego/eino/schema"
 
-	"MAgHARCM/pkg/logger"
-	"MAgHARCM/pkg/tools"
-	"MAgHARCM/pkg/types"
+	"MAgHARCM/internal/logger"
+	"MAgHARCM/internal/tools"
+	"MAgHARCM/internal/types"
 )
 
 // TranslatorAgent executes Part A & Part B translation and applies repair fixes (§3.4).

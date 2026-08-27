@@ -6,8 +6,8 @@ import (
 	"github.com/cloudwego/eino-ext/components/model/ollama"
 	"github.com/cloudwego/eino/components/model"
 
-	"MAgHARCM/pkg/config"
-	"MAgHARCM/pkg/pattern"
+	"MAgHARCM/internal/config"
+	"MAgHARCM/internal/pattern"
 )
 
 // Models contains initialized ChatModel instances for reasoning and coding.

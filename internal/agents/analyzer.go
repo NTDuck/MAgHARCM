@@ -9,9 +9,9 @@ import (
 	"github.com/cloudwego/eino/components/model"
 	"github.com/cloudwego/eino/schema"
 
-	"MAgHARCM/pkg/logger"
-	"MAgHARCM/pkg/tools"
-	"MAgHARCM/pkg/types"
+	"MAgHARCM/internal/logger"
+	"MAgHARCM/internal/tools"
+	"MAgHARCM/internal/types"
 )
 
 // AnalyzerAgent performs source project research, library analysis, and target project design (§3.2).
@@ -51,9 +51,9 @@ func (a *AnalyzerAgent) Run(ctx context.Context, state *types.State) (*types.Sta
 			fileStructures = append(fileStructures, elemDesc)
 			logger.LogTool("get_file_structure", "%s -> %d AST elements, %d imports",
 				filepath.Base(f), len(structOut.Elements), len(structOut.Imports))
-		}
-		if raw, err := tools.ParseFileStructure(f); err == nil && raw.RawCode != "" {
-			fileContents = append(fileContents, fmt.Sprintf("=== File: %s ===\n%s\n", filepath.Base(f), raw.RawCode))
+			if structOut.RawCode != "" {
+				fileContents = append(fileContents, fmt.Sprintf("=== File: %s ===\n%s\n", filepath.Base(f), structOut.RawCode))
+			}
 		}
 	}
 

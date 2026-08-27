@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"time"
 
-	"MAgHARCM/pkg/pattern"
+	"MAgHARCM/internal/pattern"
 )
 
 // Config holds centralized configuration for the MAgHARCM translation pipeline.
@@ -19,6 +19,8 @@ type Config struct {
 	TargetDir      string        `json:"target_dir"`
 	SourceLang     string        `json:"source_lang"`
 	TargetLang     string        `json:"target_lang"`
+	Toolchain      string        `json:"toolchain"`
+	LSPProvider    string        `json:"lsp_provider"`
 }
 
 // Option configures a Config instance.
@@ -65,6 +67,24 @@ func WithTimeout(d time.Duration) Option {
 	return func(c *Config) {
 		if d > 0 {
 			c.Timeout = d
+		}
+	}
+}
+
+// WithToolchain sets the build/test toolchain.
+func WithToolchain(toolchain string) Option {
+	return func(c *Config) {
+		if toolchain != "" {
+			c.Toolchain = toolchain
+		}
+	}
+}
+
+// WithLSPProvider sets the LSP provider ("native" or "abcoder").
+func WithLSPProvider(provider string) Option {
+	return func(c *Config) {
+		if provider != "" {
+			c.LSPProvider = provider
 		}
 	}
 }

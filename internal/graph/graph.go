@@ -6,10 +6,10 @@ import (
 
 	"github.com/cloudwego/eino/compose"
 
-	"MAgHARCM/pkg/agents"
-	"MAgHARCM/pkg/llm"
-	"MAgHARCM/pkg/pattern"
-	"MAgHARCM/pkg/types"
+	"MAgHARCM/internal/agents"
+	"MAgHARCM/internal/llm"
+	"MAgHARCM/internal/pattern"
+	"MAgHARCM/internal/types"
 )
 
 // MAgHARCMGraph wraps the compiled Eino runnable for the multi-agent pipeline.

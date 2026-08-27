@@ -10,9 +10,9 @@ import (
 	"github.com/cloudwego/eino/components/model"
 	"github.com/cloudwego/eino/schema"
 
-	"MAgHARCM/pkg/logger"
-	"MAgHARCM/pkg/tools"
-	"MAgHARCM/pkg/types"
+	"MAgHARCM/internal/logger"
+	"MAgHARCM/internal/tools"
+	"MAgHARCM/internal/types"
 )
 
 // ValidatorAgent performs compilation checks, test execution, coverage-gap analysis, and test generation (§3.5).
