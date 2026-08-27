@@ -111,10 +111,10 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.St
 			}
 		}
 	}
-	report.AllSuccess = buildRes.Success && len(report.CompilationErrors) == 0 && report.PassedTests > 0
+	report.AllSuccess = buildRes.Success && len(report.CompilationErrors) == 0 && report.FailedTests == 0 && report.PassedTests > 0
 	if report.AllSuccess {
-		report.Diagnostics = fmt.Sprintf("Compilation succeeded and %d/%d tests passed (%.1f%% pass rate > 0%%)",
-			report.PassedTests, report.TotalTests, report.TestPassRate)
+		report.Diagnostics = fmt.Sprintf("Compilation succeeded and 100%% tests passed (%d/%d tests)",
+			report.PassedTests, report.TotalTests)
 		state.IsComplete = true
 		logger.LogAgent("Validator", "Validation SUCCESS: %s", report.Diagnostics)
 		state.Log("[Validator] Validation SUCCESS: %s", report.Diagnostics)
