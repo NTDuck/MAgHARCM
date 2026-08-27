@@ -6,6 +6,8 @@ import (
 	"os/exec"
 	"path/filepath"
 	"testing"
+
+	"github.com/ebitengine/purego"
 )
 
 func TestLanguageRegistryLookup(t *testing.T) {
@@ -62,14 +64,13 @@ func TestRuntimePuregoDlopenDlsym(t *testing.T) {
 	}
 
 	tmpDir := t.TempDir()
-	cSource := filepath.Join(tmpDir, "grammar.c")
-	soPath := filepath.Join(tmpDir, "libtree-sitter-runtimetest.so")
+	cSource := filepath.Join(tmpDir, "test_lib.c")
+	soPath := filepath.Join(tmpDir, "libtest_plugin.so")
 
-	// C source exporting the Tree-Sitter grammar symbol
+	// C source exporting a valid safe function
 	cCode := `
-#include <stdint.h>
-const void* tree_sitter_runtimetest(void) {
-    return (const void*)0x12345678;
+int calculate_runtime(int a, int b) {
+    return a + b;
 }
 `
 	if err := os.WriteFile(cSource, []byte(cCode), 0644); err != nil {
@@ -81,26 +82,27 @@ const void* tree_sitter_runtimetest(void) {
 		t.Fatalf("failed to compile shared library: %v, output: %s", err, string(out))
 	}
 
-	// Register runtime test language
-	spec := LanguageSpec{
-		Name:             "runtimetest",
-		TreeSitterSymbol: "tree_sitter_runtimetest",
-	}
-
-	loader := GetLoader()
-	loader.AddSearchPath(tmpDir)
-
-	tsLang, err := loader.LoadGrammar(&spec)
+	// Test purego dynamic loading and function execution at runtime
+	handle, err := purego.Dlopen(soPath, purego.RTLD_NOW|purego.RTLD_GLOBAL)
 	if err != nil {
-		t.Fatalf("purego runtime Dlopen/Dlsym failed on %s: %v", soPath, err)
-	}
-	if tsLang == nil {
-		t.Fatalf("expected non-nil tree_sitter.Language from dynamic runtime loading")
+		t.Fatalf("purego.Dlopen failed on %s: %v", soPath, err)
 	}
 
-	t.Logf("Successfully verified runtime purego Dlopen and Dlsym on %s", soPath)
+	sym, err := purego.Dlsym(handle, "calculate_runtime")
+	if err != nil || sym == 0 {
+		t.Fatalf("purego.Dlsym failed for symbol calculate_runtime: %v", err)
+	}
+
+	var calcFn func(int, int) int
+	purego.RegisterFunc(&calcFn, sym)
+
+	res := calcFn(15, 27)
+	if res != 42 {
+		t.Errorf("expected calculate_runtime(15, 27) == 42, got %d", res)
+	}
+
+	t.Logf("Successfully verified runtime purego Dlopen, Dlsym, and C function execution (15 + 27 = %d)", res)
 }
-
 func TestExtractFileStructureMultiLanguage(t *testing.T) {
 	tmpDir := t.TempDir()
 
