@@ -7,7 +7,6 @@ import (
 	"github.com/cloudwego/eino/components/model"
 
 	"MAgHARCM/internal/config"
-	"MAgHARCM/internal/pattern"
 )
 
 // Models contains initialized ChatModel instances for reasoning and coding.
@@ -44,5 +43,9 @@ func NewModels(ctx context.Context, cfg *config.Config) (*Models, error) {
 
 // MustNewModels initializes models and panics on error.
 func MustNewModels(ctx context.Context, cfg *config.Config) *Models {
-	return pattern.Must(NewModels(ctx, cfg))
+	models, err := NewModels(ctx, cfg)
+	if err != nil {
+		panic(err)
+	}
+	return models
 }

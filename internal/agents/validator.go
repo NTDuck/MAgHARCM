@@ -30,13 +30,10 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.St
 	state.Iteration++
 	logger.LogAgent("Validator", "Validating target project `%s` (Iteration %d/%d)",
 		state.Task.TargetDir, state.Iteration, state.MaxIterations)
-	state.Log("[Validator] Validating target project `%s` (Iteration %d/%d)", state.Task.TargetDir, state.Iteration, state.MaxIterations)
 
-	// Verify compilation using the target toolchain before attempting test execution
-	logger.LogStep("Running compiler check for `%s` (toolchain: `%s`)", state.Task.TargetLang, state.Task.Toolchain)
-	buildRes, err := tools.ValidateProjectBuild(ctx, state.Task.TargetDir, state.Task.TargetLang, state.Task.Toolchain)
+	buildRes, err := v.checkCompilation(ctx, state)
 	if err != nil {
-		return nil, fmt.Errorf("validator failed to run build check: %w", err)
+		return nil, err
 	}
 
 	report := types.ValidationReport{
@@ -45,22 +42,14 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.St
 	}
 
 	if !buildRes.Success {
-		report.AllSuccess = false
-		report.Diagnostics = fmt.Sprintf("Compilation failed with errors:\n%s\nOutput:\n%s",
-			strings.Join(buildRes.Errors, "\n"), buildRes.Output)
+		report.Diagnostics = fmt.Sprintf("Compilation errors:\n%s", strings.Join(buildRes.Errors, "\n"))
 		state.ValidationReport = report
-		logger.LogTool("validate_build", "Compilation FAILED with %d errors:\n%s",
-			len(buildRes.Errors), strings.Join(buildRes.Errors, "\n"))
-		state.Log("[Validator] Build check FAILED with %d compilation errors", len(buildRes.Errors))
 		return state, nil
 	}
-	logger.LogTool("validate_build", "Compilation SUCCESS: clean build without errors")
 
-	// Execute project tests to measure pass rate and collect failure diagnostics
-	logger.LogStep("Executing test suite for `%s` (toolchain: `%s`)", state.Task.TargetLang, state.Task.Toolchain)
-	testRes, err := tools.RunProjectTests(ctx, state.Task.TargetDir, state.Task.TargetLang, state.Task.Toolchain, "")
+	testRes, err := v.runTestSuite(ctx, state)
 	if err != nil {
-		return nil, fmt.Errorf("validator failed to execute tests: %w", err)
+		return nil, err
 	}
 
 	report.TotalTests = testRes.TotalPassed + testRes.TotalFailed
@@ -70,16 +59,51 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.St
 	if report.TotalTests > 0 {
 		report.TestPassRate = float64(report.PassedTests) / float64(report.TotalTests) * 100.0
 	}
-	logger.LogTool("run_tests", "Test suite finished: %d passed, %d failed", report.PassedTests, report.FailedTests)
 
-	// Identify untested functions and invoke reasoning model to generate supplemental tests
+	uncovered := v.findUncoveredFunctions(state)
+	report.UncoveredFunctions = uncovered
+	if len(uncovered) > 0 && testRes.Success && testRes.TotalPassed == 0 && v.Model != nil {
+		v.remedyCoverageGaps(ctx, state, uncovered, &report)
+	}
+
+	v.finalizeReport(&report, state, testRes.Output)
+	state.ValidationReport = report
+	return state, nil
+}
+
+// checkCompilation verifies compilation using the target toolchain.
+func (v *ValidatorAgent) checkCompilation(ctx context.Context, state *types.State) (*tools.ValidateBuildOutput, error) {
+	buildRes, err := tools.ValidateProjectBuild(ctx, state.Task.TargetDir, state.Task.TargetLang, state.Task.Toolchain)
+	if err != nil {
+		return nil, fmt.Errorf("validator failed to run build check: %w", err)
+	}
+
+	if !buildRes.Success {
+		logger.LogTool("validate_build", "Compilation FAILED with %d errors:\n%s",
+			len(buildRes.Errors), strings.Join(buildRes.Errors, "\n"))
+	} else {
+		logger.LogTool("validate_build", "Compilation SUCCESS: clean build without errors")
+	}
+	return buildRes, nil
+}
+// runTestSuite executes the target test suite and records test metrics.
+func (v *ValidatorAgent) runTestSuite(ctx context.Context, state *types.State) (*tools.RunTestsOutput, error) {
+	testRes, err := tools.RunProjectTests(ctx, state.Task.TargetDir, state.Task.TargetLang, state.Task.Toolchain, "")
+	if err != nil {
+		return nil, fmt.Errorf("validator failed to execute tests: %w", err)
+	}
+	logger.LogTool("run_tests", "Test suite finished: %d passed, %d failed", testRes.TotalPassed, testRes.TotalFailed)
+	return testRes, nil
+}
+
+// findUncoveredFunctions scans test files and matches discovered AST fragments against test bodies.
+func (v *ValidatorAgent) findUncoveredFunctions(state *types.State) []string {
 	var testFilesContent []string
 	_ = filepath.Walk(filepath.Join(state.Task.TargetDir, "tests"), func(path string, info os.FileInfo, err error) error {
-		if err != nil || info.IsDir() {
-			return nil
-		}
-		if data, err := os.ReadFile(path); err == nil {
-			testFilesContent = append(testFilesContent, string(data))
+		if err == nil && !info.IsDir() {
+			if data, err := os.ReadFile(path); err == nil {
+				testFilesContent = append(testFilesContent, string(data))
+			}
 		}
 		return nil
 	})
@@ -89,76 +113,69 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.St
 	for _, frag := range state.PlanningOutput.Fragments {
 		parts := strings.Split(frag, ":")
 		if len(parts) == 2 {
-			funcName := parts[1]
-			if !strings.Contains(allTestsCode, funcName) {
-				uncovered = append(uncovered, frag)
+			fnName := parts[1]
+			if !strings.Contains(allTestsCode, fnName) {
+				uncovered = append(uncovered, fnName)
 			}
 		}
 	}
-	report.UncoveredFunctions = uncovered
-
-	if len(uncovered) > 0 && testRes.Success && testRes.TotalPassed == 0 && v.Model != nil {
-		logger.LogStep("Coverage Gap Analysis: %d functions uncovered and 0 tests executed, prompting Reasoning Model for tests", len(uncovered))
-		v.generateAdditionalTests(ctx, state, uncovered)
-		// Re-run tests after adding generated tests
-		logger.LogStep("Re-running test suite after coverage test generation")
-		if reTest, err := tools.RunProjectTests(ctx, state.Task.TargetDir, state.Task.TargetLang, state.Task.Toolchain, ""); err == nil {
-			report.PassedTests = reTest.TotalPassed
-			report.FailedTests = reTest.TotalFailed
-			report.TestFailures = reTest.Failures
-			if report.TotalTests > 0 {
-				report.TestPassRate = float64(report.PassedTests) / float64(report.TotalTests) * 100.0
-			}
-		}
-	}
-	report.AllSuccess = buildRes.Success && len(report.CompilationErrors) == 0 && report.FailedTests == 0 && report.PassedTests > 0
-	if report.AllSuccess {
-		report.Diagnostics = fmt.Sprintf("Compilation succeeded and 100%% tests passed (%d/%d tests)",
-			report.PassedTests, report.TotalTests)
-		state.IsComplete = true
-		logger.LogAgent("Validator", "Validation SUCCESS: %s", report.Diagnostics)
-		state.Log("[Validator] Validation SUCCESS: %s", report.Diagnostics)
-	} else {
-		report.Diagnostics = fmt.Sprintf("Tests failed or 0 tests passed: %d passed, %d failed.\nFailures:\n%s\nOutput:\n%s",
-			report.PassedTests, report.FailedTests, strings.Join(report.TestFailures, "\n"), testRes.Output)
-		logger.LogAgent("Validator", "Validation INCOMPLETE: %d passed, %d failed", report.PassedTests, report.FailedTests)
-		state.Log("[Validator] Validation INCOMPLETE: %d passed, %d failed", report.PassedTests, report.FailedTests)
-	}
-	state.ValidationReport = report
-	return state, nil
+	return uncovered
 }
 
-func (v *ValidatorAgent) generateAdditionalTests(ctx context.Context, state *types.State, uncovered []string) {
-	var targetFilesContent []string
-	_ = filepath.Walk(filepath.Join(state.Task.TargetDir, "src"), func(path string, info os.FileInfo, err error) error {
-		if err != nil || info.IsDir() {
-			return nil
-		}
-		if data, err := os.ReadFile(path); err == nil {
-			targetFilesContent = append(targetFilesContent, fmt.Sprintf("=== File: %s ===\n%s\n", filepath.Base(path), string(data)))
-		}
-		return nil
-	})
+// remedyCoverageGaps prompts the model for supplemental tests and re-executes tests.
+func (v *ValidatorAgent) remedyCoverageGaps(ctx context.Context, state *types.State, uncovered []string, report *types.ValidationReport) {
+	logger.LogStep("Coverage Gap Analysis: %d functions uncovered and 0 tests executed, prompting Reasoning Model for tests", len(uncovered))
+	v.generateAdditionalTests(ctx, state, uncovered)
 
-	// Find existing test file name
-	testRelPath := "tests/integration_tests.rs"
-	_ = filepath.Walk(filepath.Join(state.Task.TargetDir, "tests"), func(path string, info os.FileInfo, err error) error {
-		if err != nil || info.IsDir() {
-			return nil
+	logger.LogStep("Re-running test suite after coverage test generation")
+	if reTest, err := tools.RunProjectTests(ctx, state.Task.TargetDir, state.Task.TargetLang, state.Task.Toolchain, ""); err == nil {
+		report.PassedTests = reTest.TotalPassed
+		report.FailedTests = reTest.TotalFailed
+		report.TotalTests = reTest.TotalPassed + reTest.TotalFailed
+		report.TestFailures = reTest.Failures
+		if report.TotalTests > 0 {
+			report.TestPassRate = float64(report.PassedTests) / float64(report.TotalTests) * 100.0
 		}
-		if strings.HasSuffix(path, ".rs") {
-			rel, _ := filepath.Rel(state.Task.TargetDir, path)
-			testRelPath = rel
+	}
+}
+
+// finalizeReport evaluates convergence criteria and sets milestone diagnostics.
+func (v *ValidatorAgent) finalizeReport(report *types.ValidationReport, state *types.State, testOutput string) {
+	report.AllSuccess = report.CompilationSuccess && len(report.CompilationErrors) == 0 && report.FailedTests == 0 && report.PassedTests > 0
+	if report.AllSuccess {
+		report.Diagnostics = fmt.Sprintf("All %d tests passed successfully! Codebase compiled cleanly without errors.", report.PassedTests)
+		state.IsComplete = true
+		logger.LogAgent("Validator", "Validation SUCCESS: %s", report.Diagnostics)
+	} else {
+		report.Diagnostics = fmt.Sprintf("Tests failed or 0 tests passed: %d passed, %d failed.\nFailures:\n%s\nOutput:\n%s",
+			report.PassedTests, report.FailedTests, strings.Join(report.TestFailures, "\n"), testOutput)
+		logger.LogAgent("Validator", "Validation INCOMPLETE: %d passed, %d failed", report.PassedTests, report.FailedTests)
+	}
+}
+
+// generateAdditionalTests requests supplemental test cases from the reasoning model.
+func (v *ValidatorAgent) generateAdditionalTests(ctx context.Context, state *types.State, uncovered []string) {
+	var sourceFilesData []string
+	for relPath, content := range state.TranslatedProject.Files {
+		if !strings.HasPrefix(relPath, "tests/") {
+			sourceFilesData = append(sourceFilesData, fmt.Sprintf("=== File: %s ===\n%s\n", relPath, content))
 		}
-		return nil
-	})
+	}
+
+	testFileRelPath := "tests/integration_tests.rs"
+	for relPath := range state.TranslatedProject.Files {
+		if strings.HasPrefix(relPath, "tests/") {
+			testFileRelPath = relPath
+			break
+		}
+	}
 
 	prompt, err := renderPrompt("validator_coverage.md", map[string]any{
 		"TargetLang":         state.Task.TargetLang,
 		"TargetLangLower":    strings.ToLower(state.Task.TargetLang),
 		"UncoveredFunctions": strings.Join(uncovered, "\n"),
-		"SourceFiles":        strings.Join(targetFilesContent, "\n"),
-		"TestFileRelPath":    testRelPath,
+		"SourceFiles":        strings.Join(sourceFilesData, "\n"),
+		"TestFileRelPath":    testFileRelPath,
 	})
 	if err != nil {
 		logger.LogError("Failed to render validator coverage prompt: %v", err)

@@ -1,7 +1,6 @@
 package types
 
 import "fmt"
-
 // TranslationTask defines the input specification for the translation pipeline.
 type TranslationTask struct {
 	SourceDir   string `json:"source_dir"`
@@ -10,7 +9,6 @@ type TranslationTask struct {
 	TargetLang  string `json:"target_lang"`
 	Toolchain   string `json:"toolchain,omitempty"`
 	LSPProvider string `json:"lsp_provider,omitempty"`
-	Prompt      string `json:"prompt,omitempty"`
 }
 
 // SourceProjectResearch represents the research document produced in phase 3.2.1.
@@ -141,8 +139,3 @@ type State struct {
 	FinalSummary     string             `json:"final_summary"`
 }
 
-// Log records a state progress message.
-func (s *State) Log(format string, args ...any) {
-	msg := fmt.Sprintf(format, args...)
-	s.Logs = append(s.Logs, msg)
-}

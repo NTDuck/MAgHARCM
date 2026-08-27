@@ -19,7 +19,6 @@ const (
 	EventStep         EventType = "step"
 	EventToolCall     EventType = "tool_call"
 	EventValidation   EventType = "validation"
-	EventArtifactSave EventType = "artifact_save"
 	EventLog          EventType = "log"
 	EventWarning      EventType = "warning"
 	EventError        EventType = "error"
@@ -200,13 +199,6 @@ func LogValidation(format string, args ...any) {
 	})
 }
 
-// LogArtifact emits an artifact persistence event.
-func LogArtifact(format string, args ...any) {
-	Emit(Event{
-		Type:    EventArtifactSave,
-		Message: fmt.Sprintf(format, args...),
-	})
-}
 
 // LogWarning emits a warning event.
 func LogWarning(format string, args ...any) {

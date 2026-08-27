@@ -2,44 +2,51 @@ package main
 
 import (
 	"testing"
+
+	"MAgHARCM/internal/config"
 )
 
-func TestParseStructuredPrompt(t *testing.T) {
-	prompt := `Input codebase: @assets/samples/sample_project/C
-Output directory: .artifacts/sample_project/rust
-Input language: C
-Output language: Rust`
+func TestConfigLoadAndOverrides(t *testing.T) {
+	yamlContent := `
+translation:
+  source:
+    dir: "assets/samples/test_c"
+    language: "C"
+  target:
+    dir: ".artifacts/test_rust"
+    language: "Rust"
+    toolchain: "cargo"
+  models:
+    reasoning: "gpt-oss:20b"
+    coding: "qwen:coder"
+    ollama_url: "http://localhost:11434"
+  execution:
+    max_iterations: 5
+    timeout_seconds: 1800
+  lsp:
+    provider: "native"
+`
+	cfg, err := config.ParseYAML([]byte(yamlContent))
+	if err != nil {
+		t.Fatalf("failed to parse yaml config: %v", err)
+	}
 
-	task := parsePromptRequirements(prompt)
-
-	if task.SourceDir != "assets/samples/sample_project/C" {
-		t.Errorf("expected assets/samples/sample_project/C, got %s", task.SourceDir)
+	if cfg.SourceDir != "assets/samples/test_c" {
+		t.Errorf("expected source_dir assets/samples/test_c, got %s", cfg.SourceDir)
 	}
-	if task.TargetDir != ".artifacts/sample_project/rust" {
-		t.Errorf("expected .artifacts/sample_project/rust, got %s", task.TargetDir)
+	if cfg.TargetDir != ".artifacts/test_rust" {
+		t.Errorf("expected target_dir .artifacts/test_rust, got %s", cfg.TargetDir)
 	}
-	if task.SourceLang != "C" {
-		t.Errorf("expected C, got %s", task.SourceLang)
+	if cfg.SourceLang != "C" {
+		t.Errorf("expected source_lang C, got %s", cfg.SourceLang)
 	}
-	if task.TargetLang != "Rust" {
-		t.Errorf("expected Rust, got %s", task.TargetLang)
+	if cfg.TargetLang != "Rust" {
+		t.Errorf("expected target_lang Rust, got %s", cfg.TargetLang)
 	}
-}
-
-func TestParseNaturalLanguagePrompt(t *testing.T) {
-	prompt := "Translate @sample_repo/src into Rust at target/out from C"
-	task := parsePromptRequirements(prompt)
-
-	if task.SourceDir != "sample_repo/src" {
-		t.Errorf("expected sample_repo/src, got %s", task.SourceDir)
+	if cfg.Toolchain != "cargo" {
+		t.Errorf("expected toolchain cargo, got %s", cfg.Toolchain)
 	}
-	if task.TargetDir != "target/out" {
-		t.Errorf("expected target/out, got %s", task.TargetDir)
-	}
-	if task.SourceLang != "C" {
-		t.Errorf("expected C, got %s", task.SourceLang)
-	}
-	if task.TargetLang != "Rust" {
-		t.Errorf("expected Rust, got %s", task.TargetLang)
+	if cfg.MaxIterations != 5 {
+		t.Errorf("expected max_iterations 5, got %d", cfg.MaxIterations)
 	}
 }

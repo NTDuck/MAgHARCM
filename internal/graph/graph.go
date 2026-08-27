@@ -8,7 +8,7 @@ import (
 
 	"MAgHARCM/internal/agents"
 	"MAgHARCM/internal/llm"
-	"MAgHARCM/internal/pattern"
+	"MAgHARCM/internal/logger"
 	"MAgHARCM/internal/types"
 )
 
@@ -28,26 +28,41 @@ func NewMAgHARCMGraph(ctx context.Context, models *llm.Models) (*MAgHARCMGraph, 
 	validatorAgent := agents.NewValidatorAgent(models.Reasoning)
 
 	// Register agent execution units as graph nodes
-	pattern.Must0(g.AddLambdaNode("analyzer", compose.InvokableLambda(analyzerAgent.Run)))
-	pattern.Must0(g.AddLambdaNode("planning", compose.InvokableLambda(planningAgent.Run)))
-	pattern.Must0(g.AddLambdaNode("translator", compose.InvokableLambda(translatorAgent.Run)))
-	pattern.Must0(g.AddLambdaNode("validator", compose.InvokableLambda(validatorAgent.Run)))
+	if err := g.AddLambdaNode("analyzer", compose.InvokableLambda(analyzerAgent.Run)); err != nil {
+		return nil, err
+	}
+	if err := g.AddLambdaNode("planning", compose.InvokableLambda(planningAgent.Run)); err != nil {
+		return nil, err
+	}
+	if err := g.AddLambdaNode("translator", compose.InvokableLambda(translatorAgent.Run)); err != nil {
+		return nil, err
+	}
+	if err := g.AddLambdaNode("validator", compose.InvokableLambda(validatorAgent.Run)); err != nil {
+		return nil, err
+	}
 
 	// Wire the primary forward pipeline from analysis through validation
-	pattern.Must0(g.AddEdge(compose.START, "analyzer"))
-	pattern.Must0(g.AddEdge("analyzer", "planning"))
-	pattern.Must0(g.AddEdge("planning", "translator"))
-	pattern.Must0(g.AddEdge("translator", "validator"))
-
+	if err := g.AddEdge(compose.START, "analyzer"); err != nil {
+		return nil, err
+	}
+	if err := g.AddEdge("analyzer", "planning"); err != nil {
+		return nil, err
+	}
+	if err := g.AddEdge("planning", "translator"); err != nil {
+		return nil, err
+	}
+	if err := g.AddEdge("translator", "validator"); err != nil {
+		return nil, err
+	}
 	// Implement dynamic repair feedback loop returning to translator on validation failure
 	repairBranch := compose.NewGraphBranch(
 		func(ctx context.Context, state *types.State) (string, error) {
 			if state.IsComplete || state.ValidationReport.IsAllSuccess() || state.Iteration >= state.MaxIterations {
-				state.Log("[Graph] Pipeline terminating: complete=%v, all_success=%v, iteration=%d/%d",
+				logger.LogStep("Graph pipeline terminating: complete=%v, all_success=%v, iteration=%d/%d",
 					state.IsComplete, state.ValidationReport.IsAllSuccess(), state.Iteration, state.MaxIterations)
 				return compose.END, nil
 			}
-			state.Log("[Graph] Validation incomplete, cycling back to translator for repair (iteration %d/%d)",
+			logger.LogStep("Validation incomplete, cycling back to translator for repair (iteration %d/%d)",
 				state.Iteration, state.MaxIterations)
 			return "translator", nil
 		},
@@ -56,7 +71,9 @@ func NewMAgHARCMGraph(ctx context.Context, models *llm.Models) (*MAgHARCMGraph, 
 			"translator": true,
 		},
 	)
-	pattern.Must0(g.AddBranch("validator", repairBranch))
+	if err := g.AddBranch("validator", repairBranch); err != nil {
+		return nil, err
+	}
 
 	// Compile graph with step budget accommodating multiple repair iterations
 	runnable, err := g.Compile(ctx,
@@ -72,7 +89,11 @@ func NewMAgHARCMGraph(ctx context.Context, models *llm.Models) (*MAgHARCMGraph, 
 
 // MustNewMAgHARCMGraph constructs the graph and panics on failure.
 func MustNewMAgHARCMGraph(ctx context.Context, models *llm.Models) *MAgHARCMGraph {
-	return pattern.Must(NewMAgHARCMGraph(ctx, models))
+	g, err := NewMAgHARCMGraph(ctx, models)
+	if err != nil {
+		panic(err)
+	}
+	return g
 }
 
 // Execute runs the translation graph with initial state and returns final state.

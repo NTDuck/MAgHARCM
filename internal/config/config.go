@@ -4,8 +4,6 @@ import (
 	"os"
 	"strconv"
 	"time"
-
-	"MAgHARCM/internal/pattern"
 )
 
 // Config holds centralized configuration for the MAgHARCM translation pipeline.
@@ -130,7 +128,11 @@ func New(opts ...Option) (*Config, error) {
 
 // MustLoad returns a loaded Config using the Must pattern.
 func MustLoad(opts ...Option) *Config {
-	return pattern.Must(New(opts...))
+	cfg, err := New(opts...)
+	if err != nil {
+		panic(err)
+	}
+	return cfg
 }
 
 func getEnvOrDefault(key, def string) string {

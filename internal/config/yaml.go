@@ -6,8 +6,6 @@ import (
 	"time"
 
 	"gopkg.in/yaml.v3"
-
-	"MAgHARCM/internal/pattern"
 )
 
 // YAMLConfig represents the declarative YAML configuration format for MAgHARCM.
@@ -146,5 +144,9 @@ func LoadYAML(path string) (*Config, error) {
 
 // MustLoadYAML reads and parses a YAML config or panics using the Must pattern.
 func MustLoadYAML(path string) *Config {
-	return pattern.Must(LoadYAML(path))
+	cfg, err := LoadYAML(path)
+	if err != nil {
+		panic(err)
+	}
+	return cfg
 }

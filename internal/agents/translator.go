@@ -36,23 +36,55 @@ func (t *TranslatorAgent) Run(ctx context.Context, state *types.State) (*types.S
 			state.TranslatedProject.Files[k] = v
 		}
 	}
-	isRepair := state.Iteration > 0 && !state.ValidationReport.IsAllSuccess()
 
-	if isRepair {
+	if state.Iteration > 0 && !state.ValidationReport.IsAllSuccess() {
 		logger.LogAgent("Translator", "Repair Mode (Iteration %d/%d): Diagnosing validation errors and fixing code",
 			state.Iteration, state.MaxIterations)
-		state.Log("[Translator] Repair Mode (Iteration %d/%d): Fixing reported validation errors", state.Iteration, state.MaxIterations)
 		return t.repair(ctx, state)
 	}
 
 	logger.LogAgent("Translator", "Initial Translation Mode: Implementing Part A (Source) and Part B (Tests)")
-	state.Log("[Translator] Implementing Part A (Source) and Part B (Tests)")
 	return t.translate(ctx, state)
 }
 
+// translate generates the initial translation from source modules, design, and implementation plan.
 func (t *TranslatorAgent) translate(ctx context.Context, state *types.State) (*types.State, error) {
+	sourceFiles := t.collectSourceFiles(state.Task.SourceDir)
+	packageName := t.resolvePackageName(state.Task.TargetDir, state.Task.TargetLang)
+
+	files, err := t.generateTranslation(ctx, state, sourceFiles, packageName)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := t.syncFilesToDisk(state.Task.TargetDir, files, state); err != nil {
+		return nil, err
+	}
+	logger.LogAgent("Translator", "Successfully wrote %d translated files to `%s`", len(files), state.Task.TargetDir)
+	return state, nil
+}
+
+// repair prompts the coding model with compiler diagnostics and test failure output to fix code.
+func (t *TranslatorAgent) repair(ctx context.Context, state *types.State) (*types.State, error) {
+	targetFiles := t.collectCurrentTargetFiles(state)
+	packageName := t.resolvePackageName(state.Task.TargetDir, state.Task.TargetLang)
+
+	repairedFiles, err := t.generateRepair(ctx, state, targetFiles, packageName)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := t.syncFilesToDisk(state.Task.TargetDir, repairedFiles, state); err != nil {
+		return nil, err
+	}
+	logger.LogAgent("Translator", "Repairs applied across %d files", len(repairedFiles))
+	return state, nil
+}
+
+// collectSourceFiles walks the source directory and reads raw content for each file.
+func (t *TranslatorAgent) collectSourceFiles(sourceDir string) []string {
 	var sourceFilesData []string
-	_ = filepath.Walk(state.Task.SourceDir, func(path string, info os.FileInfo, err error) error {
+	_ = filepath.Walk(sourceDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil || info.IsDir() {
 			return nil
 		}
@@ -62,12 +94,23 @@ func (t *TranslatorAgent) translate(ctx context.Context, state *types.State) (*t
 		}
 		return nil
 	})
+	return sourceFilesData
+}
 
-	logger.LogStep("Prompting Coding Model for complete `%s` translation", state.Task.TargetLang)
+// collectCurrentTargetFiles gathers the in-memory translated file contents.
+func (t *TranslatorAgent) collectCurrentTargetFiles(state *types.State) []string {
+	var targetFilesData []string
+	for relPath, content := range state.TranslatedProject.Files {
+		targetFilesData = append(targetFilesData, fmt.Sprintf("=== Current File: %s ===\n%s\n", relPath, content))
+	}
+	return targetFilesData
+}
 
-	packageName := sanitizeProjectName(filepath.Base(state.Task.TargetDir))
-	if packageName == "" || packageName == "." || strings.EqualFold(packageName, state.Task.TargetLang) {
-		parent := filepath.Base(filepath.Dir(state.Task.TargetDir))
+// resolvePackageName determines the canonical package/crate name for import statements.
+func (t *TranslatorAgent) resolvePackageName(targetDir, targetLang string) string {
+	packageName := sanitizeProjectName(filepath.Base(targetDir))
+	if packageName == "" || packageName == "." || strings.EqualFold(packageName, targetLang) {
+		parent := filepath.Base(filepath.Dir(targetDir))
 		if parent != "" && parent != "." && parent != "/" {
 			packageName = sanitizeProjectName(parent)
 		}
@@ -75,19 +118,26 @@ func (t *TranslatorAgent) translate(ctx context.Context, state *types.State) (*t
 	if packageName == "" {
 		packageName = "translated_project"
 	}
+	return packageName
+}
+
+// generateTranslation renders the translation prompt and queries the coding model.
+func (t *TranslatorAgent) generateTranslation(ctx context.Context, state *types.State, sourceFiles []string, packageName string) (map[string]string, error) {
+	logger.LogStep("Prompting Coding Model for complete `%s` translation", state.Task.TargetLang)
 
 	prompt, err := renderPrompt("translator_translate.md", map[string]any{
 		"PackageName":        packageName,
 		"SourceLang":         state.Task.SourceLang,
 		"TargetLang":         state.Task.TargetLang,
 		"TargetLangLower":    strings.ToLower(state.Task.TargetLang),
-		"SourceFiles":        strings.Join(sourceFilesData, "\n"),
+		"SourceFiles":        strings.Join(sourceFiles, "\n"),
 		"TargetDesign":       state.AnalyzerOutput.Design.RawMarkdown,
 		"ImplementationPlan": state.PlanningOutput.Plan.RawPlan,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to render translator prompt: %w", err)
 	}
+
 	resp, err := t.Model.Generate(ctx, []*schema.Message{
 		schema.SystemMessage("You are an expert systems programmer translating source code into idiomatic, safe target code."),
 		schema.UserMessage(prompt),
@@ -96,41 +146,19 @@ func (t *TranslatorAgent) translate(ctx context.Context, state *types.State) (*t
 		return nil, fmt.Errorf("translator model call failed: %w", err)
 	}
 
-	files := parseAllFileMarkers(resp.Content)
-
-	if err := syncFilesToDisk(state.Task.TargetDir, files, state); err != nil {
-		return nil, err
-	}
-	logger.LogAgent("Translator", "Successfully wrote %d translated files to `%s`", len(files), state.Task.TargetDir)
-	state.Log("[Translator] Translated %d files to `%s`", len(files), state.Task.TargetDir)
-	return state, nil
+	return parseAllFileMarkers(resp.Content), nil
 }
 
-func (t *TranslatorAgent) repair(ctx context.Context, state *types.State) (*types.State, error) {
-	var targetFilesData []string
-	for relPath, content := range state.TranslatedProject.Files {
-		targetFilesData = append(targetFilesData, fmt.Sprintf("=== Current File: %s ===\n%s\n", relPath, content))
-	}
-
+// generateRepair renders the repair prompt and queries the coding model for targeted fixes.
+func (t *TranslatorAgent) generateRepair(ctx context.Context, state *types.State, targetFiles []string, packageName string) (map[string]string, error) {
 	logger.LogStep("Feeding compiler diagnostics and test failures to Coding Model for targeted repair")
-
-	packageName := sanitizeProjectName(filepath.Base(state.Task.TargetDir))
-	if packageName == "" || packageName == "." || strings.EqualFold(packageName, state.Task.TargetLang) {
-		parent := filepath.Base(filepath.Dir(state.Task.TargetDir))
-		if parent != "" && parent != "." && parent != "/" {
-			packageName = sanitizeProjectName(parent)
-		}
-	}
-	if packageName == "" {
-		packageName = "translated_project"
-	}
 
 	prompt, err := renderPrompt("translator_repair.md", map[string]any{
 		"PackageName":     packageName,
 		"TargetLang":      state.Task.TargetLang,
 		"TargetLangLower": strings.ToLower(state.Task.TargetLang),
 		"Diagnostics":     state.ValidationReport.Diagnostics,
-		"CurrentFiles":    strings.Join(targetFilesData, "\n"),
+		"CurrentFiles":    strings.Join(targetFiles, "\n"),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to render repair prompt: %w", err)
@@ -144,16 +172,11 @@ func (t *TranslatorAgent) repair(ctx context.Context, state *types.State) (*type
 		return nil, fmt.Errorf("translator repair call failed: %w", err)
 	}
 
-	repairedFiles := parseAllFileMarkers(resp.Content)
-	if err := syncFilesToDisk(state.Task.TargetDir, repairedFiles, state); err != nil {
-		return nil, err
-	}
-	logger.LogAgent("Translator", "Repairs applied across %d files", len(repairedFiles))
-	state.Log("[Translator] Applied repairs across %d files", len(repairedFiles))
-	return state, nil
+	return parseAllFileMarkers(resp.Content), nil
 }
 
-func syncFilesToDisk(targetDir string, files map[string]string, state *types.State) error {
+// syncFilesToDisk cleans, writes files to disk, and updates the in-memory state.
+func (t *TranslatorAgent) syncFilesToDisk(targetDir string, files map[string]string, state *types.State) error {
 	hasNewTest := false
 	for relPath := range files {
 		if strings.HasPrefix(relPath, "tests/") {
@@ -162,28 +185,25 @@ func syncFilesToDisk(targetDir string, files map[string]string, state *types.Sta
 		}
 	}
 	if hasNewTest {
-		_ = filepath.Walk(filepath.Join(targetDir, "tests"), func(path string, info os.FileInfo, err error) error {
-			if err != nil || info.IsDir() {
-				return nil
+		testsDir := filepath.Join(targetDir, "tests")
+		_ = os.RemoveAll(testsDir)
+		for k := range state.TranslatedProject.Files {
+			if strings.HasPrefix(k, "tests/") {
+				delete(state.TranslatedProject.Files, k)
 			}
-			rel, _ := filepath.Rel(targetDir, path)
-			if _, exists := files[rel]; !exists {
-				_ = os.Remove(path)
-				delete(state.TranslatedProject.Files, rel)
-			}
-			return nil
-		})
+		}
 	}
 
 	for relPath, content := range files {
-		state.TranslatedProject.Files[relPath] = content
+		clean := tools.CleanCodeContent(content)
 		fullPath := filepath.Join(targetDir, relPath)
 		if err := os.MkdirAll(filepath.Dir(fullPath), 0755); err != nil {
-			return fmt.Errorf("failed to create dir for %s: %w", fullPath, err)
+			return fmt.Errorf("failed to create directory for %s: %w", fullPath, err)
 		}
-		if err := os.WriteFile(fullPath, []byte(content), 0644); err != nil {
-			return fmt.Errorf("failed to write file %s: %w", fullPath, err)
+		if err := os.WriteFile(fullPath, []byte(clean), 0644); err != nil {
+			return fmt.Errorf("failed to write translated file %s: %w", fullPath, err)
 		}
+		state.TranslatedProject.Files[relPath] = clean
 		logger.LogTool("write_file", "Wrote `%s` to `%s` (%d bytes)", relPath, targetDir, len(content))
 	}
 	return nil
@@ -193,75 +213,60 @@ func parseAllFileMarkers(text string) map[string]string {
 	files := make(map[string]string)
 	lines := strings.Split(text, "\n")
 	var currentFile string
-	var currentLines []string
+	var currentContent strings.Builder
 
-	fileHeaderRe := regexp.MustCompile("(?i)(?:file:?|filepath:?|path:?)\\s*\\*?\\*?`?([a-zA-Z0-9_\\-\\./]+\\.(?:rs|toml|c|h|go|cc|cpp))`?")
-	codeFencePathRe := regexp.MustCompile("(?i)```(?:rust|toml|c|cpp|go)?\\s*(?://|#|:)?\\s*([a-zA-Z0-9_\\-\\./]+\\.(?:rs|toml|c|h|go|cc|cpp))")
-	boldPathRe := regexp.MustCompile("(?i)(?:\\*\\*|##+|###+|//\\s*|#\\s*)([a-zA-Z0-9_\\-\\./]+\\.(?:rs|toml|c|h|go|cc|cpp))")
-
-	flush := func() {
-		if currentFile != "" && len(currentLines) > 0 {
-			rawContent := strings.Join(currentLines, "\n")
-			code := extractCodeFromSection(rawContent)
-			if code != "\n" && code != "" {
-				files[currentFile] = code
-			}
-		}
-	}
+	fileHeaderRegex := regexp.MustCompile(`^(?:###\s+)?(?:File|FILE|Path|PATH):\s*([^\s` + "`" + `]+)`)
 
 	for _, line := range lines {
 		trimmed := strings.TrimSpace(line)
-		var newFile string
-
-		if match := fileHeaderRe.FindStringSubmatch(trimmed); len(match) > 1 {
-			newFile = match[1]
-		} else if match := codeFencePathRe.FindStringSubmatch(trimmed); len(match) > 1 {
-			newFile = match[1]
-		} else if match := boldPathRe.FindStringSubmatch(trimmed); len(match) > 1 {
-			newFile = match[1]
-		}
-
-		if newFile != "" {
-			flush()
-			currentFile = strings.TrimSpace(strings.Trim(newFile, "*`# :"))
-			currentLines = nil
+		matches := fileHeaderRegex.FindStringSubmatch(trimmed)
+		if len(matches) > 1 {
+			if currentFile != "" {
+				files[currentFile] = extractCodeFromSection(currentContent.String())
+				currentContent.Reset()
+			}
+			currentFile = matches[1]
 			continue
 		}
 
 		if currentFile != "" {
-			currentLines = append(currentLines, line)
+			currentContent.WriteString(line + "\n")
 		}
 	}
-	flush()
+
+	if currentFile != "" {
+		files[currentFile] = extractCodeFromSection(currentContent.String())
+	}
+
+	if len(files) == 0 {
+		altFiles := parseFileBlocks(text, "")
+		for k, v := range altFiles {
+			files[k] = v
+		}
+	}
+
 	return files
 }
 
 func extractCodeFromSection(section string) string {
-	// If section contains a code fence block ```...```, extract only inside the fence
 	lines := strings.Split(section, "\n")
-	var inFence bool
-	var fenceLines []string
+	var codeLines []string
+	inFence := false
 
-	for _, l := range lines {
-		trimmed := strings.TrimSpace(l)
+	for _, line := range lines {
+		trimmed := strings.TrimSpace(line)
 		if strings.HasPrefix(trimmed, "```") {
-			if inFence {
-				// End of fence
-				inFence = false
-				break
-			}
-			inFence = true
+			inFence = !inFence
 			continue
 		}
 		if inFence {
-			fenceLines = append(fenceLines, l)
+			codeLines = append(codeLines, line)
 		}
 	}
 
-	if len(fenceLines) > 0 {
-		return tools.CleanCodeContent(strings.Join(fenceLines, "\n"))
+	if len(codeLines) > 0 {
+		return strings.Join(codeLines, "\n")
 	}
 
-	// Fallback for unfenced code
-	return tools.CleanCodeContent(section)
+	return strings.TrimSpace(section)
 }
