@@ -12,6 +12,7 @@ import (
 	"github.com/cloudwego/eino/components/model"
 	"github.com/cloudwego/eino/schema"
 	"MAgHARCM/internal/artifacts"
+	"MAgHARCM/internal/languages"
 	"MAgHARCM/internal/logger"
 	"MAgHARCM/internal/tools"
 	"MAgHARCM/internal/types"
@@ -87,12 +88,10 @@ func (p *PlanningAgent) Run(ctx context.Context, state *types.State) (*types.Sta
 	}
 	state.PlanningOutput.NameMapping = nameMapping
 	logger.LogTool("name_mapping", "Created %d symbol mappings", len(nameMapping))
-
-	// Parse Skeleton Files
 	skeletonFiles := parseFileBlocks(rawContent, "=== SKELETON_FILES ===")
 	if len(skeletonFiles) == 0 {
-		logger.LogWarning("Planning LLM did not emit explicit skeleton files; generating fallback skeleton from AST fragments")
-		skeletonFiles = defaultRustSkeleton(state.Task.TargetDir, fragments)
+		logger.LogWarning("Planning LLM did not emit explicit skeleton files; generating fallback skeleton for %s", state.Task.TargetLang)
+		skeletonFiles = defaultProjectSkeleton(state.Task.TargetDir, state.Task.TargetLang, fragments)
 	}
 	state.PlanningOutput.SkeletonFiles = skeletonFiles
 
@@ -130,40 +129,45 @@ func (p *PlanningAgent) Run(ctx context.Context, state *types.State) (*types.Sta
 	return state, nil
 }
 
-// defaultRustSkeleton dynamically generates a compilable Cargo project structure from the target path.
-func defaultRustSkeleton(targetDir string, fragments []string) map[string]string {
-	crateName := sanitizeCrateName(filepath.Base(targetDir))
-	if crateName == "" || crateName == "." || crateName == "rust" {
+// defaultProjectSkeleton dynamically generates standard project boilerplate files for the target language.
+func defaultProjectSkeleton(targetDir string, targetLang string, fragments []string) map[string]string {
+	projectName := sanitizeProjectName(filepath.Base(targetDir))
+	if projectName == "" || projectName == "." || strings.EqualFold(projectName, targetLang) {
 		parent := filepath.Base(filepath.Dir(targetDir))
 		if parent != "" && parent != "." && parent != "/" {
-			crateName = sanitizeCrateName(parent)
+			projectName = sanitizeProjectName(parent)
 		}
 	}
-	if crateName == "" {
-		crateName = "translated_project"
+	if projectName == "" {
+		projectName = "translated_project"
 	}
 
-	cargoToml := fmt.Sprintf(`[package]
-name = "%s"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-`, crateName)
-
-	libRs := `// Dynamic skeleton generated from source AST analysis
-pub fn init() {
-    // entry point stub
-}
-`
-
-	return map[string]string{
-		"Cargo.toml": cargoToml,
-		"src/lib.rs": libRs,
+	registry := languages.GetRegistry()
+	spec, found := registry.FindByName(targetLang)
+	if !found {
+		return map[string]string{
+			"src/main." + strings.ToLower(targetLang): "// Main entry point\n",
+		}
 	}
+
+	files := make(map[string]string)
+	for relPath, tmpl := range spec.DefaultSkeleton {
+		content := strings.ReplaceAll(tmpl, "{{.ProjectName}}", projectName)
+		files[relPath] = content
+	}
+
+	if len(files) == 0 {
+		ext := ".txt"
+		if len(spec.Extensions) > 0 {
+			ext = spec.Extensions[0]
+		}
+		files["src/lib"+ext] = "// Generated project module\n"
+	}
+
+	return files
 }
 
-func sanitizeCrateName(name string) string {
+func sanitizeProjectName(name string) string {
 	name = strings.ToLower(name)
 	var sb strings.Builder
 	for _, r := range name {
