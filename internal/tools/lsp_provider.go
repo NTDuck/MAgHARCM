@@ -121,7 +121,7 @@ func (a *ABCoderMCPProvider) GetDefinition(ctx context.Context, input *Definitio
 	if out, err := a.callMCP(ctx, "definition", args); err == nil && len(out) > 0 {
 		var res DefinitionOutput
 		if err := json.Unmarshal(out, &res); err == nil && len(res.Definitions) > 0 {
-			logger.LogTool("abcoder_mcp", "Resolved definition for %s via abcoder", input.Symbol)
+			logger.LogTool("abcoder_mcp", "Resolved definition for `%s` via `abcoder`", input.Symbol)
 			return &res, nil
 		}
 	}
@@ -134,7 +134,7 @@ func (a *ABCoderMCPProvider) GetDiagnostics(ctx context.Context, input *Diagnost
 	if out, err := a.callMCP(ctx, "diagnostics", args); err == nil && len(out) > 0 {
 		var res DiagnosticsOutput
 		if err := json.Unmarshal(out, &res); err == nil {
-			logger.LogTool("abcoder_mcp", "Retrieved diagnostics for %s via abcoder", input.FilePath)
+			logger.LogTool("abcoder_mcp", "Retrieved diagnostics for `%s` via `abcoder`", input.FilePath)
 			return &res, nil
 		}
 	}
