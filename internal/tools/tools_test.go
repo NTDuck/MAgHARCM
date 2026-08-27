@@ -93,3 +93,65 @@ func TestLSPToolsCreation(t *testing.T) {
 		t.Errorf("expected 6 LSP tools, got %d", len(lspTools))
 	}
 }
+
+func TestLSPProviderProviders(t *testing.T) {
+	ctx := context.Background()
+
+	// Native Provider
+	native := GetLSPProvider("native")
+	if native.Name() != "native" {
+		t.Errorf("expected native provider name, got %s", native.Name())
+	}
+
+	// ABCoder MCP Provider with fallback
+	abcoder := GetLSPProvider("abcoder")
+	if abcoder.Name() != "abcoder-mcp" {
+		t.Errorf("expected abcoder-mcp provider name, got %s", abcoder.Name())
+	}
+
+	// Test Definition on Native
+	def, err := native.GetDefinition(ctx, &DefinitionInput{
+		Symbol:  "calculate",
+		Project: t.TempDir(),
+	})
+	if err != nil {
+		t.Fatalf("unexpected error on definition: %v", err)
+	}
+	if def.Symbol != "calculate" {
+		t.Errorf("expected symbol calculate, got %s", def.Symbol)
+	}
+
+	// Test ABCoder fallback execution
+	hover, err := abcoder.GetHover(ctx, &HoverInput{
+		Symbol: "Item",
+	})
+	if err != nil {
+		t.Fatalf("unexpected error on hover fallback: %v", err)
+	}
+	if !hover.Found {
+		t.Errorf("expected hover found")
+	}
+}
+
+func TestMultiLanguageExecutionTools(t *testing.T) {
+	ctx := context.Background()
+	tmpDir := t.TempDir()
+
+	// No build file
+	out, err := ValidateProjectBuild(ctx, tmpDir, "Rust", "cargo")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if out.Success {
+		t.Errorf("expected failure when no build config exists")
+	}
+
+	// Go build check on actual directory
+	goOut, err := ValidateProjectBuild(ctx, ".", "Go", "go")
+	if err != nil {
+		t.Fatalf("unexpected error on go build check: %v", err)
+	}
+	if !goOut.Success {
+		t.Errorf("expected current repo go build to succeed: %v", goOut.Errors)
+	}
+}

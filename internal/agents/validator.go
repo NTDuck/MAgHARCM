@@ -32,9 +32,9 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.St
 		state.Task.TargetDir, state.Iteration, state.MaxIterations)
 	state.Log("[Validator] Validating target project %s (Iteration %d/%d)", state.Task.TargetDir, state.Iteration, state.MaxIterations)
 
-	// 1. Validate build compilation (§3.5.1)
-	logger.LogStep("Running compiler check: cargo check --tests...")
-	buildRes, err := tools.ValidateProjectBuild(ctx, state.Task.TargetDir, state.Task.TargetLang)
+	// 1. Validate build compilation
+	logger.LogStep("Running compiler check for %s (toolchain: %s)...", state.Task.TargetLang, state.Task.Toolchain)
+	buildRes, err := tools.ValidateProjectBuild(ctx, state.Task.TargetDir, state.Task.TargetLang, state.Task.Toolchain)
 	if err != nil {
 		return nil, fmt.Errorf("validator failed to run build check: %w", err)
 	}
@@ -56,9 +56,9 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.St
 	}
 	logger.LogTool("validate_build", "Compilation SUCCESS: clean build without errors")
 
-	// 2. Run unit tests (§3.5.1)
-	logger.LogStep("Executing test suite: cargo test -- --nocapture...")
-	testRes, err := tools.RunProjectTests(ctx, state.Task.TargetDir, "")
+	// 2. Run unit tests
+	logger.LogStep("Executing test suite for %s (toolchain: %s)...", state.Task.TargetLang, state.Task.Toolchain)
+	testRes, err := tools.RunProjectTests(ctx, state.Task.TargetDir, state.Task.TargetLang, state.Task.Toolchain, "")
 	if err != nil {
 		return nil, fmt.Errorf("validator failed to execute tests: %w", err)
 	}
@@ -102,8 +102,7 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.St
 		v.generateAdditionalTests(ctx, state, uncovered)
 		// Re-run tests after adding generated tests
 		logger.LogStep("Re-running test suite after coverage test generation...")
-		if reTest, err := tools.RunProjectTests(ctx, state.Task.TargetDir, ""); err == nil {
-			report.TotalTests = reTest.TotalPassed + reTest.TotalFailed
+		if reTest, err := tools.RunProjectTests(ctx, state.Task.TargetDir, state.Task.TargetLang, state.Task.Toolchain, ""); err == nil {
 			report.PassedTests = reTest.TotalPassed
 			report.FailedTests = reTest.TotalFailed
 			report.TestFailures = reTest.Failures

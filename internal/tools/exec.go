@@ -18,6 +18,7 @@ import (
 type ValidateBuildInput struct {
 	ProjectDir string `json:"project_dir" jsonschema_description:"Directory of the project to check/build"`
 	Language   string `json:"language,omitempty" jsonschema_description:"Target language (e.g. rust, c, go)"`
+	Toolchain  string `json:"toolchain,omitempty" jsonschema_description:"Build toolchain override (e.g. cargo, go, make)"`
 }
 
 // ValidateBuildOutput result of build validation.
@@ -32,8 +33,10 @@ type ValidateBuildOutput struct {
 
 // RunTestsInput parameters for test execution.
 type RunTestsInput struct {
-	ProjectDir string `json:"project_dir" jsonschema_description:"Directory of the project to test"`
-	TestFilter string `json:"test_filter,omitempty" jsonschema_description:"Optional test name filter"`
+	ProjectDir string `json:"project_dir" jsonschema_description:"Directory of the project"`
+	Language   string `json:"language,omitempty" jsonschema_description:"Target language (e.g. rust, c, go)"`
+	Toolchain  string `json:"toolchain,omitempty" jsonschema_description:"Test toolchain override (e.g. cargo, go, make)"`
+	TestFilter string `json:"test_filter,omitempty" jsonschema_description:"Optional filter/name of specific test to execute"`
 }
 
 // RunTestsOutput result of test execution.
@@ -46,23 +49,32 @@ type RunTestsOutput struct {
 	Message     string   `json:"message"`
 }
 
-// ValidateProjectBuild runs the appropriate compiler check based on project structure.
-func ValidateProjectBuild(ctx context.Context, projectDir, lang string) (*ValidateBuildOutput, error) {
+// ValidateProjectBuild runs the appropriate compiler check based on language and toolchain.
+func ValidateProjectBuild(ctx context.Context, projectDir, lang, toolchain string) (*ValidateBuildOutput, error) {
 	if projectDir == "" {
 		projectDir = "."
 	}
 
 	cleanDir := filepath.Clean(projectDir)
+	langLower := strings.ToLower(lang)
+	tcLower := strings.ToLower(toolchain)
 	var cmd *exec.Cmd
 	compiler := "unknown"
 
-	// Rust
 	cargoToml := filepath.Join(cleanDir, "Cargo.toml")
-	if _, err := exec.LookPath("cargo"); err == nil && fileExists(cargoToml) {
+	goMod := filepath.Join(cleanDir, "go.mod")
+	makefile := filepath.Join(cleanDir, "Makefile")
+
+	// Determine compiler command
+	if tcLower == "cargo" || langLower == "rust" || fileExists(cargoToml) {
 		compiler = "cargo"
 		cmd = exec.CommandContext(ctx, "cargo", "check", "--tests")
 		cmd.Dir = cleanDir
-	} else if fileExists(filepath.Join(cleanDir, "Makefile")) {
+	} else if tcLower == "go" || langLower == "go" || fileExists(goMod) {
+		compiler = "go"
+		cmd = exec.CommandContext(ctx, "go", "build", "./...")
+		cmd.Dir = cleanDir
+	} else if tcLower == "make" || langLower == "c" || langLower == "c++" || langLower == "cpp" || fileExists(makefile) {
 		compiler = "make"
 		cmd = exec.CommandContext(ctx, "make")
 		cmd.Dir = cleanDir
@@ -70,7 +82,7 @@ func ValidateProjectBuild(ctx context.Context, projectDir, lang string) (*Valida
 		return &ValidateBuildOutput{
 			Success:   false,
 			Compiler:  "none",
-			Output:    "No recognized build file found (e.g. Cargo.toml, Makefile)",
+			Output:    "No recognized build configuration found (Cargo.toml, go.mod, Makefile)",
 			HasErrors: true,
 			Errors:    []string{"Missing build configuration"},
 		}, nil
@@ -82,9 +94,9 @@ func ValidateProjectBuild(ctx context.Context, projectDir, lang string) (*Valida
 	var errs, warns []string
 	for _, line := range strings.Split(outputStr, "\n") {
 		trimmed := strings.TrimSpace(line)
-		if strings.HasPrefix(trimmed, "error[") || strings.HasPrefix(trimmed, "error:") {
+		if strings.HasPrefix(trimmed, "error[") || strings.HasPrefix(trimmed, "error:") || strings.Contains(trimmed, ": error:") {
 			errs = append(errs, trimmed)
-		} else if strings.HasPrefix(trimmed, "warning:") {
+		} else if strings.HasPrefix(trimmed, "warning:") || strings.Contains(trimmed, ": warning:") {
 			warns = append(warns, trimmed)
 		}
 	}
@@ -100,15 +112,21 @@ func ValidateProjectBuild(ctx context.Context, projectDir, lang string) (*Valida
 	}, nil
 }
 
-// RunProjectTests executes unit tests in the target project.
-func RunProjectTests(ctx context.Context, projectDir, filter string) (*RunTestsOutput, error) {
+// RunProjectTests executes unit and integration tests based on language and toolchain.
+func RunProjectTests(ctx context.Context, projectDir, lang, toolchain, filter string) (*RunTestsOutput, error) {
 	if projectDir == "" {
 		projectDir = "."
 	}
 	cleanDir := filepath.Clean(projectDir)
+	langLower := strings.ToLower(lang)
+	tcLower := strings.ToLower(toolchain)
 
 	cargoToml := filepath.Join(cleanDir, "Cargo.toml")
-	if fileExists(cargoToml) {
+	goMod := filepath.Join(cleanDir, "go.mod")
+	makefile := filepath.Join(cleanDir, "Makefile")
+
+	// 1. Rust (Cargo)
+	if tcLower == "cargo" || langLower == "rust" || fileExists(cargoToml) {
 		args := []string{"test", "--lib", "--tests"}
 		if filter != "" {
 			args = append(args, filter)
@@ -120,7 +138,6 @@ func RunProjectTests(ctx context.Context, projectDir, filter string) (*RunTestsO
 		outBytes, err := cmd.CombinedOutput()
 		outputStr := string(outBytes)
 
-		// Parse Cargo test output across all test suites (unit, integration, doc-tests)
 		passRe := regexp.MustCompile(`(\d+)\s+passed`)
 		failRe := regexp.MustCompile(`(\d+)\s+failed`)
 
@@ -163,6 +180,67 @@ func RunProjectTests(ctx context.Context, projectDir, filter string) (*RunTestsO
 		}, nil
 	}
 
+	// 2. Go (go test)
+	if tcLower == "go" || langLower == "go" || fileExists(goMod) {
+		args := []string{"test", "-v", "./..."}
+		if filter != "" {
+			args = append(args, "-run", filter)
+		}
+
+		cmd := exec.CommandContext(ctx, "go", args...)
+		cmd.Dir = cleanDir
+		outBytes, err := cmd.CombinedOutput()
+		outputStr := string(outBytes)
+
+		passed := strings.Count(outputStr, "--- PASS:")
+		failed := strings.Count(outputStr, "--- FAIL:")
+
+		var failures []string
+		if failed > 0 || err != nil {
+			for _, line := range strings.Split(outputStr, "\n") {
+				trimmed := strings.TrimSpace(line)
+				if strings.HasPrefix(trimmed, "--- FAIL:") || strings.HasPrefix(trimmed, "FAIL") {
+					failures = append(failures, trimmed)
+				}
+			}
+		}
+
+		success := err == nil && failed == 0 && passed > 0
+		return &RunTestsOutput{
+			Success:     success,
+			Output:      outputStr,
+			TotalPassed: passed,
+			TotalFailed: failed,
+			Failures:    failures,
+			Message:     fmt.Sprintf("%d passed, %d failed", passed, failed),
+		}, nil
+	}
+
+	// 3. C/C++ (make test)
+	if tcLower == "make" || langLower == "c" || langLower == "c++" || fileExists(makefile) {
+		cmd := exec.CommandContext(ctx, "make", "test")
+		cmd.Dir = cleanDir
+		outBytes, err := cmd.CombinedOutput()
+		outputStr := string(outBytes)
+
+		success := err == nil
+		passed := 0
+		failed := 0
+		if success {
+			passed = 1
+		} else {
+			failed = 1
+		}
+
+		return &RunTestsOutput{
+			Success:     success,
+			Output:      outputStr,
+			TotalPassed: passed,
+			TotalFailed: failed,
+			Message:     fmt.Sprintf("make test executed (success=%v)", success),
+		}, nil
+	}
+
 	return &RunTestsOutput{
 		Success: false,
 		Output:  "No test runner found for directory: " + projectDir,
@@ -176,14 +254,14 @@ func NewExecutionTools() []tool.BaseTool {
 		func(ctx context.Context, input *ValidateBuildInput) (*ValidateBuildOutput, error) {
 			tCtx, cancel := context.WithTimeout(ctx, 60*time.Second)
 			defer cancel()
-			return ValidateProjectBuild(tCtx, input.ProjectDir, input.Language)
+			return ValidateProjectBuild(tCtx, input.ProjectDir, input.Language, input.Toolchain)
 		})
 
 	testTool, _ := utils.InferTool("run_tests", "Executes unit and integration tests in the project directory",
 		func(ctx context.Context, input *RunTestsInput) (*RunTestsOutput, error) {
 			tCtx, cancel := context.WithTimeout(ctx, 120*time.Second)
 			defer cancel()
-			return RunProjectTests(tCtx, input.ProjectDir, input.TestFilter)
+			return RunProjectTests(tCtx, input.ProjectDir, input.Language, input.Toolchain, input.TestFilter)
 		})
 
 	return []tool.BaseTool{buildTool, testTool}
