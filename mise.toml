@@ -3,8 +3,8 @@ go = "1.26.5"
 rust = "latest"
 
 [tasks.dev]
-description = "Run MAgHARCM translation with prompt file"
-run = "go run ./cmd/MAgHARCM --prompt-file prompts/c_to_rust.txt"
+description = "Run MAgHARCM translation with YAML config"
+run = "go run ./cmd/MAgHARCM --config config.yml"
 
 [tasks.build]
 description = "Build binary"

@@ -28,6 +28,10 @@ func NewValidatorAgent(m model.BaseChatModel) *ValidatorAgent {
 // Run validates the target project and produces a ValidationReport.
 func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.State, error) {
 	state.Iteration++
+	defer func() {
+		_ = artifacts.SaveValidationIteration(state.Task.TargetDir, state.Iteration, state.ValidationReport)
+	}()
+
 	logger.LogAgent("Validator", "Validating target project %s (Iteration %d/%d)",
 		state.Task.TargetDir, state.Iteration, state.MaxIterations)
 	state.Log("[Validator] Validating target project %s (Iteration %d/%d)", state.Task.TargetDir, state.Iteration, state.MaxIterations)
@@ -125,7 +129,6 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.St
 		state.Log("[Validator] Validation INCOMPLETE: %d passed, %d failed", report.PassedTests, report.FailedTests)
 	}
 	state.ValidationReport = report
-	_ = artifacts.SaveValidationIteration(state.Task.TargetDir, state.Iteration, state.ValidationReport)
 	return state, nil
 }
 

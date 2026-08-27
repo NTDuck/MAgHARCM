@@ -27,7 +27,7 @@ func main() {
 	var tgtLangFlag string
 	var toolchainFlag string
 
-	flag.StringVar(&configFlag, "config", "", "Path to YAML configuration file (e.g. configs/c_to_rust.yml)")
+	flag.StringVar(&configFlag, "config", "", "Path to YAML configuration file (default: config.yml)")
 	flag.StringVar(&promptFileFlag, "prompt-file", "", "Path to file containing requirements prompt")
 	flag.StringVar(&promptFlag, "prompt", "", "Direct string requirements prompt for code translation")
 	flag.StringVar(&sourceFlag, "source", "", "Source codebase path (overrides config/prompt)")
@@ -56,8 +56,20 @@ func main() {
 			Toolchain:   cfg.Toolchain,
 			LSPProvider: cfg.LSPProvider,
 		}
-	} else if _, err := os.Stat("configs/c_to_rust.yml"); err == nil && promptFlag == "" && promptFileFlag == "" && len(flag.Args()) == 0 {
-		cfg, err = config.LoadYAML("configs/c_to_rust.yml")
+	} else if _, err := os.Stat("config.yml"); err == nil && promptFlag == "" && promptFileFlag == "" && len(flag.Args()) == 0 {
+		cfg, err = config.LoadYAML("config.yml")
+		if err == nil {
+			task = types.TranslationTask{
+				SourceDir:   cfg.SourceDir,
+				TargetDir:   cfg.TargetDir,
+				SourceLang:  cfg.SourceLang,
+				TargetLang:  cfg.TargetLang,
+				Toolchain:   cfg.Toolchain,
+				LSPProvider: cfg.LSPProvider,
+			}
+		}
+	} else if _, err := os.Stat("configs/config.yml"); err == nil && promptFlag == "" && promptFileFlag == "" && len(flag.Args()) == 0 {
+		cfg, err = config.LoadYAML("configs/config.yml")
 		if err == nil {
 			task = types.TranslationTask{
 				SourceDir:   cfg.SourceDir,
@@ -93,12 +105,7 @@ func main() {
 			}
 		}
 		if prompt == "" {
-			if data, err := os.ReadFile("prompts/c_to_rust.txt"); err == nil {
-				prompt = strings.TrimSpace(string(data))
-			}
-		}
-		if prompt == "" {
-			fmt.Fprintln(os.Stderr, "Error: No configuration or prompt provided. Use --config <config.yml> or --prompt-file <path>.")
+			fmt.Fprintln(os.Stderr, "Error: No configuration or prompt provided. Specify --config <config.yml> or create config.yml in workspace.")
 			flag.Usage()
 			os.Exit(1)
 		}

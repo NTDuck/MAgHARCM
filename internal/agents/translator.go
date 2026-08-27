@@ -31,7 +31,11 @@ func (t *TranslatorAgent) Run(ctx context.Context, state *types.State) (*types.S
 	if state.TranslatedProject.Files == nil {
 		state.TranslatedProject.Files = make(map[string]string)
 	}
-
+	if len(state.TranslatedProject.Files) == 0 && len(state.PlanningOutput.SkeletonFiles) > 0 {
+		for k, v := range state.PlanningOutput.SkeletonFiles {
+			state.TranslatedProject.Files[k] = v
+		}
+	}
 	isRepair := state.Iteration > 0 && !state.ValidationReport.IsAllSuccess()
 
 	if isRepair {
@@ -171,9 +175,9 @@ func parseAllFileMarkers(text string) map[string]string {
 	var currentFile string
 	var currentLines []string
 
-	fileHeaderRe := regexp.MustCompile(`(?i)(?:file:?|filepath:?)\s*\*?\*?\s*([a-zA-Z0-9_\-\./]+\.(?:rs|toml|c|h|go|cc|cpp))`)
-	codeFencePathRe := regexp.MustCompile("(?i)```(?:rust|toml|c|cpp)?\\s*(?://|#)?\\s*([a-zA-Z0-9_\\-\\./]+\\.(?:rs|toml|c|h|go|cc|cpp))")
-	boldPathRe := regexp.MustCompile(`(?i)\*\*([a-zA-Z0-9_\-\./]+\.(?:rs|toml|c|h|go|cc|cpp))\*\*`)
+	fileHeaderRe := regexp.MustCompile("(?i)(?:file:?|filepath:?|path:?)\\s*\\*?\\*?`?([a-zA-Z0-9_\\-\\./]+\\.(?:rs|toml|c|h|go|cc|cpp))`?")
+	codeFencePathRe := regexp.MustCompile("(?i)```(?:rust|toml|c|cpp|go)?\\s*(?://|#|:)?\\s*([a-zA-Z0-9_\\-\\./]+\\.(?:rs|toml|c|h|go|cc|cpp))")
+	boldPathRe := regexp.MustCompile("(?i)(?:\\*\\*|##+|###+|//\\s*|#\\s*)([a-zA-Z0-9_\\-\\./]+\\.(?:rs|toml|c|h|go|cc|cpp))")
 
 	flush := func() {
 		if currentFile != "" && len(currentLines) > 0 {

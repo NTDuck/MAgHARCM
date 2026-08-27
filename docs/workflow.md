@@ -42,7 +42,7 @@ sequenceDiagram
     participant Validator as Validator Agent
     participant Tools as Tool Layer (FS / LSP / Exec / Tree-Sitter)
 
-    User->>CLI: Run MAgHARCM (--config configs/c_to_rust.yml)
+    User->>CLI: Run MAgHARCM (--config config.yml)
     CLI->>Graph: Invoke(initialState)
 
     rect rgb(225, 245, 254)
