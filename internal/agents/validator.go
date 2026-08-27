@@ -170,7 +170,7 @@ func (v *ValidatorAgent) generateAdditionalTests(ctx context.Context, state *typ
 		}
 	}
 
-	prompt, err := renderPrompt("validator_coverage.md", map[string]any{
+	prompt, err := renderPromptTemplate("validator_coverage", validatorCoveragePromptTemplate, map[string]any{
 		"TargetLang":         state.Task.TargetLang,
 		"TargetLangLower":    strings.ToLower(state.Task.TargetLang),
 		"UncoveredFunctions": strings.Join(uncovered, "\n"),

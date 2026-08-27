@@ -8,7 +8,7 @@
 
 ```mermaid
 flowchart TD
-    START([Start / YAML Config / Prompt]) --> Analyzer[Analyzer Agent<br/><i>gpt-oss:20b</i>]
+    START([Start / YAML Config]) --> Analyzer[Analyzer Agent<br/><i>gpt-oss:20b</i>]
     Analyzer --> Planning[Planning Agent<br/><i>gpt-oss:20b</i>]
     Planning --> Translator[Translator Agent<br/><i>Qwen3-4B-Instruct</i>]
     Translator --> Validator[Validator Agent<br/><i>gpt-oss:20b</i>]

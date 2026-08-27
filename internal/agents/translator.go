@@ -125,7 +125,7 @@ func (t *TranslatorAgent) resolvePackageName(targetDir, targetLang string) strin
 func (t *TranslatorAgent) generateTranslation(ctx context.Context, state *types.State, sourceFiles []string, packageName string) (map[string]string, error) {
 	logger.LogStep("Prompting Coding Model for complete `%s` translation", state.Task.TargetLang)
 
-	prompt, err := renderPrompt("translator_translate.md", map[string]any{
+	prompt, err := renderPromptTemplate("translator_translate", translatorTranslatePromptTemplate, map[string]any{
 		"PackageName":        packageName,
 		"SourceLang":         state.Task.SourceLang,
 		"TargetLang":         state.Task.TargetLang,
@@ -153,7 +153,7 @@ func (t *TranslatorAgent) generateTranslation(ctx context.Context, state *types.
 func (t *TranslatorAgent) generateRepair(ctx context.Context, state *types.State, targetFiles []string, packageName string) (map[string]string, error) {
 	logger.LogStep("Feeding compiler diagnostics and test failures to Coding Model for targeted repair")
 
-	prompt, err := renderPrompt("translator_repair.md", map[string]any{
+	prompt, err := renderPromptTemplate("translator_repair", translatorRepairPromptTemplate, map[string]any{
 		"PackageName":     packageName,
 		"TargetLang":      state.Task.TargetLang,
 		"TargetLangLower": strings.ToLower(state.Task.TargetLang),

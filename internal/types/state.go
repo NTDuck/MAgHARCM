@@ -135,7 +135,4 @@ type State struct {
 	Iteration        int                `json:"iteration"`
 	MaxIterations    int                `json:"max_iterations"`
 	IsComplete       bool               `json:"is_complete"`
-	Logs             []string           `json:"logs"`
-	FinalSummary     string             `json:"final_summary"`
 }
-

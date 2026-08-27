@@ -82,7 +82,7 @@ func (a *AnalyzerAgent) extractFileStructures(files []string) ([]string, []strin
 
 // synthesizeAnalysis queries the reasoning model with directory structure, AST elements, and file contents.
 func (a *AnalyzerAgent) synthesizeAnalysis(ctx context.Context, state *types.State, treeStr, structureSummary, allCode string) (string, error) {
-	prompt, err := renderPrompt("analyzer.md", map[string]any{
+	prompt, err := renderPromptTemplate("analyzer", analyzerPromptTemplate, map[string]any{
 		"SourceLang":         state.Task.SourceLang,
 		"TargetLang":         state.Task.TargetLang,
 		"SourceDir":          state.Task.SourceDir,

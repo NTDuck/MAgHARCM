@@ -87,7 +87,7 @@ func (p *PlanningAgent) extractFragments(sourceDir string) ([]string, []string, 
 
 // generatePlanningArtifacts queries the reasoning model for name mapping, skeleton, and implementation plan.
 func (p *PlanningAgent) generatePlanningArtifacts(ctx context.Context, state *types.State, sourceSummaries []string) (string, error) {
-	prompt, err := renderPrompt("planning.md", map[string]any{
+	prompt, err := renderPromptTemplate("planning", planningPromptTemplate, map[string]any{
 		"SourceLang":   state.Task.SourceLang,
 		"TargetLang":   state.Task.TargetLang,
 		"SourceFiles":  strings.Join(sourceSummaries, "\n"),
