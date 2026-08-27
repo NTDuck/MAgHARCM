@@ -11,7 +11,7 @@ import (
 
 	"github.com/cloudwego/eino/components/model"
 	"github.com/cloudwego/eino/schema"
-
+	"MAgHARCM/internal/artifacts"
 	"MAgHARCM/internal/logger"
 	"MAgHARCM/internal/tools"
 	"MAgHARCM/internal/types"
@@ -131,7 +131,7 @@ B1: Translate and execute tests ...
 	// Parse Skeleton Files
 	skeletonFiles := parseFileBlocks(rawContent, "=== SKELETON_FILES ===")
 	if len(skeletonFiles) == 0 {
-		logger.LogStep("Generating dynamic skeleton from target configuration and AST fragments...")
+		logger.LogWarning("Planning LLM did not emit explicit skeleton files; generating fallback skeleton from AST fragments")
 		skeletonFiles = defaultRustSkeleton(state.Task.TargetDir, fragments)
 	}
 	state.PlanningOutput.SkeletonFiles = skeletonFiles
@@ -164,6 +164,7 @@ B1: Translate and execute tests ...
 		RawPlan: planStr,
 	}
 
+	_ = artifacts.SavePlanningOutput(state.Task.TargetDir, state.PlanningOutput)
 	logger.LogAgent("Planning", "Planning complete: %d skeleton files written to filesystem, implementation plan ready", len(skeletonFiles))
 	state.Log("[Planning] Skeleton generated with %d files, Plan ready with %d fragments", len(skeletonFiles), len(fragments))
 	return state, nil

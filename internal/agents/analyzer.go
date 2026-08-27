@@ -8,7 +8,7 @@ import (
 
 	"github.com/cloudwego/eino/components/model"
 	"github.com/cloudwego/eino/schema"
-
+	"MAgHARCM/internal/artifacts"
 	"MAgHARCM/internal/logger"
 	"MAgHARCM/internal/tools"
 	"MAgHARCM/internal/types"
@@ -138,6 +138,7 @@ Identify all libraries/headers used and their idiomatic equivalents in %s.
 		RawMarkdown: rawDoc,
 	}
 
+	_ = artifacts.SaveAnalyzerOutput(state.Task.TargetDir, state.AnalyzerOutput)
 	logger.LogAgent("Analyzer", "Analysis complete: Research, Library Analysis, and Target Design generated")
 	state.Log("[Analyzer] Research and Target Project Design generated successfully")
 	return state, nil

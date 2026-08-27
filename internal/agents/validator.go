@@ -9,7 +9,7 @@ import (
 
 	"github.com/cloudwego/eino/components/model"
 	"github.com/cloudwego/eino/schema"
-
+	"MAgHARCM/internal/artifacts"
 	"MAgHARCM/internal/logger"
 	"MAgHARCM/internal/tools"
 	"MAgHARCM/internal/types"
@@ -127,6 +127,7 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.St
 		state.Log("[Validator] Validation INCOMPLETE: %d passed, %d failed", report.PassedTests, report.FailedTests)
 	}
 	state.ValidationReport = report
+	_ = artifacts.SaveValidationIteration(state.Task.TargetDir, state.Iteration, state.ValidationReport)
 	return state, nil
 }
 

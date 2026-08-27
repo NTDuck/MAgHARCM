@@ -154,8 +154,8 @@ func main() {
 	// 5. Build Eino Graph with 4 ReCodeAgent agents and repair loop (Must pattern)
 	logger.LogStep("Constructing 4-agent Eino Graph (Analyzer -> Planning -> Translator <-> Validator)...")
 	magharcmGraph := graph.MustNewMAgHARCMGraph(ctx, models)
-	// 6. Ensure target directory exists
-	_ = os.MkdirAll(cfg.TargetDir, 0o755)
+	_ = os.MkdirAll(filepath.Join(cfg.TargetDir, ".MAgHARCM"), 0o755)
+	_ = logger.SetFileSink(filepath.Join(cfg.TargetDir, ".MAgHARCM", "events.jsonl"))
 
 	// 7. Initial State
 	initialState := &types.State{
@@ -174,22 +174,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	// 9. Output Results
-	fmt.Println("\n==================================================")
-	fmt.Println("MAgHARCM Execution Summary")
-	fmt.Println("==================================================")
-	for _, l := range finalState.Logs {
-		fmt.Println(l)
-	}
-
-	fmt.Println("\nValidation Status:")
-	fmt.Println(finalState.ValidationReport.String())
-
+	// Completion Status
 	if finalState.ValidationReport.IsAllSuccess() {
-		fmt.Println("\n✓ SUCCESS: Translation and validation completed successfully!")
-		fmt.Printf("Output available in: %s\n", filepath.Clean(cfg.TargetDir))
+		logger.LogAgent("MAgHARCM", "Translation and validation completed successfully: %s", finalState.ValidationReport.String())
+		logger.LogStep("Target project ready in %s", filepath.Clean(cfg.TargetDir))
 	} else {
-		fmt.Println("\n⚠ COMPLETED WITH WARNINGS: Some tests or checks failed after maximum iterations.")
+		logger.LogWarning("Execution finished: %s", finalState.ValidationReport.String())
 		os.Exit(1)
 	}
 }

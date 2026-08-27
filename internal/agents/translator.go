@@ -10,7 +10,7 @@ import (
 
 	"github.com/cloudwego/eino/components/model"
 	"github.com/cloudwego/eino/schema"
-
+	"MAgHARCM/internal/artifacts"
 	"MAgHARCM/internal/logger"
 	"MAgHARCM/internal/tools"
 	"MAgHARCM/internal/types"
@@ -123,6 +123,7 @@ FILE: tests/integration_tests.rs
 		return nil, err
 	}
 
+	_ = artifacts.SaveTranslationIteration(state.Task.TargetDir, state.Iteration, state.TranslatedProject)
 	logger.LogAgent("Translator", "Successfully wrote %d translated files to %s", len(files), state.Task.TargetDir)
 	state.Log("[Translator] Translated %d files to %s", len(files), state.Task.TargetDir)
 	return state, nil
@@ -182,6 +183,7 @@ FILE: tests/integration_tests.rs
 		return nil, err
 	}
 
+	_ = artifacts.SaveTranslationIteration(state.Task.TargetDir, state.Iteration, state.TranslatedProject)
 	logger.LogAgent("Translator", "Repairs applied across %d files", len(repairedFiles))
 	state.Log("[Translator] Applied repairs across %d files", len(repairedFiles))
 	return state, nil
