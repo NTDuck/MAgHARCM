@@ -42,7 +42,7 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.St
 	}
 
 	if !buildRes.Success {
-		report.Diagnostics = fmt.Sprintf("Compilation errors:\n%s", strings.Join(buildRes.Errors, "\n"))
+		report.Diagnostics = fmt.Sprintf("Compilation errors:\n%s\nCompiler Output:\n%s", strings.Join(buildRes.Errors, "\n"), buildRes.Output)
 		state.ValidationReport = report
 		return state, nil
 	}
