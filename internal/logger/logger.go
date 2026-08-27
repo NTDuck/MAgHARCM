@@ -63,15 +63,13 @@ func (c *ConsoleSink) WriteEvent(e Event) {
 	ts := e.Timestamp.Format("15:04:05")
 	switch e.Type {
 	case EventAgentStart, EventAgentEnd:
-		fmt.Fprintf(c.out, "[%s] [%-10s] %s\n", ts, e.Agent, e.Message)
+		fmt.Fprintf(c.out, "[%s] [%s] %s\n", ts, e.Agent, e.Message)
 	case EventToolCall:
-		fmt.Fprintf(c.out, "[%s]   -> [Tool: %-18s] %s\n", ts, e.Tool, e.Message)
+		fmt.Fprintf(c.out, "[%s] [Tool: %s] %s\n", ts, e.Tool, e.Message)
 	case EventStep:
-		fmt.Fprintf(c.out, "[%s]     - %s\n", ts, e.Message)
+		fmt.Fprintf(c.out, "[%s] %s\n", ts, e.Message)
 	case EventValidation:
 		fmt.Fprintf(c.out, "[%s] [Validation] %s\n", ts, e.Message)
-	case EventArtifactSave:
-		fmt.Fprintf(c.out, "[%s]   [Artifact] %s\n", ts, e.Message)
 	case EventWarning:
 		fmt.Fprintf(c.out, "[%s] [WARNING] %s\n", ts, e.Message)
 	case EventError:

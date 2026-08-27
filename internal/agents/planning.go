@@ -11,7 +11,7 @@ import (
 
 	"github.com/cloudwego/eino/components/model"
 	"github.com/cloudwego/eino/schema"
-	"MAgHARCM/internal/artifacts"
+
 	"MAgHARCM/internal/languages"
 	"MAgHARCM/internal/logger"
 	"MAgHARCM/internal/tools"
@@ -122,8 +122,6 @@ func (p *PlanningAgent) Run(ctx context.Context, state *types.State) (*types.Sta
 		},
 		RawPlan: planStr,
 	}
-
-	_ = artifacts.SavePlanningOutput(state.Task.TargetDir, state.PlanningOutput)
 	logger.LogAgent("Planning", "Planning complete: %d skeleton files written to filesystem, implementation plan ready", len(skeletonFiles))
 	state.Log("[Planning] Skeleton generated with %d files, Plan ready with %d fragments", len(skeletonFiles), len(fragments))
 	return state, nil

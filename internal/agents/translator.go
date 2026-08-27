@@ -10,7 +10,7 @@ import (
 
 	"github.com/cloudwego/eino/components/model"
 	"github.com/cloudwego/eino/schema"
-	"MAgHARCM/internal/artifacts"
+
 	"MAgHARCM/internal/logger"
 	"MAgHARCM/internal/tools"
 	"MAgHARCM/internal/types"
@@ -89,8 +89,6 @@ func (t *TranslatorAgent) translate(ctx context.Context, state *types.State) (*t
 	if err := syncFilesToDisk(state.Task.TargetDir, files, state); err != nil {
 		return nil, err
 	}
-
-	_ = artifacts.SaveTranslationIteration(state.Task.TargetDir, state.Iteration, state.TranslatedProject)
 	logger.LogAgent("Translator", "Successfully wrote %d translated files to %s", len(files), state.Task.TargetDir)
 	state.Log("[Translator] Translated %d files to %s", len(files), state.Task.TargetDir)
 	return state, nil
@@ -126,8 +124,6 @@ func (t *TranslatorAgent) repair(ctx context.Context, state *types.State) (*type
 	if err := syncFilesToDisk(state.Task.TargetDir, repairedFiles, state); err != nil {
 		return nil, err
 	}
-
-	_ = artifacts.SaveTranslationIteration(state.Task.TargetDir, state.Iteration, state.TranslatedProject)
 	logger.LogAgent("Translator", "Repairs applied across %d files", len(repairedFiles))
 	state.Log("[Translator] Applied repairs across %d files", len(repairedFiles))
 	return state, nil

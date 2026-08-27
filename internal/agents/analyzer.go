@@ -8,7 +8,7 @@ import (
 
 	"github.com/cloudwego/eino/components/model"
 	"github.com/cloudwego/eino/schema"
-	"MAgHARCM/internal/artifacts"
+
 	"MAgHARCM/internal/logger"
 	"MAgHARCM/internal/tools"
 	"MAgHARCM/internal/types"
@@ -106,8 +106,6 @@ func (a *AnalyzerAgent) Run(ctx context.Context, state *types.State) (*types.Sta
 		},
 		RawMarkdown: rawDoc,
 	}
-
-	_ = artifacts.SaveAnalyzerOutput(state.Task.TargetDir, state.AnalyzerOutput)
 	logger.LogAgent("Analyzer", "Analysis complete: Research, Library Analysis, and Target Design generated")
 	state.Log("[Analyzer] Research and Target Project Design generated successfully")
 	return state, nil

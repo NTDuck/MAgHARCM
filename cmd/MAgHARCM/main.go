@@ -142,12 +142,12 @@ func main() {
 	}
 
 	fmt.Printf("Task Specification:\n")
-	fmt.Printf("  - Source Codebase: %s\n", task.SourceDir)
-	fmt.Printf("  - Output Dir:      %s\n", task.TargetDir)
-	fmt.Printf("  - Source Language: %s\n", task.SourceLang)
-	fmt.Printf("  - Target Language: %s\n", task.TargetLang)
+	fmt.Printf("  Source Codebase: %s\n", task.SourceDir)
+	fmt.Printf("  Output Dir:      %s\n", task.TargetDir)
+	fmt.Printf("  Source Language: %s\n", task.SourceLang)
+	fmt.Printf("  Target Language: %s\n", task.TargetLang)
 	if task.Toolchain != "" {
-		fmt.Printf("  - Toolchain:       %s\n", task.Toolchain)
+		fmt.Printf("  Toolchain:       %s\n", task.Toolchain)
 	}
 	fmt.Println()
 	ctx := context.Background()
@@ -159,10 +159,8 @@ func main() {
 	models := llm.MustNewModels(ctx, cfg)
 
 	// Construct the Eino multi-agent graph with automated repair feedback
-	logger.LogStep("Constructing 4-agent Eino Graph (Analyzer -> Planning -> Translator <-> Validator)...")
+	logger.LogStep("Constructing 4-agent Eino Graph (Analyzer, Planning, Translator, Validator)...")
 	magharcmGraph := graph.MustNewMAgHARCMGraph(ctx, models)
-	_ = os.MkdirAll(filepath.Join(cfg.TargetDir, ".MAgHARCM"), 0o755)
-	_ = logger.SetFileSink(filepath.Join(cfg.TargetDir, ".MAgHARCM", "events.jsonl"))
 
 	// Initialize pipeline state with parsed task specification
 	initialState := &types.State{
