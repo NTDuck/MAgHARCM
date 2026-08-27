@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -181,26 +180,20 @@ func ExecuteDiagnostics(ctx context.Context, input *DiagnosticsInput) (*Diagnost
 		}
 	}
 
-	cargoToml := filepath.Join(dir, "Cargo.toml")
-	if _, err := os.Stat(cargoToml); err == nil {
-		cmd := exec.CommandContext(ctx, "cargo", "check", "--message-format=short")
-		cmd.Dir = dir
-		outputBytes, _ := cmd.CombinedOutput()
-		raw := string(outputBytes)
-		hasErr := strings.Contains(raw, "error:") || strings.Contains(raw, "error[")
+	buildOut, err := ValidateProjectBuild(ctx, dir, "", "")
+	if err == nil && buildOut != nil {
 		var issues []DiagnosticItem
-		for _, line := range strings.Split(raw, "\n") {
-			if strings.Contains(line, "error:") {
-				issues = append(issues, DiagnosticItem{Severity: "error", Message: line})
-			} else if strings.Contains(line, "warning:") {
-				issues = append(issues, DiagnosticItem{Severity: "warning", Message: line})
-			}
+		for _, e := range buildOut.Errors {
+			issues = append(issues, DiagnosticItem{Severity: "error", Message: e})
+		}
+		for _, w := range buildOut.Warnings {
+			issues = append(issues, DiagnosticItem{Severity: "warning", Message: w})
 		}
 		return &DiagnosticsOutput{
 			FilePath: input.FilePath,
-			HasError: hasErr,
+			HasError: buildOut.HasErrors,
 			Issues:   issues,
-			Raw:      raw,
+			Raw:      buildOut.Output,
 		}, nil
 	}
 

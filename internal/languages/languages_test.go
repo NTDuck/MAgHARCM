@@ -34,6 +34,25 @@ func TestLanguageRegistryLookup(t *testing.T) {
 	}
 }
 
+func TestDynamicLanguageLoader(t *testing.T) {
+	loader := GetLoader()
+	loader.AddSearchPath("/tmp/custom-grammars")
+
+	reg := GetRegistry()
+	rustSpec, ok := reg.FindByName("rust")
+	if !ok {
+		t.Fatalf("expected rust spec in registry")
+	}
+
+	// Loading when shared library is not in search paths should return descriptive error without crashing
+	_, err := loader.LoadGrammar(rustSpec)
+	if err == nil {
+		t.Logf("Found system grammar for rust")
+	} else {
+		t.Logf("Dynamic grammar fallback active: %v", err)
+	}
+}
+
 func TestExtractFileStructureMultiLanguage(t *testing.T) {
 	tmpDir := t.TempDir()
 
