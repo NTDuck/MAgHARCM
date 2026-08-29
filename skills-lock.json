@@ -31,6 +31,12 @@
       "skillPath": "skills/hallmark/SKILL.md",
       "computedHash": "579f86b27cdd7eb972107f7aecedd537f472891c5fd7c7c821bea15f64e0fe86"
     },
+    "obsidian-cli": {
+      "source": "kepano/obsidian-skills",
+      "sourceType": "github",
+      "skillPath": "skills/obsidian-cli/SKILL.md",
+      "computedHash": "f46ae626875f7e47c410c2ee93896c4526024ebe127719e8fb430261b5677edc"
+    },
     "ponytail": {
       "source": "dietrichgebert/ponytail",
       "sourceType": "github",
