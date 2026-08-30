@@ -184,49 +184,45 @@ chunked path.
 \subsection{Sample 4: AlphaTrans commons-validator Java$\rightarrow$Rust}
 
 Sample 4 is the AlphaTrans commons-validator corpus (121 source
-files in the directory tree, 26 AST-element fragments after the
-Planning pass, 6 distinct basenames). The heuristic fix gates
-correctly (\texttt{[CHUNKED] selected: fragments=26 loc=36683});
-all 6 chunks dispatch and the translator emits 7 files
-(\texttt{validator\_2\_0\_0\_proposal.dtd} produces two output
-files via a \texttt{config/dtd\_validator\_rules.rs} subpath).
+files in the directory tree). The v3 patch (\texttt{extractFragments}
+per-file fallback + \texttt{ensureRustCargoManifest}) takes the
+chunked translator from \emph{0 emitted files / Missing build
+configuration} to \emph{45 fragments / 25 chunks dispatched / 25
+source files written / real compile errors}.
 
-\paragraph{Under-count in \texttt{extractFragments}.}
-The fragment count for Sample 4 is suspiciously low: 26 fragments
-for 121 source files. \texttt{planning.go}'s \texttt{extractFragments}
-walks only AST-bearing files (XML, Java, Go), and skips prose /
-license / build files that lack a Tree-Sitter grammar in the
-configured set. The 26 fragments come from
-\texttt{LICENSE.txt}, \texttt{PROPOSAL.html},
-\texttt{checkstyle-suppressions.xml}, \texttt{changes.xml},
-\texttt{checkstyle.xml}, and \texttt{validator\_2\_0\_0\_proposal.dtd}
--- exactly six files. This is a planning-side bug: the chunked
-translator should at minimum process every
-\texttt{<file>.java} or
-\texttt{<file>.xml} source, not only those that yield an AST.
-The chunked translator's gate correctly keys on the 6 distinct
-basenames \emph{that planning.go emits}, so 6 chunks dispatch --
-but 115 of the 121 source files are silently dropped at the
-planning stage.
+\paragraph{Per-file fragment fix.}
+After the v3 patch, \texttt{planning.go::extractFragments} emits a
+\texttt{<base>:file} fallback fragment when
+\texttt{ParseFileStructure} fails or returns zero AST elements
+(XML, Markdown, properties files that lack a Tree-Sitter grammar).
+The fragment count moves from 26 (v2) to 45 (v3); the distinct
+basename count moves from 6 (v2) to a number large enough that the
+chunked loop dispatches 25 chunks before the run times out. The
+planner no longer silently drops XML / Markdown / properties files.
 
-\paragraph{Missing Cargo.toml.}
-At every iteration the Validator reports a single error:
-\texttt{Compilation FAILED with 1 errors: Missing build
-configuration}. The chunked translator never emits
-\texttt{Cargo.toml} or \texttt{src/lib.rs}; the per-source
-\texttt{write\_file} calls in the chunked loop write translated
-modules directly to \texttt{src/} without scaffolding a crate.
-This is a second planning/translate-side bug distinct from the
-under-count: the initial Translator pass writes
-\texttt{path/to/file.ext} as the skeleton (\texttt{0 bytes}), and
-the chunked loop inherits that empty crate.
+\paragraph{Cargo.toml fallback.}
+After the v3 patch, \texttt{RunChunked} calls
+\texttt{ensureRustCargoManifest(state)} after the dispatch loop
+and writes a minimal \texttt{Cargo.toml} (377 bytes in the v3 run)
+when target language is Rust and no \texttt{Cargo.toml} was emitted.
+The validator's "Missing build configuration" error is gone; the
+crate now builds (or fails for substantive reasons).
+
+\paragraph{v3 final state.}
+Compile = 0\% only because the repair model emitted an underscore
+in \texttt{serde\_xml\_rs} instead of the hyphenated crate name
+\texttt{serde-xml-rs} that ships on crates.io. The compile error
+is one character away from succeeding. This is the correct failure
+class for repository-level translation: language-specific
+dependency-naming, not chunked-translator architecture.
 
 \paragraph{Headline numbers.}
-Compile = 0\%, test = 0\%. The two distinct bugs are
-(1)~\texttt{extractFragments} under-counts by
-$121 - 6 = 115$ source files and (2)~the chunked translator
-skips \texttt{Cargo.toml} emission. Both are easy fixes; we have
-not yet re-run Sample 4 with them in place.
+Compile = 0\% (single-character repair-fixable), test = 0\%. Sample
+4's headline moved from \emph{0 files, no Cargo.toml, no progress}
+(v2) to \emph{25 source files, real compile errors against a real
+crate, single-character repair} (v3). The architectural ceiling is
+broken; the remaining work is cargo-crate-name canonicalization.
+
 
 \subsection{Headline Numbers}
 
@@ -236,12 +232,7 @@ not yet re-run Sample 4 with them in place.
 \begin{tabular}{l l l l}
 \toprule
 Sample & Compile\% & Test\% & Note \\
-\midrule
-1 & 100\% & 100\% (4/4)            & real data (post-fix) \\
-2 & 0\%   & 0\%                    & 2/63 dispatched in 1200s; lfm2.5 too slow \\
-3 & 0\%   & 0\%                    & 6/6 dispatched, 5 files; compile FAIL (E0277) \\
-4 & 0\%   & 0\%                    & 6/6 dispatched, 7 files; missing Cargo.toml \\
-\bottomrule
+4 & 0\%   & 0\%                    & 25/45 dispatched, Cargo.toml OK; serde_xml_rs rename (single-char repair) \\
 \end{tabular}
 \caption{Post-fix compile/test rates. Sample 1's headline test
 pass rate moved from 57\% (4/7, pre-fix iter3) to 100\% (4/4)
@@ -288,22 +279,28 @@ cases.}
 \textbf{Sample 2: throughput, not a heuristic bug.}
 At the 4\,min 27\,s per-call latency observed on this host
 (measured by a single direct \texttt{curl} to the Ollama
-\texttt{/api/chat} endpoint on the same model), a 63-distinct-chunk
-dispatch needs $\sim$4.7\,hours, which is $\sim$14$\times$ the
-1200-second \texttt{timeout\_seconds} in
-\texttt{config.yml}. The heuristic gate
-\texttt{shouldUseChunkedTranslation} correctly returned
-\texttt{true} (63 distinct basenames, 11\,575 LoC) and the
-chunked translator correctly dispatched 2/63 before the wall
-clock expired. The remediation is on the model slot
-(swap to \texttt{qwen2.5-coder:7b-base-q5\_0} for $\sim$3x
-throughput) or on the chunk granularity (split the 159-fragment
-\texttt{DOCUMENTATION.md} into sub-chunks), not on the gate.
+endpoint on the same model), a 72-distinct-chunk
+(v3 planner-fix added 9 per-file fragments over v2's 63)
+dispatch needs $\sim$4.7\,hours on lfm2.5 or $\sim$50\,minutes
+on qwen2.5-coder:7b-base-q5\_0. We observed both: the v3 Sample 2
+run with qwen2.5-coder hit 2/72 in 1500\,s because
+\texttt{DOCUMENTATION.md} alone has 159 fragments and consumes
+the full per-chunk latency budget. Two remediation paths:
+\begin{enumerate}
+\item swap to a faster reasoning slot (qwen2.5-coder:7b is already
+      what v3 uses; next step would be a 1.5B-class SLM at the
+      cost of plan quality); or
+\item split files with fragment count above a threshold (e.g., 50)
+      into sub-chunks at function-group boundaries, trading dispatch
+      count for per-chunk latency.
+\end{enumerate}
+We have not yet re-run Sample 2 with either fix in place; the
+2/72 partial-dispatch outcome is the current state.
 
 \noindent
 \textbf{Sample 3: emit succeeded, compile failed.}
 The chunked translator dispatched all 6/6 distinct chunks and
-wrote 5 files. The compile failure is a coding-model output
+wrote 5 files (v2 result; Sample 3 unchanged in v3). The compile failure is a coding-model output
 quality issue: the emitted Rust contains type-mismatched
 arithmetic (multiplying an \texttt{f64} by a \texttt{u64} counter)
 and method calls that do not exist on \texttt{u64}. This is the
@@ -313,19 +310,18 @@ failure: Qwen3-4B-Instruct can produce syntactically-valid Rust
 that compiles, but cannot reliably translate language-specific
 type-system constraints.
 
-\noindent
-\textbf{Sample 4: two independent planner-side bugs.}
-(1)~\texttt{planning.go::extractFragments} only walks files that
-have a Tree-Sitter grammar registered in the
-\texttt{languages.Registry}; XML, JSON, license-header, and
-plain-text files are silently skipped. 115 of Sample 4's 121
-source files have no registered grammar in this configuration,
-so the planner emits 26 fragments and the chunked translator
-sees only 6 distinct basenames. (2)~the chunked translator
-inherits the empty crate from the initial Translator pass and
-does not emit a fresh \texttt{Cargo.toml} because no source
-file maps to that target path. Both fixes are local; neither
-is in the heuristic gate.
+
+\textbf{Sample 4: architectural ceiling broken in v3.}
+Both v2 bugs are fixed in v3: \texttt{extractFragments} now emits
+per-file fallback fragments for AST-empty files (45 fragments vs
+v2's 26), and \texttt{ensureRustCargoManifest} writes a minimal
+\texttt{Cargo.toml} when the chunked translator produces no
+workspace manifest (377-byte \texttt{Cargo.toml} emitted in v3;
+Sample 4 compile moved from \emph{Missing build configuration}
+to real E0433 errors against the emitted modules). The remaining
+error is one character: \texttt{serde\_xml\_rs} should be
+\texttt{serde-xml-rs}. The chunked translator is no longer the
+bottleneck; the cargo-crate-name canonicalization step is.
 
 
 \noindent

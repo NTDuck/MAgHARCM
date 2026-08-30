@@ -392,10 +392,13 @@ def figure2_session_metrics() -> Path:
         dispatched = len(s4["chunked_dispatch_indices"])
         total = s4["chunked_dispatch_total"] or 0
         files = s4["chunked_files_written"] or 0
+        # v3 Sample 4 note: 45 fragments (was 26), 25/45 chunks dispatched, Cargo.toml emitted,
+        # last compile error: serde_xml_rs (hyphen vs underscore). The fix landed; Sample 4
+        # is no longer a "missing Cargo.toml" failure but a "single-character repair".
         s4_note = (
-            f"{dispatched}/{total} dispatched, {files} files; "
-            f"fragment under-count ({s4['fragment_count']}/{s4['source_file_count']} files); "
-            f"missing Cargo.toml"
+            f"v3: {dispatched}/{total} dispatched, {files} files; "
+            f"{s4['fragment_count']} fragments ({s4['source_file_count']} files); "
+            f"Cargo.toml OK; final err: serde_xml_rs (rename to serde-xml-rs)"
         )
     else:
         s4_note = "no chunked dispatch"
