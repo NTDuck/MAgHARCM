@@ -69,7 +69,16 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.St
 	report.FailedTests = testRes.TotalFailed
 	report.TestFailures = testRes.Failures
 	report.RealTests = testRes.RealTests
-	report.MinRealTests = max(5, len(state.PlanningOutput.Fragments)*2)
+	// MinRealTests scales with DISTINCT source-file basenames, not raw fragment
+	// count. planning.go emits one fragment per AST element (e.g., 517 for
+	// Sample 2 stats vs 73 source files); multiplying raw fragments by 2
+	// self-inflates the threshold and makes the ceiling unreachable. Counting
+	// distinct basenames matches the chunked translator's actual emit unit.
+	distinctSources := len(GroupFragmentsBySourceFile(state.PlanningOutput.Fragments))
+	if distinctSources == 0 {
+		distinctSources = len(state.PlanningOutput.Fragments)
+	}
+	report.MinRealTests = max(5, distinctSources*2)
 	if report.TotalTests > 0 {
 		report.TestPassRate = float64(report.PassedTests) / float64(report.TotalTests) * 100.0
 	}

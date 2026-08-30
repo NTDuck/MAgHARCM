@@ -2,21 +2,21 @@
 translation:
 
   source:
-    dir: "assets/samples/oxidizer/stats/go"
-    language: "Go"
+    dir: "assets/samples/alphatrans/commons-validator/java"
+    language: "Java"
   target:
-    dir: ".artifacts/stats/rust"
+    dir: ".artifacts/commons-validator/rust"
     language: "Rust"
-    toolchain: "cargo"
   models:
-    # Default reasoning slot (current pin).
-    reasoning: "gpt-oss:20b"
-    # Alternative MoE model (FreeToken pattern): 8B total / ~1.5B active,
-    # q4_K_M, ~5.2 GB on disk. Documented in
+    # Default reasoning slot (current pin): Liquid's MoE
+    # 8B total / ~1.5B active, q4_K_M, ~5.2 GB on disk. Documented in
     # paper/sec_appendix_freetoken.tex and the vault note
     # MAgHARCM/research/synthesis/MOE_FREETOKEN.md. Switch `reasoning:` to
-    # `lfm2.5:8b-a1b-q4_K_M` after the Sample 1 quality gate passes.
-    # reasoning_moe_alternative: "lfm2.5:8b-a1b-q4_K_M"
+    # `gpt-oss:20b` if lfm2.5 stalls on a sample (we observed Sample 2 stats
+    # only dispatch 2/63 chunks in 1200s — consider a faster slot or smaller
+    # chunks before falling back to gpt-oss).
+    # reasoning_moe_alternative: "gpt-oss:20b"
+    reasoning: "lfm2.5:8b-a1b-q4_K_M"
     coding: "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4_K_XL"
     ollama_url: "http://localhost:11434"
   execution:

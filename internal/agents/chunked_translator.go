@@ -26,12 +26,21 @@ const (
 )
 
 // shouldUseChunkedTranslation returns true when the planning output indicates
-// a translation large enough to justify per-fragment model calls.
+// a translation large enough to justify per-file chunked model calls.
+//
+// We gate on the count of *distinct source-file basenames* rather than the raw
+// fragment count: planning.go's extractFragments emits one fragment per AST
+// element, so a single source file with N functions contributes N fragments.
+// Counting distinct basenames gives a stable signal that scales with file
+// count (the actual unit of work for the chunked translator) instead of with
+// AST-element density, which is what downstream consumers (validator
+// MinRealTests, the per-file emit loop) really care about.
 func shouldUseChunkedTranslation(state *types.State) bool {
 	if state == nil {
 		return false
 	}
-	if len(state.PlanningOutput.Fragments) <= chunkedFragmentsThreshold {
+	distinctSources := len(GroupFragmentsBySourceFile(state.PlanningOutput.Fragments))
+	if distinctSources <= chunkedFragmentsThreshold {
 		return false
 	}
 	if countSourceLoC(state.Task.SourceDir) <= chunkedLoCThreshold {
@@ -109,8 +118,7 @@ func fragmentBase(fragment string) string {
 // groupFragmentsBySourceFile buckets fragment IDs by their source-file basename
 // using fragmentBase. Fragments with an unparsable basename ("") are dropped.
 // Iteration order of the returned map is unspecified; callers must sort keys
-// when they need a stable order.
-func groupFragmentsBySourceFile(fragments []string) map[string][]string {
+func GroupFragmentsBySourceFile(fragments []string) map[string][]string {
 	grouped := make(map[string][]string)
 	for _, frag := range fragments {
 		base := fragmentBase(frag)
@@ -151,8 +159,8 @@ func (t *TranslatorAgent) RunChunked(ctx context.Context, state *types.State) (*
 	logger.LogStep("Chunked translation: %d fragments, package=%s", len(fragments), packageName)
 	logger.LogStep("[CHUNKED] selected: fragments=%d loc=%d", len(fragments), countSourceLoC(state.Task.SourceDir))
 
-	grouped := groupFragmentsBySourceFile(fragments)
-	// Sort basenames for deterministic dispatch order. groupFragmentsBySourceFile
+	grouped := GroupFragmentsBySourceFile(fragments)
+	// Sort basenames for deterministic dispatch order. GroupFragmentsBySourceFile
 	// drops unparsable fragment IDs, so each surviving key corresponds to at
 	// least one fragment.
 	bases := make([]string, 0, len(grouped))
