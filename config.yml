@@ -1,11 +1,10 @@
 # MAgHARCM Translation Configuration
 translation:
-
   source:
-    dir: "assets/samples/alphatrans/commons-validator/java"
-    language: "Java"
+    dir: "assets/samples/oxidizer/stats/go"
+    language: "Go"
   target:
-    dir: ".artifacts/commons-validator/rust"
+    dir: ".artifacts/stats/rust"
     language: "Rust"
   models:
     # Default reasoning slot (current pin): Liquid's MoE
@@ -16,8 +15,7 @@ translation:
     # only dispatch 2/63 chunks in 1200s — consider a faster slot or smaller
     # chunks before falling back to gpt-oss).
     # reasoning_moe_alternative: "gpt-oss:20b"
-    reasoning: "lfm2.5:8b-a1b-q4_K_M"
-    coding: "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4_K_XL"
+    reasoning: "qwen2.5-coder:7b-base-q5_0"
     ollama_url: "http://localhost:11434"
   execution:
     max_iterations: 10

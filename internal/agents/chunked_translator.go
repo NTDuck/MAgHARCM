@@ -203,9 +203,37 @@ func (t *TranslatorAgent) RunChunked(ctx context.Context, state *types.State) (*
 		}
 	}
 
+	t.ensureRustCargoManifest(state)
+
 	logger.LogAgent("Translator", "Chunked translation complete: %d total files written", len(state.TranslatedProject.Files))
 	return &state.TranslatedProject, nil
 }
+
+// ensureRustCargoManifest writes a minimal Cargo.toml to state.Task.TargetDir
+// when the target language is Rust and no Cargo.toml was emitted by the
+// chunked loop. This unblocks the validator when the initial Translator
+// skeleton wrote no build manifest (the chunked translator only emits
+// per-source-file outputs, never the workspace manifest).
+func (t *TranslatorAgent) ensureRustCargoManifest(state *types.State) {
+	if state == nil || state.Task.TargetLang != "Rust" {
+		return
+	}
+	if _, ok := state.TranslatedProject.Files["Cargo.toml"]; ok {
+		return
+	}
+	packageName := t.resolvePackageName(state.Task.TargetDir, state.Task.TargetLang)
+	manifest := fmt.Sprintf(
+		"[package]\nname = %q\nversion = \"0.1.0\"\nedition = \"2021\"\n\n[lib]\npath = \"src/lib.rs\"\n",
+		packageName,
+	)
+	state.TranslatedProject.Files["Cargo.toml"] = manifest
+	if err := t.syncFilesToDisk(state.Task.TargetDir, map[string]string{"Cargo.toml": manifest}, state); err != nil {
+		logger.LogWarning("Failed to emit fallback Cargo.toml: %v", err)
+		return
+	}
+	logger.LogStep("Emitted fallback Cargo.toml for target %q", state.Task.TargetDir)
+}
+
 
 // translateFragment calls the Coding Model once for a single source fragment,
 // supplying a compact summary of previously emitted modules so the model can

@@ -57,6 +57,12 @@ func (p *PlanningAgent) Run(ctx context.Context, state *types.State) (*types.Sta
 }
 
 // extractFragments scans source files and extracts AST translation fragments and file summaries.
+//
+// When a source file fails to parse OR parses to zero AST elements (common for
+// build/config/prose files: pom.xml, README.md, *.properties, etc.), we still
+// emit a single per-file fragment "<base>:file" so the chunked translator sees
+// the file in its dispatch loop. Otherwise the chunked translator silently
+// drops 100+ files on Java corpora where most files are XML/Markdown/properties.
 func (p *PlanningAgent) extractFragments(sourceDir string) ([]string, []string, error) {
 	logger.LogStep("Extracting translation units across source and test files")
 	_, files, err := tools.BuildDirectoryTree(sourceDir, 5)
@@ -67,15 +73,31 @@ func (p *PlanningAgent) extractFragments(sourceDir string) ([]string, []string, 
 	var fragments []string
 	var sourceSummaries []string
 	for _, f := range files {
-		structOut, err := tools.ParseFileStructure(f)
-		if err == nil {
-			base := filepath.Base(f)
-			for _, el := range structOut.Elements {
-				frag := fmt.Sprintf("%s:%s", base, el.Name)
-				fragments = append(fragments, frag)
+		base := filepath.Base(f)
+		structOut, parseErr := tools.ParseFileStructure(f)
+		if parseErr != nil {
+			logger.LogWarning("ParseFileStructure failed for %q; emitting file-level fallback fragment", base)
+			fragments = append(fragments, fmt.Sprintf("%s:file", base))
+			raw, readErr := os.ReadFile(f)
+			if readErr == nil {
+				sourceSummaries = append(sourceSummaries, fmt.Sprintf("File %s:\n%s\n", base, string(raw)))
+			} else {
+				sourceSummaries = append(sourceSummaries, fmt.Sprintf("File %s: <unreadable>\n", base))
 			}
-			sourceSummaries = append(sourceSummaries, fmt.Sprintf("File %s:\n%s\n", base, structOut.RawCode))
+			continue
 		}
+		if len(structOut.Elements) == 0 {
+			// Parsed but no AST elements (e.g., XML/properties/prose). Still want
+			// the chunked translator to see this file as one fragment.
+			fragments = append(fragments, fmt.Sprintf("%s:file", base))
+			sourceSummaries = append(sourceSummaries, fmt.Sprintf("File %s:\n%s\n", base, structOut.RawCode))
+			continue
+		}
+		for _, el := range structOut.Elements {
+			frag := fmt.Sprintf("%s:%s", base, el.Name)
+			fragments = append(fragments, frag)
+		}
+		sourceSummaries = append(sourceSummaries, fmt.Sprintf("File %s:\n%s\n", base, structOut.RawCode))
 	}
 
 	logger.LogTool("fragment_extraction", "Extracted %d translation fragments from source files", len(fragments))
