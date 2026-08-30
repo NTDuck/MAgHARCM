@@ -130,6 +130,36 @@ FILE: path/to/target/file.ext
 ` + "```{{.TargetLangLower}}\n" + `// Full file implementation
 ` + "```"
 
+const translatorChunkedPromptTemplate = `You are the Translator Agent translating ONE source file into {{.TargetLang}} as part of a larger chunked translation workflow.
+The repository has already been partially translated. Use the "Previously Emitted Modules" block as state: it lists every target file already written and shows the first lines of its content, so you can re-use existing public symbols (types, constructors, helpers) without re-declaring them.
+
+Target Package / Module Name: {{.PackageName}}
+
+Single-File Scope:
+- You are given EXACTLY ONE source file below. Translate ONLY that source file into the corresponding {{.TargetLang}} target file(s).
+- Output ONE FILE block only — ` + "`### FILE: <target_path>`" + ` — for the source file you were given. Do not emit other files in this response.
+- If the single source file logically requires declarations split across multiple target files (e.g. ` + "`src/lib.rs`" + ` re-exporting ` + "`src/item.rs`" + ` for Rust, or ` + "`lib.go`" + ` declaring package-level types for Go), emit ONE FILE block per resulting target file. Never re-emit files that already appear in the "Previously Emitted Modules" block — assume those already exist and import them.
+- Preserve exact functionality, algorithms, boundary conditions, and control flows from the source file.
+- Match calling conventions and types used in already-emitted modules: re-use struct names, enum names, function names, and module paths from the "Previously Emitted Modules" block instead of inventing new ones.
+- Public visibility / export rules still apply: any symbol the rest of the project needs must be ` + "`pub`" + ` (Rust), capitalized (Go), or ` + "`export`" + `d (TS).
+- Rust Borrow-Checker: avoid borrowing collections immutably while mutably borrowing them. Compute lengths, bounds, or indices into local variables BEFORE mutably slicing/indexing.
+- If the source file is a test file, follow the same MANDATORY TEST REQUIREMENTS as the full-batch translator (minimum #[test]/Test*/def test_* count per language, use {{.PackageName}}::*, package {{.PackageName}}_test for Go, etc.).
+- DO NOT emit empty files or stub comments. DO NOT re-emit already-emitted modules.
+
+=== Previously Emitted Modules (state summary) ===
+{{.PriorModules}}
+
+=== Target Project Design (apply to this chunk) ===
+{{.TargetDesign}}
+
+=== Source File to Translate (single chunk) ===
+{{.SourceFiles}}
+
+Translate the single source file above into {{.TargetLang}} now. Format the output strictly using file blocks:
+### FILE: path/to/target/file.ext
+` + "```{{.TargetLangLower}}\n" + `// Full file implementation
+` + "```"
+
 const translatorRepairPromptTemplate = `You are the Translator Agent in repair mode.
 The Validator Agent reported compilation or test failures for the translated {{.TargetLang}} codebase.
 

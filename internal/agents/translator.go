@@ -42,6 +42,14 @@ func (t *TranslatorAgent) Run(ctx context.Context, state *types.State) (*types.S
 		return t.repair(ctx, state)
 	}
 
+	if shouldUseChunkedTranslation(state) {
+		logger.LogAgent("Translator", "Chunked translation mode: %d fragments, source LoC > %d", len(state.PlanningOutput.Fragments), chunkedLoCThreshold)
+		if _, err := t.RunChunked(ctx, state); err != nil {
+			return nil, err
+		}
+		return state, nil
+	}
+
 	logger.LogAgent("Translator", "Initial Translation Mode: Implementing Part A (Source) and Part B (Tests)")
 	return t.translate(ctx, state)
 }
@@ -207,4 +215,3 @@ func (t *TranslatorAgent) syncFilesToDisk(targetDir string, files map[string]str
 	}
 	return nil
 }
-
