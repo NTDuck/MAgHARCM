@@ -41,3 +41,6 @@ paper/main.blg
 paper/main.log
 paper/main.out
 paper/main.pdf
+
+# Python plot script caches
+paper/figures/__pycache__/
