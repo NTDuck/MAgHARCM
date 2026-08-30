@@ -5,7 +5,11 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
+	"time"
+
+
 
 	"github.com/cloudwego/eino/components/model"
 	"github.com/cloudwego/eino/schema"
@@ -28,21 +32,26 @@ func NewValidatorAgent(m model.BaseChatModel) *ValidatorAgent {
 // Run validates the target project and produces a ValidationReport.
 func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.State, error) {
 	state.Iteration++
+	iterStart := time.Now()
 	logger.LogAgent("Validator", "Validating target project `%s` (Iteration %d/%d)",
 		state.Task.TargetDir, state.Iteration, state.MaxIterations)
+
+	report := types.ValidationReport{
+		IterationStart: iterStart,
+	}
 
 	buildRes, err := v.checkCompilation(ctx, state)
 	if err != nil {
 		return nil, err
 	}
 
-	report := types.ValidationReport{
-		CompilationSuccess: buildRes.Success,
-		CompilationErrors:  buildRes.Errors,
-	}
+	report.CompilationSuccess = buildRes.Success
+	report.CompilationErrors = buildRes.Errors
 
 	if !buildRes.Success {
 		report.Diagnostics = fmt.Sprintf("Compilation errors:\n%s\nCompiler Output:\n%s", strings.Join(buildRes.Errors, "\n"), buildRes.Output)
+		report.PerFile = scanTargetFiles(state, buildRes.Errors)
+		report.IterationWallMs = time.Since(iterStart).Milliseconds()
 		state.ValidationReport = report
 		return state, nil
 	}
@@ -66,8 +75,14 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.St
 		v.remedyCoverageGaps(ctx, state, uncovered, &report)
 	}
 
+	report.PerFile = scanTargetFiles(state, buildRes.Errors)
+
 	v.finalizeReport(&report, state, testRes.Output)
+	report.IterationWallMs = time.Since(iterStart).Milliseconds()
 	state.ValidationReport = report
+	logger.LogStep("ITER[%d] comp=%v tests=%d/%d (%.1f%%) wall=%dms per-file=%d",
+		state.Iteration, report.CompilationSuccess, report.PassedTests, report.TotalTests, report.TestPassRate,
+		report.IterationWallMs, len(report.PerFile))
 	return state, nil
 }
 
@@ -197,4 +212,68 @@ func (v *ValidatorAgent) generateAdditionalTests(ctx context.Context, state *typ
 			}
 		}
 	}
+}
+
+// fileErrorPattern matches compiler error lines that reference a file path.
+var fileErrorPattern = regexp.MustCompile(`(?:^|["'\s])([A-Za-z0-9_./\-]+\.[A-Za-z0-9]+):(?:\d+:\d+)?\s*(?:error|warning|note)`)
+
+// scanTargetFiles enumerates target source + test files and joins each file to
+// any compilation error mentioning it. Used for per-file observability.
+func scanTargetFiles(state *types.State, compileErrors []string) []types.FileStatus {
+	targetDir := state.Task.TargetDir
+	statuses := []types.FileStatus{}
+	seen := map[string]bool{}
+
+	// First: in-memory translated project files (most authoritative).
+	for relPath, content := range state.TranslatedProject.Files {
+		kind := "source"
+		if strings.HasPrefix(relPath, "tests/") || strings.HasSuffix(relPath, "_test."+strings.ToLower(state.Task.TargetLang)) {
+			kind = "test"
+		}
+		statuses = append(statuses, types.FileStatus{
+			Path:      relPath,
+			Kind:      kind,
+			Compiles:  true, // assume yes; failure is signaled by error grep below
+			LineCount: strings.Count(content, "\n") + 1,
+		})
+		seen[relPath] = true
+	}
+
+	// Then: any files on disk that aren't in memory (e.g. skeleton files written but never edited).
+	_ = filepath.Walk(targetDir, func(path string, info os.FileInfo, err error) error {
+		if err != nil || info.IsDir() {
+			return nil
+		}
+		if filepath.Ext(path) == "" {
+			return nil
+		}
+		rel, _ := filepath.Rel(targetDir, path)
+		if rel == "" || seen[rel] {
+			return nil
+		}
+		data, _ := os.ReadFile(path)
+		kind := "source"
+		if strings.HasPrefix(rel, "tests/") || strings.HasSuffix(rel, "_test."+strings.ToLower(state.Task.TargetLang)) {
+			kind = "test"
+		}
+		statuses = append(statuses, types.FileStatus{
+			Path:      rel,
+			Kind:      kind,
+			Compiles:  true,
+			LineCount: strings.Count(string(data), "\n") + 1,
+		})
+		return nil
+	})
+
+	// Now attribute compile errors to files (best-effort grep).
+	for i := range statuses {
+		for _, errLine := range compileErrors {
+			if fileErrorPattern.MatchString(errLine) && strings.Contains(errLine, statuses[i].Path) {
+				statuses[i].Compiles = false
+				statuses[i].Error = errLine
+				break
+			}
+		}
+	}
+	return statuses
 }

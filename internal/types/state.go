@@ -1,6 +1,9 @@
 package types
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 // TranslationTask defines the input specification for the translation pipeline.
 type TranslationTask struct {
 	SourceDir   string `json:"source_dir"`
@@ -92,19 +95,32 @@ type TranslatedProject struct {
 	Files map[string]string `json:"files"` // relative_path -> code_content
 }
 
+// FileStatus records the build/test outcome of an individual file.
+type FileStatus struct {
+	Path      string `json:"path"`
+	Kind      string `json:"kind"` // "source" or "test"
+	Compiles  bool   `json:"compiles"`
+	TestPass  bool   `json:"test_pass"`
+	LineCount int    `json:"line_count"`
+	Error     string `json:"error,omitempty"`
+}
+
 // ValidationReport summarizes compilation checks, test results, and compiler diagnostics.
 type ValidationReport struct {
-	AllSuccess         bool     `json:"all_success"`
-	CompilationSuccess bool     `json:"compilation_success"`
-	TestPassRate       float64  `json:"test_pass_rate"`
-	TotalTests         int      `json:"total_tests"`
-	PassedTests        int      `json:"passed_tests"`
-	FailedTests        int      `json:"failed_tests"`
-	CompilationErrors  []string `json:"compilation_errors"`
-	TestFailures       []string `json:"test_failures"`
-	UncoveredFunctions []string `json:"uncovered_functions"`
-	CoverageGapReport  string   `json:"coverage_gap_report"`
-	Diagnostics        string   `json:"diagnostics"`
+	AllSuccess         bool         `json:"all_success"`
+	CompilationSuccess bool         `json:"compilation_success"`
+	TestPassRate       float64      `json:"test_pass_rate"`
+	TotalTests         int          `json:"total_tests"`
+	PassedTests        int          `json:"passed_tests"`
+	FailedTests        int          `json:"failed_tests"`
+	CompilationErrors  []string     `json:"compilation_errors"`
+	TestFailures       []string     `json:"test_failures"`
+	UncoveredFunctions []string     `json:"uncovered_functions"`
+	CoverageGapReport  string       `json:"coverage_gap_report"`
+	Diagnostics        string       `json:"diagnostics"`
+	PerFile            []FileStatus `json:"per_file"`
+	IterationStart     time.Time    `json:"iteration_start,omitempty"`
+	IterationWallMs    int64        `json:"iteration_wall_ms,omitempty"`
 }
 
 // HasUncoveredFunctions determines if any discovered AST functions lack test assertions.
