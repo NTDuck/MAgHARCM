@@ -1,10 +1,11 @@
 # MAgHARCM Translation Configuration
 translation:
+
   source:
-    dir: "assets/samples/GildedRose-Refactoring-Kata/C"
-    language: "C"
+    dir: "assets/samples/oxidizer/stats/go"
+    language: "Go"
   target:
-    dir: ".artifacts/GildedRose-Refactoring-Kata/rust"
+    dir: ".artifacts/stats/rust"
     language: "Rust"
     toolchain: "cargo"
   models:
