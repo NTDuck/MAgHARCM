@@ -1,0 +1,122 @@
+================================================================
+       MAgHARCM - Multi-Agent Code Translation Engine           
+================================================================
+  Configuration:   /tmp/config-sample4-commons-validator.yml
+  Source Codebase: assets/samples/alphatrans/commons-validator/java (Java)
+  Target Directory:.artifacts/commons-validator/rust (Rust)
+  Toolchain:       cargo
+
+[17:36:16] Connecting to Ollama models at `http://localhost:11434`
+[17:36:16] Reasoning Model: `hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:Q5_K_M`
+[17:36:16] Coding Model:    `hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:Q5_K_M`
+[17:36:16] Constructing 4-agent Eino Graph (Analyzer, Planning, Translator, Validator)
+[17:36:16] Starting multi-agent translation execution
+[17:36:16] [Analyzer] Starting source project analysis: `assets/samples/alphatrans/commons-validator/java` (`Java` -> `Rust`)
+[17:36:16] Scanning directory hierarchy via `get_directory_tree`
+[17:36:16] [Tool: `get_directory_tree`] Found 25 source/header/test files in `assets/samples/alphatrans/commons-validator/java`
+[17:36:16] Parsing AST structure with Tree-Sitter: `BUILDING.txt`
+[17:36:17] [Tool: `get_file_structure`] `BUILDING.txt` -> 0 AST elements, 0 imports
+[17:36:17] Parsing AST structure with Tree-Sitter: `CONTRIBUTING.md`
+[17:36:17] [Tool: `get_file_structure`] `CONTRIBUTING.md` -> 0 AST elements, 0 imports
+[17:36:17] Parsing AST structure with Tree-Sitter: `LICENSE.txt`
+[17:36:17] [Tool: `get_file_structure`] `LICENSE.txt` -> 1 AST elements, 0 imports
+[17:36:17] Parsing AST structure with Tree-Sitter: `NOTICE.txt`
+[17:36:17] [Tool: `get_file_structure`] `NOTICE.txt` -> 0 AST elements, 0 imports
+[17:36:17] Parsing AST structure with Tree-Sitter: `PROPOSAL.html`
+[17:36:17] [Tool: `get_file_structure`] `PROPOSAL.html` -> 1 AST elements, 0 imports
+[17:36:17] Parsing AST structure with Tree-Sitter: `README.md`
+[17:36:17] [Tool: `get_file_structure`] `README.md` -> 0 AST elements, 0 imports
+[17:36:17] Parsing AST structure with Tree-Sitter: `RELEASE-NOTES.txt`
+[17:36:17] [Tool: `get_file_structure`] `RELEASE-NOTES.txt` -> 0 AST elements, 0 imports
+[17:36:17] Parsing AST structure with Tree-Sitter: `checkstyle-suppressions.xml`
+[17:36:17] [Tool: `get_file_structure`] `checkstyle-suppressions.xml` -> 1 AST elements, 0 imports
+[17:36:17] Parsing AST structure with Tree-Sitter: `checkstyle.xml`
+[17:36:17] [Tool: `get_file_structure`] `checkstyle.xml` -> 1 AST elements, 0 imports
+[17:36:17] Parsing AST structure with Tree-Sitter: `pom.xml`
+[17:36:17] [Tool: `get_file_structure`] `pom.xml` -> 0 AST elements, 1 imports
+[17:36:17] Parsing AST structure with Tree-Sitter: `bin.xml`
+[17:36:17] [Tool: `get_file_structure`] `bin.xml` -> 0 AST elements, 0 imports
+[17:36:17] Parsing AST structure with Tree-Sitter: `src.xml`
+[17:36:17] [Tool: `get_file_structure`] `src.xml` -> 0 AST elements, 0 imports
+[17:36:17] Parsing AST structure with Tree-Sitter: `changes.xml`
+[17:36:17] [Tool: `get_file_structure`] `changes.xml` -> 11 AST elements, 2 imports
+[17:36:17] Parsing AST structure with Tree-Sitter: `release-notes.vm`
+[17:36:17] [Tool: `get_file_structure`] `release-notes.vm` -> 0 AST elements, 0 imports
+[17:36:17] Parsing AST structure with Tree-Sitter: `download_validator.cgi`
+[17:36:17] [Tool: `get_file_structure`] `download_validator.cgi` -> 0 AST elements, 0 imports
+[17:36:17] Parsing AST structure with Tree-Sitter: `logo.png`
+[17:36:17] [Tool: `get_file_structure`] `logo.png` -> 0 AST elements, 0 imports
+[17:36:17] Parsing AST structure with Tree-Sitter: `site.xml`
+[17:36:17] [Tool: `get_file_structure`] `site.xml` -> 0 AST elements, 0 imports
+[17:36:17] Parsing AST structure with Tree-Sitter: `building.xml`
+[17:36:17] [Tool: `get_file_structure`] `building.xml` -> 0 AST elements, 0 imports
+[17:36:17] Parsing AST structure with Tree-Sitter: `community.xml`
+[17:36:17] [Tool: `get_file_structure`] `community.xml` -> 0 AST elements, 0 imports
+[17:36:17] Parsing AST structure with Tree-Sitter: `download_validator.xml`
+[17:36:17] [Tool: `get_file_structure`] `download_validator.xml` -> 0 AST elements, 0 imports
+[17:36:17] Parsing AST structure with Tree-Sitter: `index.xml`
+[17:36:17] [Tool: `get_file_structure`] `index.xml` -> 0 AST elements, 0 imports
+[17:36:17] Parsing AST structure with Tree-Sitter: `issue-tracking.xml`
+[17:36:17] [Tool: `get_file_structure`] `issue-tracking.xml` -> 0 AST elements, 0 imports
+[17:36:17] Parsing AST structure with Tree-Sitter: `mail-lists.xml`
+[17:36:17] [Tool: `get_file_structure`] `mail-lists.xml` -> 0 AST elements, 0 imports
+[17:36:17] Parsing AST structure with Tree-Sitter: `tasks.xml`
+[17:36:17] [Tool: `get_file_structure`] `tasks.xml` -> 0 AST elements, 2 imports
+[17:36:17] Parsing AST structure with Tree-Sitter: `validator_2_0_0_proposal.dtd`
+[17:36:17] [Tool: `get_file_structure`] `validator_2_0_0_proposal.dtd` -> 11 AST elements, 1 imports
+[17:36:44] [Analyzer] Analysis complete: Research, Library Analysis, and Target Design generated
+[17:36:44] [Planning] Decomposing translation into granular translation units and constructing plan
+[17:36:44] Extracting translation units across source and test files
+[17:36:44] [Tool: `fragment_extraction`] Extracted 26 translation fragments from source files
+[17:36:44] Fragment: `LICENSE.txt:name`
+[17:36:44] Fragment: `PROPOSAL.html:built`
+[17:36:44] Fragment: `checkstyle-suppressions.xml:suppressions`
+[17:36:44] Fragment: `checkstyle.xml:module`
+[17:36:44] Fragment: `changes.xml:attribute`
+[17:36:44] Fragment: `changes.xml:is`
+[17:36:44] Fragment: `changes.xml:does`
+[17:36:44] Fragment: `changes.xml:change`
+[17:36:44] Fragment: `changes.xml:name`
+[17:36:44] Fragment: `changes.xml:from`
+[17:36:44] Fragment: `changes.xml:jcv_isFieldPresent`
+[17:36:44] Fragment: `changes.xml:library`
+[17:36:44] Fragment: `changes.xml:or`
+[17:36:44] Fragment: `changes.xml:which`
+[17:36:44] Fragment: `changes.xml:getMessage`
+[17:36:44] Fragment: `validator_2_0_0_proposal.dtd:element`
+[17:36:44] Fragment: `validator_2_0_0_proposal.dtd:form`
+[17:36:44] Fragment: `validator_2_0_0_proposal.dtd:so`
+[17:36:44] Fragment: `validator_2_0_0_proposal.dtd:and`
+[17:36:44] Fragment: `validator_2_0_0_proposal.dtd:and`
+[17:36:44] Fragment: `validator_2_0_0_proposal.dtd:The`
+[17:36:44] Fragment: `validator_2_0_0_proposal.dtd:types`
+[17:36:44] Fragment: `validator_2_0_0_proposal.dtd:CDATA`
+[17:36:44] Fragment: `validator_2_0_0_proposal.dtd:name`
+[17:36:44] Fragment: `validator_2_0_0_proposal.dtd:path`
+[17:36:44] Fragment: `validator_2_0_0_proposal.dtd:file`
+[17:37:08] [Tool: `name_mapping`] Created 13 symbol mappings
+[17:37:08] [Tool: `write_file`] Wrote skeleton to `src/main/resources/validator-config.xml` (1500 bytes)
+[17:37:08] [Planning] Planning complete: 1 skeleton files written to filesystem, implementation plan ready
+[17:37:08] [Translator] Chunked translation mode: 26 fragments, source LoC > 1000
+[17:37:08] Chunked translation: 26 fragments, package=commons_validator
+[17:37:08] [CHUNKED] selected: fragments=26 loc=36683
+[17:37:08] Chunked translation: fragment 1/26 (LICENSE.txt:name)
+[17:37:52] [Tool: `write_file`] Wrote `src/commons_validator/license.rs` to `.artifacts/commons-validator/rust` (9609 bytes)
+[17:37:52] Chunked translation: fragment 2/26 (PROPOSAL.html:built)
+[17:38:05] [Tool: `write_file`] Wrote `src/commons_validator/lib.rs` to `.artifacts/commons-validator/rust` (2773 bytes)
+[17:38:05] Chunked translation: fragment 3/26 (changes.xml:attribute)
+[17:38:24] [Tool: `write_file`] Wrote `src/lib.rs` to `.artifacts/commons-validator/rust` (3941 bytes)
+[17:38:24] Chunked translation: fragment 4/26 (changes.xml:change)
+[17:38:42] [Tool: `write_file`] Wrote `target/validator_documentation.rs` to `.artifacts/commons-validator/rust` (3869 bytes)
+[17:38:42] Chunked translation: fragment 5/26 (changes.xml:does)
+[17:39:45] [Tool: `write_file`] Wrote `src/lib.rs` to `.artifacts/commons-validator/rust` (9262 bytes)
+[17:39:45] Chunked translation: fragment 6/26 (changes.xml:from)
+[17:41:00] [Tool: `write_file`] Wrote `src/validator.rs` to `.artifacts/commons-validator/rust` (16330 bytes)
+[17:41:00] Chunked translation: fragment 7/26 (changes.xml:getMessage)
+[17:41:53] [Tool: `write_file`] Wrote `src/validator_release_notes.rs` to `.artifacts/commons-validator/rust` (9998 bytes)
+[17:41:53] Chunked translation: fragment 8/26 (changes.xml:is)
+[17:55:40] [Tool: `write_file`] Wrote `src/lib.rs` to `.artifacts/commons-validator/rust` (233534 bytes)
+[17:55:40] Chunked translation: fragment 9/26 (changes.xml:jcv_isFieldPresent)
+[17:56:00] [Tool: `write_file`] Wrote `src/validator/documentation.rs` to `.artifacts/commons-validator/rust` (3926 bytes)
+[17:56:00] Chunked translation: fragment 10/26 (changes.xml:library)
+EXIT_CODE=0 ELAPSED=1200s
