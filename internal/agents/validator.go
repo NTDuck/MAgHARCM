@@ -6,8 +6,11 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
+
+
 
 
 
@@ -65,13 +68,15 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.St
 	report.PassedTests = testRes.TotalPassed
 	report.FailedTests = testRes.TotalFailed
 	report.TestFailures = testRes.Failures
+	report.RealTests = testRes.RealTests
+	report.MinRealTests = max(5, len(state.PlanningOutput.Fragments)*2)
 	if report.TotalTests > 0 {
 		report.TestPassRate = float64(report.PassedTests) / float64(report.TotalTests) * 100.0
 	}
 
 	uncovered := v.findUncoveredFunctions(state)
 	report.UncoveredFunctions = uncovered
-	if len(uncovered) > 0 && testRes.Success && testRes.TotalPassed == 0 && v.Model != nil {
+	if (len(uncovered) > 0 || report.RealTests < report.MinRealTests) && v.Model != nil {
 		v.remedyCoverageGaps(ctx, state, uncovered, &report)
 	}
 
@@ -83,6 +88,7 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.St
 	logger.LogStep("ITER[%d] comp=%v tests=%d/%d (%.1f%%) wall=%dms per-file=%d",
 		state.Iteration, report.CompilationSuccess, report.PassedTests, report.TotalTests, report.TestPassRate,
 		report.IterationWallMs, len(report.PerFile))
+	logger.LogStep("ITER[%d] real_tests=%d min=%d (vacuous=%v)", state.Iteration, report.RealTests, report.MinRealTests, report.RealTests == 0)
 	return state, nil
 }
 
@@ -140,7 +146,7 @@ func (v *ValidatorAgent) findUncoveredFunctions(state *types.State) []string {
 // remedyCoverageGaps prompts the model for supplemental tests and re-executes tests.
 func (v *ValidatorAgent) remedyCoverageGaps(ctx context.Context, state *types.State, uncovered []string, report *types.ValidationReport) {
 	logger.LogStep("Coverage Gap Analysis: %d functions uncovered and 0 tests executed, prompting Reasoning Model for tests", len(uncovered))
-	v.generateAdditionalTests(ctx, state, uncovered)
+	v.generateAdditionalTests(ctx, state, uncovered, report)
 
 	logger.LogStep("Re-running test suite after coverage test generation")
 	if reTest, err := tools.RunProjectTests(ctx, state.Task.TargetDir, state.Task.TargetLang, state.Task.Toolchain, ""); err == nil {
@@ -148,6 +154,7 @@ func (v *ValidatorAgent) remedyCoverageGaps(ctx context.Context, state *types.St
 		report.FailedTests = reTest.TotalFailed
 		report.TotalTests = reTest.TotalPassed + reTest.TotalFailed
 		report.TestFailures = reTest.Failures
+		report.RealTests = reTest.RealTests
 		if report.TotalTests > 0 {
 			report.TestPassRate = float64(report.PassedTests) / float64(report.TotalTests) * 100.0
 		}
@@ -156,7 +163,7 @@ func (v *ValidatorAgent) remedyCoverageGaps(ctx context.Context, state *types.St
 
 // finalizeReport evaluates convergence criteria and sets milestone diagnostics.
 func (v *ValidatorAgent) finalizeReport(report *types.ValidationReport, state *types.State, testOutput string) {
-	report.AllSuccess = report.CompilationSuccess && len(report.CompilationErrors) == 0 && report.FailedTests == 0 && report.PassedTests > 0
+	report.AllSuccess = report.CompilationSuccess && len(report.CompilationErrors) == 0 && report.FailedTests == 0 && report.RealTests >= report.MinRealTests
 	if report.AllSuccess {
 		report.Diagnostics = fmt.Sprintf("All %d tests passed successfully! Codebase compiled cleanly without errors.", report.PassedTests)
 		state.IsComplete = true
@@ -168,8 +175,7 @@ func (v *ValidatorAgent) finalizeReport(report *types.ValidationReport, state *t
 	}
 }
 
-// generateAdditionalTests requests supplemental test cases from the reasoning model.
-func (v *ValidatorAgent) generateAdditionalTests(ctx context.Context, state *types.State, uncovered []string) {
+func (v *ValidatorAgent) generateAdditionalTests(ctx context.Context, state *types.State, uncovered []string, report *types.ValidationReport) {
 	var sourceFilesData []string
 	for relPath, content := range state.TranslatedProject.Files {
 		if !strings.HasPrefix(relPath, "tests/") {
@@ -191,6 +197,7 @@ func (v *ValidatorAgent) generateAdditionalTests(ctx context.Context, state *typ
 		"UncoveredFunctions": strings.Join(uncovered, "\n"),
 		"SourceFiles":        strings.Join(sourceFilesData, "\n"),
 		"TestFileRelPath":    testFileRelPath,
+		"MinRealTests":       strconv.Itoa(report.MinRealTests),
 	})
 	if err != nil {
 		logger.LogError("Failed to render validator coverage prompt: %v", err)

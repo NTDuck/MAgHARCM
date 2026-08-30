@@ -41,12 +41,12 @@ type RunTestsInput struct {
 	TestFilter string `json:"test_filter,omitempty" jsonschema_description:"Optional filter/name of specific test to execute"`
 }
 
-// RunTestsOutput result of test execution.
 type RunTestsOutput struct {
 	Success     bool     `json:"success"`
 	Output      string   `json:"output"`
 	TotalPassed int      `json:"total_passed"`
 	TotalFailed int      `json:"total_failed"`
+	RealTests   int      `json:"real_tests"`
 	Failures    []string `json:"failures"`
 	Message     string   `json:"message"`
 }
@@ -257,37 +257,106 @@ func RunProjectTests(ctx context.Context, projectDir, lang, toolchain, filter st
 	outBytes, err := cmd.CombinedOutput()
 	outputStr := string(outBytes)
 
-	// Universal test result parsing
+	// Universal test result parsing.
+	// Rust: per-test granularity from `test foo::bar ... ok|FAILED` lines; aggregate `test result: ok.` blocks for cross-check.
+	// Other languages: leave RealTests = -1 (sentinel: not parsed for this language) and keep legacy regex aggregation.
 	passed := 0
 	failed := 0
+	realTests := -1
 
-	passRe := regexp.MustCompile(`(?i)(?:(\d+)\s+passed|---\s*PASS:|PASSED)`)
-	failRe := regexp.MustCompile(`(?i)(?:(\d+)\s+failed|---\s*FAIL:|FAILED)`)
+	isRust := strings.EqualFold(lang, "rust") || strings.EqualFold(tcName, "cargo") || strings.EqualFold(tcName, "rust")
 
-	for _, match := range passRe.FindAllStringSubmatch(outputStr, -1) {
-		if len(match) > 1 && match[1] != "" {
-			if n, err := strconv.Atoi(match[1]); err == nil {
-				passed += n
+	if isRust {
+		realTests = 0
+		perTestRe := regexp.MustCompile(`^test\s+\S+::\S+\s+\.\.\s+(ok|FAILED|ignored)$`)
+		// Cross-check: cargo prints "test result: ok. M passed; K failed; ... ignored; ..." per binary.
+		// We still derive RealTests from per-test lines (excludes harness / doc-test artifacts).
+		for _, line := range strings.Split(outputStr, "\n") {
+			trimmed := strings.TrimSpace(line)
+			m := perTestRe.FindStringSubmatch(trimmed)
+			if m == nil {
 				continue
 			}
-		}
-		passed++
-	}
-	for _, match := range failRe.FindAllStringSubmatch(outputStr, -1) {
-		if len(match) > 1 && match[1] != "" {
-			if n, err := strconv.Atoi(match[1]); err == nil {
-				failed += n
-				continue
+			switch m[1] {
+			case "ok":
+				passed++
+				realTests++
+			case "FAILED":
+				failed++
+				realTests++
 			}
 		}
-		failed++
-	}
 
-	if passed == 0 && failed == 0 {
-		if err == nil {
-			passed = 1
-		} else {
-			failed = 1
+		// Sanity cross-check: any aggregate `test result:` line with passed > 0 means at least one real test ran.
+		// If the per-test regex missed (e.g. very old cargo format), fall back to aggregate counts.
+		aggRe := regexp.MustCompile(`(?i)test result:\s*(?:ok|FAILED)\.\s*(\d+)\s+passed;\s*(\d+)\s+failed`)
+		aggMatches := aggRe.FindAllStringSubmatch(outputStr, -1)
+		for _, m := range aggMatches {
+			if len(m) >= 3 {
+				if p, perr := strconv.Atoi(m[1]); perr == nil {
+					if f, ferr := strconv.Atoi(m[2]); ferr == nil {
+						if p > 0 || f > 0 {
+							// Only upgrade if we have nothing from per-test parsing — guards against doc-test doubling.
+							if realTests == 0 {
+								realTests = p + f
+							}
+						}
+					}
+				}
+			}
+		}
+
+		// Zero-fn guard: if cargo printed `0 passed; 0 failed` AND no per-test granularity AND no `#[test]` fns exist in target tests,
+		// confirm RealTests = 0 (not a false-positive from doc-test counting).
+		if realTests == 0 {
+			grepCmd := exec.CommandContext(ctx, "grep", "-r", "--include=*.rs", "-E", "fn\\s+.*test", filepath.Join(cleanDir, "tests"))
+			grepCmd.Dir = cleanDir
+			if grepOut, gerr := grepCmd.CombinedOutput(); gerr == nil {
+				count := 0
+				for _, l := range strings.Split(string(grepOut), "\n") {
+					if strings.TrimSpace(l) != "" {
+						count++
+					}
+				}
+				if count == 0 {
+					realTests = 0
+				}
+			}
+		}
+
+		// Fall back: legacy regex for `passed`/`failed` so other harnesses / framework output still parses.
+		if passed == 0 && failed == 0 && realTests > 0 {
+			passed = realTests
+		}
+	} else {
+		passRe := regexp.MustCompile(`(?i)(?:(\d+)\s+passed|---\s*PASS:|PASSED)`)
+		failRe := regexp.MustCompile(`(?i)(?:(\d+)\s+failed|---\s*FAIL:|FAILED)`)
+
+		for _, match := range passRe.FindAllStringSubmatch(outputStr, -1) {
+			if len(match) > 1 && match[1] != "" {
+				if n, perr := strconv.Atoi(match[1]); perr == nil {
+					passed += n
+					continue
+				}
+			}
+			passed++
+		}
+		for _, match := range failRe.FindAllStringSubmatch(outputStr, -1) {
+			if len(match) > 1 && match[1] != "" {
+				if n, perr := strconv.Atoi(match[1]); perr == nil {
+					failed += n
+					continue
+				}
+			}
+			failed++
+		}
+
+		if passed == 0 && failed == 0 {
+			if err == nil {
+				passed = 1
+			} else {
+				failed = 1
+			}
 		}
 	}
 
@@ -302,13 +371,28 @@ func RunProjectTests(ctx context.Context, projectDir, lang, toolchain, filter st
 	}
 
 	success := err == nil && failed == 0 && passed > 0
+	// Vacuous pass guard for Rust: if no real functional tests were discovered AND no execution error,
+	// the "passed" total must be rejected even when TotalPassed > 0 (e.g. doc-test counted).
+	vacuous := false
+	if isRust && realTests == 0 && err == nil {
+		vacuous = true
+		passed = 0
+		success = false
+	}
+
+	msg := fmt.Sprintf("%s test run: %d passed, %d failed", tcName, passed, failed)
+	if vacuous {
+		msg = "Vacuous test pass: 0 real functional tests discovered"
+	}
+
 	return &RunTestsOutput{
 		Success:     success,
 		Output:      outputStr,
 		TotalPassed: passed,
 		TotalFailed: failed,
+		RealTests:   realTests,
 		Failures:    failures,
-		Message:     fmt.Sprintf("%s test run: %d passed, %d failed", tcName, passed, failed),
+		Message:     msg,
 	}, nil
 }
 

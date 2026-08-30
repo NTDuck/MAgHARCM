@@ -100,6 +100,21 @@ Translation Guidelines:
 5. Rust Borrow-Checker: Avoid borrowing collections immutably while mutably borrowing them. Compute lengths, bounds, or indices into local variables BEFORE mutably slicing/indexing (e.g. ` + "`let len = items.len(); let slice = &mut items[..size.min(len)];`" + ` or use ` + "`items.iter_mut()`" + `).
 6. Write clean, complete, fully closed code for all required files without placeholders, stubs, or truncation.
 
+MANDATORY TEST REQUIREMENTS — failure to comply = non-deliverable:
+- EVERY Rust test file you emit MUST contain at least 3 ` + "`#[test]`" + `-attributed functions. Translate every distinct scenario in source test files (one scenario per day in GildedRoseTextTests.c) into its own #[test].
+- EVERY ` + "`#[test]`" + ` function MUST contain at least one ` + "`assert!`" + ` / ` + "`assert_eq!`" + ` / ` + "`assert_ne!`" + ` call.
+- Test file paths MUST be under ` + "`tests/`" + ` (integration tests) — e.g. ` + "`tests/text_tests.rs`" + `, ` + "`tests/unit_tests.rs`" + `, ` + "`tests/characterization_tests.rs`" + `.
+- At the TOP of every test file, ` + "`use {{.PackageName}}::*;`" + ` (replace ` + "`{{.PackageName}}`" + ` with the actual package name below).
+- The translated test bodies MUST drive the same scenarios as the source tests (e.g. for GildedRose's ` + "`GildedRoseTextTests.c`" + `, emit day-by-day characterization tests asserting item name/sell_in/quality after N days of ` + "`update_quality`" + `).
+- DO NOT emit empty test files or files with only comments. DO NOT emit ` + "`// This file is not needed`" + ` stubs.
+- For C source with ` + "`GildedRoseTextTests.c`" + ` (a ` + "`main()`" + ` driver that calls ` + "`print_item`" + `), translate each scenario line into a Rust ` + "`#[test]`" + ` that asserts the printed string or the item's name/sell_in/quality fields after ` + "`update_quality`" + ` is called.
+
+MANDATORY TEST REQUIREMENTS (other target languages) — failure to comply = non-deliverable:
+- Go: every ` + "`_test.go`" + ` file MUST define at least 2 ` + "`func TestXxx(t *testing.T)`" + ` functions; each MUST call ` + "`t.Errorf`" + `, ` + "`t.Fatalf`" + `, ` + "`t.Errorf`" + ` via ` + "`if got != want { t.Errorf(...) }`" + `, or use ` + "`got := ...; if got != want { t.Fatalf(...) }`" + `. Package MUST be ` + "`{{.PackageName}}_test`" + `. DO NOT emit ` + "`_test.go`" + ` files containing only package declarations, comments, or empty bodies.
+- C/C++ (Catch2 / GoogleTest): every test file MUST define at least 2 ` + "`TEST_CASE`" + ` (Catch2) or ` + "`TEST`" + ` (GoogleTest) cases; each MUST use ` + "`REQUIRE`" + ` / ` + "`CHECK`" + ` (Catch2) or ` + "`EXPECT_*`" + ` / ` + "`ASSERT_*`" + ` (GoogleTest). DO NOT emit empty or comment-only test files.
+- Python (pytest / unittest): every test file MUST define at least 2 ` + "`def test_*`" + ` functions (pytest) or 2 ` + "`class TestX(unittest.TestCase)`" + ` methods named ` + "`test_*`" + `; each MUST contain at least one ` + "`assert`" + ` statement. DO NOT emit ` + "`pass`" + `-only test files or ` + "`# This file is not needed`" + ` stubs.
+- JavaScript / TypeScript (Jest / Mocha): every test file MUST define at least 2 ` + "`test(`" + ` or ` + "`it(`" + ` blocks (Jest) or 2 ` + "`describe`" + ` cases with ` + "`it`" + ` (Mocha); each MUST contain at least one ` + "`expect(...).to*`" + ` (Jest) or ` + "`assert.*`" + ` (Chai/Node). DO NOT emit empty or stub test files.
+
 === Source Files ===
 {{.SourceFiles}}
 
@@ -147,6 +162,10 @@ The following functions or modules are uncovered or need more test assertions in
 
 Target Source Files:
 {{.SourceFiles}}
+
+Target minimum test count: {{.MinRealTests}}. You MUST emit at least this many #[test] functions across the test files.
+Emit AT LEAST 2× the number of source functions (one happy path + one edge case per function). Always aim higher than the minimum — more tests is better.
+Translate EACH scenario in the source test files (e.g. the GildedRoseTextTests.c main() driver scenarios, one per day) into a separate #[test] function.
 
 Generate additional comprehensive unit test cases in the target test framework to thoroughly exercise all uncovered functions and edge cases.
 Output the complete updated test file:

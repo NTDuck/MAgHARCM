@@ -105,7 +105,6 @@ type FileStatus struct {
 	Error     string `json:"error,omitempty"`
 }
 
-// ValidationReport summarizes compilation checks, test results, and compiler diagnostics.
 type ValidationReport struct {
 	AllSuccess         bool         `json:"all_success"`
 	CompilationSuccess bool         `json:"compilation_success"`
@@ -113,6 +112,8 @@ type ValidationReport struct {
 	TotalTests         int          `json:"total_tests"`
 	PassedTests        int          `json:"passed_tests"`
 	FailedTests        int          `json:"failed_tests"`
+	RealTests          int          `json:"real_tests"`
+	MinRealTests       int          `json:"min_real_tests"`
 	CompilationErrors  []string     `json:"compilation_errors"`
 	TestFailures       []string     `json:"test_failures"`
 	UncoveredFunctions []string     `json:"uncovered_functions"`
@@ -128,9 +129,12 @@ func (v *ValidationReport) HasUncoveredFunctions() bool {
 	return len(v.UncoveredFunctions) > 0
 }
 
-// IsAllSuccess returns true when achieving 100% compilation success and 100% test pass rate without errors or failures.
+// IsAllSuccess returns true ONLY when the validator finalized report.AllSuccess
+// with the MinRealTests gate satisfied. The struct field is the single source
+// of truth — duplicate field-level checks here caused the gate to be ignored
+// by graph.go / main.go (which call this method).
 func (v *ValidationReport) IsAllSuccess() bool {
-	return v.CompilationSuccess && v.FailedTests == 0 && v.PassedTests > 0 && len(v.CompilationErrors) == 0 && len(v.TestFailures) == 0
+	return v.AllSuccess
 }
 
 // String provides a human-readable summary of the validation report.
