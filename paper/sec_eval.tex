@@ -252,6 +252,82 @@ throughput (Sample 2), the coding model's borrow-check handling
 \label{tab:headline}
 \end{table}
 
+\subsection{Failure Modes}
+\label{sec:failure-modes}
+
+The Samples 2--4 outcomes above are not all the same kind of
+failure. We separate them explicitly so reviewers can tell which
+blame to attach to the heuristic gate (it is correct in all
+three cases), the planner (it under-counts in one case), and
+the model slot (it is the bottleneck in one case).
+
+\begin{table}[ht]
+\centering
+\small
+\begin{tabular}{l l l}
+\toprule
+Sample & Failure class & Concrete cause \\
+\midrule
+2 (stats)        & Throughput          & lfm2.5:8b-a1b-q4\_K\_M reasoning slot: $\sim$4\,min 27\,s per direct call on this host; $\times$ 63 distinct chunks yields $\sim$4.7\,h, vs the 1200\,s \texttt{timeout\_seconds}. \\
+3 (gohistogram)  & Compile error       & Chunked path dispatches 6/6; emitted Rust fails the borrow checker (E0277: \texttt{f64 $\times$ u64}; E0599: no method \texttt{histogram} on \texttt{u64}); one source file (15\,006 LoC of embedded JSON) drops under the prior-modules budget. \\
+4 (commons-val.) & Fragment under-count + missing build config & \texttt{planning.go::extractFragments} walks only AST-bearing files: 26 fragments for 121 source files ($\Rightarrow$ 6 distinct basenames reach the chunked translator, 115 files are silently dropped). The chunked translator also does not emit \texttt{Cargo.toml}, so the validator runs 10/10 iterations on an empty crate. \\
+\bottomrule
+\end{tabular}
+\caption{Three distinct failure classes across Samples 2--4.
+Only Sample 4 has a chunked-translator-side bug (the
+\texttt{Cargo.toml} skip); Sample 2 is a model-throughput
+bottleneck; Sample 3 is a coding-model quality issue on a
+language-specific construct (Rust borrow checking on
+\texttt{u64} arithmetic). The heuristic gate
+(\texttt{shouldUseChunkedTranslation}) is correct in all three
+cases.}
+\label{tab:failure-modes}
+\end{table}
+
+\noindent
+\textbf{Sample 2: throughput, not a heuristic bug.}
+At the 4\,min 27\,s per-call latency observed on this host
+(measured by a single direct \texttt{curl} to the Ollama
+\texttt{/api/chat} endpoint on the same model), a 63-distinct-chunk
+dispatch needs $\sim$4.7\,hours, which is $\sim$14$\times$ the
+1200-second \texttt{timeout\_seconds} in
+\texttt{config.yml}. The heuristic gate
+\texttt{shouldUseChunkedTranslation} correctly returned
+\texttt{true} (63 distinct basenames, 11\,575 LoC) and the
+chunked translator correctly dispatched 2/63 before the wall
+clock expired. The remediation is on the model slot
+(swap to \texttt{qwen2.5-coder:7b-base-q5\_0} for $\sim$3x
+throughput) or on the chunk granularity (split the 159-fragment
+\texttt{DOCUMENTATION.md} into sub-chunks), not on the gate.
+
+\noindent
+\textbf{Sample 3: emit succeeded, compile failed.}
+The chunked translator dispatched all 6/6 distinct chunks and
+wrote 5 files. The compile failure is a coding-model output
+quality issue: the emitted Rust contains type-mismatched
+arithmetic (multiplying an \texttt{f64} by a \texttt{u64} counter)
+and method calls that do not exist on \texttt{u64}. This is the
+same coding-model ceiling as Sample 1's
+\texttt{test\_negative\_sell\_in\_quality\_decrease} assertion
+failure: Qwen3-4B-Instruct can produce syntactically-valid Rust
+that compiles, but cannot reliably translate language-specific
+type-system constraints.
+
+\noindent
+\textbf{Sample 4: two independent planner-side bugs.}
+(1)~\texttt{planning.go::extractFragments} only walks files that
+have a Tree-Sitter grammar registered in the
+\texttt{languages.Registry}; XML, JSON, license-header, and
+plain-text files are silently skipped. 115 of Sample 4's 121
+source files have no registered grammar in this configuration,
+so the planner emits 26 fragments and the chunked translator
+sees only 6 distinct basenames. (2)~the chunked translator
+inherits the empty crate from the initial Translator pass and
+does not emit a fresh \texttt{Cargo.toml} because no source
+file maps to that target path. Both fixes are local; neither
+is in the heuristic gate.
+
+
 \noindent
 The numbers in Table~\ref{tab:headline} are sparse by design: only
 Sample 1 has a complete run on the current pipeline; Samples

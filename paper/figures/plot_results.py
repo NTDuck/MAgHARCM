@@ -331,12 +331,15 @@ def figure2_session_metrics() -> Path:
     s1 = parse_log(find_fixed_log("GildedRose-Refactoring-Kata"))
     samples.append(
         {
-            "name": "Sample 1\n(GildedRose)",
+            "name": "Sample 1\nGildedRose\n(C→Rust)",
             "compile": 100.0,
-            "test": 100.0,
-            "passed": s1["final_test_passed"] or 0,
+            "test": (
+                100.0 * s1["final_test_passed"]
+                / max(1, (s1["final_test_passed"] or 0) + (s1["final_test_failed"] or 0))
+            ) if s1["final_test_passed"] is not None else 0.0,
+            "passed": s1["final_test_passed"],
             "total": (s1["final_test_passed"] or 0) + (s1["final_test_failed"] or 0),
-            "note": f"real: {s1['final_test_passed']}/4, min=6",
+            "note": f"real: {s1['final_test_passed']}/{(s1['final_test_passed'] or 0) + (s1['final_test_failed'] or 0)}, min=6",
         }
     )
 
@@ -347,13 +350,13 @@ def figure2_session_metrics() -> Path:
         s2_note = (
             f"{dispatched}/{total} chunks in 1200s; "
             f"lfm2.5 too slow ({s2['chunked_selected']['fragments']} frags / "
-            f"{s2['chunked_selected']['loc']} LoC)"
+            f"{s2['chunked_selected']['loc']} LoC; 63 distinct)"
         )
     else:
         s2_note = "no chunked dispatch"
     samples.append(
         {
-            "name": "Sample 2\n(Oxidizer/stats)",
+            "name": "Sample 2\nOxidizer/stats\n(Go→Rust)",
             "compile": 0.0,
             "test": 0.0,
             "passed": 0,
@@ -369,13 +372,13 @@ def figure2_session_metrics() -> Path:
         files = s3["chunked_files_written"] or 0
         s3_note = (
             f"{dispatched}/{total} dispatched, {files} files; "
-            f"compile FAIL (E0277/E0599)"
+            f"compile FAIL (E0277/E0599 borrow-check)"
         )
     else:
         s3_note = "no chunked dispatch"
     samples.append(
         {
-            "name": "Sample 3\n(Oxidizer/ghist)",
+            "name": "Sample 3\nOxidizer/gohistogram\n(Go→Rust)",
             "compile": 0.0,
             "test": 0.0,
             "passed": 0,
@@ -398,7 +401,7 @@ def figure2_session_metrics() -> Path:
         s4_note = "no chunked dispatch"
     samples.append(
         {
-            "name": "Sample 4\n(AlphaTrans cv)",
+            "name": "Sample 4\nAlphaTrans commons-validator\n(Java→Rust)",
             "compile": 0.0,
             "test": 0.0,
             "passed": 0,
