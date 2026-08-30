@@ -1,0 +1,122 @@
+[
+  {
+    "log": "run-2026-08-30-iter0.log",
+    "final_iter": 7,
+    "compilation_success": true,
+    "final_test_passed": 9,
+    "final_test_failed": 0,
+    "panic_names": [],
+    "real_per_iter": {
+      "3": {
+        "real": 0,
+        "min": 12,
+        "vacuous": true
+      },
+      "5": {
+        "real": 9,
+        "min": 12,
+        "vacuous": false
+      },
+      "6": {
+        "real": 9,
+        "min": 12,
+        "vacuous": false
+      },
+      "7": {
+        "real": 9,
+        "min": 12,
+        "vacuous": false
+      }
+    }
+  },
+  {
+    "log": "run-2026-08-30-iter1.log",
+    "final_iter": 5,
+    "compilation_success": true,
+    "final_test_passed": 2,
+    "final_test_failed": 0,
+    "panic_names": [],
+    "real_per_iter": {
+      "4": {
+        "real": 2,
+        "min": 6,
+        "vacuous": false
+      },
+      "5": {
+        "real": 2,
+        "min": 6,
+        "vacuous": false
+      }
+    }
+  },
+  {
+    "log": "run-2026-08-30-iter2.log",
+    "final_iter": 3,
+    "compilation_success": true,
+    "final_test_passed": 3,
+    "final_test_failed": 0,
+    "panic_names": [],
+    "real_per_iter": {
+      "3": {
+        "real": 3,
+        "min": 12,
+        "vacuous": false
+      }
+    }
+  },
+  {
+    "log": "run-2026-08-30-iter3.log",
+    "final_iter": 10,
+    "compilation_success": true,
+    "final_test_passed": 7,
+    "final_test_failed": 0,
+    "panic_names": [
+      "tests::test_negative_sell_in_quality_decrease",
+      "tests::test_update_quality_backstage_passes",
+      "tests::test_update_quality_sulfuras",
+      "tests::test_negative_sell_in_quality_decrease",
+      "tests::test_update_quality_backstage_passes",
+      "tests::test_update_quality_sulfuras"
+    ],
+    "real_per_iter": {
+      "5": {
+        "real": 7,
+        "min": 12,
+        "vacuous": false
+      },
+      "6": {
+        "real": 7,
+        "min": 12,
+        "vacuous": false
+      },
+      "7": {
+        "real": 7,
+        "min": 12,
+        "vacuous": false
+      },
+      "8": {
+        "real": 7,
+        "min": 12,
+        "vacuous": false
+      },
+      "9": {
+        "real": 7,
+        "min": 12,
+        "vacuous": false
+      },
+      "10": {
+        "real": 7,
+        "min": 12,
+        "vacuous": false
+      }
+    }
+  },
+  {
+    "log": "run-2026-08-30-s2.log",
+    "final_iter": 0,
+    "compilation_success": true,
+    "final_test_passed": 0,
+    "final_test_failed": 0,
+    "panic_names": []
+  }
+]

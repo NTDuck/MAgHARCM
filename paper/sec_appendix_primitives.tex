@@ -1,0 +1,84 @@
+\section{NewPrimitives: Re-Derived Methodology Primitives}
+\label{app:primitives}
+
+This appendix enumerates the 23 methodology primitives re-derived for
+code-archaeology-guided repository-level code migration. Where the
+methodology branch's prior primitives are cited, the new numbering
+supersedes the old. Marker legend: \texttt{[MEASURED]} — directly
+observed in primary text; \texttt{[AUTHOR\_CLAIM]} — authors stated,
+no independent replication; \texttt{[INFERRED]} — derived reasoning
+across multiple sources; \texttt{[HYPOTHESIS]} — proposed but
+unvalidated.
+
+\begin{enumerate}
+
+\item \textbf{Reverse Topological Translation Ordering (supersedes PRIM-01).}
+Bottom-up implementation plan specifying target module order (ReCodeAgent [P01: Sec 3.3, p. 5]) / reverse-topological method translation (AlphaTrans [P02 §6 \P1]).
+
+\item \textbf{Back-Edge-Conditioned Reverse-Topological Scheduling (NEW, supersedes deprecated ``PRIM-02'').}
+Build a directed call graph, detect cycles, remove back edges to obtain a DAG, compute a reverse-topological linearization, and translate leaves first (AlphaTrans [P02 §6 \P1]).
+
+\item \textbf{Target Skeleton-First Generation (carried from PRIM-03).}
+Before method bodies, emit target-language interface stubs, type declarations, imports, and signature-only functions for every source module (ReCodeAgent [P01 Sec 3.3.3]; AlphaTrans [P02 §5.2]).
+
+\item \textbf{SpecMiner-Style Dynamic Invariant Recovery (PRIM-04, confirmed).}
+Instrument source binaries at runtime to record allocation sizes, nullability of pointer targets, aliasing relationships, lifetime ranges, and branch coverage under representative inputs (Syzygy [P58 §3.2, p. 4]).
+
+\item \textbf{Test Suite Co-Translation \& Synthesis (carried from PRIM-05).}
+Translate source-language unit tests into the target language as part of the translation pipeline; when source tests are insufficient, generate additional tests for uncovered functions (ReCodeAgent [P01 Sec 3.5.2; Alg 1 lines 14--21]; AlphaTrans [P02 §6 --- testCheck]; AdvTestGen [P25]).
+
+\item \textbf{Multi-Stage Build/Test Feedback Repair (carried from PRIM-06, with drift correction).}
+After initial translation, run a 3-tier validation cascade (AST/syntax check, target compiler check, translated test suite execution) and feed diagnostics back to the translator up to a fixed budget (ReCodeAgent [P01 Alg 1]; AlphaTrans [P02 §6 Alg 2]).
+
+\item \textbf{Multi-Agent Verdict Validation (PRIM-07 --- corrected; was mis-attributed).}
+After translating, deploy multiple LLM verdict agents to independently judge whether the target translation is semantically equivalent to the source; on disagreement, prompt the translator to repair (MatchFixAgent [P08 §3]).
+
+\item \textbf{State-Grounded Mock-Based In-Isolation Validation (PRIM-08 --- corrected; was mis-attributed).}
+For each module under translation, generate a mock of its dependencies using state-equivalent stubs and validate the module against the mock in isolation, then assemble and validate the full system (TRAM [P10 §3]).
+
+\item \textbf{Tri-Representation Hybrid Code Graph (NEW-PRIM-09, from proto ADR-0029).}
+A unified graph combining the Abstract Syntax Tree (AST, Tree-sitter structural parse), Code Property Graph (CPG, Yamaguchi AST $\cup$ CFG $\cup$ PDG), and System Dependence Graph (SDG, Horwitz/Reps/Binkley inter-procedural PDG extension).
+
+\item \textbf{Feature-Mapping \& Type-Compatibility Validation (NEW-PRIM-10).}
+Maintain an explicit mapping table from source-language idioms to target-language equivalents (e.g., Go interfaces $\leftrightarrow$ Rust traits; Java checked exceptions $\leftrightarrow$ Rust \texttt{Result}) and validate every target symbol against its source counterpart (Oxidizer [P05 §3]; RustRepoTrans [P07 §3]).
+
+\item \textbf{Implementation-Agnostic Testing (NEW-PRIM-11).}
+Validate target behavior using black-box I/O test vectors rather than asserting on the structure of the translated code (RepoMod-Bench [P11 §3]).
+
+\item \textbf{Wasm-Based Reference Execution Oracle (NEW-PRIM-12).}
+Compile the original source code to WebAssembly; run the same input through the Wasm-compiled source and the target-language implementation; compare observable outputs (VERT [P12 §3]).
+
+\item \textbf{Adversarial Test-Weakening Guard (NEW-PRIM-13, expanded from old PRIM-12).}
+During repair iterations, AST-validate that the translator has not weakened tests (deleted assertions, widened tolerances, removed negative cases, relaxed catch blocks) (AdvTestGen [P25: ISSTA 2024]; MatchFixAgent [P08 §3]).
+
+\item \textbf{Software-Archaeology Stage (NEW-PRIM-14, from S10 + S11).}
+A pre-translation multi-step comprehension pass: boundary extraction, time-capsule execution harness, DRSpace \& churn bisection, naming \& type forensics, and test \& documentation archaeology (pp-besm dev.to playbook; AgentPatterns.ai Legacy Code Archaeology; Rajlich; Müller; Foltz; Baldwin \& Clark; Kazman \& Cai).
+
+\item \textbf{Evidence-First Adaptation Pattern (NEW-PRIM-15, from S12 Reeper).}
+Before adapting external code into a target system, produce four artifacts: (1) target-preserving spec, (2) contract-before-code, (3) provenance-aware diff, (4) untrusted-source model (Reeper [S12 §2]).
+
+\item \textbf{Spec-Driven Development Lifecycle (NEW-PRIM-16, from S13 spec-kit).}
+Strict sequence: constitution $\rightarrow$ specify $\rightarrow$ plan $\rightarrow$ tasks $\rightarrow$ implement $\rightarrow$ converge; each phase produces a reviewable artifact and transitions are gated (spec-kit [S13]).
+
+\item \textbf{Asynchronous Software Engineering Agent Architecture (NEW-PRIM-17, from P54 CAID).}
+Multiple agents operate concurrently over a shared memory blackboard; agents wake on blackboard events, claim work units, and post results; a central scheduler arbitrates conflicts (CAID [P54 §3]).
+
+\item \textbf{Jaccard-Coupling Architecture Recovery (NEW-PRIM-18, from P52 MSR4SA).}
+Compute Jaccard similarity of commit neighborhoods between modules to detect hidden coupling invisible to static import edges (MSR4SA [P52 §4]).
+
+\item \textbf{Design Rule Hierarchy Partitioning (NEW-PRIM-19, from P51 DRSpace).}
+Classify every architectural element by stability layer (L1 interfaces, L2 subsystems, L3 leaves) and apply the load-bearing concentration check (Kazman et al.\ [P51 §4]).
+
+\item \textbf{Concept Assignment and Redocumentation (NEW-PRIM-20, from P45 Rajlich).}
+Before translation, perform concept-locator analysis: identify what concepts the code implements, where they live, and how they relate; output a concept $\rightarrow$ location map (Rajlich [P45 §2]).
+
+\item \textbf{Migration Strategy Selection (NEW-PRIM-21, from P46 Müller).}
+For each migration target, classify into one of five strategies: Ignore, COTS, Cold Turkey, Integrate-in-Place, or Chicken Little, plus the LIS (Legacy Integration Strategy) decomposability assessment (Müller [P46 slides 18--25]).
+
+\item \textbf{Four Phases of Comprehension (NEW-PRIM-22, from P47 Foltz).}
+Apply the DR.\ JONES model (Decomposition, Recognition, Organization, Navigation, Explanation, Search) with empirically grounded cognitive observations: linear traversal preferred, recency bias, breadth before depth, and hotspot concentration (Foltz [P47 §3]).
+
+\item \textbf{Chunked Translator (NEW-PRIM-23, observed 2026-08-30 Sample 2 ceiling).}
+Replace the single-shot translator with a per-fragment dispatcher that groups planning fragments by topological order, issues one LLM call per source file or per $\sim$500-LoC chunk, and maintains a persistent state dict (emitted\_modules, public\_symbols, type\_aliases, use\_statements, dependencies\_so\_far) between calls.
+
+\end{enumerate}

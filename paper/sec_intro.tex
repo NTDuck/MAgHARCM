@@ -1,0 +1,69 @@
+\section{Introduction}
+\label{sec:intro}
+
+Repository-level code translation -- converting an entire codebase from one
+programming language to another while preserving the behaviour of its test
+suite -- is a load-bearing task for software longevity, supply-chain
+diversification, and security hardening. The recent wave of LLM-based
+translators has converged on a multi-agent decomposition in which one agent
+analyses the source project, a second produces a concrete implementation
+plan, a third emits the target code and tests, and a fourth validates the
+result and feeds errors back for repair.
+ReCodeAgent~\citep{ibrahimzada2025recodeagent} is the canonical reference
+for this four-agent cyclic graph and the architecture that MAgHARCM
+extends. We adopt ReCodeAgent's Analyzer / Planning / Translator /
+Validator split verbatim and target the same public benchmarks that the
+original system, AlphaTrans~\citep{alphatrans2024}, CodePlan, and
+Oxidizer~\citep{oxidizer2024} report against. This gives us a direct,
+ground-truth comparison surface: the GildedRose refactoring kata (used by
+ReCodeAgent and AlphaTrans), the Oxidizer statistics corpus (used by
+Oxidizer), and the CodePlan subject projects. MAgHARCM extends ReCodeAgent
+in three directions that, taken together, make the architecture usable on a
+developer workstation without any cloud API access:
+
+\begin{itemize}
+\item \textbf{Local-SLM backend.} All four agents are wired to
+\texttt{ollama} as the model runtime. The reasoning slots use
+\texttt{gpt-oss:20b} (a 20-billion-parameter open-weight reasoning model)
+and the coding slot uses
+\texttt{hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4\_K\_XL} (a
+4-billion-parameter instruction-tuned coding model). No model call leaves
+the host.
+
+\item \textbf{LSP provider with native fallback.} ReCodeAgent assumes a
+Model Context Protocol (MCP) tool server backed by a Language Server for
+every supported source language. MAgHARCM keeps that interface but adds a
+\texttt{native} provider that drives tree-sitter directly, so the harness
+runs even when ABCoder MCP is not configured.
+
+\item \textbf{Coverage-guided characterization tests.} The Validator agent
+in ReCodeAgent generates tests when its coverage gap analysis flags an
+uncovered function. MAgHARCM uses the same pass, but emits Rust
+characterization tests (property-style round-trip checks) when the source
+project's test suite is too small to exercise every translated function.
+
+\end{itemize}
+
+We exercise the harness on four subject projects drawn from the same
+corpora used by the four baseline systems and report what we observed. The
+goal of this paper is not to claim parity with ReCodeAgent on its 118-project
+benchmark -- we have neither the budget nor the model access for that -- but
+to demonstrate that the four-agent decomposition survives the move from a
+Claude-class proprietary model to a pair of open-weight SLMs and to
+characterise the failure modes that the move exposes. The most important
+finding is that the single-shot Translator saturates at roughly a few
+hundred translation fragments: on Sample 2 (\texttt{stats}, a 73-file Go
+library) the Translator writes zero files and the Validator reports
+0 passed / 0 failed because the Planning agent falls back to a two-line
+skeleton. That ceiling motivates the chunked Translator primitive
+(NEW-PRIM-23) we describe in Section~\ref{sec:method}.
+
+The rest of the paper is organised as follows.
+Section~\ref{sec:method} walks through the four-agent graph, the prompt
+templates, and the chunked Translator design.
+Section~\ref{sec:eval} reports the observed compile and test outcomes for
+the four sample projects, with full fidelity to the run logs.
+Section~\ref{sec:related} relates MAgHARCM to ReCodeAgent, AlphaTrans,
+CodePlan, Oxidizer, MatchFixAgent, and TRAM.
+Section~\ref{sec:conclusion} summarises the open work and lists the next
+concrete steps.
