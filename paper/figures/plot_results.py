@@ -178,7 +178,8 @@ def parse_log(path: Path) -> dict:
         if m:
             terminate_iter = int(m.group("iter"))
         m = EXEC_FINISH_RE.search(line)
-        if m:
+Please analyze the root cause of each error/failure and output the complete corrected files to fix all issues.
+Guidelines:
             final_warning = m.group("rest").strip()
 
     final_iter = max(iter_metrics.keys()) if iter_metrics else (terminate_iter or 0)

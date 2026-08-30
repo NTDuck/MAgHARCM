@@ -159,13 +159,12 @@ func (t *TranslatorAgent) generateTranslation(ctx context.Context, state *types.
 // generateRepair renders the repair prompt and queries the coding model for targeted fixes.
 func (t *TranslatorAgent) generateRepair(ctx context.Context, state *types.State, targetFiles []string, packageName string) (map[string]string, error) {
 	logger.LogStep("Feeding compiler diagnostics and test failures to Coding Model for targeted repair")
-
 	prompt, err := renderPromptTemplate("translator_repair", translatorRepairPromptTemplate, map[string]any{
 		"PackageName":     packageName,
 		"TargetLang":      state.Task.TargetLang,
 		"TargetLangLower": strings.ToLower(state.Task.TargetLang),
 		"Diagnostics":     state.ValidationReport.Diagnostics,
-		"CurrentFiles":    strings.Join(targetFiles, "\n"),
+		"CrateCanonicalHints": crateCanonicalHints(state.Task.TargetLang),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to render repair prompt: %w", err)
@@ -203,6 +202,9 @@ func (t *TranslatorAgent) syncFilesToDisk(targetDir string, files map[string]str
 
 	for relPath, content := range files {
 		clean := tools.CleanCodeContent(content)
+		if relPath == "Cargo.toml" && strings.EqualFold(state.Task.TargetLang, "Rust") {
+			clean = canonicalizeCargoToml(clean)
+		}
 		fullPath := filepath.Join(targetDir, relPath)
 		if err := os.MkdirAll(filepath.Dir(fullPath), 0755); err != nil {
 			return fmt.Errorf("failed to create directory for %s: %w", fullPath, err)

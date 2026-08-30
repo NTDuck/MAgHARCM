@@ -17,16 +17,23 @@ import (
 // chunkedLoCThreshold and chunkedFragmentsThreshold together gate when the
 // chunked translator takes over from the single-shot translator. Both must be
 // exceeded. The thresholds are deliberately conservative so small repos still
-// take the cheap single-shot path.
 const (
 	chunkedFragmentsThreshold = 5
 	chunkedLoCThreshold       = 1000
 	priorModulesBudgetBytes   = 4096
 	priorModulesSnippetBytes  = 200
+	// subChunkThreshold is the per-source-file fragment count above which the
+	// chunked translator splits a single source file into multiple sub-chunks.
+	// Sample 2 stats hit DOCUMENTATION.md with 159 fragments in one file; the
+	// model cannot emit coherent Rust for that much source in one prompt, so
+	// we dispatch it as several smaller chunks at function-group boundaries.
+	subChunkThreshold = 50
+	// subChunkSize is the maximum number of fragments per sub-chunk when a
+	// source file exceeds subChunkThreshold.
+	subChunkSize = 25
 )
 
 // shouldUseChunkedTranslation returns true when the planning output indicates
-// a translation large enough to justify per-file chunked model calls.
 //
 // We gate on the count of *distinct source-file basenames* rather than the raw
 // fragment count: planning.go's extractFragments emits one fragment per AST
@@ -177,29 +184,33 @@ func (t *TranslatorAgent) RunChunked(ctx context.Context, state *types.State) (*
 
 	for i, base := range bases {
 		fileFrags := grouped[base]
-		// Render one fenced block per fragment. Each block carries the fragment
-		// ID and the shared source-file content so the model can locate the
-		// symbol without re-reading the file for every fragment.
-		var sb strings.Builder
-		fmt.Fprintf(&sb, "=== Source File: %s ===\n", base)
-		for _, frag := range fileFrags {
-			fmt.Fprintf(&sb, "```\n# Fragment: %s\n%s\n```\n", frag, idx.content[base])
+		// Sub-chunk files with fragment count above subChunkThreshold. Each
+		// sub-chunk is dispatched as its own model call so a 159-fragment
+		// DOCUMENTATION.md doesn't consume the full per-chunk latency budget.
+		subChunks := splitIntoSubChunks(fileFrags, subChunkThreshold, subChunkSize)
+		if len(subChunks) > 1 {
+			logger.LogStep("Sub-chunking %s: %d fragments -> %d sub-chunks", base, len(fileFrags), len(subChunks))
 		}
-		srcBlock := sb.String()
-
-		priorSummary := buildPriorModulesSummary(state.TranslatedProject.Files)
-
-		logger.LogStep("Chunked translation: source %d/%d (%s, %d fragment(s))", i+1, len(bases), base, len(fileFrags))
-		emitted, err := t.translateFragment(ctx, state, packageName, srcBlock, priorSummary)
-		if err != nil {
-			return nil, fmt.Errorf("chunked translation failed for source file %q: %w", base, err)
-		}
-		if len(emitted) == 0 {
-			logger.LogWarning("Source file %q produced no files", base)
-			continue
-		}
-		if err := t.syncFilesToDisk(state.Task.TargetDir, emitted, state); err != nil {
-			return nil, fmt.Errorf("failed to persist chunked output for source file %q: %w", base, err)
+		for scIdx, subFrags := range subChunks {
+			var sb strings.Builder
+			fmt.Fprintf(&sb, "=== Source File: %s (sub-chunk %d/%d) ===\n", base, scIdx+1, len(subChunks))
+			for _, frag := range subFrags {
+				fmt.Fprintf(&sb, "```\n# Fragment: %s\n%s\n```\n", frag, idx.content[base])
+			}
+			srcBlock := sb.String()
+			priorSummary := buildPriorModulesSummary(state.TranslatedProject.Files)
+			logger.LogStep("Chunked translation: source %d/%d %s (sub %d/%d, %d fragment(s))", i+1, len(bases), base, scIdx+1, len(subChunks), len(subFrags))
+			emitted, err := t.translateFragment(ctx, state, packageName, srcBlock, priorSummary)
+			if err != nil {
+				return nil, fmt.Errorf("chunked translation failed for source file %q sub-chunk %d: %w", base, scIdx, err)
+			}
+			if len(emitted) == 0 {
+				logger.LogWarning("Source file %q sub-chunk %d produced no files", base, scIdx)
+				continue
+			}
+			if err := t.syncFilesToDisk(state.Task.TargetDir, emitted, state); err != nil {
+				return nil, fmt.Errorf("failed to persist chunked output for source file %q sub-chunk %d: %w", base, scIdx, err)
+			}
 		}
 	}
 
@@ -299,4 +310,23 @@ func buildPriorModulesSummary(files map[string]string) string {
 		sb.WriteString(entry)
 	}
 	return sb.String()
+}
+
+// splitIntoSubChunks partitions a per-source-file fragment list into
+// sub-chunks. If the input has <= threshold fragments, returns a single
+// sub-chunk containing all fragments (no splitting). Otherwise splits
+// into ceil(len/size) sub-chunks preserving order.
+func splitIntoSubChunks(frags []string, threshold, size int) [][]string {
+	if len(frags) <= threshold || size <= 0 {
+		return [][]string{frags}
+	}
+	out := make([][]string, 0, (len(frags)+size-1)/size)
+	for i := 0; i < len(frags); i += size {
+		end := i + size
+		if end > len(frags) {
+			end = len(frags)
+		}
+		out = append(out, frags[i:end])
+	}
+	return out
 }
