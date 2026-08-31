@@ -122,7 +122,14 @@ type ValidationReport struct {
 	PerFile            []FileStatus `json:"per_file"`
 	IterationStart     time.Time    `json:"iteration_start,omitempty"`
 	IterationWallMs    int64        `json:"iteration_wall_ms,omitempty"`
-}
+	// RemedyIterations counts coverage-remedy iterations executed by the
+	// plateau-bounded loop (NEW-PRIM-27 / CodaMOSA). 0 means the loop never
+	// entered; MaxRemedyIterations means the loop exhausted without plateau.
+	RemedyIterations int `json:"remedy_iterations,omitempty"`
+	// PlateauDetected is true when the PlateauDetector signaled insufficient
+	// marginal coverage gain and the bounded loop terminated early.
+	PlateauDetected bool `json:"plateau_detected,omitempty"`
+ }
 
 // HasUncoveredFunctions determines if any discovered AST functions lack test assertions.
 func (v *ValidationReport) HasUncoveredFunctions() bool {

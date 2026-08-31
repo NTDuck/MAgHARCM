@@ -25,15 +25,35 @@ import (
 // ValidatorAgent executes build and test suites, detects coverage gaps, and triggers test synthesis.
 type ValidatorAgent struct {
 	Model model.BaseChatModel
+	// RunID identifies the current translation run; when set, a checkpoint of
+	// *types.State is persisted under .artifacts/<RunID>/checkpoints/ at the
+	// end of every Run (both success and error paths). Empty RunID disables
+	// checkpointing — used by callers that don't want disk persistence.
+	RunID string
+	// Plateau applies CodaMOSA-style coverage-plateau detection
+	// (NEW-PRIM-27, P49 ICSE 2023). It bounds the coverage-remedy loop:
+	// when consecutive samples show marginal gain below threshold, the
+	// loop terminates instead of burning the LLM budget. Initialized lazily
+	// by NewValidatorAgent; tests that don't care about plateau may leave it nil.
+	Plateau *PlateauDetector
 }
 
-// NewValidatorAgent creates a ValidatorAgent instance.
-func NewValidatorAgent(m model.BaseChatModel) *ValidatorAgent {
-	return &ValidatorAgent{Model: m}
+// MaxRemedyIterations caps the bounded coverage-remediation loop driven by
+// remedyWithPlateau. CodaMOSA itself uses maxStallLen=25 over MOSA iterations;
+// we adopt a smaller ceiling because each iteration is an LLM test-synthesis
+// call (much more expensive than a MOSA mutation), so 3 retries is a safe
+// upper bound before declaring plateau and exiting.
+const MaxRemedyIterations = 3
+
+// NewValidatorAgent creates a ValidatorAgent instance. runID enables
+// per-run checkpoint persistence; pass "" to disable checkpointing.
+func NewValidatorAgent(m model.BaseChatModel, runID string) *ValidatorAgent {
+	return &ValidatorAgent{Model: m, RunID: runID, Plateau: NewPlateauDetector()}
 }
 
 // Run validates the target project and produces a ValidationReport.
 func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.State, error) {
+	defer v.checkpoint(state)
 	state.Iteration++
 	iterStart := time.Now()
 	logger.LogAgent("Validator", "Validating target project `%s` (Iteration %d/%d)",
@@ -101,6 +121,20 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.St
 	return state, nil
 }
 
+// checkpoint persists a snapshot of state if RunID is set. Errors are logged
+// but never propagated — checkpointing is best-effort and must not abort the
+// pipeline when the disk is full or the runID is empty.
+func (v *ValidatorAgent) checkpoint(state *types.State) {
+	if v.RunID == "" || state == nil {
+		return
+	}
+	if path, err := Save(v.RunID, state); err != nil {
+		logger.LogWarning("Validator checkpoint save failed: %v", err)
+	} else {
+		logger.LogStep("Validator checkpoint saved: %s", path)
+	}
+}
+
 // checkCompilation verifies compilation using the target toolchain.
 func (v *ValidatorAgent) checkCompilation(ctx context.Context, state *types.State) (*tools.ValidateBuildOutput, error) {
 	buildRes, err := tools.ValidateProjectBuild(ctx, state.Task.TargetDir, state.Task.TargetLang, state.Task.Toolchain)
@@ -152,22 +186,90 @@ func (v *ValidatorAgent) findUncoveredFunctions(state *types.State) []string {
 	return uncovered
 }
 
-// remedyCoverageGaps prompts the model for supplemental tests and re-executes tests.
+// remedyCoverageGaps is the public entry point for coverage-gap remediation.
+// It now delegates to remedyWithPlateau, which wraps the per-iteration
+// (generate tests → re-run suite) cycle in a bounded plateau-detected loop
+// (CodaMOSA / NEW-PRIM-27). The wrapped inner behavior is unchanged.
 func (v *ValidatorAgent) remedyCoverageGaps(ctx context.Context, state *types.State, uncovered []string, report *types.ValidationReport) {
-	logger.LogStep("Coverage Gap Analysis: %d functions uncovered and 0 tests executed, prompting Reasoning Model for tests", len(uncovered))
-	v.generateAdditionalTests(ctx, state, uncovered, report)
+	v.remedyWithPlateau(ctx, state, uncovered, report)
+}
 
-	logger.LogStep("Re-running test suite after coverage test generation")
-	if reTest, err := tools.RunProjectTests(ctx, state.Task.TargetDir, state.Task.TargetLang, state.Task.Toolchain, ""); err == nil {
-		report.PassedTests = reTest.TotalPassed
-		report.FailedTests = reTest.TotalFailed
-		report.TotalTests = reTest.TotalPassed + reTest.TotalFailed
-		report.TestFailures = reTest.Failures
-		report.RealTests = reTest.RealTests
-		if report.TotalTests > 0 {
-			report.TestPassRate = float64(report.PassedTests) / float64(report.TotalTests) * 100.0
+// remedyWithPlateau executes the coverage-remediation loop bounded by
+// MaxRemedyIterations and terminated early when the PlateauDetector signals
+// insufficient marginal gain across consecutive samples. Each iteration:
+//
+//  1. Re-discovers uncovered functions (the set may shrink as tests are added).
+//  2. Calls generateAdditionalTests to prompt the LLM for supplemental tests.
+//  3. Re-runs the test suite and records a CoverageSample in the plateau detector.
+//  4. Breaks when IsPlateau() returns true.
+//
+// On exit, report.RemedyIterations and report.PlateauDetected reflect the
+// observed trajectory. If v.Plateau is nil (legacy callers / unit tests that
+// construct ValidatorAgent directly), a fresh detector is allocated so the
+// loop is always safe.
+func (v *ValidatorAgent) remedyWithPlateau(ctx context.Context, state *types.State, uncovered []string, report *types.ValidationReport) {
+	detector := v.Plateau
+	if detector == nil {
+		detector = NewPlateauDetector()
+		v.Plateau = detector
+	}
+
+	// Initial sample: cover whatever the caller observed before this loop ran.
+	initialUncovered := len(uncovered)
+	if len(report.UncoveredFunctions) > 0 {
+		initialUncovered = len(report.UncoveredFunctions)
+	}
+	detector.Record(CoverageSample{
+		Iteration:      0,
+		TotalTests:     report.TotalTests,
+		PassedTests:    report.PassedTests,
+		UncoveredCount: initialUncovered,
+		CapturedAt:     time.Now(),
+	})
+
+	for iter := 1; iter <= MaxRemedyIterations; iter++ {
+		// Re-discover: prior iterations may have added test coverage.
+		currentUncovered := v.findUncoveredFunctions(state)
+		report.UncoveredFunctions = currentUncovered
+
+		logger.LogStep("Plateau remedy iteration %d/%d: %d uncovered functions",
+			iter, MaxRemedyIterations, len(currentUncovered))
+
+		v.generateAdditionalTests(ctx, state, currentUncovered, report)
+
+		logger.LogStep("Re-running test suite after coverage test generation")
+		if reTest, err := tools.RunProjectTests(ctx, state.Task.TargetDir, state.Task.TargetLang, state.Task.Toolchain, ""); err == nil {
+			report.PassedTests = reTest.TotalPassed
+			report.FailedTests = reTest.TotalFailed
+			report.TotalTests = reTest.TotalPassed + reTest.TotalFailed
+			report.TestFailures = reTest.Failures
+			report.RealTests = reTest.RealTests
+			if report.TotalTests > 0 {
+				report.TestPassRate = float64(report.PassedTests) / float64(report.TotalTests) * 100.0
+			}
+		}
+
+		report.RemedyIterations = iter
+		plateau := detector.Record(CoverageSample{
+			Iteration:      iter,
+			TotalTests:     report.TotalTests,
+			PassedTests:    report.PassedTests,
+			UncoveredCount: len(report.UncoveredFunctions),
+			CapturedAt:     time.Now(),
+		})
+		if plateau {
+			report.PlateauDetected = true
+			logger.LogStep("Coverage plateau detected at iteration %d: %s", iter, detector.Summary())
+			break
+		}
+
+		// Early exit: nothing left to chase.
+		if len(report.UncoveredFunctions) == 0 && report.RealTests >= report.MinRealTests {
+			break
 		}
 	}
+
+	logger.LogStep("%s", detector.Summary())
 }
 
 // finalizeReport evaluates convergence criteria and sets milestone diagnostics.

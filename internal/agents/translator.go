@@ -18,15 +18,22 @@ import (
 // TranslatorAgent generates target source and test implementations, and iteratively resolves compiler errors in repair mode.
 type TranslatorAgent struct {
 	Model model.BaseChatModel
+	// RunID identifies the current translation run; when set, a checkpoint of
+	// *types.State is persisted under .artifacts/<RunID>/checkpoints/ at the
+	// end of every Run (both success and error paths). Empty RunID disables
+	// checkpointing — used by callers that don't want disk persistence.
+	RunID string
 }
 
-// NewTranslatorAgent creates a TranslatorAgent instance.
-func NewTranslatorAgent(m model.BaseChatModel) *TranslatorAgent {
-	return &TranslatorAgent{Model: m}
+// NewTranslatorAgent creates a TranslatorAgent instance. runID enables
+// per-run checkpoint persistence; pass "" to disable checkpointing.
+func NewTranslatorAgent(m model.BaseChatModel, runID string) *TranslatorAgent {
+	return &TranslatorAgent{Model: m, RunID: runID}
 }
 
 // Run translates the code and tests, or executes repairs if validation report has failures.
 func (t *TranslatorAgent) Run(ctx context.Context, state *types.State) (*types.State, error) {
+	defer t.checkpoint(state)
 	if state.TranslatedProject.Files == nil {
 		state.TranslatedProject.Files = make(map[string]string)
 	}
@@ -52,6 +59,20 @@ func (t *TranslatorAgent) Run(ctx context.Context, state *types.State) (*types.S
 
 	logger.LogAgent("Translator", "Initial Translation Mode: Implementing Part A (Source) and Part B (Tests)")
 	return t.translate(ctx, state)
+}
+
+// checkpoint persists a snapshot of state if RunID is set. Errors are logged
+// but never propagated — checkpointing is best-effort and must not abort the
+// pipeline when the disk is full or the runID is empty.
+func (t *TranslatorAgent) checkpoint(state *types.State) {
+	if t.RunID == "" || state == nil {
+		return
+	}
+	if path, err := Save(t.RunID, state); err != nil {
+		logger.LogWarning("Translator checkpoint save failed: %v", err)
+	} else {
+		logger.LogStep("Translator checkpoint saved: %s", path)
+	}
 }
 
 // translate generates the initial translation from source modules, design, and implementation plan.
