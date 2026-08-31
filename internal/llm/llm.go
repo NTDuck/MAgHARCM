@@ -23,11 +23,13 @@ type Models struct {
 // generation until Ollama's default num_predict=-1 cut-off fires much
 // later.
 //
-// NumCtx is intentionally small (1024) to keep the KV cache footprint
-// down on the 6GB RTX 3060 we're running on. Larger contexts will
-// trigger VRAM pressure when the foreign llama-server (PID 274826 on
-// port 8080) is also holding ~3GB of GPU memory; with NumCtx=1024 the
-// Ollama model fits in ~1.4GB and survives that contention.
+// NumCtx is sized to fit the analyzer prompt (DirectoryTree +
+// StructureSummary + SourceFilesContent), which routinely exceeds 1k
+// tokens on Sample 2/4. Empirically, NumCtx=1024 caused ollama HTTP 500
+// ("cannot meet free memory target of 1024 MiB") because the KV-cache
+// allocator could not satisfy the prompt. 8192 is the smallest value
+// that survives the prompt and the foreign llama-server VRAM contention
+// on port 8080. See research/_meta/DRIFT_LOG.md for the v4 → v5 revert.
 // Stop tokens match the delimiters our prompts ask the model to emit
 // at the end of a structured response. `<|im_end|>` is the chatml
 // token used by Qwen-style models. We deliberately do NOT stop on
@@ -36,7 +38,7 @@ type Models struct {
 // premature termination on those headers would truncate every response
 // mid-generation.
 var defaultChatOptions = &ollamaapi.Options{
-	Runner:     ollamaapi.Runner{NumCtx: 1024},
+	Runner:     ollamaapi.Runner{NumCtx: 8192},
 	NumPredict: 4096,
 	Stop: []string{
 		"<|im_end|>",
