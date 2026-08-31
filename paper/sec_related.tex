@@ -23,7 +23,7 @@ the first end-to-end exercise of the four-agent graph on a 4B coding
 model.
 
 \paragraph{AlphaTrans.}
-AlphaTrans~\citep{alphatrans2024} is the Java-Python translation
+AlphaTrans~\citep{alphatrans2025} is the Java-Python translation
 baseline we used to seed Sample 3. AlphaTrans frames translation as a
 structured type-and-API mapping problem and applies a sequence of
 neuro-symbolic passes to reconcile Java generics with Python's dynamic
@@ -31,7 +31,7 @@ type system. MAgHARCM does not yet have a Java-Python sample run; the
 Sample 3 slot in Table~\ref{tab:samples} is reserved for it.
 
 \paragraph{CodePlan.}
-CodePlan is a plan-then-translate neuro-symbolic baseline that emits
+CodePlan~\citep{codeplan2023} is a plan-then-translate neuro-symbolic baseline that emits
 an explicit dependency-ordered execution plan before invoking the
 LLM. ReCodeAgent's Planning agent borrows this idea; MAgHARCM's
 Planning agent inherits it. We treat CodePlan as a second-order
@@ -50,7 +50,7 @@ typed cross-language mapping it never asks the LLM to ingest a
 addresses from the agent side.
 
 \paragraph{MatchFixAgent.}
-MatchFixAgent~\citep{matchfixagent2024} is a repair-agent baseline that fixes
+MatchFixAgent~\citep{matchfixagent2025} is a repair-agent baseline that fixes
 compiler diagnostics one error at a time. We cite it because the
 Translator's repair mode in MAgHARCM is a direct descendant of the
 MatchFixAgent loop: a Validator diagnostic is fed back to the
@@ -61,11 +61,31 @@ files in one iteration) and that the Translator emits a full file
 rewrite rather than a unified-diff patch.
 
 \paragraph{TRAM.}
-TRAM~\citep{tram2024} is a multi-agent translation-and-repair baseline
+TRAM~\citep{tram2025} is a multi-agent translation-and-repair baseline
 that separates translation from test generation, the same dichotomy
 that ReCodeAgent's Validator formalises. The TRAM corpus and the
 ReCodeAgent corpus overlap heavily; MAgHARCM's characterization-test
 pass is most directly traceable to TRAM's test-generation stage.
+
+\paragraph{RepoCoder.}
+RepoCoder~\citep{repocoder2023} (Microsoft Research, EMNLP 2023) is
+the iterative retrieval + generation work that motivates our
+NEW-PRIM-32 candidate (Iterative Retrieval Refinement). RepoCoder
+closes $>98\%$ of the Oracle gap on function-body completion at two
+iterations on the RepoEval benchmark using a Jaccard-symbol retriever
+over the source corpus.
+
+\paragraph{RepoGraph.}
+RepoGraph~\citep{repograph2025} (UIUC + Tencent AI Seattle Lab, ICLR
+2025) is the repository-level typed code-graph plug-in that informs
+the planned extension of NEW-PRIM-9 (Tri-Rep Hybrid Code Graph) and
+NEW-PRIM-26 (Symbol-Aware Navigator) in MAgHARCM. RepoGraph reports
+an average relative $+32.8\%$ resolve-rate lift on SWE-bench-Lite
+across four baselines (RAG, Agentless, AutoCodeRover, SWE-agent) and
+$+93\%$ Code Match EM on CrossCodeEval with Deepseek-Coder-V2-Lite
+(MoE 16B/2.4B active) --- the strongest empirical evidence in the
+2024--2025 SWE-agent literature for the MoE + typed-graph retrieval
+combination we recommend for MAgHARCM's reasoning slot.
 
 \paragraph{Local-SLM agent harnesses.}
 MAgHARCM is not the first system to drive a multi-agent code task
@@ -73,3 +93,5 @@ against a local SLM. We treat this as an engineering decision (no
 API access on the target host, predictable cost) rather than a
 research contribution, and we cite the local-model agent frameworks
 that informed the harness layout without claiming novelty over them.
+FreeToken~\citep{freetoken2026} (Appendix~\ref{app:freetoken})
+informs the MoE model-selection half of this decision.
