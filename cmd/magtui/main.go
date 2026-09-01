@@ -24,10 +24,10 @@ import (
 	"strings"
 	"time"
 
-	"gopkg.in/yaml.v3"
-
 	"MAgHARCM/internal/config"
+	"MAgHARCM/internal/logger"
 	"MAgHARCM/internal/runner"
+	"gopkg.in/yaml.v3"
 )
 
 const banner = `
@@ -43,6 +43,12 @@ const banner = `
 func main() {
 	cfg := *config.Defaults()
 	phase := phaseCollect
+	state := &replState{}
+
+	// Wrap logger output so /logs can show recent events. Tee returns
+	// a writer that fans every line into both stdout and the ring
+	// buffer the TUI reads via logger.Snapshot.
+	logger.SetOutput(logger.Tee(os.Stdout))
 
 	fmt.Print(banner)
 	for {
@@ -62,7 +68,7 @@ func main() {
 		}
 
 		if strings.HasPrefix(line, "/") {
-			next, cont, err := handleSlash(line, &cfg, phase)
+			next, cont, err := handleSlash(line, &cfg, phase, state)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "error: %v\n", err)
 				continue
@@ -118,6 +124,7 @@ var stdinScanner = func() *bufio.Scanner {
 	s.Buffer(make([]byte, 0, 64*1024), 1024*1024)
 	return s
 }()
+
 // phase1Step walks through the YAML fields. The user types "ok" to accept
 // the default in brackets, or types a value; an empty line also accepts
 // the default. Typing "?" prints help for the current field; "abort"
@@ -261,9 +268,16 @@ func writeYAML(path string, cfg *config.Config) error {
 	return os.WriteFile(path, data, 0644)
 }
 
+// replState carries per-session REPL state that persists between commands.
+// Log history lives in the logger package's ring buffer (see
+// logger.Snapshot) so this struct only holds the debug toggle.
+type replState struct {
+	debug bool
+}
+
 // handleSlash processes /-prefixed commands. Returns the next phase, a
 // continuation flag, and any error.
-func handleSlash(line string, cfg *config.Config, current phase) (phase, bool, error) {
+func handleSlash(line string, cfg *config.Config, current phase, state *replState) (phase, bool, error) {
 	args := strings.Fields(line)
 	cmd := strings.ToLower(args[0])
 
@@ -327,6 +341,25 @@ func handleSlash(line string, cfg *config.Config, current phase) (phase, bool, e
 		fmt.Printf("(dry-run) would execute with: source=%s target=%s reasoning=%s coding=%s iterations=%d\n",
 			cfg.SourceDir, cfg.TargetDir, cfg.ReasoningModel, cfg.CodingModel, cfg.MaxIterations)
 		return phaseExecute, true, nil
+	case "/debug":
+		state.debug = !state.debug
+		if state.debug {
+			fmt.Println("debug: ON (verbose stderr logging)")
+		} else {
+			fmt.Println("debug: OFF")
+		}
+		return current, true, nil
+
+	case "/logs":
+		lines := logger.Snapshot()
+		if len(lines) == 0 {
+			fmt.Println("(no log lines captured yet)")
+		} else {
+			for _, l := range lines {
+				fmt.Print(l)
+			}
+		}
+		return current, true, nil
 
 	case "/quit", "/exit":
 		fmt.Println("bye.")
@@ -407,7 +440,9 @@ const slashHelp = `slash commands (always start with /):
   /status               print phase + key config fields
   /run                  execute phase 2 with the current YAML
   /dry-run              print what /run would do, but don't execute
-  /clear                drop the in-memory YAML and return to phase 1
+  /debug                toggle verbose debug output
+  /logs                 print the in-memory ring buffer of recent log lines
+  /clear
   /quit                 exit the REPL
 
 phase 1 also accepts:

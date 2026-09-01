@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"container/ring"
 	"fmt"
 	"io"
 	"os"
@@ -32,13 +33,24 @@ type Event struct {
 	Data      map[string]interface{} `json:"data,omitempty"`
 }
 
+const ringSize = 256 // ponytail: enough for a phase-2 session without unbounded growth.
+
 var (
 	outMu sync.Mutex
 	out   io.Writer = os.Stdout
+	bufMu sync.Mutex
+	buf   = ring.New(ringSize)
 )
 
-// SetOutput swaps the default sink. Used by tests; production code never
-// needs to call this because stdout is the only legitimate target.
+func init() {
+	for i := 0; i < ringSize; i++ {
+		buf.Value = ""
+		buf = buf.Next()
+	}
+}
+
+// SetOutput swaps the default sink. Production code uses stdout; tests
+// and the interactive TUI pass other writers.
 func SetOutput(w io.Writer) {
 	outMu.Lock()
 	defer outMu.Unlock()
@@ -46,6 +58,45 @@ func SetOutput(w io.Writer) {
 		w = os.Stdout
 	}
 	out = w
+}
+
+// Snapshot returns the most recent ringSize log lines, oldest first.
+// Useful for the TUI's /logs slash command and for crash dumps.
+func Snapshot() []string {
+	bufMu.Lock()
+	defer bufMu.Unlock()
+	out := make([]string, 0, ringSize)
+	buf.Do(func(p any) {
+		if s, ok := p.(string); ok && s != "" {
+			out = append(out, s)
+		}
+	})
+	return out
+}
+
+// Tee wraps w so every line written also lands in the ring buffer
+// accessible via Snapshot. Pass nil for w to disable console output.
+func Tee(w io.Writer) io.Writer {
+	if w == nil {
+		w = os.Stdout
+	}
+	return &recordingWriter{inner: w}
+}
+
+type recordingWriter struct {
+	inner io.Writer
+}
+
+func (r *recordingWriter) Write(p []byte) (int, error) {
+	if _, err := r.inner.Write(p); err != nil {
+		return 0, err
+	}
+	s := string(p)
+	bufMu.Lock()
+	buf.Value = s
+	buf = buf.Next()
+	bufMu.Unlock()
+	return len(p), nil
 }
 
 func writeLine(format string, args ...any) {

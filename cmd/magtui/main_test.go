@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -8,6 +10,7 @@ import (
 	"time"
 
 	"MAgHARCM/internal/config"
+	"MAgHARCM/internal/logger"
 )
 
 func TestSetField(t *testing.T) {
@@ -128,7 +131,7 @@ func TestPhase1FinalizeWritesYAML(t *testing.T) {
 func TestHandleSlashShow(t *testing.T) {
 	cfg := &config.Config{SourceDir: "x", SourceLang: "Go", TargetDir: "y", TargetLang: "Rust"}
 	out := captureStdout(t, func() {
-		if _, _, err := handleSlash("/show", cfg, phaseCollect); err != nil {
+		if _, _, err := handleSlash("/show", cfg, phaseCollect, &replState{}); err != nil {
 			t.Errorf("show: %v", err)
 		}
 	})
@@ -141,7 +144,7 @@ func TestHandleSlashClearResets(t *testing.T) {
 	def := config.Defaults()
 	cfg := &config.Config{SourceDir: "x", SourceLang: "Go"}
 	captureStdout(t, func() {
-		next, _, err := handleSlash("/clear", cfg, phaseExecute)
+		next, _, err := handleSlash("/clear", cfg, phaseExecute, &replState{})
 		if err != nil {
 			t.Errorf("clear: %v", err)
 		}
@@ -164,7 +167,7 @@ func TestHandleSlashLoadMalformed(t *testing.T) {
 		t.Fatalf("write: %v", err)
 	}
 	cfg := &config.Config{}
-	if _, _, err := handleSlash("/load "+bad, cfg, phaseCollect); err == nil {
+	if _, _, err := handleSlash("/load "+bad, cfg, phaseCollect, &replState{}); err == nil {
 		t.Errorf("expected error loading malformed YAML")
 	}
 
@@ -173,7 +176,7 @@ func TestHandleSlashLoadMalformed(t *testing.T) {
 	if err := os.WriteFile(missing, []byte("translation:\n  source:\n    dir: a\n"), 0644); err != nil {
 		t.Fatalf("write: %v", err)
 	}
-	if _, _, err := handleSlash("/load "+missing, cfg, phaseCollect); err == nil {
+	if _, _, err := handleSlash("/load "+missing, cfg, phaseCollect, &replState{}); err == nil {
 		t.Errorf("expected error: YAML missing required fields must be refused")
 	}
 }
@@ -193,7 +196,7 @@ func TestHandleSlashLoadValidJumpsToPhase2(t *testing.T) {
 		t.Fatalf("write: %v", err)
 	}
 	cfg := &config.Config{}
-	next, _, err := handleSlash("/load "+good, cfg, phaseCollect)
+	next, _, err := handleSlash("/load "+good, cfg, phaseCollect, &replState{})
 	if err != nil {
 		t.Fatalf("load: %v", err)
 	}
@@ -207,14 +210,14 @@ func TestHandleSlashLoadValidJumpsToPhase2(t *testing.T) {
 
 func TestHandleSlashUnknownCommand(t *testing.T) {
 	cfg := &config.Config{}
-	if _, _, err := handleSlash("/nope", cfg, phaseCollect); err == nil {
+	if _, _, err := handleSlash("/nope", cfg, phaseCollect, &replState{}); err == nil {
 		t.Errorf("expected error for unknown slash command")
 	}
 }
 
 func TestHandleSlashQuit(t *testing.T) {
 	cfg := &config.Config{}
-	_, cont, err := handleSlash("/quit", cfg, phaseCollect)
+	_, cont, err := handleSlash("/quit", cfg, phaseCollect, &replState{})
 	if err != nil {
 		t.Fatalf("quit: %v", err)
 	}
@@ -253,4 +256,103 @@ func captureStdout(t *testing.T, fn func()) string {
 	fn()
 	w.Close()
 	return <-done
+}
+
+func TestHandleSlashDebugToggles(t *testing.T) {
+	state := &replState{}
+	cfg := &config.Config{}
+	captureStdout(t, func() {
+		_, _, err := handleSlash("/debug", cfg, phaseCollect, state)
+		if err != nil {
+			t.Errorf("debug on: %v", err)
+		}
+	})
+	if !state.debug {
+		t.Errorf("debug should be on after /debug")
+	}
+	captureStdout(t, func() {
+		_, _, err := handleSlash("/debug", cfg, phaseCollect, state)
+		if err != nil {
+			t.Errorf("debug off: %v", err)
+		}
+	})
+	if state.debug {
+		t.Errorf("debug should be off after second /debug")
+	}
+}
+
+func TestHandleSlashLogsReadsSnapshot(t *testing.T) {
+	state := &replState{}
+	cfg := &config.Config{}
+
+	var buf bytes.Buffer
+	prev := captureLoggerInto(&buf)
+	t.Cleanup(prev)
+
+	logger.LogStep("hello")
+	logger.LogStep("world")
+	out := captureStdout(t, func() {
+		if _, _, err := handleSlash("/logs", cfg, phaseCollect, state); err != nil {
+			t.Errorf("logs: %v", err)
+		}
+	})
+	if !strings.Contains(out, "hello") || !strings.Contains(out, "world") {
+		t.Errorf("logs output missing entries: %q", out)
+	}
+}
+
+// captureLoggerInto routes logger writes to buf via Tee and returns a
+// cleanup that restores the original stdout writer.
+func captureLoggerInto(buf *bytes.Buffer) func() {
+	prev := loggerOutputForTest
+	loggerOutputForTest = logger.Tee(buf)
+	logger.SetOutput(loggerOutputForTest)
+	return func() {
+		loggerOutputForTest = prev
+		logger.SetOutput(os.Stdout)
+	}
+}
+
+// loggerOutputForTest lets tests swap the logger output without
+// permanently mutating package state.
+var loggerOutputForTest io.Writer = os.Stdout
+
+func TestWriteYAMLRoundTrip(t *testing.T) {
+	in := config.Config{
+		SourceDir: "src/c", SourceLang: "C",
+		TargetDir: "dst/rust", TargetLang: "Rust", Toolchain: "cargo",
+		ReasoningModel: "test-reasoning:latest",
+		CodingModel:    "test-coding:latest",
+		OllamaBaseURL:  "http://localhost:11434",
+		MaxIterations:  7,
+		Timeout:        42 * time.Second,
+		LSPProvider:    "native",
+	}
+	dir := t.TempDir()
+	path := filepath.Join(dir, "roundtrip.yml")
+	if err := writeYAML(path, &in); err != nil {
+		t.Fatalf("writeYAML: %v", err)
+	}
+	out, err := config.LoadYAML(path)
+	if err != nil {
+		t.Fatalf("LoadYAML: %v", err)
+	}
+	if out.SourceDir != in.SourceDir || out.SourceLang != in.SourceLang {
+		t.Errorf("source mismatch: got %s/%s want %s/%s", out.SourceDir, out.SourceLang, in.SourceDir, in.SourceLang)
+	}
+	if out.TargetDir != in.TargetDir || out.TargetLang != in.TargetLang || out.Toolchain != in.Toolchain {
+		t.Errorf("target mismatch: got %s/%s/%s", out.TargetDir, out.TargetLang, out.Toolchain)
+	}
+	if out.ReasoningModel != in.ReasoningModel || out.CodingModel != in.CodingModel {
+		t.Errorf("models mismatch")
+	}
+	if out.MaxIterations != in.MaxIterations {
+		t.Errorf("iterations mismatch: got %d want %d", out.MaxIterations, in.MaxIterations)
+	}
+	if out.Timeout != in.Timeout {
+		t.Errorf("timeout mismatch: got %s want %s", out.Timeout, in.Timeout)
+	}
+	if out.LSPProvider != in.LSPProvider {
+		t.Errorf("lsp mismatch: got %s want %s", out.LSPProvider, in.LSPProvider)
+	}
 }

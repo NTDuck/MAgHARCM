@@ -34,6 +34,8 @@ examples/
 # Artifacts
 .artifacts/
 
+# Default TUI save artifact (overridable via /save <path>).
+magharcm-request.yml
 # paper/ build artifacts
 paper/main.aux
 paper/main.bbl
