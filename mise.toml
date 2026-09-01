@@ -2,17 +2,21 @@
 go = "1.26.5"
 rust = "latest"
 
-[tasks.dev]
-description = "Run MAgHARCM translation with YAML config"
-run = "go run ./cmd/MAgHARCM --config config.yml"
-
 [tasks.start]
 description = "Run MAgHARCM translation with the configured sample"
 run = "go run ./cmd/MAgHARCM --config config.yml"
 
+[tasks.dev]
+description = "Alias for start"
+run = "go run ./cmd/MAgHARCM --config config.yml"
+
+[tasks.ui]
+description = "Launch the interactive MAgHARCM TUI"
+run = "go run ./cmd/magtui"
+
 [tasks.build]
-description = "Build binary"
-run = "go build -o bin/MAgHARCM ./cmd/MAgHARCM"
+description = "Build binaries"
+run = "go build -o bin/MAgHARCM ./cmd/MAgHARCM && go build -o bin/magtui ./cmd/magtui"
 
 [tasks.test]
 description = "Run tests"
