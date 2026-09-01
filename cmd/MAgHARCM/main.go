@@ -83,12 +83,18 @@ func main() {
 	logger.LogStep("Connecting to Ollama models at `%s`", cfg.OllamaBaseURL)
 	logger.LogStep("Reasoning Model: `%s`", cfg.ReasoningModel)
 	logger.LogStep("Coding Model:    `%s`", cfg.CodingModel)
-	models := llm.MustNewModels(ctx, cfg)
+	models, err := llm.NewModels(ctx, cfg)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error initializing Ollama models: %v\n", err)
+		os.Exit(1)
+	}
 
-	// Construct the Eino multi-agent graph with automated repair feedback.
-	// The run ID is forwarded so each iteration is checkpointed to disk.
 	logger.LogStep("Constructing 4-agent Eino Graph (Analyzer, Planning, Translator, Validator)")
-	magharcmGraph := graph.MustNewMAgHARCMGraph(ctx, models, runID)
+	magharcmGraph, err := graph.NewMAgHARCMGraph(ctx, models, runID)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error constructing MAgHARCM graph: %v\n", err)
+		os.Exit(1)
+	}
 
 	// Execute translation graph until validation criteria are met or iteration limit reached
 	logger.LogStep("Starting multi-agent translation execution")

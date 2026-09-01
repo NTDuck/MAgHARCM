@@ -2,52 +2,55 @@ package logger
 
 import (
 	"bytes"
-	"os"
-	"path/filepath"
+	"strings"
+	"sync"
 	"testing"
 )
 
-func TestConsoleSink(t *testing.T) {
+func TestEmitWritesExpectedLines(t *testing.T) {
 	var buf bytes.Buffer
-	sink := NewConsoleSink(&buf)
+	SetOutput(&buf)
+	t.Cleanup(func() { SetOutput(nil) })
 
-	sink.WriteEvent(Event{
-		Type:    EventAgentStart,
-		Agent:   "Analyzer",
-		Message: "Starting analysis",
-	})
-	sink.WriteEvent(Event{
-		Type:    EventToolCall,
-		Tool:    "get_file_structure",
-		Message: "Extracted elements",
-	})
+	LogAgent("Analyzer", "Starting analysis")
+	LogTool("get_file_structure", "Extracted elements")
+	LogStep("Processing step")
+	LogWarning("low coverage")
+	LogError("bad thing")
+	LogValidation("build succeeded")
 
-	out := buf.String()
-	if out == "" {
-		t.Errorf("expected console sink output")
-	}
-	if !bytes.Contains(buf.Bytes(), []byte("[Tool: `get_file_structure`]")) {
-		t.Errorf("expected backticked tool format [Tool: `get_file_structure`], got: %s", out)
+	s := buf.String()
+	for _, want := range []string{
+		"[Analyzer] Starting analysis",
+		"[Tool: `get_file_structure`] Extracted elements",
+		"Processing step",
+		"[WARNING] low coverage",
+		"[ERROR] bad thing",
+		"[Validation] build succeeded",
+	} {
+		if !strings.Contains(s, want) {
+			t.Errorf("missing %q in:\n%s", want, s)
+		}
 	}
 }
 
-func TestJSONFileSink(t *testing.T) {
-	tmpDir := t.TempDir()
-	logPath := filepath.Join(tmpDir, "events.jsonl")
+func TestEmitThreadsafe(t *testing.T) {
+	var buf bytes.Buffer
+	SetOutput(&buf)
+	t.Cleanup(func() { SetOutput(nil) })
 
-	sink, err := NewJSONFileSink(logPath)
-	if err != nil {
-		t.Fatalf("failed to create json file sink: %v", err)
+	const n = 32
+	var wg sync.WaitGroup
+	wg.Add(n)
+	for range n {
+		go func() {
+			defer wg.Done()
+			LogStep("hello")
+		}()
 	}
+	wg.Wait()
 
-	sink.WriteEvent(Event{
-		Type:    EventStep,
-		Message: "Processing step",
-	})
-	_ = sink.Close()
-
-	data, err := os.ReadFile(logPath)
-	if err != nil || len(data) == 0 {
-		t.Fatalf("expected non-empty jsonl file: %v", err)
+	if got := strings.Count(buf.String(), "hello"); got != n {
+		t.Errorf("expected %d lines, got %d", n, got)
 	}
 }

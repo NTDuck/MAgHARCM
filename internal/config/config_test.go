@@ -1,50 +1,77 @@
 package config
 
 import (
+	"os"
 	"testing"
-	"time"
 )
 
 func TestConfigDefaults(t *testing.T) {
-	cfg := MustLoad()
+	// Defaults reads from env; clear any inherited values for a stable test.
+	for _, k := range []string{
+		"OLLAMA_BASE_URL", "OLLAMA_REASONING_MODEL", "OLLAMA_CODING_MODEL",
+		"MAGHARCM_MAX_ITERATIONS", "MAGHARCM_TIMEOUT_SECONDS",
+	} {
+		os.Unsetenv(k)
+	}
+	cfg := Defaults()
 
 	if cfg.OllamaBaseURL != "http://localhost:11434" {
-		t.Errorf("expected default ollama URL http://localhost:11434, got %s", cfg.OllamaBaseURL)
+		t.Errorf("ollama URL: got %s", cfg.OllamaBaseURL)
 	}
 	if cfg.ReasoningModel != "gpt-oss:20b" {
-		t.Errorf("expected default reasoning model gpt-oss:20b, got %s", cfg.ReasoningModel)
+		t.Errorf("reasoning model: got %s", cfg.ReasoningModel)
 	}
 	if cfg.CodingModel != "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4_K_XL" {
-		t.Errorf("expected default coding model hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4_K_XL, got %s", cfg.CodingModel)
+		t.Errorf("coding model: got %s", cfg.CodingModel)
 	}
 	if cfg.MaxIterations != 10 {
-		t.Errorf("expected max iterations 10, got %d", cfg.MaxIterations)
+		t.Errorf("max iterations: got %d", cfg.MaxIterations)
 	}
 }
 
-func TestConfigOptions(t *testing.T) {
-	cfg := MustLoad(
-		WithOllamaBaseURL("http://127.0.0.1:11434"),
-		WithReasoningModel("custom-reasoning"),
-		WithCodingModel("custom-coding"),
-		WithMaxIterations(3),
-		WithTimeout(10*time.Second),
-		WithSourceTarget("src/a", "dst/b", "c", "rust"),
-	)
-
+func TestParseYAMLOverrides(t *testing.T) {
+	yamlData := `
+translation:
+  source:
+    dir: "src/c"
+    language: "C"
+  target:
+    dir: "dst/rust"
+    language: "Rust"
+    toolchain: "cargo"
+  models:
+    reasoning: "custom-reasoning:latest"
+    coding: "custom-coding:latest"
+    ollama_url: "http://127.0.0.1:11434"
+  execution:
+    max_iterations: 15
+    timeout_seconds: 300
+  lsp:
+    provider: "native"
+`
+	cfg, err := ParseYAML([]byte(yamlData))
+	if err != nil {
+		t.Fatalf("ParseYAML: %v", err)
+	}
+	if cfg.SourceDir != "src/c" || cfg.SourceLang != "C" {
+		t.Errorf("source: %s/%s", cfg.SourceDir, cfg.SourceLang)
+	}
+	if cfg.TargetDir != "dst/rust" || cfg.TargetLang != "Rust" || cfg.Toolchain != "cargo" {
+		t.Errorf("target: %s/%s (%s)", cfg.TargetDir, cfg.TargetLang, cfg.Toolchain)
+	}
+	if cfg.ReasoningModel != "custom-reasoning:latest" {
+		t.Errorf("reasoning: %s", cfg.ReasoningModel)
+	}
+	if cfg.CodingModel != "custom-coding:latest" {
+		t.Errorf("coding: %s", cfg.CodingModel)
+	}
 	if cfg.OllamaBaseURL != "http://127.0.0.1:11434" {
-		t.Errorf("expected 127.0.0.1, got %s", cfg.OllamaBaseURL)
+		t.Errorf("ollama URL: %s", cfg.OllamaBaseURL)
 	}
-	if cfg.ReasoningModel != "custom-reasoning" {
-		t.Errorf("expected custom-reasoning, got %s", cfg.ReasoningModel)
+	if cfg.MaxIterations != 15 {
+		t.Errorf("max iterations: %d", cfg.MaxIterations)
 	}
-	if cfg.CodingModel != "custom-coding" {
-		t.Errorf("expected custom-coding, got %s", cfg.CodingModel)
-	}
-	if cfg.MaxIterations != 3 {
-		t.Errorf("expected 3, got %d", cfg.MaxIterations)
-	}
-	if cfg.SourceDir != "src/a" || cfg.TargetDir != "dst/b" {
-		t.Errorf("source or target mismatch: %s -> %s", cfg.SourceDir, cfg.TargetDir)
+	if cfg.LSPProvider != "native" {
+		t.Errorf("lsp provider: %s", cfg.LSPProvider)
 	}
 }

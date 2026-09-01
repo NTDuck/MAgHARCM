@@ -123,17 +123,6 @@ func NewMAgHARCMGraph(ctx context.Context, models *llm.Models, runID string) (*M
 	return &MAgHARCMGraph{Runnable: runnable, RunID: runID}, nil
 }
 
-// MustNewMAgHARCMGraph constructs the graph and panics on failure.
-// runID is forwarded to the translator and validator so each iteration is
-// checkpointed under .artifacts/<runID>/checkpoints/. Pass "" to disable
-// checkpointing entirely.
-func MustNewMAgHARCMGraph(ctx context.Context, models *llm.Models, runID string) *MAgHARCMGraph {
-	g, err := NewMAgHARCMGraph(ctx, models, runID)
-	if err != nil {
-		panic(err)
-	}
-	return g
-}
 
 // Execute runs the translation graph with initial state and returns final state.
 func (rg *MAgHARCMGraph) Execute(ctx context.Context, initialState *types.State) (*types.State, error) {

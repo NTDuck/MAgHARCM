@@ -75,11 +75,3 @@ func NewModels(ctx context.Context, cfg *config.Config) (*Models, error) {
 	}, nil
 }
 
-// MustNewModels initializes models and panics on error.
-func MustNewModels(ctx context.Context, cfg *config.Config) *Models {
-	models, err := NewModels(ctx, cfg)
-	if err != nil {
-		panic(err)
-	}
-	return models
-}

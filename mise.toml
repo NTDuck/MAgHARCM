@@ -6,6 +6,10 @@ rust = "latest"
 description = "Run MAgHARCM translation with YAML config"
 run = "go run ./cmd/MAgHARCM --config config.yml"
 
+[tasks.start]
+description = "Run MAgHARCM translation with the configured sample"
+run = "go run ./cmd/MAgHARCM --config config.yml"
+
 [tasks.build]
 description = "Build binary"
 run = "go build -o bin/MAgHARCM ./cmd/MAgHARCM"
@@ -23,5 +27,5 @@ description = "Format Go code"
 run = "go fmt ./..."
 
 [tasks.clean]
-description = "Clean build artifacts"
+description = "Clean build artifacts and translated projects"
 run = "rm -rf bin/ .artifacts/"
