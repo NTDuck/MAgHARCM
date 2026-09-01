@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -304,18 +303,9 @@ func TestHandleSlashLogsReadsSnapshot(t *testing.T) {
 // captureLoggerInto routes logger writes to buf via Tee and returns a
 // cleanup that restores the original stdout writer.
 func captureLoggerInto(buf *bytes.Buffer) func() {
-	prev := loggerOutputForTest
-	loggerOutputForTest = logger.Tee(buf)
-	logger.SetOutput(loggerOutputForTest)
-	return func() {
-		loggerOutputForTest = prev
-		logger.SetOutput(os.Stdout)
-	}
+	prev := logger.SetOutput(logger.Tee(buf))
+	return func() { logger.SetOutput(prev) }
 }
-
-// loggerOutputForTest lets tests swap the logger output without
-// permanently mutating package state.
-var loggerOutputForTest io.Writer = os.Stdout
 
 func TestWriteYAMLRoundTrip(t *testing.T) {
 	in := config.Config{

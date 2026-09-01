@@ -49,18 +49,20 @@ func init() {
 	}
 }
 
-// SetOutput swaps the default sink. Production code uses stdout; tests
-// and the interactive TUI pass other writers.
-func SetOutput(w io.Writer) {
+// SetOutput swaps the default sink and returns the previous one, so
+// callers can restore it. Production code uses stdout; tests and the
+// interactive TUI pass other writers.
+func SetOutput(w io.Writer) io.Writer {
 	outMu.Lock()
 	defer outMu.Unlock()
+	prev := out
 	if w == nil {
 		w = os.Stdout
 	}
 	out = w
+	return prev
 }
 
-// Snapshot returns the most recent ringSize log lines, oldest first.
 // Useful for the TUI's /logs slash command and for crash dumps.
 func Snapshot() []string {
 	bufMu.Lock()
