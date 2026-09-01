@@ -1,0 +1,139 @@
+\section{Methodology}
+\label{sec:method}
+
+MAgHARCM is implemented in Go on top of CloudWeGo Eino's cyclic graph
+runtime. The graph mirrors ReCodeAgent's four-agent decomposition
+\citep{ibrahimzada2025recodeagent} and uses the same planning / translating
+/ validating loop semantics, but is wired against local Ollama endpoints
+and tree-sitter for static analysis.
+
+\subsection{Four-Agent Graph}
+
+The graph is constructed once at startup and reused across repair
+iterations. Nodes and edges:
+
+\begin{enumerate}
+\item \textbf{Analyzer} ($\rightarrow$ Planning). Reads the source
+directory through \texttt{get\_directory\_tree} and
+\texttt{get\_file\_structure} (both implemented on top of tree-sitter,
+see below) and emits three documents: (i)~a Source Project Research
+note summarising structure, error-handling style, and dependencies;
+(ii)~a Third-Party Library Analysis that proposes target-language
+analogues; (iii)~a Target Project Design describing the intended
+directory layout, module boundaries, and module dependency order. The
+Analyzer is prompted with \texttt{gpt-oss:20b}.
+
+\item \textbf{Planning} ($\rightarrow$ Translator). Reads the three
+Analyzer documents and emits (i)~a fragment extraction list of the form
+\texttt{file:fragment}, (ii)~a name mapping from source symbols to target
+symbols, and (iii)~a concrete target skeleton: a real \texttt{Cargo.toml}
+plus stub \texttt{src/lib.rs} and test files, written to disk so the
+Translator has a compilable starting point. The Planner is also
+\texttt{gpt-oss:20b}. When the Planner emits a malformed skeleton the
+harness substitutes a minimal fallback (a single-module
+\texttt{lib.rs}) and logs a \texttt{[WARNING] Planning LLM did not emit
+explicit skeleton files} line -- this fallback is what we observed on
+Sample 2 (\texttt{stats}).
+
+\item \textbf{Translator} ($\rightarrow$ Validator). Operates in two
+modes. \emph{Initial Translation Mode} consumes the Planning output
+and writes the actual source and test files for every Part-A and Part-B
+fragment. \emph{Repair Mode} consumes the Validator's diagnostic
+report and applies targeted edits. The Translator is prompted with the
+coding model \texttt{Qwen3-4B-Instruct}.
+
+\item \textbf{Validator} ($\rightarrow$ Translator or terminate).
+Executes the target toolchain (\texttt{cargo}, \texttt{go test},
+\texttt{ctest}, \texttt{pytest}, or a custom Makefile), parses compiler
+diagnostics and test assertions, and produces a structured
+\texttt{ValidationReport}. If the report shows uncovered functions,
+the Validator prompts the reasoning model for additional
+characterization tests and re-runs validation. The Validator uses
+\texttt{gpt-oss:20b}. The Validator emits the same \texttt{ITER[i]}
+metric line used by the run logs we report in Section~\ref{sec:eval}.
+\end{enumerate}
+
+The edge Validator$\rightarrow$Translator is the only cycle in the
+graph. Termination occurs when the Validator reports
+\texttt{all\_success = true} (every test passes) or when the iteration
+counter reaches the configured ceiling (default $10$, matching
+ReCodeAgent).
+
+\subsection{Tool Layer}
+
+The Analyzer and Validator both call into a thin tool layer:
+
+\begin{itemize}
+\item \texttt{get\_directory\_tree} walks the source tree and returns a
+list of source, header, and test files.
+\item \texttt{get\_file\_structure} parses each file with the
+language-appropriate tree-sitter grammar and returns a flat AST element
+list plus an import list. The language is resolved from the source
+file extension via the \texttt{LanguageRegistry}.
+\item \texttt{fragment\_extraction} runs the same parser again at the
+fragment level (functions, methods, test cases) and emits the
+\texttt{file:fragment} inventory consumed by the Planning agent.
+\item \texttt{name\_mapping} is implemented inside the Planning node as
+a structured-output prompt: the model is asked to emit a JSON object
+mapping each source symbol to its target counterpart.
+\item \texttt{write\_file} / \texttt{edit\_file} perform atomic writes
+to the target tree under the harness's output directory.
+\item \texttt{validate\_build} and \texttt{run\_tests} shell out to the
+target toolchain, capture stdout and stderr, and parse the result.
+\item \texttt{LSPProvider} is an interface with two implementations: a
+\texttt{native} provider that drives tree-sitter directly, and an
+\texttt{abcoder} provider that talks to CloudWeGo ABCoder over MCP
+JSON-RPC on stdio. If the ABCoder process fails to start, the harness
+falls back to the native provider and logs the fall-back event.
+\end{itemize}
+
+\subsection{Single-Shot vs. Chunked Translator (NEW-PRIM-23)}
+
+The current Translator is \emph{single-shot}: on each repair iteration
+the entire Part A (source) and Part B (test) implementation plan is
+serialised into one prompt and the model is asked to write all the
+files in a single response. This works as long as the fragment count
+fits comfortably in the model's effective context window (we observed
+stable behaviour for 6 fragments on Sample 1) but saturates once the
+fragment count crosses a threshold we have not yet pinned down
+empirically.
+
+On Sample 2 (\texttt{stats}, 517 fragments) the Translator wrote
+\emph{zero} files: the prompt was too long for the 4B model to produce
+a complete answer, and the model returned an empty tool-call list. The
+Validator then reported \texttt{0 passed, 0 failed} against an empty
+target tree -- a vacuous result that the harness's
+\texttt{coverage\_gap\_analysis} cannot rescue because there are no
+functions to cover.
+
+NEW-PRIM-23 is the chunked Translator primitive we are building to fix
+this. The design replaces the single prompt with a bounded loop:
+
+\begin{algorithm}[ht]
+\caption{Chunked Translator (NEW-PRIM-23, design)}
+\label{alg:chunked}
+\begin{algorithmic}[1]
+\State Group fragments into batches of size $B$ (default $B=8$).
+\For{each batch $b$}
+  \State Prompt the coding model with $b$'s fragments, the relevant
+  fragment of the skeleton, and the latest Validator report (if any).
+  \State Apply the model's writes to disk.
+  \State Run a fast incremental \texttt{validate\_build} on $b$ alone.
+  \If{compilation fails}
+    \State Re-prompt the model with the diagnostics and the same batch
+    $b$ (local repair, bounded to $L$ iterations).
+  \EndIf
+\EndFor
+\State Run the global Validator once over the assembled target.
+\State Emit the standard \texttt{ValidationReport}.
+\end{algorithmic}
+\end{algorithm}
+
+\noindent
+Two design notes. First, the batch boundary $B$ is a hyper-parameter;
+we expect to tune it against the 4B model's effective context window.
+Second, per-batch local repair keeps the model focused on a small
+diagnostic set, which we expect to reduce the empty-response failure
+mode we observed on Sample 2. We have not yet implemented the chunked
+loop; the single-shot Translator remains in production for the Sample~1
+results we report.

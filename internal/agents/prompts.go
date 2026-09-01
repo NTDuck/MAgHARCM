@@ -100,6 +100,21 @@ Translation Guidelines:
 5. Rust Borrow-Checker: Avoid borrowing collections immutably while mutably borrowing them. Compute lengths, bounds, or indices into local variables BEFORE mutably slicing/indexing (e.g. ` + "`let len = items.len(); let slice = &mut items[..size.min(len)];`" + ` or use ` + "`items.iter_mut()`" + `).
 6. Write clean, complete, fully closed code for all required files without placeholders, stubs, or truncation.
 
+MANDATORY TEST REQUIREMENTS — failure to comply = non-deliverable:
+- EVERY Rust test file you emit MUST contain at least 3 ` + "`#[test]`" + `-attributed functions. Translate every distinct scenario in source test files (one scenario per day in GildedRoseTextTests.c) into its own #[test].
+- EVERY ` + "`#[test]`" + ` function MUST contain at least one ` + "`assert!`" + ` / ` + "`assert_eq!`" + ` / ` + "`assert_ne!`" + ` call.
+- Test file paths MUST be under ` + "`tests/`" + ` (integration tests) — e.g. ` + "`tests/text_tests.rs`" + `, ` + "`tests/unit_tests.rs`" + `, ` + "`tests/characterization_tests.rs`" + `.
+- At the TOP of every test file, ` + "`use {{.PackageName}}::*;`" + ` (replace ` + "`{{.PackageName}}`" + ` with the actual package name below).
+- The translated test bodies MUST drive the same scenarios as the source tests (e.g. for GildedRose's ` + "`GildedRoseTextTests.c`" + `, emit day-by-day characterization tests asserting item name/sell_in/quality after N days of ` + "`update_quality`" + `).
+- DO NOT emit empty test files or files with only comments. DO NOT emit ` + "`// This file is not needed`" + ` stubs.
+- For C source with ` + "`GildedRoseTextTests.c`" + ` (a ` + "`main()`" + ` driver that calls ` + "`print_item`" + `), translate each scenario line into a Rust ` + "`#[test]`" + ` that asserts the printed string or the item's name/sell_in/quality fields after ` + "`update_quality`" + ` is called.
+
+MANDATORY TEST REQUIREMENTS (other target languages) — failure to comply = non-deliverable:
+- Go: every ` + "`_test.go`" + ` file MUST define at least 2 ` + "`func TestXxx(t *testing.T)`" + ` functions; each MUST call ` + "`t.Errorf`" + `, ` + "`t.Fatalf`" + `, ` + "`t.Errorf`" + ` via ` + "`if got != want { t.Errorf(...) }`" + `, or use ` + "`got := ...; if got != want { t.Fatalf(...) }`" + `. Package MUST be ` + "`{{.PackageName}}_test`" + `. DO NOT emit ` + "`_test.go`" + ` files containing only package declarations, comments, or empty bodies.
+- C/C++ (Catch2 / GoogleTest): every test file MUST define at least 2 ` + "`TEST_CASE`" + ` (Catch2) or ` + "`TEST`" + ` (GoogleTest) cases; each MUST use ` + "`REQUIRE`" + ` / ` + "`CHECK`" + ` (Catch2) or ` + "`EXPECT_*`" + ` / ` + "`ASSERT_*`" + ` (GoogleTest). DO NOT emit empty or comment-only test files.
+- Python (pytest / unittest): every test file MUST define at least 2 ` + "`def test_*`" + ` functions (pytest) or 2 ` + "`class TestX(unittest.TestCase)`" + ` methods named ` + "`test_*`" + `; each MUST contain at least one ` + "`assert`" + ` statement. DO NOT emit ` + "`pass`" + `-only test files or ` + "`# This file is not needed`" + ` stubs.
+- JavaScript / TypeScript (Jest / Mocha): every test file MUST define at least 2 ` + "`test(`" + ` or ` + "`it(`" + ` blocks (Jest) or 2 ` + "`describe`" + ` cases with ` + "`it`" + ` (Mocha); each MUST contain at least one ` + "`expect(...).to*`" + ` (Jest) or ` + "`assert.*`" + ` (Chai/Node). DO NOT emit empty or stub test files.
+
 === Source Files ===
 {{.SourceFiles}}
 
@@ -115,16 +130,52 @@ FILE: path/to/target/file.ext
 ` + "```{{.TargetLangLower}}\n" + `// Full file implementation
 ` + "```"
 
+const translatorChunkedPromptTemplate = `You are the Translator Agent translating ONE source file into {{.TargetLang}} as part of a larger chunked translation workflow.
+The repository has already been partially translated. Use the "Previously Emitted Modules" block as state: it lists every target file already written and shows the first lines of its content, so you can re-use existing public symbols (types, constructors, helpers) without re-declaring them.
+
+Target Package / Module Name: {{.PackageName}}
+
+Single-File Scope:
+- You are given EXACTLY ONE source file below. Translate ONLY that source file into the corresponding {{.TargetLang}} target file(s).
+- Output ONE FILE block only — ` + "`### FILE: <target_path>`" + ` — for the source file you were given. Do not emit other files in this response.
+- If the single source file logically requires declarations split across multiple target files (e.g. ` + "`src/lib.rs`" + ` re-exporting ` + "`src/item.rs`" + ` for Rust, or ` + "`lib.go`" + ` declaring package-level types for Go), emit ONE FILE block per resulting target file. Never re-emit files that already appear in the "Previously Emitted Modules" block — assume those already exist and import them.
+- Preserve exact functionality, algorithms, boundary conditions, and control flows from the source file.
+- Match calling conventions and types used in already-emitted modules: re-use struct names, enum names, function names, and module paths from the "Previously Emitted Modules" block instead of inventing new ones.
+- Public visibility / export rules still apply: any symbol the rest of the project needs must be ` + "`pub`" + ` (Rust), capitalized (Go), or ` + "`export`" + `d (TS).
+- Rust Borrow-Checker: avoid borrowing collections immutably while mutably borrowing them. Compute lengths, bounds, or indices into local variables BEFORE mutably slicing/indexing.
+- If the source file is a test file, follow the same MANDATORY TEST REQUIREMENTS as the full-batch translator (minimum #[test]/Test*/def test_* count per language, use {{.PackageName}}::*, package {{.PackageName}}_test for Go, etc.).
+- DO NOT emit empty files or stub comments. DO NOT re-emit already-emitted modules.
+
+=== Previously Emitted Modules (state summary) ===
+{{.PriorModules}}
+
+=== Target Project Design (apply to this chunk) ===
+{{.TargetDesign}}
+
+=== Source File to Translate (single chunk) ===
+{{.SourceFiles}}
+
+Translate the single source file above into {{.TargetLang}} now. Format the output strictly using file blocks:
+### FILE: path/to/target/file.ext
+` + "```{{.TargetLangLower}}\n" + `// Full file implementation
+` + "```"
+
 const translatorRepairPromptTemplate = `You are the Translator Agent in repair mode.
 The Validator Agent reported compilation or test failures for the translated {{.TargetLang}} codebase.
 
 Target Package / Module Name: {{.PackageName}}
 
 === Validation Diagnostics and Errors ===
-{{.Diagnostics}}
+:{{.Diagnostics}}
 
 === Current Codebase Files ===
-{{.CurrentFiles}}
+:{{.CurrentFiles}}
+
+{{if .CrateCanonicalHints}}
+=== Known crates.io crate-name corrections ===
+The repair model frequently emits Rust crate names with underscores instead of the canonical hyphenated form on crates.io. Before declaring a missing-package error unrecoverable, check this list. If your diagnostics reference any of these names with underscores, fix them to the hyphenated form:
+{{.CrateCanonicalHints}}
+{{end}}
 
 Please analyze the root cause of each error/failure and output the complete corrected files to fix all issues.
 Guidelines:
@@ -132,7 +183,7 @@ Guidelines:
    - Rust Borrow-Checker (e.g. E0502: cannot borrow as immutable because also borrowed as mutable, such as calling .len() on a collection while indexing &mut into it): evaluate and save lengths/bounds/indices into local variables BEFORE mutably borrowing or slicing (e.g. ` + "`let len = items.len(); let slice = &mut items[..size.min(len)];`" + ` or iterate with ` + "`items.iter_mut()`" + `).
    - Fix all type mismatches, lifetime annotations (e.g. ` + "`pub fn init_item<'a>(item: &'a mut Item, name: &str, sell_in: i32, quality: i32) -> &'a mut Item`" + `), and ownership/clone issues.
 2. Exported Symbols: In the library root (` + "`src/lib.rs` / `lib.go`" + `), ensure all types, structs, constructors (` + "`new`, `init_item`" + `), and functions (` + "`update_quality`, `print_item`" + `) are declared with public visibility or re-exported from submodules (` + "`pub mod ...; pub use ...::*;`" + `).
-3. Package Imports in Tests & Binaries: External test files in ` + "`tests/`" + ` and binaries in ` + "`src/main.rs`" + ` are separate compilation units and MUST import public library symbols from the package root via ` + "`use {{.PackageName}}::*;`" + ` at the top of each test file (never ` + "`use super::*;`" + `, and never declare ` + "`mod tests;`" + ` in ` + "`src/lib.rs`" + ` for files in ` + "`tests/`" + `).
+3. Package Imports in Tests & Binaries: External test files in ` + "`tests/``" + ` and binaries in ` + "`src/main.rs`" + ` are separate compilation units and MUST import public library symbols from the package root via ` + "`use {{.PackageName}}::*;`" + ` at the top of each test file (never ` + "`use super::*;`" + `, and never declare ` + "`mod tests;`" + ` in ` + "`src/lib.rs`" + ` for files in ` + "`tests/`" + `).
 4. Emit All Failing Files: If a compiler error occurs in any source or test file (e.g. ` + "`src/gilded_rose/update.rs`" + ` or ` + "`tests/unit/mod.rs`" + `), you MUST emit the complete corrected file in your response.
 5. Complete Working Files: Output complete, corrected file implementations with all braces and delimiters closed inside code blocks without placeholders or truncation.
 
@@ -147,6 +198,10 @@ The following functions or modules are uncovered or need more test assertions in
 
 Target Source Files:
 {{.SourceFiles}}
+
+Target minimum test count: {{.MinRealTests}}. You MUST emit at least this many #[test] functions across the test files.
+Emit AT LEAST 2× the number of source functions (one happy path + one edge case per function). Always aim higher than the minimum — more tests is better.
+Translate EACH scenario in the source test files (e.g. the GildedRoseTextTests.c main() driver scenarios, one per day) into a separate #[test] function.
 
 Generate additional comprehensive unit test cases in the target test framework to thoroughly exercise all uncovered functions and edge cases.
 Output the complete updated test file:

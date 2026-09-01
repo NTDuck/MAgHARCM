@@ -1,0 +1,693 @@
+================================================================
+       MAgHARCM - Multi-Agent Code Translation Engine           
+================================================================
+  Configuration:   config.yml
+  Source Codebase: assets/samples/oxidizer/stats/go (Go)
+  Target Directory:.artifacts/stats/rust (Rust)
+  Toolchain:       cargo
+
+[18:34:17] Connecting to Ollama models at `http://localhost:11434`
+[18:34:17] Reasoning Model: `lfm2.5:8b-a1b-q4_K_M`
+[18:34:17] Coding Model:    `hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4_K_XL`
+[18:34:17] Constructing 4-agent Eino Graph (Analyzer, Planning, Translator, Validator)
+[18:34:17] Starting multi-agent translation execution
+[18:34:17] [Analyzer] Starting source project analysis: `assets/samples/oxidizer/stats/go` (`Go` -> `Rust`)
+[18:34:17] Scanning directory hierarchy via `get_directory_tree`
+[18:34:17] [Tool: `get_directory_tree`] Found 73 source/header/test files in `assets/samples/oxidizer/stats/go`
+[18:34:17] Parsing AST structure with Tree-Sitter: `CHANGELOG.md`
+[18:34:17] [Tool: `get_file_structure`] `CHANGELOG.md` -> 12 AST elements, 0 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `DOCUMENTATION.md`
+[18:34:17] [Tool: `get_file_structure`] `DOCUMENTATION.md` -> 159 AST elements, 0 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `LICENSE`
+[18:34:17] [Tool: `get_file_structure`] `LICENSE` -> 0 AST elements, 0 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `Makefile`
+[18:34:17] [Tool: `get_file_structure`] `Makefile` -> 0 AST elements, 0 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `README.md`
+[18:34:17] [Tool: `get_file_structure`] `README.md` -> 78 AST elements, 0 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `README.md`
+[18:34:17] [Tool: `get_file_structure`] `README.md` -> 0 AST elements, 0 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `main.go`
+[18:34:17] [Tool: `get_file_structure`] `main.go` -> 1 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `methods.go`
+[18:34:17] [Tool: `get_file_structure`] `methods.go` -> 0 AST elements, 0 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `correlation.go`
+[18:34:17] [Tool: `get_file_structure`] `correlation.go` -> 3 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `correlation_test.go`
+[18:34:17] [Tool: `get_file_structure`] `correlation_test.go` -> 4 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `cumulative_sum.go`
+[18:34:17] [Tool: `get_file_structure`] `cumulative_sum.go` -> 1 AST elements, 0 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `cumulative_sum_test.go`
+[18:34:17] [Tool: `get_file_structure`] `cumulative_sum_test.go` -> 4 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `data.go`
+[18:34:17] [Tool: `get_file_structure`] `data.go` -> 1 AST elements, 0 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `data_test.go`
+[18:34:17] [Tool: `get_file_structure`] `data_test.go` -> 23 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `describe.go`
+[18:34:17] [Tool: `get_file_structure`] `describe.go` -> 4 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `describe_test.go`
+[18:34:17] [Tool: `get_file_structure`] `describe_test.go` -> 6 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `deviation.go`
+[18:34:17] [Tool: `get_file_structure`] `deviation.go` -> 5 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `deviation_test.go`
+[18:34:17] [Tool: `get_file_structure`] `deviation_test.go` -> 5 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `distances.go`
+[18:34:17] [Tool: `get_file_structure`] `distances.go` -> 5 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `distances_test.go`
+[18:34:17] [Tool: `get_file_structure`] `distances_test.go` -> 4 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `doc.go`
+[18:34:17] [Tool: `get_file_structure`] `doc.go` -> 0 AST elements, 0 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `entropy.go`
+[18:34:17] [Tool: `get_file_structure`] `entropy.go` -> 2 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `entropy_test.go`
+[18:34:17] [Tool: `get_file_structure`] `entropy_test.go` -> 4 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `errors.go`
+[18:34:17] [Tool: `get_file_structure`] `errors.go` -> 1 AST elements, 0 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `errors_test.go`
+[18:34:17] [Tool: `get_file_structure`] `errors_test.go` -> 1 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `examples.go`
+[18:34:17] [Tool: `get_file_structure`] `examples.go` -> 1 AST elements, 0 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `examples_test.go`
+[18:34:17] [Tool: `get_file_structure`] `examples_test.go` -> 0 AST elements, 0 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `geometric_distribution.go`
+[18:34:17] [Tool: `get_file_structure`] `geometric_distribution.go` -> 3 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `geometric_distribution_test.go`
+[18:34:17] [Tool: `get_file_structure`] `geometric_distribution_test.go` -> 9 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `go.mod`
+[18:34:17] [Tool: `get_file_structure`] `go.mod` -> 0 AST elements, 0 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `legacy.go`
+[18:34:17] [Tool: `get_file_structure`] `legacy.go` -> 7 AST elements, 0 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `legacy_test.go`
+[18:34:17] [Tool: `get_file_structure`] `legacy_test.go` -> 1 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `load.go`
+[18:34:17] [Tool: `get_file_structure`] `load.go` -> 1 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `load_test.go`
+[18:34:17] [Tool: `get_file_structure`] `load_test.go` -> 3 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `max.go`
+[18:34:17] [Tool: `get_file_structure`] `max.go` -> 1 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `max_test.go`
+[18:34:17] [Tool: `get_file_structure`] `max_test.go` -> 4 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `mean.go`
+[18:34:17] [Tool: `get_file_structure`] `mean.go` -> 3 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `mean_test.go`
+[18:34:17] [Tool: `get_file_structure`] `mean_test.go` -> 5 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `median.go`
+[18:34:17] [Tool: `get_file_structure`] `median.go` -> 1 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `median_test.go`
+[18:34:17] [Tool: `get_file_structure`] `median_test.go` -> 5 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `min.go`
+[18:34:17] [Tool: `get_file_structure`] `min.go` -> 1 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `min_test.go`
+[18:34:17] [Tool: `get_file_structure`] `min_test.go` -> 6 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `mode.go`
+[18:34:17] [Tool: `get_file_structure`] `mode.go` -> 1 AST elements, 0 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `mode_test.go`
+[18:34:17] [Tool: `get_file_structure`] `mode_test.go` -> 5 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `nist_test.go`
+[18:34:17] [Tool: `get_file_structure`] `nist_test.go` -> 22 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `norm.go`
+[18:34:17] [Tool: `get_file_structure`] `norm.go` -> 21 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `norm_test.go`
+[18:34:17] [Tool: `get_file_structure`] `norm_test.go` -> 20 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `outlier.go`
+[18:34:17] [Tool: `get_file_structure`] `outlier.go` -> 2 AST elements, 0 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `outlier_test.go`
+[18:34:17] [Tool: `get_file_structure`] `outlier_test.go` -> 1 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `percentile.go`
+[18:34:17] [Tool: `get_file_structure`] `percentile.go` -> 2 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `percentile_test.go`
+[18:34:17] [Tool: `get_file_structure`] `percentile_test.go` -> 7 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `quartile.go`
+[18:34:17] [Tool: `get_file_structure`] `quartile.go` -> 5 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `quartile_test.go`
+[18:34:17] [Tool: `get_file_structure`] `quartile_test.go` -> 4 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `ranksum.go`
+[18:34:17] [Tool: `get_file_structure`] `ranksum.go` -> 0 AST elements, 0 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `ranksum_test.go`
+[18:34:17] [Tool: `get_file_structure`] `ranksum_test.go` -> 0 AST elements, 0 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `regression.go`
+[18:34:17] [Tool: `get_file_structure`] `regression.go` -> 5 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `regression_test.go`
+[18:34:17] [Tool: `get_file_structure`] `regression_test.go` -> 5 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `result.json`
+[18:34:17] [Tool: `get_file_structure`] `result.json` -> 0 AST elements, 0 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `round.go`
+[18:34:17] [Tool: `get_file_structure`] `round.go` -> 1 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `round_test.go`
+[18:34:17] [Tool: `get_file_structure`] `round_test.go` -> 3 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `sample.go`
+[18:34:17] [Tool: `get_file_structure`] `sample.go` -> 2 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `sample_test.go`
+[18:34:17] [Tool: `get_file_structure`] `sample_test.go` -> 4 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `sigmoid.go`
+[18:34:17] [Tool: `get_file_structure`] `sigmoid.go` -> 1 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `sigmoid_test.go`
+[18:34:17] [Tool: `get_file_structure`] `sigmoid_test.go` -> 3 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `softmax.go`
+[18:34:17] [Tool: `get_file_structure`] `softmax.go` -> 1 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `softmax_test.go`
+[18:34:17] [Tool: `get_file_structure`] `softmax_test.go` -> 3 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `sum.go`
+[18:34:17] [Tool: `get_file_structure`] `sum.go` -> 1 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `sum_test.go`
+[18:34:17] [Tool: `get_file_structure`] `sum_test.go` -> 4 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `test_utils_test.go`
+[18:34:17] [Tool: `get_file_structure`] `test_utils_test.go` -> 3 AST elements, 0 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `util.go`
+[18:34:17] [Tool: `get_file_structure`] `util.go` -> 5 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `util_test.go`
+[18:34:17] [Tool: `get_file_structure`] `util_test.go` -> 1 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `variance.go`
+[18:34:17] [Tool: `get_file_structure`] `variance.go` -> 6 AST elements, 1 imports
+[18:34:17] Parsing AST structure with Tree-Sitter: `variance_test.go`
+[18:34:17] [Tool: `get_file_structure`] `variance_test.go` -> 5 AST elements, 1 imports
+[18:34:54] [Analyzer] Analysis complete: Research, Library Analysis, and Target Design generated
+[18:34:54] [Planning] Decomposing translation into granular translation units and constructing plan
+[18:34:54] Extracting translation units across source and test files
+[18:34:54] [Tool: `fragment_extraction`] Extracted 517 translation fragments from source files
+[18:34:54] Fragment: `CHANGELOG.md:signature`
+[18:34:54] Fragment: `CHANGELOG.md:to`
+[18:34:54] Fragment: `CHANGELOG.md:conversions`
+[18:34:54] Fragment: `CHANGELOG.md:for`
+[18:34:54] Fragment: `CHANGELOG.md:method`
+[18:34:54] Fragment: `CHANGELOG.md:shortcuts`
+[18:34:54] Fragment: `CHANGELOG.md:as`
+[18:34:54] Fragment: `CHANGELOG.md:placeholder`
+[18:34:54] Fragment: `CHANGELOG.md:to`
+[18:34:54] Fragment: `CHANGELOG.md:and`
+[18:34:54] Fragment: `CHANGELOG.md:declaration`
+[18:34:54] Fragment: `CHANGELOG.md:fields`
+[18:34:54] Fragment: `DOCUMENTATION.md:AutoCorrelation`
+[18:34:54] Fragment: `DOCUMENTATION.md:ChebyshevDistance`
+[18:34:54] Fragment: `DOCUMENTATION.md:Correlation`
+[18:34:54] Fragment: `DOCUMENTATION.md:Covariance`
+[18:34:54] Fragment: `DOCUMENTATION.md:CovariancePopulation`
+[18:34:54] Fragment: `DOCUMENTATION.md:CumulativeSum`
+[18:34:54] Fragment: `DOCUMENTATION.md:Entropy`
+[18:34:54] Fragment: `DOCUMENTATION.md:EuclideanDistance`
+[18:34:54] Fragment: `DOCUMENTATION.md:ExpGeom`
+[18:34:54] Fragment: `DOCUMENTATION.md:GeometricMean`
+[18:34:54] Fragment: `DOCUMENTATION.md:HarmonicMean`
+[18:34:54] Fragment: `DOCUMENTATION.md:InterQuartileRange`
+[18:34:54] Fragment: `DOCUMENTATION.md:ManhattanDistance`
+[18:34:54] Fragment: `DOCUMENTATION.md:Max`
+[18:34:54] Fragment: `DOCUMENTATION.md:Mean`
+[18:34:54] Fragment: `DOCUMENTATION.md:Median`
+[18:34:54] Fragment: `DOCUMENTATION.md:MedianAbsoluteDeviation`
+[18:34:54] Fragment: `DOCUMENTATION.md:MedianAbsoluteDeviationPopulation`
+[18:34:54] Fragment: `DOCUMENTATION.md:Midhinge`
+[18:34:54] Fragment: `DOCUMENTATION.md:Min`
+[18:34:54] Fragment: `DOCUMENTATION.md:MinkowskiDistance`
+[18:34:54] Fragment: `DOCUMENTATION.md:Mode`
+[18:34:54] Fragment: `DOCUMENTATION.md:Ncr`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormBoxMullerRvs`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormCdf`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormEntropy`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormFit`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormInterval`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormIsf`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormLogCdf`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormLogPdf`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormLogSf`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormMean`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormMedian`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormMoment`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormPdf`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormPpf`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormPpfRvs`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormSf`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormStats`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormStd`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormVar`
+[18:34:54] Fragment: `DOCUMENTATION.md:Pearson`
+[18:34:54] Fragment: `DOCUMENTATION.md:Percentile`
+[18:34:54] Fragment: `DOCUMENTATION.md:PercentileNearestRank`
+[18:34:54] Fragment: `DOCUMENTATION.md:PopulationVariance`
+[18:34:54] Fragment: `DOCUMENTATION.md:ProbGeom`
+[18:34:54] Fragment: `DOCUMENTATION.md:Round`
+[18:34:54] Fragment: `DOCUMENTATION.md:Sample`
+[18:34:54] Fragment: `DOCUMENTATION.md:SampleVariance`
+[18:34:54] Fragment: `DOCUMENTATION.md:Sigmoid`
+[18:34:54] Fragment: `DOCUMENTATION.md:SoftMax`
+[18:34:54] Fragment: `DOCUMENTATION.md:StableSample`
+[18:34:54] Fragment: `DOCUMENTATION.md:StandardDeviation`
+[18:34:54] Fragment: `DOCUMENTATION.md:StandardDeviationPopulation`
+[18:34:54] Fragment: `DOCUMENTATION.md:StandardDeviationSample`
+[18:34:54] Fragment: `DOCUMENTATION.md:StdDevP`
+[18:34:54] Fragment: `DOCUMENTATION.md:StdDevS`
+[18:34:54] Fragment: `DOCUMENTATION.md:Sum`
+[18:34:54] Fragment: `DOCUMENTATION.md:Trimean`
+[18:34:54] Fragment: `DOCUMENTATION.md:VarGeom`
+[18:34:54] Fragment: `DOCUMENTATION.md:VarP`
+[18:34:54] Fragment: `DOCUMENTATION.md:VarS`
+[18:34:54] Fragment: `DOCUMENTATION.md:Variance`
+[18:34:54] Fragment: `DOCUMENTATION.md:Coordinate`
+[18:34:54] Fragment: `DOCUMENTATION.md:ExpReg`
+[18:34:54] Fragment: `DOCUMENTATION.md:LinReg`
+[18:34:54] Fragment: `DOCUMENTATION.md:LogReg`
+[18:34:54] Fragment: `DOCUMENTATION.md:Float64Data`
+[18:34:54] Fragment: `DOCUMENTATION.md:LoadRawData`
+[18:34:54] Fragment: `DOCUMENTATION.md:Outliers`
+[18:34:54] Fragment: `DOCUMENTATION.md:QuartileOutliers`
+[18:34:54] Fragment: `DOCUMENTATION.md:Quartiles`
+[18:34:54] Fragment: `DOCUMENTATION.md:Quartile`
+[18:34:54] Fragment: `DOCUMENTATION.md:Series`
+[18:34:54] Fragment: `DOCUMENTATION.md:ExponentialRegression`
+[18:34:54] Fragment: `DOCUMENTATION.md:LinearRegression`
+[18:34:54] Fragment: `DOCUMENTATION.md:LogarithmicRegression`
+[18:34:54] Fragment: `DOCUMENTATION.md:AutoCorrelation`
+[18:34:54] Fragment: `DOCUMENTATION.md:of`
+[18:34:54] Fragment: `DOCUMENTATION.md:ChebyshevDistance`
+[18:34:54] Fragment: `DOCUMENTATION.md:Correlation`
+[18:34:54] Fragment: `DOCUMENTATION.md:Covariance`
+[18:34:54] Fragment: `DOCUMENTATION.md:CovariancePopulation`
+[18:34:54] Fragment: `DOCUMENTATION.md:CumulativeSum`
+[18:34:54] Fragment: `DOCUMENTATION.md:Entropy`
+[18:34:54] Fragment: `DOCUMENTATION.md:EuclideanDistance`
+[18:34:54] Fragment: `DOCUMENTATION.md:ExpGeom`
+[18:34:54] Fragment: `DOCUMENTATION.md:GeometricMean`
+[18:34:54] Fragment: `DOCUMENTATION.md:HarmonicMean`
+[18:34:54] Fragment: `DOCUMENTATION.md:InterQuartileRange`
+[18:34:54] Fragment: `DOCUMENTATION.md:ManhattanDistance`
+[18:34:54] Fragment: `DOCUMENTATION.md:Max`
+[18:34:54] Fragment: `DOCUMENTATION.md:Mean`
+[18:34:54] Fragment: `DOCUMENTATION.md:Median`
+[18:34:54] Fragment: `DOCUMENTATION.md:MedianAbsoluteDeviation`
+[18:34:54] Fragment: `DOCUMENTATION.md:MedianAbsoluteDeviationPopulation`
+[18:34:54] Fragment: `DOCUMENTATION.md:Midhinge`
+[18:34:54] Fragment: `DOCUMENTATION.md:Min`
+[18:34:54] Fragment: `DOCUMENTATION.md:MinkowskiDistance`
+[18:34:54] Fragment: `DOCUMENTATION.md:Mode`
+[18:34:54] Fragment: `DOCUMENTATION.md:Ncr`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormBoxMullerRvs`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormCdf`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormEntropy`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormFit`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormInterval`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormIsf`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormLogCdf`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormLogPdf`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormLogSf`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormMean`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormMedian`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormMoment`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormPdf`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormPpf`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormPpfRvs`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormSf`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormStats`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormStd`
+[18:34:54] Fragment: `DOCUMENTATION.md:NormVar`
+[18:34:54] Fragment: `DOCUMENTATION.md:Pearson`
+[18:34:54] Fragment: `DOCUMENTATION.md:Percentile`
+[18:34:54] Fragment: `DOCUMENTATION.md:PercentileNearestRank`
+[18:34:54] Fragment: `DOCUMENTATION.md:PopulationVariance`
+[18:34:54] Fragment: `DOCUMENTATION.md:ProbGeom`
+[18:34:54] Fragment: `DOCUMENTATION.md:Round`
+[18:34:54] Fragment: `DOCUMENTATION.md:Sample`
+[18:34:54] Fragment: `DOCUMENTATION.md:SampleVariance`
+[18:34:54] Fragment: `DOCUMENTATION.md:Sigmoid`
+[18:34:54] Fragment: `DOCUMENTATION.md:SoftMax`
+[18:34:54] Fragment: `DOCUMENTATION.md:StableSample`
+[18:34:54] Fragment: `DOCUMENTATION.md:StandardDeviation`
+[18:34:54] Fragment: `DOCUMENTATION.md:StandardDeviationPopulation`
+[18:34:54] Fragment: `DOCUMENTATION.md:StandardDeviationSample`
+[18:34:54] Fragment: `DOCUMENTATION.md:StdDevP`
+[18:34:54] Fragment: `DOCUMENTATION.md:StdDevS`
+[18:34:54] Fragment: `DOCUMENTATION.md:Sum`
+[18:34:54] Fragment: `DOCUMENTATION.md:Trimean`
+[18:34:54] Fragment: `DOCUMENTATION.md:VarGeom`
+[18:34:54] Fragment: `DOCUMENTATION.md:VarP`
+[18:34:54] Fragment: `DOCUMENTATION.md:VarS`
+[18:34:54] Fragment: `DOCUMENTATION.md:Variance`
+[18:34:54] Fragment: `DOCUMENTATION.md:Coordinate`
+[18:34:54] Fragment: `DOCUMENTATION.md:ExpReg`
+[18:34:54] Fragment: `DOCUMENTATION.md:LinReg`
+[18:34:54] Fragment: `DOCUMENTATION.md:LogReg`
+[18:34:54] Fragment: `DOCUMENTATION.md:Float64Data`
+[18:34:54] Fragment: `DOCUMENTATION.md:for`
+[18:34:54] Fragment: `DOCUMENTATION.md:LoadRawData`
+[18:34:54] Fragment: `DOCUMENTATION.md:of`
+[18:34:54] Fragment: `DOCUMENTATION.md:Outliers`
+[18:34:54] Fragment: `DOCUMENTATION.md:QuartileOutliers`
+[18:34:54] Fragment: `DOCUMENTATION.md:Quartiles`
+[18:34:54] Fragment: `DOCUMENTATION.md:Quartile`
+[18:34:54] Fragment: `DOCUMENTATION.md:Series`
+[18:34:54] Fragment: `DOCUMENTATION.md:ExponentialRegression`
+[18:34:54] Fragment: `DOCUMENTATION.md:LinearRegression`
+[18:34:54] Fragment: `DOCUMENTATION.md:LogarithmicRegression`
+[18:34:54] Fragment: `README.md:with`
+[18:34:54] Fragment: `README.md:and`
+[18:34:54] Fragment: `README.md:Round`
+[18:34:54] Fragment: `README.md:Float64Data`
+[18:34:54] Fragment: `README.md:LoadRawData`
+[18:34:54] Fragment: `README.md:AutoCorrelation`
+[18:34:54] Fragment: `README.md:ChebyshevDistance`
+[18:34:54] Fragment: `README.md:Correlation`
+[18:34:54] Fragment: `README.md:Covariance`
+[18:34:54] Fragment: `README.md:CovariancePopulation`
+[18:34:54] Fragment: `README.md:CumulativeSum`
+[18:34:54] Fragment: `README.md:Describe`
+[18:34:54] Fragment: `README.md:DescribePercentileFunc`
+[18:34:54] Fragment: `README.md:Entropy`
+[18:34:54] Fragment: `README.md:EuclideanDistance`
+[18:34:54] Fragment: `README.md:GeometricMean`
+[18:34:54] Fragment: `README.md:HarmonicMean`
+[18:34:54] Fragment: `README.md:InterQuartileRange`
+[18:34:54] Fragment: `README.md:ManhattanDistance`
+[18:34:54] Fragment: `README.md:Max`
+[18:34:54] Fragment: `README.md:Mean`
+[18:34:54] Fragment: `README.md:Median`
+[18:34:54] Fragment: `README.md:MedianAbsoluteDeviation`
+[18:34:54] Fragment: `README.md:MedianAbsoluteDeviationPopulation`
+[18:34:54] Fragment: `README.md:Midhinge`
+[18:34:54] Fragment: `README.md:Min`
+[18:34:54] Fragment: `README.md:MinkowskiDistance`
+[18:34:54] Fragment: `README.md:Mode`
+[18:34:54] Fragment: `README.md:NormBoxMullerRvs`
+[18:34:54] Fragment: `README.md:NormCdf`
+[18:34:54] Fragment: `README.md:NormEntropy`
+[18:34:54] Fragment: `README.md:NormFit`
+[18:34:54] Fragment: `README.md:NormInterval`
+[18:34:54] Fragment: `README.md:NormIsf`
+[18:34:54] Fragment: `README.md:NormLogCdf`
+[18:34:54] Fragment: `README.md:NormLogPdf`
+[18:34:54] Fragment: `README.md:NormLogSf`
+[18:34:54] Fragment: `README.md:NormMean`
+[18:34:54] Fragment: `README.md:NormMedian`
+[18:34:54] Fragment: `README.md:NormMoment`
+[18:34:54] Fragment: `README.md:NormPdf`
+[18:34:54] Fragment: `README.md:NormPpf`
+[18:34:54] Fragment: `README.md:NormPpfRvs`
+[18:34:54] Fragment: `README.md:NormSf`
+[18:34:54] Fragment: `README.md:NormStats`
+[18:34:54] Fragment: `README.md:NormStd`
+[18:34:54] Fragment: `README.md:NormVar`
+[18:34:54] Fragment: `README.md:Pearson`
+[18:34:54] Fragment: `README.md:Percentile`
+[18:34:54] Fragment: `README.md:PercentileNearestRank`
+[18:34:54] Fragment: `README.md:PopulationVariance`
+[18:34:54] Fragment: `README.md:Sample`
+[18:34:54] Fragment: `README.md:SampleVariance`
+[18:34:54] Fragment: `README.md:Sigmoid`
+[18:34:54] Fragment: `README.md:SoftMax`
+[18:34:54] Fragment: `README.md:StableSample`
+[18:34:54] Fragment: `README.md:StandardDeviation`
+[18:34:54] Fragment: `README.md:StandardDeviationPopulation`
+[18:34:54] Fragment: `README.md:StandardDeviationSample`
+[18:34:54] Fragment: `README.md:StdDevP`
+[18:34:54] Fragment: `README.md:StdDevS`
+[18:34:54] Fragment: `README.md:Sum`
+[18:34:54] Fragment: `README.md:Trimean`
+[18:34:54] Fragment: `README.md:VarP`
+[18:34:54] Fragment: `README.md:VarS`
+[18:34:54] Fragment: `README.md:Variance`
+[18:34:54] Fragment: `README.md:ProbGeom`
+[18:34:54] Fragment: `README.md:ExpGeom`
+[18:34:54] Fragment: `README.md:VarGeom`
+[18:34:54] Fragment: `README.md:Coordinate`
+[18:34:54] Fragment: `README.md:Series`
+[18:34:54] Fragment: `README.md:ExponentialRegression`
+[18:34:54] Fragment: `README.md:LinearRegression`
+[18:34:54] Fragment: `README.md:LogarithmicRegression`
+[18:34:54] Fragment: `README.md:Outliers`
+[18:34:54] Fragment: `README.md:Quartiles`
+[18:34:54] Fragment: `README.md:Quartile`
+[18:34:54] Fragment: `README.md:QuartileOutliers`
+[18:34:54] Fragment: `main.go:main`
+[18:34:54] Fragment: `correlation.go:Correlation`
+[18:34:54] Fragment: `correlation.go:Pearson`
+[18:34:54] Fragment: `correlation.go:AutoCorrelation`
+[18:34:54] Fragment: `correlation_test.go:ExampleCorrelation`
+[18:34:54] Fragment: `correlation_test.go:TestCorrelation`
+[18:34:54] Fragment: `correlation_test.go:ExampleAutoCorrelation`
+[18:34:54] Fragment: `correlation_test.go:TestAutoCorrelation`
+[18:34:54] Fragment: `cumulative_sum.go:CumulativeSum`
+[18:34:54] Fragment: `cumulative_sum_test.go:ExampleCumulativeSum`
+[18:34:54] Fragment: `cumulative_sum_test.go:TestCumulativeSum`
+[18:34:54] Fragment: `cumulative_sum_test.go:BenchmarkCumulativeSumSmallFloatSlice`
+[18:34:54] Fragment: `cumulative_sum_test.go:BenchmarkCumulativeSumLargeFloatSlice`
+[18:34:54] Fragment: `data.go:Float64Data`
+[18:34:54] Fragment: `data_test.go:getFunctionName`
+[18:34:54] Fragment: `data_test.go:checkResult`
+[18:34:54] Fragment: `data_test.go:makeFloatSlice`
+[18:34:54] Fragment: `data_test.go:makeRandFloatSlice`
+[18:34:54] Fragment: `data_test.go:TestInterfaceMethods`
+[18:34:54] Fragment: `data_test.go:TestHelperMethods`
+[18:34:54] Fragment: `data_test.go:assertFloat64`
+[18:34:54] Fragment: `data_test.go:TestMedianAbsoluteDeviationMethods`
+[18:34:54] Fragment: `data_test.go:TestStandardDeviationMethods`
+[18:34:54] Fragment: `data_test.go:TestVarianceMethods`
+[18:34:54] Fragment: `data_test.go:assertPercentiles`
+[18:34:54] Fragment: `data_test.go:TestPercentileMethods`
+[18:34:54] Fragment: `data_test.go:assertOtherDataMethods`
+[18:34:54] Fragment: `data_test.go:TestOtherDataMethods`
+[18:34:54] Fragment: `data_test.go:TestAutoCorrelationMethod`
+[18:34:54] Fragment: `data_test.go:TestSampleMethod`
+[18:34:54] Fragment: `data_test.go:TestQuartileMethods`
+[18:34:54] Fragment: `data_test.go:TestSigmoidMethod`
+[18:34:54] Fragment: `data_test.go:TestSoftMaxMethod`
+[18:34:54] Fragment: `data_test.go:TestEntropyMethod`
+[18:34:54] Fragment: `data_test.go:BenchmarkRegularAPI`
+[18:34:54] Fragment: `data_test.go:BenchmarkMethodsAPI`
+[18:34:54] Fragment: `data_test.go:TestQuartilesMethods`
+[18:34:54] Fragment: `describe.go:Description`
+[18:34:54] Fragment: `describe.go:descriptionPercentile`
+[18:34:54] Fragment: `describe.go:Describe`
+[18:34:54] Fragment: `describe.go:DescribePercentileFunc`
+[18:34:54] Fragment: `describe_test.go:TestDescribeValidDataset`
+[18:34:54] Fragment: `describe_test.go:TestDescribeEmptyDataset`
+[18:34:54] Fragment: `describe_test.go:TestDescribeEmptyDatasetNaN`
+[18:34:54] Fragment: `describe_test.go:TestDescribeValidDatasetNaN`
+[18:34:54] Fragment: `describe_test.go:TestDescribeValues`
+[18:34:54] Fragment: `describe_test.go:TestDescribeString`
+[18:34:54] Fragment: `deviation.go:MedianAbsoluteDeviation`
+[18:34:54] Fragment: `deviation.go:MedianAbsoluteDeviationPopulation`
+[18:34:54] Fragment: `deviation.go:StandardDeviation`
+[18:34:54] Fragment: `deviation.go:StandardDeviationPopulation`
+[18:34:54] Fragment: `deviation.go:StandardDeviationSample`
+[18:34:54] Fragment: `deviation_test.go:TestMedianAbsoluteDeviation`
+[18:34:54] Fragment: `deviation_test.go:TestMedianAbsoluteDeviationPopulation`
+[18:34:54] Fragment: `deviation_test.go:TestStandardDeviation`
+[18:34:54] Fragment: `deviation_test.go:TestStandardDeviationPopulation`
+[18:34:54] Fragment: `deviation_test.go:TestStandardDeviationSample`
+[18:34:54] Fragment: `distances.go:validateData`
+[18:34:54] Fragment: `distances.go:ChebyshevDistance`
+[18:34:54] Fragment: `distances.go:EuclideanDistance`
+[18:34:54] Fragment: `distances.go:ManhattanDistance`
+[18:34:54] Fragment: `distances.go:MinkowskiDistance`
+[18:34:54] Fragment: `distances_test.go:distanceFunctionType`
+[18:34:54] Fragment: `distances_test.go:distanceFunctionType`
+[18:34:54] Fragment: `distances_test.go:TestDataSetDistances`
+[18:34:54] Fragment: `distances_test.go:ExampleChebyshevDistance`
+[18:34:54] Fragment: `entropy.go:Entropy`
+[18:34:54] Fragment: `entropy.go:normalize`
+[18:34:54] Fragment: `entropy_test.go:ExampleEntropy`
+[18:34:54] Fragment: `entropy_test.go:TestEntropy`
+[18:34:54] Fragment: `entropy_test.go:BenchmarkEntropySmallFloatSlice`
+[18:34:54] Fragment: `entropy_test.go:BenchmarkEntropyLargeFloatSlice`
+[18:34:54] Fragment: `errors.go:statsError`
+[18:34:54] Fragment: `errors_test.go:TestError`
+[18:34:54] Fragment: `examples.go:Example`
+[18:34:54] Fragment: `geometric_distribution.go:ProbGeom`
+[18:34:54] Fragment: `geometric_distribution.go:ExpGeom`
+[18:34:54] Fragment: `geometric_distribution.go:VarGeom`
+[18:34:54] Fragment: `geometric_distribution_test.go:ExampleProbGeom`
+[18:34:54] Fragment: `geometric_distribution_test.go:TestProbGeomLarge`
+[18:34:54] Fragment: `geometric_distribution_test.go:TestErrBoundsProbGeom`
+[18:34:54] Fragment: `geometric_distribution_test.go:ExampleExpGeom`
+[18:34:54] Fragment: `geometric_distribution_test.go:TestExpGeom`
+[18:34:54] Fragment: `geometric_distribution_test.go:TestErrExpGeom`
+[18:34:54] Fragment: `geometric_distribution_test.go:ExampleVarGeom`
+[18:34:54] Fragment: `geometric_distribution_test.go:TestVarGeom`
+[18:34:54] Fragment: `geometric_distribution_test.go:TestErrVarGeom`
+[18:34:54] Fragment: `legacy.go:VarP`
+[18:34:54] Fragment: `legacy.go:VarS`
+[18:34:54] Fragment: `legacy.go:StdDevP`
+[18:34:54] Fragment: `legacy.go:StdDevS`
+[18:34:54] Fragment: `legacy.go:LinReg`
+[18:34:54] Fragment: `legacy.go:ExpReg`
+[18:34:54] Fragment: `legacy.go:LogReg`
+[18:34:54] Fragment: `legacy_test.go:TestLegacy`
+[18:34:54] Fragment: `load.go:LoadRawData`
+[18:34:54] Fragment: `load_test.go:ExampleLoadRawData`
+[18:34:54] Fragment: `load_test.go:equal`
+[18:34:54] Fragment: `load_test.go:TestLoadRawData`
+[18:34:54] Fragment: `max.go:Max`
+[18:34:54] Fragment: `max_test.go:ExampleMax`
+[18:34:54] Fragment: `max_test.go:TestMax`
+[18:34:54] Fragment: `max_test.go:BenchmarkMaxSmallFloatSlice`
+[18:34:54] Fragment: `max_test.go:BenchmarkMaxLargeFloatSlice`
+[18:34:54] Fragment: `mean.go:Mean`
+[18:34:54] Fragment: `mean.go:GeometricMean`
+[18:34:54] Fragment: `mean.go:HarmonicMean`
+[18:34:54] Fragment: `mean_test.go:TestMean`
+[18:34:54] Fragment: `mean_test.go:BenchmarkMeanSmallFloatSlice`
+[18:34:54] Fragment: `mean_test.go:BenchmarkMeanLargeFloatSlice`
+[18:34:54] Fragment: `mean_test.go:TestGeometricMean`
+[18:34:54] Fragment: `mean_test.go:TestHarmonicMean`
+[18:34:54] Fragment: `median.go:Median`
+[18:34:54] Fragment: `median_test.go:ExampleMedian`
+[18:34:54] Fragment: `median_test.go:TestMedian`
+[18:34:54] Fragment: `median_test.go:BenchmarkMedianSmallFloatSlice`
+[18:34:54] Fragment: `median_test.go:BenchmarkMedianLargeFloatSlice`
+[18:34:54] Fragment: `median_test.go:TestMedianSortSideEffects`
+[18:34:54] Fragment: `min.go:Min`
+[18:34:54] Fragment: `min_test.go:ExampleMin`
+[18:34:54] Fragment: `min_test.go:TestMin`
+[18:34:54] Fragment: `min_test.go:BenchmarkMinSmallFloatSlice`
+[18:34:54] Fragment: `min_test.go:BenchmarkMinSmallRandFloatSlice`
+[18:34:54] Fragment: `min_test.go:BenchmarkMinLargeFloatSlice`
+[18:34:54] Fragment: `min_test.go:BenchmarkMinLargeRandFloatSlice`
+[18:34:54] Fragment: `mode.go:Mode`
+[18:34:54] Fragment: `mode_test.go:TestMode`
+[18:34:54] Fragment: `mode_test.go:BenchmarkModeSmallFloatSlice`
+[18:34:54] Fragment: `mode_test.go:BenchmarkModeSmallRandFloatSlice`
+[18:34:54] Fragment: `mode_test.go:BenchmarkModeLargeFloatSlice`
+[18:34:54] Fragment: `mode_test.go:BenchmarkModeLargeRandFloatSlice`
+[18:34:54] Fragment: `nist_test.go:init`
+[18:34:54] Fragment: `nist_test.go:TestLewData`
+[18:34:54] Fragment: `nist_test.go:TestLotteryData`
+[18:34:54] Fragment: `nist_test.go:TestMavroData`
+[18:34:54] Fragment: `nist_test.go:TestMichelsonData`
+[18:34:54] Fragment: `nist_test.go:TestPidigitsData`
+[18:34:54] Fragment: `nist_test.go:TestNumacc1Data`
+[18:34:54] Fragment: `nist_test.go:TestNumacc2Data`
+[18:34:54] Fragment: `nist_test.go:TestNumacc3Data`
+[18:34:54] Fragment: `nist_test.go:TestNumacc4Data`
+[18:34:54] Fragment: `nist_test.go:bench`
+[18:34:54] Fragment: `nist_test.go:BenchmarkNistLew`
+[18:34:54] Fragment: `nist_test.go:BenchmarkNistLottery`
+[18:34:54] Fragment: `nist_test.go:BenchmarkNistMavro`
+[18:34:54] Fragment: `nist_test.go:BenchmarkNistMichelson`
+[18:34:54] Fragment: `nist_test.go:BenchmarkNistPidigits`
+[18:34:54] Fragment: `nist_test.go:BenchmarkNistNumacc1`
+[18:34:54] Fragment: `nist_test.go:BenchmarkNistNumacc2`
+[18:34:54] Fragment: `nist_test.go:BenchmarkNistNumacc3`
+[18:34:54] Fragment: `nist_test.go:BenchmarkNistNumacc4`
+[18:34:54] Fragment: `nist_test.go:BenchmarkNistAll`
+[18:34:54] Fragment: `nist_test.go:test`
+[18:34:54] Fragment: `norm.go:NormPpfRvs`
+[18:34:54] Fragment: `norm.go:NormBoxMullerRvs`
+[18:34:54] Fragment: `norm.go:NormPdf`
+[18:34:54] Fragment: `norm.go:NormLogPdf`
+[18:34:54] Fragment: `norm.go:NormCdf`
+[18:34:54] Fragment: `norm.go:NormLogCdf`
+[18:34:54] Fragment: `norm.go:NormSf`
+[18:34:54] Fragment: `norm.go:NormLogSf`
+[18:34:54] Fragment: `norm.go:NormPpf`
+[18:34:54] Fragment: `norm.go:NormIsf`
+[18:34:54] Fragment: `norm.go:NormMoment`
+[18:34:54] Fragment: `norm.go:NormStats`
+[18:34:54] Fragment: `norm.go:NormEntropy`
+[18:34:54] Fragment: `norm.go:NormFit`
+[18:34:54] Fragment: `norm.go:NormMedian`
+[18:34:54] Fragment: `norm.go:NormMean`
+[18:34:54] Fragment: `norm.go:NormVar`
+[18:34:54] Fragment: `norm.go:NormStd`
+[18:34:54] Fragment: `norm.go:NormInterval`
+[18:34:54] Fragment: `norm.go:factorial`
+[18:34:54] Fragment: `norm.go:Ncr`
+[18:34:54] Fragment: `norm_test.go:TestNormPpf`
+[18:34:54] Fragment: `norm_test.go:TestNormCdf`
+[18:34:54] Fragment: `norm_test.go:TestNormPdf`
+[18:34:54] Fragment: `norm_test.go:TestNormLogPdf`
+[18:34:54] Fragment: `norm_test.go:TestNormLogCdf`
+[18:34:54] Fragment: `norm_test.go:TestNormIsf`
+[18:34:54] Fragment: `norm_test.go:TestNormSf`
+[18:34:54] Fragment: `norm_test.go:TestNormLogSf`
+[18:34:54] Fragment: `norm_test.go:TestNormMoment`
+[18:34:54] Fragment: `norm_test.go:TestNormStats`
+[18:34:54] Fragment: `norm_test.go:TestNormEntropy`
+[18:34:54] Fragment: `norm_test.go:TestNormFit`
+[18:34:54] Fragment: `norm_test.go:TestNormInterval`
+[18:34:54] Fragment: `norm_test.go:TestNormMean`
+[18:34:54] Fragment: `norm_test.go:TestNormMedian`
+[18:34:54] Fragment: `norm_test.go:TestNormVar`
+[18:34:54] Fragment: `norm_test.go:TestNormStd`
+[18:34:54] Fragment: `norm_test.go:TestNormPpfRvs`
+[18:34:54] Fragment: `norm_test.go:TestNormBoxMullerRvs`
+[18:34:54] Fragment: `norm_test.go:TestNcr`
+[18:34:54] Fragment: `outlier.go:Outliers`
+[18:34:54] Fragment: `outlier.go:QuartileOutliers`
+[18:34:54] Fragment: `outlier_test.go:TestQuartileOutliers`
+[18:34:54] Fragment: `percentile.go:Percentile`
+[18:34:54] Fragment: `percentile.go:PercentileNearestRank`
+[18:34:54] Fragment: `percentile_test.go:TestPercentile`
+[18:34:54] Fragment: `percentile_test.go:TestPercentileSortSideEffects`
+[18:34:54] Fragment: `percentile_test.go:BenchmarkPercentileSmallFloatSlice`
+[18:34:54] Fragment: `percentile_test.go:BenchmarkPercentileLargeFloatSlice`
+[18:34:54] Fragment: `percentile_test.go:TestPercentileNearestRank`
+[18:34:54] Fragment: `percentile_test.go:BenchmarkPercentileNearestRankSmallFloatSlice`
+[18:34:54] Fragment: `percentile_test.go:BenchmarkPercentileNearestRankLargeFloatSlice`
+[18:34:54] Fragment: `quartile.go:Quartiles`
+[18:34:54] Fragment: `quartile.go:Quartile`
+[18:34:54] Fragment: `quartile.go:InterQuartileRange`
+[18:34:54] Fragment: `quartile.go:Midhinge`
+[18:34:54] Fragment: `quartile.go:Trimean`
+[18:34:54] Fragment: `quartile_test.go:TestQuartile`
+[18:34:54] Fragment: `quartile_test.go:TestInterQuartileRange`
+[18:34:54] Fragment: `quartile_test.go:TestMidhinge`
+[18:34:54] Fragment: `quartile_test.go:TestTrimean`
+[18:34:54] Fragment: `regression.go:Series`
+[18:34:54] Fragment: `regression.go:Coordinate`
+[18:34:54] Fragment: `regression.go:LinearRegression`
+[18:34:54] Fragment: `regression.go:ExponentialRegression`
+[18:34:54] Fragment: `regression.go:LogarithmicRegression`
+[18:34:54] Fragment: `regression_test.go:ExampleLinearRegression`
+[18:34:54] Fragment: `regression_test.go:TestLinearRegression`
+[18:34:54] Fragment: `regression_test.go:TestExponentialRegression`
+[18:34:54] Fragment: `regression_test.go:TestExponentialRegressionYCoordErr`
+[18:34:54] Fragment: `regression_test.go:TestLogarithmicRegression`
+[18:34:54] Fragment: `round.go:Round`
+[18:34:54] Fragment: `round_test.go:ExampleRound`
+[18:34:54] Fragment: `round_test.go:TestRound`
+[18:34:54] Fragment: `round_test.go:BenchmarkRound`
+[18:34:54] Fragment: `sample.go:Sample`
+[18:34:54] Fragment: `sample.go:StableSample`
+[18:34:54] Fragment: `sample_test.go:TestSample`
+[18:34:54] Fragment: `sample_test.go:TestSampleWithoutReplacement`
+[18:34:54] Fragment: `sample_test.go:TestSampleWithReplacement`
+[18:34:54] Fragment: `sample_test.go:TestStableSample`
+[18:34:54] Fragment: `sigmoid.go:Sigmoid`
+[18:34:54] Fragment: `sigmoid_test.go:ExampleSigmoid`
+[18:34:54] Fragment: `sigmoid_test.go:TestSigmoidEmptyInput`
+[18:34:54] Fragment: `sigmoid_test.go:TestSigmoid`
+[18:34:54] Fragment: `softmax.go:SoftMax`
+[18:34:54] Fragment: `softmax_test.go:ExampleSoftMax`
+[18:34:54] Fragment: `softmax_test.go:TestSoftMaxEmptyInput`
+[18:34:54] Fragment: `softmax_test.go:TestSoftMax`
+[18:34:54] Fragment: `sum.go:Sum`
+[18:34:54] Fragment: `sum_test.go:ExampleSum`
+[18:34:54] Fragment: `sum_test.go:TestSum`
+[18:34:54] Fragment: `sum_test.go:BenchmarkSumSmallFloatSlice`
+[18:34:54] Fragment: `sum_test.go:BenchmarkSumLargeFloatSlice`
+[18:34:54] Fragment: `test_utils_test.go:tolerance`
+[18:34:54] Fragment: `test_utils_test.go:close`
+[18:34:54] Fragment: `test_utils_test.go:veryclose`
+[18:34:54] Fragment: `util.go:float64ToInt`
+[18:34:54] Fragment: `util.go:unixnano`
+[18:34:54] Fragment: `util.go:copyslice`
+[18:34:54] Fragment: `util.go:sortedCopy`
+[18:34:54] Fragment: `util.go:sortedCopyDif`
+[18:34:54] Fragment: `util_test.go:TestFloat64ToInt`
+[18:34:54] Fragment: `variance.go:_variance`
+[18:34:54] Fragment: `variance.go:Variance`
+[18:34:54] Fragment: `variance.go:PopulationVariance`
+[18:34:54] Fragment: `variance.go:SampleVariance`
+[18:34:54] Fragment: `variance.go:Covariance`
+[18:34:54] Fragment: `variance.go:CovariancePopulation`
+[18:34:54] Fragment: `variance_test.go:TestVariance`
+[18:34:54] Fragment: `variance_test.go:TestPopulationVariance`
+[18:34:54] Fragment: `variance_test.go:TestSampleVariance`
+[18:34:54] Fragment: `variance_test.go:TestCovariance`
+[18:34:54] Fragment: `variance_test.go:TestCovariancePopulation`
+[18:35:07] [Tool: `name_mapping`] Created 1 symbol mappings
+[18:35:07] [Tool: `write_file`] Wrote skeleton to `path/to/file.ext` (62 bytes)
+[18:35:07] [Planning] Planning complete: 1 skeleton files written to filesystem, implementation plan ready
+[18:35:07] [Translator] Chunked translation mode: 517 fragments, source LoC > 1000
+[18:35:07] Chunked translation: 517 fragments, package=stats
+[18:35:07] [CHUNKED] selected: fragments=517 loc=11575
+[18:35:07] Chunked translation: 517 fragments across 63 source file(s), package=stats
+[18:35:07] Chunked translation: source 1/63 (CHANGELOG.md, 12 fragment(s))
+[18:46:25] [Tool: `write_file`] Wrote `src/lib.rs` to `.artifacts/stats/rust` (14691 bytes)
+[18:46:25] Chunked translation: source 2/63 (DOCUMENTATION.md, 159 fragment(s))

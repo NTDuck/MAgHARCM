@@ -1,0 +1,8 @@
+# LaTeX build artifacts
+main.pdf
+*.aux
+*.log
+*.bbl
+*.blg
+*.toc
+*.out

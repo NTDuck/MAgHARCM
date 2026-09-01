@@ -16,12 +16,21 @@ import (
 
 // AnalyzerAgent maps the source codebase hierarchy, identifies third-party library dependencies, and drafts the target architecture.
 type AnalyzerAgent struct {
-	Model model.BaseChatModel
+	Model     model.BaseChatModel
+	Navigator *Navigator // optional symbol-aware lookup helper (NEW-PRIM-26)
 }
 
-// NewAnalyzerAgent creates an AnalyzerAgent instance.
+// NewAnalyzerAgent creates an AnalyzerAgent instance without a Navigator.
+// Use NewAnalyzerAgentWithNavigator to attach a Symbol-Aware Navigator.
 func NewAnalyzerAgent(m model.BaseChatModel) *AnalyzerAgent {
 	return &AnalyzerAgent{Model: m}
+}
+
+// NewAnalyzerAgentWithNavigator creates an AnalyzerAgent with an attached
+// Symbol-Aware Navigator. Pass provider=nil to keep Navigator in disabled
+// fallback mode (callers may then fall back to LLM-only symbol resolution).
+func NewAnalyzerAgentWithNavigator(m model.BaseChatModel, provider tools.LSPProvider) *AnalyzerAgent {
+	return &AnalyzerAgent{Model: m, Navigator: NewNavigator(provider)}
 }
 
 // Run executes the 3-phase analysis workflow and returns updated state.

@@ -1,6 +1,9 @@
 package types
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 // TranslationTask defines the input specification for the translation pipeline.
 type TranslationTask struct {
 	SourceDir   string `json:"source_dir"`
@@ -92,29 +95,53 @@ type TranslatedProject struct {
 	Files map[string]string `json:"files"` // relative_path -> code_content
 }
 
-// ValidationReport summarizes compilation checks, test results, and compiler diagnostics.
-type ValidationReport struct {
-	AllSuccess         bool     `json:"all_success"`
-	CompilationSuccess bool     `json:"compilation_success"`
-	TestPassRate       float64  `json:"test_pass_rate"`
-	TotalTests         int      `json:"total_tests"`
-	PassedTests        int      `json:"passed_tests"`
-	FailedTests        int      `json:"failed_tests"`
-	CompilationErrors  []string `json:"compilation_errors"`
-	TestFailures       []string `json:"test_failures"`
-	UncoveredFunctions []string `json:"uncovered_functions"`
-	CoverageGapReport  string   `json:"coverage_gap_report"`
-	Diagnostics        string   `json:"diagnostics"`
+// FileStatus records the build/test outcome of an individual file.
+type FileStatus struct {
+	Path      string `json:"path"`
+	Kind      string `json:"kind"` // "source" or "test"
+	Compiles  bool   `json:"compiles"`
+	TestPass  bool   `json:"test_pass"`
+	LineCount int    `json:"line_count"`
+	Error     string `json:"error,omitempty"`
 }
+
+type ValidationReport struct {
+	AllSuccess         bool         `json:"all_success"`
+	CompilationSuccess bool         `json:"compilation_success"`
+	TestPassRate       float64      `json:"test_pass_rate"`
+	TotalTests         int          `json:"total_tests"`
+	PassedTests        int          `json:"passed_tests"`
+	FailedTests        int          `json:"failed_tests"`
+	RealTests          int          `json:"real_tests"`
+	MinRealTests       int          `json:"min_real_tests"`
+	CompilationErrors  []string     `json:"compilation_errors"`
+	TestFailures       []string     `json:"test_failures"`
+	UncoveredFunctions []string     `json:"uncovered_functions"`
+	CoverageGapReport  string       `json:"coverage_gap_report"`
+	Diagnostics        string       `json:"diagnostics"`
+	PerFile            []FileStatus `json:"per_file"`
+	IterationStart     time.Time    `json:"iteration_start,omitempty"`
+	IterationWallMs    int64        `json:"iteration_wall_ms,omitempty"`
+	// RemedyIterations counts coverage-remedy iterations executed by the
+	// plateau-bounded loop (NEW-PRIM-27 / CodaMOSA). 0 means the loop never
+	// entered; MaxRemedyIterations means the loop exhausted without plateau.
+	RemedyIterations int `json:"remedy_iterations,omitempty"`
+	// PlateauDetected is true when the PlateauDetector signaled insufficient
+	// marginal coverage gain and the bounded loop terminated early.
+	PlateauDetected bool `json:"plateau_detected,omitempty"`
+ }
 
 // HasUncoveredFunctions determines if any discovered AST functions lack test assertions.
 func (v *ValidationReport) HasUncoveredFunctions() bool {
 	return len(v.UncoveredFunctions) > 0
 }
 
-// IsAllSuccess returns true when achieving 100% compilation success and 100% test pass rate without errors or failures.
+// IsAllSuccess returns true ONLY when the validator finalized report.AllSuccess
+// with the MinRealTests gate satisfied. The struct field is the single source
+// of truth — duplicate field-level checks here caused the gate to be ignored
+// by graph.go / main.go (which call this method).
 func (v *ValidationReport) IsAllSuccess() bool {
-	return v.CompilationSuccess && v.FailedTests == 0 && v.PassedTests > 0 && len(v.CompilationErrors) == 0 && len(v.TestFailures) == 0
+	return v.AllSuccess
 }
 
 // String provides a human-readable summary of the validation report.

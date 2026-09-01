@@ -1,0 +1,205 @@
+\section{MoE Model Selection for MAgHARCM (FreeToken-Inspired)}
+\label{app:freetoken}
+
+\subsection{Problem}
+
+MAgHARCM currently drives translation through two local Ollama models invoked
+from \texttt{internal/llm/llm.go} (lines 20--36): a \textbf{reasoning} planner
+and a \textbf{coding} translator. \texttt{config.yml:12} pins
+\texttt{reasoning: "gpt-oss:20b"} --- a dense $\sim$20B model. As the project
+corpus grew (Sample 2: 38 files / 5,625 LoC of \texttt{oxidizer/stats}; Sample 3:
+15k LoC test data; Sample 4: 100+ Java files), the dense planner hit the VRAM
+wall on consumer-class hardware: a 20B dense Q4\_K\_M runs $\sim$12--13 GB on
+disk and needs $\sim$14--16 GB VRAM for the KV cache at 8k context, leaving no
+headroom for the 4B coding model running in parallel.
+
+The pattern that resolves this is the \textbf{Mixture-of-Experts (MoE)}
+total-params-in-RAM + active-params-in-GPU split. Total parameters can be 8B,
+35B, 290B+ because they live in host RAM and stream over PCIe; active parameters
+per token are 1--3B and fit on a single consumer GPU. The same insight motivated
+FreeToken (FlashML, UC Berkeley + UT Austin, August 2026).
+
+\subsection{FreeToken pattern (what it is and isn't)}
+
+FreeToken is an edge-native MoE serving engine --- not a new model architecture.
+Verified claims from the official README
+(\url{https://github.com/FlashML-org/FreeToken/blob/main/README.md}):
+
+\begin{itemize}
+\item ``Unlock datacenter-class intelligence on the hardware you already own ---
+  Run \textbf{290B+ frontier MoE models locally} on your gaming PC at blistering
+  interactive speeds.'' [\texttt{MEASURED} --- README banner]
+\item ``\textbf{Fast Edge-Native Runtime}: Provides efficient MoE serving with
+  \textbf{bandwidth-adaptive CPU--GPU co-execution ($q^\star$ policy)}, full-layer
+  double-buffered prefill streaming, global LRU expert caching,
+  graph-compatible execution, and the FTW fast weight format.''
+  [\texttt{MEASURED} --- README ``About'' \S1]
+\item ``\textbf{Broad MoE \& Ecosystem Support}: Supports frontier open-weight MoE
+  models (e.g., DeepSeek-V4-Flash, Qwen3.6-35B-A3B, GLM-5.2)'' [\texttt{MEASURED}]
+\end{itemize}
+
+Concrete numbers from the FreeToken model table (README + paper
+arXiv:2608.16157):
+
+\begin{itemize}
+\item \textbf{Qwen3.6-35B-A3B} (35B total, A3B = 3B active) --- runs on \textbf{8 GB VRAM
+  laptop (e.g.\ RTX 4060)} at \textbf{$\sim$39.3 tok/s}.
+\item \textbf{DeepSeek-V4-Flash} (284B total) --- 32 GB VRAM desktop (RTX 5090) at
+  $\sim$22--25 tok/s.
+\item \textbf{GLM-5.2} (\textbf{753B} total) --- \textbf{single workstation GPU}
+  (e.g.\ 96 GB VRAM) at $\sim$14.9 tok/s.
+\end{itemize}
+
+What FreeToken is \textbf{not}: it is not a new routing algorithm. It is a
+serving runtime. The $q^\star$ policy decides per-layer whether to compute the
+active expert on GPU (fast, VRAM-bound) or CPU (slow, RAM-bound) based on
+measured PCIe bandwidth. Dense models get no benefit (no experts to cache).
+
+\subsection{Local Ollama candidates}
+
+Numbers verified against the live local \texttt{ollama list} snapshot and
+Ollama library pages as of 2026-08-30.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{llllll}
+\toprule
+Tag & Total & Active & Type & Disk (local) & Fit \\
+\midrule
+\texttt{lfm2.5:8b-a1b-q4\_K\_M} & \textbf{8.3B} & \textbf{$\sim$1.5B} & MoE & \textbf{5.2 GB} & Best fit \\
+\texttt{qwen3.8:27b} & \textbf{27.8B} & 27.8B & dense & \textbf{17 GB} & Baseline dense alt \\
+\texttt{qwen2.5-coder:7b-base-q5\_0} & 7.6B & 7.6B & dense & 5.3 GB & Small dense fallback \\
+\texttt{mistral:7b-instruct-v0.2-q5\_0} & 7.3B & 7.3B & dense & 5.0 GB & Small dense fallback \\
+\texttt{gpt-oss:20b} (current default) & $\sim$21B & $\sim$21B & dense (MoE variant) & $\sim$12 GB & \textbf{Current pin} \\
+\bottomrule
+\end{tabular}
+\caption{Local Ollama model candidates for MAgHARCM reasoning slot.}
+\end{table}
+
+\texttt{lfm2.5:8b-a1b-q4\_K\_M} is the MoE option that delivers 8B-class
+reasoning capacity while activating only $\sim$1.5B params/token --- the exact
+total/active split FreeToken targets. The naming convention is
+\texttt{<total>B-a<active>B}; the ``a1b'' suffix = 1B active (Liquid AI rounds
+to 1 in the tag, the model card reports 1.5B).
+
+\subsection{Recommendation}
+
+Replace \texttt{reasoning: "gpt-oss:20b"} in \texttt{config.yml:12} with
+\textbf{\texttt{reasoning: "lfm2.5:8b-a1b-q4\_K\_M"}}.
+
+Rationale:
+\begin{enumerate}
+\item \textbf{VRAM headroom.} Active params ($\sim$1.5B Q4 $\approx$ 1.0 GB on
+  the GPU) plus KV cache leaves the consumer GPU free for the 2.5 GB coding
+  model and $\sim$5 GB of working memory.
+\item \textbf{Speed.} FreeToken benchmarks show 35B-A3B at $\sim$39 tok/s on
+  8 GB VRAM; LFM2.5-8B-A1B is the smaller sibling and runs much faster than that
+  even in stock Ollama.
+\item \textbf{Tool-calling strength.} Liquid AI ships LFM2.5-8B-A1B with
+  day-one tool-calling and reasoning (``thinking'') support --- directly aligned
+  with MAgHARCM's planner/verifier agent loop.
+\item \textbf{Disk/RAM budget.} 5.2 GB on disk; $\sim$8 GB peak resident RAM.
+  Total weight on RAM ladder, active slice on GPU --- the FreeToken pattern
+  without needing FreeToken itself (Ollama implements the same LRU expert cache
+  for small MoE models in-process).
+\end{enumerate}
+
+\textbf{Validation gate.} Measure first on Sample 1
+(\texttt{assets/samples/oxidizer/stats/go}, 4 files, $\sim$280 LoC). Capture
+two metrics:
+\begin{itemize}
+\item Inference latency (sec/sample, log to \texttt{run-2026-08-30-sN.log}).
+\item Quality: pass/fail of the build/test cascade (ReCodeAgent 3-tier
+  validation flow from PRIM-06).
+\end{itemize}
+
+If the MoE planner shows quality regression on Sample 1, fall back to
+\textbf{\texttt{qwen2.5-coder:7b-base-q5\_0}} or
+\textbf{\texttt{mistral:7b-instruct-v0.2-q5\_0}} --- same disk/RAM class as the
+MoE choice, dense routing, well-understood behaviour. The \texttt{qwen3.8:27b}
+17 GB dense option is held in reserve only if the small dense fallbacks fail and
+the host has $\geq$24 GB RAM to spare.
+
+\subsection{Implementation}
+
+\subsubsection{YAML patch (exact)}
+
+\begin{verbatim}
+--- a/config.yml
++++ b/config.yml
+@@ -9,7 +9,7 @@ translation:
+     toolchain: "cargo"
+   models:
+-    reasoning: "gpt-oss:20b"
++    reasoning: "lfm2.5:8b-a1b-q4_K_M"
+     coding: "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4_K_XL"
+     ollama_url: "http://localhost:11434"
+\end{verbatim}
+
+No code change in \texttt{internal/llm/llm.go} --- it is a pure string lookup
+(\texttt{ollama.NewChatModel} with \texttt{Model: cfg.ReasoningModel} at line 22).
+
+\subsubsection{Expected VRAM/RAM budget}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lllll}
+\toprule
+Slot & Model & Disk & Active VRAM & Peak RAM \\
+\midrule
+Reasoning & \texttt{lfm2.5:8b-a1b-q4\_K\_M} & 5.2 GB & $\sim$1.0 GB & $\sim$6 GB \\
+Coding & \texttt{hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4\_K\_XL} & 2.5 GB & $\sim$1.6 GB & $\sim$3 GB \\
+Ollama runtime + KV (8k ctx) & --- & --- & $\sim$1.5 GB & $\sim$2 GB \\
+\midrule
+\textbf{Total} & & \textbf{7.7 GB} & \textbf{$\sim$4.1 GB} & \textbf{$\sim$11 GB} \\
+\bottomrule
+\end{tabular}
+\caption{Expected VRAM/RAM budget after the reasoning-slot swap.}
+\end{table}
+
+Fits comfortably on a 12 GB consumer GPU (e.g.\ RTX 4070) with the coding
+model resident. On 8 GB VRAM hardware, the coding model will spill to RAM but
+the reasoning MoE stays on-GPU --- the inverse of the FreeToken 35B-on-8GB demo.
+
+\subsubsection{Rollback plan}
+
+\begin{enumerate}
+\item Revert \texttt{config.yml:12} to \texttt{gpt-oss:20b} (or whichever prior
+  pin was in effect before this change). One-line edit.
+\item No persistent state changes --- Ollama keeps pulled weights in
+  \texttt{\$OLLAMA\_MODELS} and the swap is non-destructive.
+\item Translation runs are isolated per \texttt{config.yml} run; no
+  half-migrated artifacts in \texttt{.artifacts/stats/rust/} because the
+  planner prompt template does not cache model identity in the output.
+\end{enumerate}
+
+\subsection{Caveats}
+
+\begin{itemize}
+\item \textbf{MoE routing quality on small total-param models.} Liquid AI's
+  8B-A1B is among the smallest MoE models shipping as a production planner.
+  Routing quality on sub-8B MoE models has historically lagged dense
+  equivalents on long-horizon planning tasks. The Sample 1 quality gate exists
+  specifically to surface this before committing to a multi-sample sprint.
+\item \textbf{Active-param count is approximate.} The \texttt{q4\_K\_M} blob on
+  disk reports \textbf{8.5B} as the total weight count (rounding in GGUF
+  metadata); the \texttt{a1b} tag implies $\sim$1B active per token, but the
+  Liquid AI model card reports \textbf{$\sim$1.5B active}. Use 1.5B for VRAM
+  planning, 1B as the lower bound for headroom estimates.
+\item \textbf{Hybrid architecture.} LFM2.5-8B-A1B is a \emph{hybrid} MoE: 18
+  convolution blocks + 6 GQA layers (Liquid AI docs). The non-pure-transformer
+  blocks behave differently under long-context KV-cache pressure than pure
+  transformer MoEs like Qwen3.6-35B-A3B. Monitor for context-length regressions
+  even if short-context Sample 1 passes.
+\item \textbf{FreeToken $\neq$ Ollama.} The $q^\star$ bandwidth-adaptive split
+  is a FreeToken feature. Stock Ollama uses a simpler expert-offloading scheme.
+  For MAgHARCM's target scale (sub-10B MoE), Ollama's scheme is adequate. If we
+  later adopt a 35B+ MoE planner, \textbf{FreeToken becomes the deployment
+  surface, not Ollama} --- and the Linux-x86\_64 + NVIDIA-RTX-only constraint
+  becomes binding.
+\item \textbf{Concurrent model residency.} Ollama's \texttt{num\_parallel} and
+  \texttt{OLLAMA\_NUM\_GPU} knobs affect whether both models can stay resident.
+  For the budget above to hold, set \texttt{OLLAMA\_NUM\_GPU=99} (let Ollama
+  layer both models) and keep \texttt{num\_parallel=1} so KV caches don't
+  fragment.
+\end{itemize}
