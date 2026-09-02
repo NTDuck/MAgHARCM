@@ -24,10 +24,10 @@ In this section, we present an empirical evaluation of MAgHARCM across four real
 \toprule
 \textbf{Benchmark} & \textbf{Source} & \textbf{Target} & \textbf{Files} & \textbf{Source LoC} & \textbf{Tests} \\
 \midrule
-GildedRose & C & Rust & 7 & 1,024 & 14 \\
-Gohistogram & Go & Rust & 11 & 2,150 & 8 \\
-Stats & Go & Rust & 73 & 6,420 & 42 \\
-Commons-Validator & Java & Rust & 104 & 15,380 & 68 \\
+GildedRose & C & Rust & 4 & 199 & 14 \\
+Gohistogram & Go & Rust & 7 & 15,470 & 8 \\
+Stats & Go & Rust & 65 & 5,625 & 42 \\
+Commons-Validator & Java & Rust & 121 & 28,110 & 68 \\
 \bottomrule
 \end{tabular}
 }
@@ -42,10 +42,10 @@ Commons-Validator & Java & Rust & 104 & 15,380 & 68 \\
 \toprule
 \textbf{Benchmark} & \textbf{Language Pair} & \textbf{Source Files} & \textbf{Source LoC} & \textbf{Wall-Clock Time (s)} & \textbf{Compilation Outcome} & \textbf{Pipeline Status} \\
 \midrule
-\textbf{GildedRose} & C $\to$ Rust & 7 & 1,024 & 450.1 & Initial Clean Build / Repair Triage & INCOMPLETE (Iter Ceiling) \\
-\textbf{Gohistogram} & Go $\to$ Rust & 11 & 2,150 & 900.0 & Incomplete / Ownership Conflict & INCOMPLETE (Outer Timeout) \\
-\textbf{Stats} & Go $\to$ Rust & 73 & 6,420 & 900.0 & Incomplete / Scope Exceeded & INCOMPLETE (Outer Timeout) \\
-\textbf{Commons-Validator} & Java $\to$ Rust & 104 & 15,380 & 900.0 & Incomplete / Scope Exceeded & INCOMPLETE (Outer Timeout) \\
+\textbf{GildedRose} & C $\to$ Rust & 4 & 199 & 450.1 & Initial Clean Build / Repair Triage & INCOMPLETE (Iter Ceiling) \\
+\textbf{Gohistogram} & Go $\to$ Rust & 7 & 15,470 & 900.0 & Incomplete / Ownership Conflict & INCOMPLETE (Outer Timeout) \\
+\textbf{Stats} & Go $\to$ Rust & 65 & 5,625 & 900.0 & Incomplete / Scope Exceeded & INCOMPLETE (Outer Timeout) \\
+\textbf{Commons-Validator} & Java $\to$ Rust & 121 & 28,110 & 900.0 & Incomplete / Scope Exceeded & INCOMPLETE (Outer Timeout) \\
 \bottomrule
 \end{tabular}
 }
