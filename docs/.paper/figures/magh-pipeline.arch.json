@@ -1,0 +1,294 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "MAgHARCM Translation Pipeline",
+    "subtitle": "Six-stage repository-level code migration driven by reasoning + coding SLMs via Ollama.",
+    "output": "magh-pipeline.html",
+    "quality_profile": "showcase"
+  },
+  "components": [
+    {
+      "id": "config",
+      "type": "external",
+      "label": "YAML Config",
+      "sublabel": ".config/<sample>.yml",
+      "pos": [
+        40,
+        320
+      ],
+      "size": [
+        160,
+        70
+      ],
+      "tag": "src/tgt dirs + models"
+    },
+    {
+      "id": "ollama",
+      "type": "cloud",
+      "label": "Ollama",
+      "sublabel": ":11434 local",
+      "pos": [
+        40,
+        110
+      ],
+      "size": [
+        160,
+        90
+      ],
+      "tag": "reasoning + coding SLMs"
+    },
+    {
+      "id": "intake",
+      "type": "backend",
+      "label": "Intake",
+      "sublabel": "config.YAML",
+      "pos": [
+        260,
+        320
+      ],
+      "size": [
+        130,
+        70
+      ]
+    },
+    {
+      "id": "analyzer",
+      "type": "backend",
+      "label": "Analyzer",
+      "sublabel": "agents.analyzer",
+      "pos": [
+        450,
+        320
+      ],
+      "size": [
+        130,
+        70
+      ]
+    },
+    {
+      "id": "planner",
+      "type": "backend",
+      "label": "Planner",
+      "sublabel": "agents.planning",
+      "pos": [
+        640,
+        320
+      ],
+      "size": [
+        130,
+        70
+      ],
+      "tag": "topological fragment order"
+    },
+    {
+      "id": "translator",
+      "type": "backend",
+      "label": "Translator",
+      "sublabel": "agents.translator",
+      "pos": [
+        830,
+        320
+      ],
+      "size": [
+        130,
+        70
+      ],
+      "tag": "chunked, context-reuse"
+    },
+    {
+      "id": "validator",
+      "type": "backend",
+      "label": "Validator",
+      "sublabel": "agents.validator",
+      "pos": [
+        1020,
+        320
+      ],
+      "size": [
+        130,
+        70
+      ],
+      "tag": "compile + test + repair"
+    },
+    {
+      "id": "checkpoint",
+      "type": "database",
+      "label": "Checkpoint Store",
+      "sublabel": ".artifacts/<run>/checkpoints/",
+      "pos": [
+        450,
+        500
+      ],
+      "size": [
+        160,
+        70
+      ],
+      "tag": "per-fragment resume"
+    },
+    {
+      "id": "target",
+      "type": "database",
+      "label": "Target Repo",
+      "sublabel": ".artifacts/<run>/rust/",
+      "pos": [
+        1020,
+        500
+      ],
+      "size": [
+        150,
+        70
+      ]
+    },
+    {
+      "id": "runner",
+      "type": "backend",
+      "label": "Runner",
+      "sublabel": "internal/runner",
+      "pos": [
+        640,
+        510
+      ],
+      "size": [
+        140,
+        70
+      ],
+      "tag": "orchestrates 6 stages"
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "MAgHARCM harness",
+      "wraps": [
+        "intake",
+        "analyzer",
+        "planner",
+        "translator",
+        "validator",
+        "runner",
+        "checkpoint",
+        "target"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "cfg-to-intake",
+      "from": "config",
+      "to": "intake",
+      "label": "load YAML"
+    },
+    {
+      "id": "intake-to-runner",
+      "from": "intake",
+      "to": "runner",
+      "label": "task",
+      "fromSide": "right",
+      "toSide": "top"
+    },
+    {
+      "id": "runner-to-analyzer",
+      "from": "runner",
+      "to": "analyzer",
+      "label": "inspect"
+    },
+    {
+      "id": "analyzer-to-planner",
+      "from": "analyzer",
+      "to": "planner",
+      "label": "symbols"
+    },
+    {
+      "id": "planner-to-translator",
+      "from": "planner",
+      "to": "translator",
+      "label": "order"
+    },
+    {
+      "id": "translator-to-target",
+      "from": "translator",
+      "to": "target",
+      "label": "emit",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "translator-to-validator",
+      "from": "translator",
+      "to": "validator",
+      "label": "test"
+    },
+    {
+      "id": "validator-repair",
+      "from": "validator",
+      "to": "translator",
+      "label": "repair",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "bottom"
+    },
+    {
+      "id": "validator-to-checkpoint",
+      "from": "validator",
+      "to": "checkpoint",
+      "label": "save",
+      "fromSide": "bottom",
+      "toSide": "right"
+    },
+    {
+      "id": "runner-resume",
+      "from": "runner",
+      "to": "checkpoint",
+      "label": "resume",
+      "variant": "dashed",
+      "fromSide": "left",
+      "toSide": "right",
+      "labelDy": 30
+    },
+    {
+      "id": "planner-ollama",
+      "from": "planner",
+      "to": "ollama",
+      "label": "reasoning LLM",
+      "fromSide": "top",
+      "toSide": "right"
+    },
+    {
+      "id": "translator-ollama",
+      "from": "translator",
+      "to": "ollama",
+      "label": "code LLM",
+      "fromSide": "top",
+      "toSide": "bottom"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Inputs",
+      "items": [
+        "YAML config picks source + target dirs and model pair",
+        "Source repo lives under assets/samples/ or assets/manual-samples/"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Pipeline",
+      "items": [
+        "6 stages: Intake -> Analyze -> Plan -> Translate -> Validate -> Repair",
+        "Translator is chunked with topological fragment order",
+        "Validator drives a bounded coverage-plateau repair loop"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Resilience",
+      "items": [
+        "Per-fragment checkpoint under .artifacts/<run-id>/checkpoints/",
+        "Crash-resume: any run picks up at the last saved fragment",
+        "All calls go through Ollama; no cloud API needed"
+      ]
+    }
+  ]
+}
