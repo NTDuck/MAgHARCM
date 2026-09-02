@@ -13,157 +13,110 @@
       "type": "external",
       "label": "YAML Config",
       "sublabel": ".config/<sample>.yml",
-      "pos": [
-        40,
-        320
-      ],
-      "size": [
-        160,
-        70
-      ],
-      "tag": "src/tgt dirs + models"
+      "pos": [40, 260],
+      "size": [130, 70],
+      "tag": "src/tgt + models"
     },
     {
       "id": "ollama",
       "type": "cloud",
-      "label": "Ollama",
+      "label": "Ollama Runtime",
       "sublabel": ":11434 local",
-      "pos": [
-        40,
-        110
-      ],
-      "size": [
-        160,
-        90
-      ],
-      "tag": "reasoning + coding SLMs"
+      "pos": [40, 90],
+      "size": [150, 80],
+      "tag": "lfm2.5 MoE + Qwen3-4B"
     },
     {
       "id": "intake",
       "type": "backend",
-      "label": "Intake",
-      "sublabel": "config.YAML",
-      "pos": [
-        260,
-        320
-      ],
-      "size": [
-        130,
-        70
-      ]
+      "label": "1. Intake",
+      "sublabel": "Tree-sitter AST",
+      "pos": [230, 260],
+      "size": [130, 70],
+      "tag": "manifest + files"
     },
     {
       "id": "analyzer",
       "type": "backend",
-      "label": "Analyzer",
+      "label": "2. Analyzer",
       "sublabel": "agents.analyzer",
-      "pos": [
-        450,
-        320
-      ],
-      "size": [
-        130,
-        70
-      ]
+      "pos": [420, 260],
+      "size": [140, 70],
+      "tag": "Müller strategy"
     },
     {
       "id": "planner",
       "type": "backend",
-      "label": "Planner",
+      "label": "3. Planner",
       "sublabel": "agents.planning",
-      "pos": [
-        640,
-        320
-      ],
-      "size": [
-        130,
-        70
-      ],
-      "tag": "topological fragment order"
+      "pos": [620, 260],
+      "size": [140, 70],
+      "tag": "Reverse-topo DAG"
+    },
+    {
+      "id": "navigator",
+      "type": "backend",
+      "label": "Navigator",
+      "sublabel": "agents.navigator",
+      "pos": [830, 90],
+      "size": [140, 80],
+      "tag": "Symbol lookup <=4KB"
     },
     {
       "id": "translator",
       "type": "backend",
-      "label": "Translator",
+      "label": "4. Translator",
       "sublabel": "agents.translator",
-      "pos": [
-        830,
-        320
-      ],
-      "size": [
-        130,
-        70
-      ],
-      "tag": "chunked, context-reuse"
+      "pos": [830, 260],
+      "size": [140, 70],
+      "tag": "Chunked dispatch"
     },
     {
       "id": "validator",
       "type": "backend",
-      "label": "Validator",
+      "label": "5. Validator",
       "sublabel": "agents.validator",
-      "pos": [
-        1020,
-        320
-      ],
-      "size": [
-        130,
-        70
-      ],
-      "tag": "compile + test + repair"
+      "pos": [1040, 260],
+      "size": [140, 70],
+      "tag": "Multi-stage + guard"
     },
     {
       "id": "checkpoint",
       "type": "database",
       "label": "Checkpoint Store",
       "sublabel": ".artifacts/<run>/checkpoints/",
-      "pos": [
-        450,
-        500
-      ],
-      "size": [
-        160,
-        70
-      ],
-      "tag": "per-fragment resume"
-    },
-    {
-      "id": "target",
-      "type": "database",
-      "label": "Target Repo",
-      "sublabel": ".artifacts/<run>/rust/",
-      "pos": [
-        1020,
-        500
-      ],
-      "size": [
-        150,
-        70
-      ]
+      "pos": [420, 450],
+      "size": [150, 70],
+      "tag": "State persistence"
     },
     {
       "id": "runner",
       "type": "backend",
-      "label": "Runner",
+      "label": "Eino Runner",
       "sublabel": "internal/runner",
-      "pos": [
-        640,
-        510
-      ],
-      "size": [
-        140,
-        70
-      ],
-      "tag": "orchestrates 6 stages"
+      "pos": [630, 450],
+      "size": [140, 70],
+      "tag": "Cyclic graph"
+    },
+    {
+      "id": "target",
+      "type": "database",
+      "label": "Target Repository",
+      "sublabel": ".artifacts/<run>/rust/",
+      "pos": [830, 450],
+      "size": [150, 70],
+      "tag": "Validated crate"
     }
   ],
   "boundaries": [
     {
       "kind": "region",
-      "label": "MAgHARCM harness",
+      "label": "MAgHARCM Architecture",
       "wraps": [
         "intake",
         "analyzer",
         "planner",
+        "navigator",
         "translator",
         "validator",
         "runner",
@@ -177,117 +130,116 @@
       "id": "cfg-to-intake",
       "from": "config",
       "to": "intake",
-      "label": "load YAML"
+      "label": "load YAML",
+      "labelDy": -20
     },
     {
-      "id": "intake-to-runner",
+      "id": "intake-to-analyzer",
       "from": "intake",
-      "to": "runner",
-      "label": "task",
-      "fromSide": "right",
-      "toSide": "top"
-    },
-    {
-      "id": "runner-to-analyzer",
-      "from": "runner",
       "to": "analyzer",
-      "label": "inspect"
+      "label": "manifest",
+      "labelDy": -20
     },
     {
       "id": "analyzer-to-planner",
       "from": "analyzer",
       "to": "planner",
-      "label": "symbols"
+      "label": "research",
+      "labelDy": -20
     },
     {
       "id": "planner-to-translator",
       "from": "planner",
       "to": "translator",
-      "label": "order"
-    },
-    {
-      "id": "translator-to-target",
-      "from": "translator",
-      "to": "target",
-      "label": "emit",
-      "fromSide": "bottom",
-      "toSide": "top"
+      "label": "topo steps",
+      "labelDy": -20
     },
     {
       "id": "translator-to-validator",
       "from": "translator",
       "to": "validator",
-      "label": "test"
+      "label": "target files",
+      "labelDy": -20
     },
     {
       "id": "validator-repair",
       "from": "validator",
       "to": "translator",
-      "label": "repair",
+      "label": "repair loop",
       "variant": "dashed",
       "fromSide": "bottom",
       "toSide": "bottom"
     },
     {
-      "id": "validator-to-checkpoint",
-      "from": "validator",
-      "to": "checkpoint",
-      "label": "save",
-      "fromSide": "bottom",
-      "toSide": "right"
+      "id": "translator-nav",
+      "from": "translator",
+      "to": "navigator",
+      "label": "symbol context",
+      "fromSide": "top",
+      "toSide": "bottom"
     },
     {
-      "id": "runner-resume",
+      "id": "translator-to-target",
+      "from": "translator",
+      "to": "target",
+      "label": "sync disk",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDy": 24
+    },
+    {
+      "id": "runner-checkpoint",
       "from": "runner",
       "to": "checkpoint",
-      "label": "resume",
-      "variant": "dashed",
+      "label": "save / resume",
       "fromSide": "left",
       "toSide": "right",
-      "labelDy": 30
+      "labelDy": -20
     },
     {
-      "id": "planner-ollama",
-      "from": "planner",
-      "to": "ollama",
-      "label": "reasoning LLM",
-      "fromSide": "top",
-      "toSide": "right"
-    },
-    {
-      "id": "translator-ollama",
+      "id": "translator-to-target",
       "from": "translator",
-      "to": "ollama",
-      "label": "code LLM",
-      "fromSide": "top",
-      "toSide": "bottom"
-    }
+      "to": "target",
+      "label": "sync disk",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDy": 50
+    },
+    {
+      "id": "runner-checkpoint",
+      "from": "runner",
+      "to": "checkpoint",
+      "label": "save / resume",
+      "fromSide": "left",
+      "toSide": "right",
+      "labelDy": -28
+    },
   ],
   "cards": [
     {
       "dot": "cyan",
-      "title": "Inputs",
+      "title": "Inputs & Models",
       "items": [
-        "YAML config picks source + target dirs and model pair",
-        "Source repo lives under assets/samples/ or assets/manual-samples/"
+        "YAML config specifies source/target paths and toolchain",
+        "MoE reasoning slot (lfm2.5:8b) + coding slot (Qwen3-4B) via Ollama"
       ]
     },
     {
       "dot": "emerald",
-      "title": "Pipeline",
+      "title": "6-Stage Pipeline",
       "items": [
-        "6 stages: Intake -> Analyze -> Plan -> Translate -> Validate -> Repair",
-        "Translator is chunked with topological fragment order",
-        "Validator drives a bounded coverage-plateau repair loop"
+        "Intake -> Analyze -> Plan -> Translate -> Validate -> Repair Loop",
+        "Chunked translation with topological scheduling and back-edge removal",
+        "Validator enforces multi-stage syntax, build, and weakening guard"
       ]
     },
     {
       "dot": "amber",
-      "title": "Resilience",
+      "title": "Persistence & Resilience",
       "items": [
-        "Per-fragment checkpoint under .artifacts/<run-id>/checkpoints/",
-        "Crash-resume: any run picks up at the last saved fragment",
-        "All calls go through Ollama; no cloud API needed"
+        "Per-iteration checkpointing under .artifacts/<run-id>/checkpoints/",
+        "CodaMOSA-derived coverage plateau detector prevents stalling",
+        "Fully local execution with zero external cloud dependencies"
       ]
     }
   ]

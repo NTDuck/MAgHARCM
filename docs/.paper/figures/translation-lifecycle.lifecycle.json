@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "diagram_type": "lifecycle",
+  "meta": {
+    "title": "MAgHARCM Translation Lifecycle",
+    "subtitle": "State machine for multi-stage analysis, chunked translation, test validation, checkpoints, and repair.",
+    "output": "docs/.paper/figures/translation-lifecycle.html",
+    "viewBox": [980, 660]
+  },
+  "lanes": [
+    { "id": "main", "label": "Migration phases" },
+    { "id": "waiting", "label": "Checkpoints & Interruption" },
+    { "id": "exceptions", "label": "Repair loop" },
+    { "id": "terminal", "label": "Terminal exits" }
+  ],
+  "states": [
+    { "id": "intake", "type": "start", "label": "Intake", "sublabel": "manifest parsed", "lane": "main", "col": 0, "step": "01", "tag": "entry" },
+    { "id": "analyzing", "type": "active", "label": "Analyzing", "sublabel": "Müller strategy", "lane": "main", "col": 1, "step": "02", "tag": "reasoning" },
+    { "id": "planning", "type": "active", "label": "Planning", "sublabel": "reverse-topo DAG", "lane": "main", "col": 2, "step": "03", "tag": "back-edge" },
+    { "id": "translating", "type": "active", "label": "Translating", "sublabel": "chunked dispatch", "lane": "main", "col": 3, "step": "04", "tag": "coding" },
+    { "id": "completed", "type": "success", "label": "Converged", "sublabel": "100% tests pass", "lane": "main", "col": 4, "step": "05", "tag": "success" },
+    { "id": "checkpoint", "type": "waiting", "label": "Checkpointed", "sublabel": "NEW-PRIM-28", "lane": "waiting", "col": 0, "tag": "resume" },
+    { "id": "plateau", "type": "waiting", "label": "Plateau Stalled", "sublabel": "NEW-PRIM-27", "lane": "waiting", "col": 1, "tag": "stall" },
+    { "id": "repairing", "type": "failure", "label": "Repair Mode", "sublabel": "compiler triage", "lane": "exceptions", "col": 0, "yOffset": 78, "tag": "iter <= K" },
+    { "id": "exhausted", "type": "failure", "label": "Budget Ceiling", "sublabel": "max iterations", "lane": "terminal", "col": 0, "tag": "terminal" },
+    { "id": "weakened", "type": "failure", "label": "Test Weakened", "sublabel": "NEW-PRIM-13", "lane": "terminal", "col": 1, "tag": "terminal" }
+  ],
+  "transitions": [
+    { "from": "planning", "to": "checkpoint", "variant": "default", "fromSide": "bottom", "toSide": "top", "route": "straight" },
+    { "from": "translating", "to": "plateau", "variant": "default", "fromSide": "bottom", "toSide": "top", "route": "straight" },
+    { "from": "planning", "to": "repairing", "variant": "security", "fromSide": "left", "toSide": "top", "via": [[320, 157], [320, 342], [402, 342]] },
+    { "from": "plateau", "to": "weakened", "variant": "security", "fromSide": "bottom", "toSide": "top", "route": "straight" },
+    { "from": "checkpoint", "to": "exhausted", "variant": "security", "fromSide": "bottom", "toSide": "top", "via": [[320, 336], [320, 430], [402, 430]] }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Forward Rail",
+      "items": [
+        "Ordered progression: Intake -> Analyzing -> Planning -> Translating -> Converged",
+        "Deterministic reverse-topological order resolves callee dependencies first",
+        "Converged terminal state reached upon 100% test pass rate"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "State Checkpoints & Stalls",
+      "items": [
+        "State serialized under .artifacts/<run-id>/checkpoints/ after each iteration",
+        "CodaMOSA-derived coverage plateau detector halts zero-gain repair cycles",
+        "Idempotent resume restarts from the latest checkpoint snapshot"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Defense & Failure Exits",
+      "items": [
+        "Repair loop triages compiler diagnostics and borrow-checker errors",
+        "Adversarial weakening guard halts execution if test assertions are removed",
+        "Budget ceiling enforces bounded local model execution"
+      ]
+    }
+  ]
+}
