@@ -1,122 +1,158 @@
-\section{Methodology}
+% docs/.paper/sec_method.tex
+\section{Problem Formulation \& Methodology}
 \label{sec:method}
 
-MAgHARCM is implemented in Go on top of CloudWeGo Eino's cyclic graph
-runtime. While inheriting the core multi-agent paradigm of ReCodeAgent
-\citep{ibrahimzada2025recodeagent}, MAgHARCM formalizes a 6-stage
-neuro-symbolic pipeline grounded in 26 evidence-backed primitives
-(Appendix~\ref{app:primitives}) and specifically engineered to execute
-against local Small Language Models (SLMs) through Ollama.
+In this section, we formally define the repository-scale code translation problem, describe the overall architecture of MAgHARCM, and detail the four cooperating agents comprising our pipeline.
 
-\subsection{The 6-Stage Translation Pipeline}
+\subsection{Problem Formulation}
+\label{sec:method_formulation}
 
-The architecture structures the migration lifecycle into six sequential and
-cyclic stages:
+We formalize repository-scale translation as a structured mapping between source and target software projects. A source software project is defined as a tuple:
+\begin{equation}
+P_s = (F_s, T_s, D_s, \mathcal{M}_s)
+\end{equation}
+where $F_s = \{f_1, f_2, \dots, f_n\}$ is the set of source code files written in source language $L_s$, $T_s = \{t_1, t_2, \dots, t_m\}$ is the associated suite of test files, $D_s$ represents the external third-party library dependencies declared in the project build manifest, and $\mathcal{M}_s$ denotes the directory and module structure.
 
+The objective of repository translation is to synthesize a corresponding target project:
+\begin{equation}
+P_t = (F_t, T_t, D_t, \mathcal{M}_t)
+\end{equation}
+in target language $L_t$ (such as Rust) such that the following three formal correctness properties are simultaneously satisfied:
 \begin{enumerate}
-\item \textbf{Stage 1: Intake.} Ingests the source codebase path, target language,
-and target framework. Using \texttt{internal/tools/pa.go} backed by Tree-sitter
-parsers across supported grammars, Intake extracts the complete repository
-manifest, file hierarchy, and language AST element inventory.
-
-\item \textbf{Stage 2: Analyze (Analyzer Agent).} Emits a comprehensive
-\emph{Source Project Research} document. Driven by a local reasoning model
-(\texttt{lfm2.5:8b-a1b-q4\_K\_M} MoE), the Analyzer assigns architectural
-concepts, extracts dependency mappings, and executes \emph{M\"uller Strategy Selection}
-(NEW-PRIM-21) to classify the codebase into one of five migration strategies
-(\texttt{BIG\_BANG}, \texttt{INCREMENTAL}, \texttt{PILOT}, \texttt{FROZEN\_LEGACY},
-or \texttt{PARALLEL\_CUTOVER}).
-
-\item \textbf{Stage 3: Plan (Planning Agent).} Decomposes the high-level design
-into granular translation units. It generates symbol name mappings, constructs
-the compilable target skeleton files (e.g. \texttt{Cargo.toml}, \texttt{src/lib.rs}),
-invokes the \emph{Manifest Rewriter} (NEW-PRIM-31) to map third-party dependencies to
-canonical target crates, and computes a \emph{Reverse-Topological Order} with
-\emph{Back-Edge Removal} (NEW-PRIM-1, NEW-PRIM-2) over the call/dependency graph to
-ensure callees and dependencies are scheduled before callers.
-
-\item \textbf{Stage 4: Translate (Translator Agent \& Navigator).} Operates
-either in single-shot mode (for small repos) or via the \emph{Chunked Translator}
-(NEW-PRIM-23). The chunked dispatcher groups fragments by topological source-file
-order, issue-scoped to $\sim 500$-LoC or function-cluster boundaries. Each step
-queries the \emph{Symbol-Aware Navigator} (NEW-PRIM-26) for precise $\le 4$\,KB
-context slices (definition, references, type signature) and injects a compact
-running summary of previously emitted modules to ensure cross-module symbol coherence.
-
-\item \textbf{Stage 5: Validate (Validator Agent).} Executes a multi-stage
-validation cascade (NEW-PRIM-6): (i)~pre-compilation AST syntax verification (GAP-08);
-(ii)~target toolchain compilation (\texttt{cargo check}); (iii)~test suite execution
-(\texttt{cargo test}); and (iv)~the \emph{Adversarial Weakening Guard} (NEW-PRIM-13),
-which compares assertion counts and test body lengths against prior iterations to
-prevent vacuous test relaxation.
-
-\item \textbf{Stage 6: Repair Loop (Bounded Cyclic Graph).} If compilation or test
-failures are detected, the error diagnostics and failing assertions are fed back to
-the Translator in repair mode. The repair loop is bounded (default 10 iterations) and
-features \emph{Plateau-Bounded Test Remediation} (NEW-PRIM-27) derived from CodaMOSA
-and \emph{Conversable Checkpointing} (NEW-PRIM-28) to persist state snapshots under
-\texttt{.artifacts/<run-id>/checkpoints/} after every iteration.
+    \item \textbf{Syntactic and Type Compilation Validity ($\mathcal{C}$):} The target project $P_t$ compiles cleanly under the standard target compiler toolchain $\mathcal{T}_{L_t}$ without compilation errors:
+    \begin{equation}
+    \mathcal{C}(P_t) = \text{Compile}(\mathcal{T}_{L_t}, P_t) = \text{True}
+    \end{equation}
+    \item \textbf{Observational Semantic Equivalence ($\mathcal{E}$):} For every source function $u_s \in F_s$ and its corresponding translated target function $u_t \in F_t$, their execution outputs must be identical across all valid input domains $I$:
+    \begin{equation}
+    \forall x \in I, \quad \text{Exec}(u_s, x) \equiv \text{Exec}(u_t, x)
+    \end{equation}
+    \item \textbf{Test Suite Verification \& Assertion Integrity ($\mathcal{V}$):} The translated test suite $T_t$ must execute cleanly, passing all assertions, while strictly preserving or expanding the assertion coverage of the original test suite $T_s$:
+    \begin{equation}
+    \begin{aligned}
+    \mathcal{V}(T_t, P_t) = &\left( \text{TestPassRate}(T_t) = 1.0 \right) \ \land \\
+    &\left( \text{AssertCount}(T_t) \ge \text{AssertCount}(T_s) \right)
+    \end{aligned}
+    \end{equation}
 \end{enumerate}
 
-\begin{algorithm}[t]
-\caption{MAgHARCM 6-Stage Translation and Repair Loop}
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig1_workflow.png}
+    \caption{Overview of the MAgHARCM Multi-Agent Repository Translation Architecture. The pipeline decomposes repository migration across four specialized agents: Analyzer (M\"uller strategy selection), Planning (reverse-topological DAG construction and cycle elimination), Translator (chunked translation with Symbol Navigator and Prior Memory), and Validator (AST syntax check, build compilation, test execution, adversarial weakening guard, and coverage plateau detection).}
+    \label{fig:workflow}
+\end{figure*}
+
+\subsection{System Architecture Overview}
+\label{sec:method_arch}
+\begin{algorithm}[MAgHARCM Repository Translation Orchestration]
 \label{alg:magharcm_pipeline}
 \begin{algorithmic}[1]
-\Require Source repo $P_s$, Target lang $L_t$, Max iterations $K$, Timeout $T$
-\Ensure Translated and validated target project $P_t$
-\State $\mathcal{M}_s \gets \Call{Intake}{P_s}$ \Comment{Stage 1: Manifest \& ASTs}
-\State $\mathcal{R}, \mathcal{S} \gets \Call{Analyze}{\mathcal{M}_s, L_t}$ \Comment{Stage 2: Research \& Strategy}
-\State $\mathcal{F}, \mathcal{K}, \mathcal{O}_{topo} \gets \Call{Plan}{\mathcal{M}_s, \mathcal{R}}$ \Comment{Stage 3: Skeleton \& Reverse Topo}
-\State $P_t \gets \mathcal{K}$ \Comment{Initialize target with skeleton}
-\State $P_t \gets \Call{TranslateChunked}{\mathcal{F}, \mathcal{O}_{topo}, P_t}$ \Comment{Stage 4: Chunked Translation}
-\For{$iter \gets 1 \textrm{ to } K$}
-  \State $\mathcal{V} \gets \Call{Validate}{P_t}$ \Comment{Stage 5: Multi-stage validate}
-  \If{$\mathcal{V}.all\_success$}
-    \State \textbf{break}
-  \EndIf
-  \State $\Call{CheckpointState}{P_t, \mathcal{V}, iter}$ \Comment{Conversable checkpoint}
-  \State $P_t \gets \Call{RepairTranslator}{P_t, \mathcal{V}}$ \Comment{Stage 6: Targeted repair}
-  \If{$\Call{DetectWeakening}{\mathcal{V}}$}
-    \State $\Call{LogWarning}{\text{Adversarial test weakening detected}}$
-  \EndIf
-\EndFor
+\Require Source project $P_s$, Source language $L_s$, Target language $L_t$, Max iterations $K$
+\Ensure Translated target project $P_t$
+\State $G_{\text{AST}}, \text{Manifest} \gets \text{ExtractTreeSitterAST}(P_s)$
+\State $\mathcal{S}_{\text{strat}}, \text{Design} \gets \text{AnalyzerAgent}(G_{\text{AST}}, \text{Manifest}, L_s, L_t)$
+\State $DAG_{\text{topo}}, \text{Plan}, \text{Skeleton} \gets \text{PlanningAgent}(G_{\text{AST}}, \text{Design}, L_s, L_t)$
+\State $P_t \gets \text{InitializeTargetCrate}(\text{Skeleton}, \text{Plan})$
+\State $P_t \gets \text{TranslatorAgent}.\text{TranslateChunked}(P_t, DAG_{\text{topo}}, \text{Plan})$
+\State $\text{SaveCheckpoint}(P_t, \text{iter}=0)$
+\State $\text{iter} \gets 0$
+\While{$\text{iter} < K$}
+    \State $\text{Report} \gets \text{ValidatorAgent}.\text{Validate}(P_t, P_s)$
+    \If{$\text{Report}.\text{AllSuccess} = \text{True}$}
+        \State \Return $P_t$ \Comment{Successfully converged}
+    \EndIf
+    \If{$\text{Report}.\text{PlateauDetected} \lor \text{Report}.\text{Weakened}$}
+        \State \textbf{break} \Comment{Coverage plateau or security guard triggered}
+    \EndIf
+    \State $P_t \gets \text{TranslatorAgent}.\text{Repair}(P_t, \text{Report})$
+    \State $\text{iter} \gets \text{iter} + 1$
+    \State $\text{SaveCheckpoint}(P_t, \text{iter})$
+\EndWhile
 \State \Return $P_t$
 \end{algorithmic}
 \end{algorithm}
 
-\subsection{Chunked Translation with Running Context (NEW-PRIM-23)}
+\subsection{Analyzer Agent \& M\"uller Strategy Selection}
+\label{sec:method_analyzer}
 
-Single-shot translation fails catastrophically on non-trivial repositories because
-monolithic prompts exceed the effective instruction-following context of small coding
-models (e.g. 4B parameters), leading to empty tool calls or truncated files.
-NEW-PRIM-23 overcomes this by decomposing the translation into topologically ordered
-chunks:
+The Analyzer Agent inspects the incoming codebase $P_s$ to construct a structured architectural specification. Using Tree-Sitter grammars for C, Go, and Java, the agent parses the full directory hierarchy, identifying module boundaries, public struct declarations, function signatures, and build configurations.
 
-\begin{algorithm}[t]
-\caption{Chunked Translation Dispatch (NEW-PRIM-23)}
-\label{alg:chunked}
+To tailor downstream decomposition to the repository's scale, the Analyzer implements \emph{M\"uller Migration Strategy Selection}~\cite{muller2022towards}, categorizing projects into three distinct regimes:
+\begin{itemize}
+    \item \textbf{Direct Strategy ($\le 5$ files and $\le 1{,}000$ LoC):} Applied to compact utility packages. Translation proceeds in a single unified prompt containing all module definitions.
+    \item \textbf{Incremental Strategy ($5 < |F_s| \le 50$ files or $1{,}000 < \text{LoC} \le 10{,}000$):} Standard multi-module repositories. The codebase is translated module-by-module in reverse-topological order.
+    \item \textbf{Pilot Strategy ($> 50$ files or $> 10{,}000$ LoC):} Large-scale enterprise codebases (e.g., Apache Commons). The Analyzer selects a core foundational subsystem as a self-contained pilot before expanding to peripheral packages.
+\end{itemize}
+
+\subsection{Planning Agent \& Reverse-Topological DAG}
+\label{sec:method_planning}
+
+The Planning Agent converts the architectural analysis into an executable dependency schedule. A critical failure mode in multi-file translation is caller-before-callee synthesis: if module $A$ depends on types declared in module $B$, translating $A$ first causes the LLM to invent placeholder type signatures for $B$, resulting in pervasive type mismatches when $B$ is subsequently translated.
+
+To guarantee that dependencies are resolved prior to usage, the Planning Agent constructs a fine-grained call graph $G = (V, E)$ over all extracted AST fragments. We then compute a \emph{Reverse-Topological Order} using depth-first search (DFS) with cycle elimination, formalized in Algorithm~\ref{alg:reverse_topo}.
+\begin{algorithm}[Cycle-Free Reverse-Topological Scheduling]
+\label{alg:reverse_topo}
 \begin{algorithmic}[1]
-\Require Fragments $\mathcal{F}$, Topological Order $\mathcal{O}$, Target Skeleton $\mathcal{K}$
-\Ensure Translated Files map $\mathcal{T}$
-\State $\mathcal{T} \gets \mathcal{K}$
-\State $\mathcal{G} \gets \Call{GroupBySourceFile}{\mathcal{F}, \mathcal{O}}$
-\For{each source group $g \in \mathcal{G}$}
-  \State $\mathcal{C}_{prior} \gets \Call{BuildPriorModulesSummary}{\mathcal{T}, \text{budget}=4\text{KB}}$
-  \State $\mathcal{S}_{nav} \gets \Call{NavigatorLookupSymbols}{g.symbols}$
-  \State $\mathcal{P} \gets \Call{RenderChunkPrompt}{g, \mathcal{C}_{prior}, \mathcal{S}_{nav}}$
-  \State $\mathcal{T}_{new} \gets \Call{CodingModelGenerate}{\mathcal{P}}$
-  \State $\mathcal{T} \gets \mathcal{T} \cup \mathcal{T}_{new}$
-  \State $\Call{SyncToDisk}{\mathcal{T}}$
+\Ensure Reverse-topological execution sequence $\mathcal{Q}$
+\State $\text{Visited} \gets \emptyset, \quad \text{OnStack} \gets \emptyset, \quad \mathcal{Q} \gets []$
+\Function{Visit}{$u$}
+    \State $\text{Visited} \gets \text{Visited} \cup \{u\}$
+    \State $\text{OnStack} \gets \text{OnStack} \cup \{u\}$
+    \For{$(u, v) \in E$}
+        \If{$v \in \text{OnStack}$}
+            \State $E \gets E \setminus \{(u, v)\}$ \Comment{Cut cyclic back-edge}
+        \ElsIf{$v \notin \text{Visited}$}
+            \State \Call{Visit}{$v$}
+        \EndIf
+    \EndFor
+    \State $\text{OnStack} \gets \text{OnStack} \setminus \{u\}$
+    \State $\mathcal{Q}.\text{append}(u)$
+\EndFunction
+\For{$u \in V$}
+    \If{$u \notin \text{Visited}$}
+        \State \Call{Visit}{$u$}
+    \EndIf
 \EndFor
-\State \Call{EnsureTargetManifest}{\mathcal{T}} \Comment{Ensure Cargo.toml / go.mod present}
-\State \Return $\mathcal{T}$
+\State \Return $\mathcal{Q}$
 \end{algorithmic}
 \end{algorithm}
 
-\noindent
-As shown in Algorithm~\ref{alg:chunked}, each chunk prompt is furnished with:
-(1)~the current source fragment; (2)~a bounded 4\,KB summary of prior emitted
-module signatures and public types (\texttt{BuildPriorModulesSummary}); and
-(3)~symbol definitions from the Navigator. This gives the local coding model
-the exact context required to emit valid cross-file references without blowing up
-its context window.
+When circular dependencies are detected (i.e., node $v$ is on the active DFS recursion stack), the back-edge $(u, v)$ is removed from the planning DAG and recorded in the repair ledger. Furthermore, the Planning Agent includes a \emph{Canonical Manifest Rewriter} that deterministically maps source library identifiers (e.g., Java `org.apache.commons.validator` or Go `math/rand`) to standard Rust equivalents (`validator`, `rand`, `regex`) in the target `Cargo.toml`.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\columnwidth]{figures/fig3_dataflow.png}
+    \caption{Bounded Context Assembly Dataflow. Tree-Sitter AST fragments and manifests are transformed into Reverse-Topological DAGs, combined with Symbol Navigator lookups ($\le 4$\,KB) and Prior-Modules Memory ($\le 4$\,KB) to synthesize target modules on local SLMs.}
+    \label{fig:dataflow}
+\end{figure}
+
+\subsection{Translator Agent \& Bounded Context Synthesis}
+\label{sec:method_translator}
+
+The Translator Agent implements chunked code synthesis using our dedicated coding model (Qwen3-4B). Because local SLMs have strictly bounded effective context windows (typically 8K--16K tokens), attempting to provide full source file histories causes catastrophic forgetting and attention degradation.
+
+As shown in Figure~\ref{fig:dataflow}, MAgHARCM employs a two-tier context bounding mechanism:
+\begin{enumerate}
+    \item \textbf{Symbol-Aware Navigator:} When synthesizing module fragment $u_k$, the Navigator extracts only the structural definitions, struct layouts, and public function signatures of its immediate callees, capping the extracted slice to $\le 4$\,KB.
+    \item \textbf{Prior-Modules Memory:} For previously translated modules, the Translator maintains an in-memory digest of emitted Rust signatures, bounded by a 4\,KB total budget with 200-byte head/tail snippets.
+\end{enumerate}
+
+\subsection{Validator Agent \& Adversarial Defense}
+\label{sec:method_validator}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\columnwidth]{figures/fig4_lifecycle.png}
+    \caption{Translation Lifecycle State Machine. Highlights the forward translation rail, state checkpoint persistence, coverage plateau stall detection, and adversarial test-weakening guard exits.}
+    \label{fig:lifecycle}
+\end{figure}
+
+The Validator Agent enforces strict verification over the synthesized codebase through a five-stage validation cascade:
+\begin{enumerate}
+    \item \textbf{Pre-Compilation AST Syntax Validation:} Fast AST verification via Tree-Sitter to detect unclosed delimiters, invalid keywords, or malformed macro expansions prior to invoking compiler toolchains.
+    \item \textbf{Target Toolchain Build Compilation:} Executes \texttt{cargo check} and \texttt{cargo build} in the target workspace, capturing structured diagnostic errors ($E0382, E0502, E0432$).
+    \item \textbf{Test Suite Execution:} Runs native target unit tests (\texttt{cargo test}), computing passed, failed, and total test counts.
+    \item \textbf{Adversarial Weakening Guard:} LLM-driven repair loops frequently delete failing assertions or convert strict equality checks into no-ops (e.g., \texttt{assert\_eq!(a, b)} $\to$ \texttt{assert!(true)}). The Validator parses AST assertion counts across test files: if $\text{AssertCount}(T_t^{\text{new}}) < \text{AssertCount}(T_t^{\text{prev}})$, the update is flagged as an adversarial weakening regression, rejected, and reverted to the last green snapshot.
+    \item \textbf{CodaMOSA-derived Coverage Plateau Detector:} To prevent endless repair loops on unresolvable semantic bugs, the Validator tracks test coverage deltas across iterations. If two consecutive iterations yield a passed-tests delta $< 5$ and an uncovered-function delta $< 1$, execution is gracefully halted at a convergence plateau.
+\end{enumerate}

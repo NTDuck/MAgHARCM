@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px;
+      background: #ffffff;
+      font-family: 'Crimson Pro', 'Times New Roman', Times, serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    svg {
+      background: #ffffff;
+    }
+    text {
+      font-family: 'Crimson Pro', 'Times New Roman', Times, serif;
+    }
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+<body>
+<svg width="1100" height="520" viewBox="0 0 1100 520" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#1e293b"/>
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#1d4ed8"/>
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#b45309"/>
+    </marker>
+    <marker id="arrow-rose" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#be123c"/>
+    </marker>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <!-- Background Panel -->
+  <rect x="10" y="10" width="1080" height="500" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" />
+  
+  <!-- Title / Header -->
+  <text x="550" y="42" font-size="20" font-weight="700" text-anchor="middle" fill="#0f172a">Figure 1: MAgHARCM Multi-Agent Repository Translation Architecture &amp; Orchestration Workflow</text>
+  <text x="550" y="64" font-size="13" font-style="italic" text-anchor="middle" fill="#475569">Four-agent topological decomposition with bounded context assembly, multi-stage validation, and compiler repair loops</text>
+
+  <!-- Stage 1: Input Codebase -->
+  <g transform="translate(35, 110)">
+    <rect width="160" height="150" rx="6" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5" filter="url(#shadow)" />
+    <rect width="160" height="28" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1" />
+    <text x="80" y="19" font-size="13" font-weight="700" text-anchor="middle" fill="#1e293b">Source Repository</text>
+    <text x="14" y="52" font-size="12" fill="#334155">• Source AST ($P_s$)</text>
+    <text x="14" y="74" font-size="12" fill="#334155">• Build Manifests</text>
+    <text x="14" y="96" font-size="12" fill="#334155">• Test Suite ($T_s$)</text>
+    <text x="14" y="118" font-size="12" fill="#334155">• Library Deps ($D_s$)</text>
+    <text x="80" y="140" font-size="11" font-weight="600" text-anchor="middle" fill="#64748b" class="mono">C / Go / Java</text>
+  </g>
+
+  <!-- Arrow 1 -> Analyzer -->
+  <path d="M 195 185 L 240 185" stroke="#1e293b" stroke-width="1.8" marker-end="url(#arrow)" fill="none" />
+
+  <!-- Stage 2: Analyzer Agent -->
+  <g transform="translate(245, 100)">
+    <rect width="180" height="170" rx="6" fill="#ffffff" stroke="#2563eb" stroke-width="1.8" filter="url(#shadow)" />
+    <rect width="180" height="30" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1" />
+    <text x="90" y="20" font-size="14" font-weight="700" text-anchor="middle" fill="#1d4ed8">1. Analyzer Agent</text>
+    <text x="14" y="55" font-size="12" fill="#1e293b">Tree-Sitter Directory Walk</text>
+    <text x="14" y="77" font-size="12" fill="#1e293b">Müller Strategy Selection:</text>
+    <text x="24" y="95" font-size="11" fill="#475569" class="mono">DIRECT | INCR | PILOT</text>
+    <text x="14" y="118" font-size="12" fill="#1e293b">Dependency Resolution</text>
+    <text x="14" y="140" font-size="12" fill="#1e293b">Target Architecture Design</text>
+    <rect x="14" y="148" width="152" height="16" rx="3" fill="#dbeafe" />
+    <text x="90" y="160" font-size="10" font-weight="600" text-anchor="middle" fill="#1e40af">Liquid MoE 8B (Reasoning)</text>
+  </g>
+
+  <!-- Arrow Analyzer -> Planning -->
+  <path d="M 425 185 L 470 185" stroke="#1d4ed8" stroke-width="1.8" marker-end="url(#arrow-blue)" fill="none" />
+
+  <!-- Stage 3: Planning Agent -->
+  <g transform="translate(475, 100)">
+    <rect width="180" height="170" rx="6" fill="#ffffff" stroke="#7c3aed" stroke-width="1.8" filter="url(#shadow)" />
+    <rect width="180" height="30" rx="6" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1" />
+    <text x="90" y="20" font-size="14" font-weight="700" text-anchor="middle" fill="#6d28d9">2. Planning Agent</text>
+    <text x="14" y="55" font-size="12" fill="#1e293b">AST Fragment Extraction</text>
+    <text x="14" y="77" font-size="12" fill="#1e293b">Reverse-Topo Ordering</text>
+    <text x="24" y="95" font-size="11" fill="#475569">Back-Edge Cycle Break</text>
+    <text x="14" y="118" font-size="12" fill="#1e293b">Manifest Rewriter ($D_s \to D_t$)</text>
+    <text x="14" y="140" font-size="12" fill="#1e293b">Skeleton Generation</text>
+    <rect x="14" y="148" width="152" height="16" rx="3" fill="#ede9fe" />
+    <text x="90" y="160" font-size="10" font-weight="600" text-anchor="middle" fill="#5b21b6">Part A (Code) &amp; Part B (Tests)</text>
+  </g>
+
+  <!-- Arrow Planning -> Translator -->
+  <path d="M 655 185 L 700 185" stroke="#1e293b" stroke-width="1.8" marker-end="url(#arrow)" fill="none" />
+
+  <!-- Stage 4: Translator Agent -->
+  <g transform="translate(705, 100)">
+    <rect width="180" height="170" rx="6" fill="#ffffff" stroke="#059669" stroke-width="1.8" filter="url(#shadow)" />
+    <rect width="180" height="30" rx="6" fill="#ecfdf5" stroke="#059669" stroke-width="1" />
+    <text x="90" y="20" font-size="14" font-weight="700" text-anchor="middle" fill="#047857">3. Translator Agent</text>
+    <text x="14" y="55" font-size="12" fill="#1e293b">Chunked Code Generation</text>
+    <text x="14" y="77" font-size="12" fill="#1e293b">Symbol Navigator ($\le 4$KB)</text>
+    <text x="14" y="99" font-size="12" fill="#1e293b">Prior Memory ($\le 4$KB)</text>
+    <text x="14" y="121" font-size="12" fill="#1e293b">Part B Test Synthesis</text>
+    <text x="14" y="140" font-size="12" fill="#1e293b">Disk Sync &amp; Checkpointing</text>
+    <rect x="14" y="148" width="152" height="16" rx="3" fill="#d1fae5" />
+    <text x="90" y="160" font-size="10" font-weight="600" text-anchor="middle" fill="#065f46">Qwen3-4B (Coding SLM)</text>
+  </g>
+
+  <!-- Arrow Translator -> Validator -->
+  <path d="M 885 185 L 930 185" stroke="#059669" stroke-width="1.8" marker-end="url(#arrow)" fill="none" />
+
+  <!-- Stage 5: Validator Agent -->
+  <g transform="translate(935, 100)">
+    <rect width="130" height="170" rx="6" fill="#ffffff" stroke="#e11d48" stroke-width="1.8" filter="url(#shadow)" />
+    <rect width="130" height="30" rx="6" fill="#fff1f2" stroke="#e11d48" stroke-width="1" />
+    <text x="65" y="20" font-size="14" font-weight="700" text-anchor="middle" fill="#be123c">4. Validator</text>
+    <text x="10" y="55" font-size="11" fill="#1e293b">1. Pre-AST Syntax</text>
+    <text x="10" y="77" font-size="11" fill="#1e293b">2. Cargo Build</text>
+    <text x="10" y="99" font-size="11" fill="#1e293b">3. Test Execution</text>
+    <text x="10" y="121" font-size="11" fill="#1e293b">4. Weakening Guard</text>
+    <text x="10" y="143" font-size="11" fill="#1e293b">5. Plateau Detector</text>
+    <rect x="10" y="148" width="110" height="16" rx="3" fill="#ffe4e6" />
+    <text x="65" y="160" font-size="10" font-weight="600" text-anchor="middle" fill="#9f1239">Cascade Gate</text>
+  </g>
+
+  <!-- Repair Loop (Feedback Arc) -->
+  <path d="M 1000 270 L 1000 370 L 795 370 L 795 275" stroke="#be123c" stroke-width="1.8" stroke-dasharray="5,4" marker-end="url(#arrow-rose)" fill="none" />
+  <rect x="830" y="355" width="140" height="24" rx="4" fill="#ffffff" stroke="#be123c" stroke-width="1" />
+  <text x="900" y="371" font-size="11" font-weight="700" text-anchor="middle" fill="#be123c">Repair Mode (Iter $\le K$)</text>
+
+  <!-- Checkpoints & Persistence Box -->
+  <g transform="translate(245, 330)">
+    <rect width="410" height="140" rx="6" fill="#ffffff" stroke="#d97706" stroke-width="1.5" stroke-dasharray="4,3" filter="url(#shadow)" />
+    <rect width="410" height="26" rx="6" fill="#fef3c7" stroke="#d97706" stroke-width="1" />
+    <text x="205" y="18" font-size="13" font-weight="700" text-anchor="middle" fill="#92400e">State Persistence, Checkpoints &amp; Defense Mechanisms</text>
+    
+    <text x="14" y="48" font-size="12" fill="#1e293b">• <tspan font-weight="700">Atomic Checkpoint Snapshotting:</tspan> Serialized under <tspan class="mono">.artifacts/&lt;run&gt;/checkpoints/</tspan></text>
+    <text x="14" y="70" font-size="12" fill="#1e293b">• <tspan font-weight="700">CodaMOSA Coverage Plateau Detector:</tspan> Halts unproductive repair loops (2 stag. pairs)</text>
+    <text x="14" y="92" font-size="12" fill="#1e293b">• <tspan font-weight="700">Adversarial Weakening Guard:</tspan> Rejects assertion drops or deletion of tests</text>
+    <text x="14" y="114" font-size="12" fill="#1e293b">• <tspan font-weight="700">Context Bounding:</tspan> Caps raw prompt slices to 32KB to prevent local SLM saturation</text>
+  </g>
+
+  <!-- Output Box (Success Exit) -->
+  <g transform="translate(935, 340)">
+    <rect width="130" height="110" rx="6" fill="#f0fdf4" stroke="#16a34a" stroke-width="2" filter="url(#shadow)" />
+    <text x="65" y="28" font-size="13" font-weight="700" text-anchor="middle" fill="#15803d">Target Crate</text>
+    <text x="65" y="50" font-size="11" text-anchor="middle" fill="#166534">• Clean Compile</text>
+    <text x="65" y="70" font-size="11" text-anchor="middle" fill="#166534">• 100% Tests Pass</text>
+    <text x="65" y="90" font-size="11" text-anchor="middle" fill="#166534">• Preserved AST</text>
+  </g>
+
+  <!-- Arrow Validator -> Success Exit -->
+  <path d="M 1000 270 L 1000 335" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow)" fill="none" />
+  <text x="1015" y="305" font-size="11" font-weight="700" fill="#16a34a">Success</text>
+</svg>
+</body>
+</html>

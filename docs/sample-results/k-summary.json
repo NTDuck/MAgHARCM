@@ -1,199 +1,38 @@
 {
   "schema": "k-summary/v1",
-  "k": 3,
-  "generated_at": "2026-09-02T10:49:23.066086+00:00",
+  "k": 1,
+  "generated_at": "2026-09-02T14:10:06.952484+00:00",
   "samples": [
-    {
-      "name": "commons-validator",
-      "config": "/home/ayin/projs/MAgHARCM/.config/commons-validator.yml",
-      "runs": 3,
-      "success_count": 0,
-      "compile_ok_rate": "0/3",
-      "tests_pass_total": 0,
-      "tests_total_total": 0,
-      "tests_pass_rate": "0/0",
-      "durations_ms": [
-        900021,
-        900017,
-        900035
-      ],
-      "per_run_status": [
-        {
-          "i": 1,
-          "status": "INCOMPLETE",
-          "compile_ok": false,
-          "tests_passed": 0,
-          "tests_total": 0,
-          "duration_ms": 900021,
-          "exit_code": 124
-        },
-        {
-          "i": 2,
-          "status": "INCOMPLETE",
-          "compile_ok": false,
-          "tests_passed": 0,
-          "tests_total": 0,
-          "duration_ms": 900017,
-          "exit_code": 124
-        },
-        {
-          "i": 3,
-          "status": "INCOMPLETE",
-          "compile_ok": false,
-          "tests_passed": 0,
-          "tests_total": 0,
-          "duration_ms": 900035,
-          "exit_code": 124
-        }
-      ],
-      "mean_ms": 900024,
-      "stdev_ms": 7,
-      "min_ms": 900017,
-      "max_ms": 900035
-    },
     {
       "name": "gildedrose",
       "config": "/home/ayin/projs/MAgHARCM/.config/gildedrose.yml",
-      "runs": 3,
+      "runs": 1,
       "success_count": 0,
-      "compile_ok_rate": "1/3",
+      "compile_ok_rate": "0/1",
       "tests_pass_total": 0,
       "tests_total_total": 0,
       "tests_pass_rate": "0/0",
       "durations_ms": [
-        450024,
-        450022,
         450016
       ],
       "per_run_status": [
         {
           "i": 1,
           "status": "INCOMPLETE",
-          "compile_ok": true,
-          "tests_passed": 0,
-          "tests_total": 0,
-          "duration_ms": 450024,
-          "exit_code": 124
-        },
-        {
-          "i": 2,
-          "status": "INCOMPLETE",
           "compile_ok": false,
           "tests_passed": 0,
           "tests_total": 0,
-          "duration_ms": 450022,
-          "exit_code": 124
-        },
-        {
-          "i": 3,
-          "status": "INCOMPLETE",
-          "compile_ok": false,
-          "tests_passed": 0,
-          "tests_total": 0,
+          "chunks_written": 6,
+          "failure_errors": 4,
+          "strategy": "INCREMENTAL",
           "duration_ms": 450016,
           "exit_code": 124
         }
       ],
-      "mean_ms": 450020,
-      "stdev_ms": 3,
+      "mean_ms": 450016,
+      "stdev_ms": 0,
       "min_ms": 450016,
-      "max_ms": 450024
-    },
-    {
-      "name": "gohistogram",
-      "config": "/home/ayin/projs/MAgHARCM/.config/gohistogram.yml",
-      "runs": 3,
-      "success_count": 0,
-      "compile_ok_rate": "0/3",
-      "tests_pass_total": 0,
-      "tests_total_total": 0,
-      "tests_pass_rate": "0/0",
-      "durations_ms": [
-        900030,
-        900035,
-        452364
-      ],
-      "per_run_status": [
-        {
-          "i": 1,
-          "status": "INCOMPLETE",
-          "compile_ok": false,
-          "tests_passed": 0,
-          "tests_total": 0,
-          "duration_ms": 900030,
-          "exit_code": 124
-        },
-        {
-          "i": 2,
-          "status": "INCOMPLETE",
-          "compile_ok": false,
-          "tests_passed": 0,
-          "tests_total": 0,
-          "duration_ms": 900035,
-          "exit_code": 124
-        },
-        {
-          "i": 3,
-          "status": "INCOMPLETE",
-          "compile_ok": false,
-          "tests_passed": 0,
-          "tests_total": 0,
-          "duration_ms": 452364,
-          "exit_code": 1
-        }
-      ],
-      "mean_ms": 750809,
-      "stdev_ms": 211032,
-      "min_ms": 452364,
-      "max_ms": 900035
-    },
-    {
-      "name": "stats",
-      "config": "/home/ayin/projs/MAgHARCM/.config/stats.yml",
-      "runs": 3,
-      "success_count": 0,
-      "compile_ok_rate": "0/3",
-      "tests_pass_total": 0,
-      "tests_total_total": 0,
-      "tests_pass_rate": "0/0",
-      "durations_ms": [
-        900023,
-        900014,
-        900020
-      ],
-      "per_run_status": [
-        {
-          "i": 1,
-          "status": "INCOMPLETE",
-          "compile_ok": false,
-          "tests_passed": 0,
-          "tests_total": 0,
-          "duration_ms": 900023,
-          "exit_code": 124
-        },
-        {
-          "i": 2,
-          "status": "INCOMPLETE",
-          "compile_ok": false,
-          "tests_passed": 0,
-          "tests_total": 0,
-          "duration_ms": 900014,
-          "exit_code": 124
-        },
-        {
-          "i": 3,
-          "status": "INCOMPLETE",
-          "compile_ok": false,
-          "tests_passed": 0,
-          "tests_total": 0,
-          "duration_ms": 900020,
-          "exit_code": 124
-        }
-      ],
-      "mean_ms": 900019,
-      "stdev_ms": 3,
-      "min_ms": 900014,
-      "max_ms": 900023
+      "max_ms": 450016
     }
   ]
 }

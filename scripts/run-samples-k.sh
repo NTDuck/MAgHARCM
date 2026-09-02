@@ -141,17 +141,21 @@ echo ""
 triage_log() {
     local log="$1"
     local compile_ok="false" tests_pass="0" tests_total="0" status="INCOMPLETE"
-    if grep -q 'compilation=true' "$log" || grep -q 'Compilation SUCCESS' "$log"; then compile_ok="true"; fi
-    if grep -qE 'passed=[0-9]+/[0-9]+' "$log"; then
-        tests_pass=$(grep -oE 'passed=[0-9]+' "$log" | tail -1 | cut -d= -f2 | cut -d/ -f1)
-        tests_total=$(grep -oE 'passed=[0-9]+/[0-9]+' "$log" | tail -1 | cut -d= -f2 | cut -d/ -f2)
-    elif grep -qE 'tests=[0-9]+/[0-9]+' "$log"; then
-        tests_pass=$(grep -oE 'tests=[0-9]+' "$log" | tail -1 | cut -d= -f2 | cut -d/ -f1)
-        tests_total=$(grep -oE 'tests=[0-9]+/[0-9]+' "$log" | tail -1 | cut -d= -f2 | cut -d/ -f2)
+    local chunks="0" errors="0" strategy="DIRECT"
+    if grep -aq 'compilation=true' "$log" || grep -aq 'Compilation SUCCESS' "$log" || grep -aq 'comp=true' "$log"; then compile_ok="true"; fi
+    if grep -aqE 'passed=[0-9]+/[0-9]+' "$log"; then
+        tests_pass=$(grep -aoE 'passed=[0-9]+' "$log" | tail -1 | cut -d= -f2 | cut -d/ -f1)
+        tests_total=$(grep -aoE 'passed=[0-9]+/[0-9]+' "$log" | tail -1 | cut -d= -f2 | cut -d/ -f2)
+    elif grep -aqE 'tests=[0-9]+/[0-9]+' "$log"; then
+        tests_pass=$(grep -aoE 'tests=[0-9]+' "$log" | tail -1 | cut -d= -f2 | cut -d/ -f1)
+        tests_total=$(grep -aoE 'tests=[0-9]+/[0-9]+' "$log" | tail -1 | cut -d= -f2 | cut -d/ -f2)
     fi
-    if grep -q 'Validation INCOMPLETE' "$log"; then status="INCOMPLETE"; fi
-    if grep -q 'all_success=true' "$log" || grep -q 'Validation SUCCESS' "$log"; then status="SUCCESS"; fi
-    printf '%s\t%s\t%s\t%s\n' "$compile_ok" "$tests_pass" "$tests_total" "$status"
+    chunks=$(grep -ac 'Wrote ' "$log" || true)
+    errors=$(grep -aoE 'Compilation FAILED with [0-9]+ errors' "$log" | tail -1 | grep -aoE '[0-9]+' || echo "0")
+    strategy=$(grep -aoE 'strategy=[A-Z]+' "$log" | tail -1 | cut -d= -f2 || echo "INCREMENTAL")
+    if grep -aq 'Validation INCOMPLETE' "$log"; then status="INCOMPLETE"; fi
+    if grep -aq 'all_success=true' "$log" || grep -aq 'Validation SUCCESS' "$log"; then status="SUCCESS"; fi
+    printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$compile_ok" "$tests_pass" "$tests_total" "$status" "$chunks" "$errors" "$strategy"
 }
 
 # Build the samples array as a python-friendly JSON file by streaming
@@ -199,7 +203,7 @@ for cfg in "${configs[@]}"; do
         end=$(date +%s%N)
         duration_ms=$(( (end - start) / 1000000 ))
 
-        read -r compile_ok tests_pass tests_total status < <(triage_log "$log")
+        read -r compile_ok tests_pass tests_total status chunks errors strategy < <(triage_log "$log")
 
         if [[ "$status" == "SUCCESS" ]]; then
             success_count=$((success_count + 1))
@@ -223,6 +227,9 @@ arr.append({
     'compile_ok': '$compile_ok' == 'true',
     'tests_passed': int('$tests_pass'),
     'tests_total': int('$tests_total'),
+    'chunks_written': int('$chunks'),
+    'failure_errors': int('$errors' or 0),
+    'strategy': '$strategy',
     'duration_ms': $duration_ms,
     'exit_code': $rc,
 })

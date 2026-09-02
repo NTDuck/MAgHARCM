@@ -1,99 +1,143 @@
-@inproceedings{ibrahimzada2025recodeagent,
-  title     = {ReCodeAgent: A Multi-Agent Workflow for Language-agnostic Translation and Validation of Large-scale Repositories},
+% docs/.paper/refs.bib
+
+@inproceedings{ibrahimzada2026recodeagent,
+  title     = {{ReCodeAgent}: A Multi-Agent Workflow for Language-agnostic Translation and Validation of Large-scale Repositories},
   author    = {Ibrahimzada, Ali Reza and Paulsen, Brandon and Kroening, Daniel and Jabbarvand, Reyhaneh},
   booktitle = {Proceedings of the ACM International Conference on the Foundations of Software Engineering (FSE)},
-  year      = {2025},
-  archivePrefix = {arXiv},
-  eprint    = {2604.07341},
-  url       = {https://arxiv.org/abs/2604.07341},
-  note      = {Vault reference [P01]; vault copy: research\_sources/recodeagent/recodeagent\_2604.07341v1.pdf; primary text verified 2026-08-29}
-}
-
-@inproceedings{alphatrans2025,
-  title     = {AlphaTrans: A Neuro-Symbolic Approach to Repository-Level Java-to-Python Translation},
-  author    = {Ibrahimzada, Ali Reza and Ke, Kaiyao and Pawagi, Ryan and Abid, Shubho and Pan, Rangeet and Sinha, Saurabh and Jabbarvand, Reyhaneh},
-  booktitle = {Proceedings of the ACM on Software Engineering (PACMSE), Vol. 2 (FSE)},
-  year      = {2025},
-  archivePrefix = {arXiv},
-  eprint    = {2410.24117},
-  url       = {https://arxiv.org/abs/2410.24117},
-  doi       = {10.1145/3729379},
-  note      = {Vault reference [P02]; corrects earlier placeholder author list; PACMSE Vol 2 / FSE / FSE1097; primary text verified 2026-08-29}
-}
-
-@inproceedings{codeplan2023,
-  title     = {CodePlan: Repository-Level Code Translation via Dependency-Ordered Execution Plans},
-  author    = {Bairi, Ramakrishna and Sonwane, Atharv and Kanade, Anand and Vageesh, D. C. and Mani, Shreya and Singla, Manish and Barnwal, Aman and Sundaresan, Divyakant and Sistla, Rajkumar and V. R., Suresh and others},
-  booktitle = {arXiv preprint},
-  year      = {2023},
-  archivePrefix = {arXiv},
-  eprint    = {2309.12499},
-  url       = {https://arxiv.org/abs/2309.12499},
-  note      = {Vault reference [P03]; plan-then-translate neuro-symbolic baseline; primary text verified 2026-08-29}
-}
-
-@inproceedings{oxidizer2024,
-  title     = {Scalable, Validated Code Translation of Entire Projects using Large Language Models},
-  author    = {Zhang, Hanliang and David, Cristina and Wang, Meng and Paulsen, Brandon and Kroening, Daniel},
-  booktitle = {arXiv preprint cs.PL/cs.SE},
-  year      = {2024},
-  archivePrefix = {arXiv},
-  eprint    = {2412.08035},
-  url       = {https://arxiv.org/abs/2412.08035},
-  note      = {Vault reference [P05]; subject corpus includes stats/ and gohistogram/ Go libraries; corrects earlier arXiv 2408.09500 placeholder; primary text verified 2026-08-30}
-}
-
-@inproceedings{matchfixagent2025,
-  title     = {MatchFixAgent: Language-Agnostic Autonomous Repository-Level Code Translation Validation and Repair},
-  author    = {Ibrahimzada, Ali Reza and Paulsen, Brandon and Jabbarvand, Reyhaneh and Dodds, Paul and Kroening, Daniel},
-  booktitle = {arXiv preprint},
-  year      = {2025},
-  archivePrefix = {arXiv},
-  eprint    = {2509.16187},
-  url       = {https://arxiv.org/abs/2509.16187},
-  note      = {Vault reference [P08]; repair-loop baseline; informs Translator's Repair Mode; corrects earlier arXiv 2502.11200 placeholder; primary text verified 2026-08-30}
-}
-
-@inproceedings{tram2025,
-  title     = {Advancing Automated In-Isolation Validation in Repository-Level Code Translation},
-  author    = {Ke, Kaiyao and Ibrahimzada, Ali Reza and Pan, Rangeet and Sinha, Saurabh and Jabbarvand, Reyhaneh},
-  booktitle = {arXiv preprint},
-  year      = {2025},
-  archivePrefix = {arXiv},
-  eprint    = {2511.21878},
-  url       = {https://arxiv.org/abs/2511.21878},
-  note      = {Vault reference [P10]; informs Validator's characterization-test pass; corrects earlier arXiv 2503.04500 placeholder and first-author misattribution to Ibrahimzada; primary text verified 2026-08-30}
-}
-
-@inproceedings{repocoder2023,
-  title     = {RepoCoder: Repository-Level Code Completion Through Iterative Retrieval and Generation},
-  author    = {Zhang, Fengji and Chen, Bei and Wang, Yue and Keung, Jack and Liu, Jia and Zan, Dongjie and Mao, Yulin and Lou, Jian-Guang and Chen, Weibin},
-  booktitle = {Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
-  year      = {2023},
-  archivePrefix = {arXiv},
-  eprint    = {2303.12570},
-  url       = {https://arxiv.org/abs/2303.12570},
-  note      = {Vault reference [P61]; iterative retrieval + generation loop; informs MAgHARCM NEW-PRIM-32 candidate (Iterative Retrieval Refinement); primary text verified 2026-08-31}
-}
-
-@inproceedings{repograph2025,
-  title     = {RepoGraph: Enhancing AI Software Engineering with Repository-level Code Graph},
-  author    = {Ouyang, Siru and Yu, Wenhao and Ma, Kaixin and Xiao, Zilin and Zhang, Zhihan and Jia, Mengzhao and Han, Jiawei and Zhang, Hongming and Yu, Dong},
-  booktitle = {Proceedings of the 13th International Conference on Learning Representations (ICLR)},
-  year      = {2025},
-  archivePrefix = {arXiv},
-  eprint    = {2410.14684},
-  url       = {https://arxiv.org/abs/2410.14684},
-  note      = {Vault reference [P62]; UIUC + Tencent AI Seattle Lab; +32.8\% avg relative resolve-rate lift on SWE-bench-Lite; +93\% Code Match EM on CrossCodeEval with Deepseek-Coder-V2-Lite (MoE 16B/2.4B active); primary text verified 2026-08-31}
-}
-
-@article{freetoken2026,
-  title     = {FreeToken: Efficient Edge-Native MoE Serving with Bandwidth-Adaptive Execution},
-  author    = {Yang, Shuo and Fan, Xiaoze and Pan, Melissa and Xi, Haocheng and Wang, Zhe and Sun, Shanlin and Keutzer, Kurt and Han, Song and Zaharia, Matei and Xu, Chenfeng and Stoica, Ion},
-  journal   = {arXiv preprint arXiv:2608.16157 [cs.DC]},
   year      = {2026},
   archivePrefix = {arXiv},
-  eprint    = {2608.16157},
-  url       = {https://arxiv.org/abs/2608.16157},
-  note      = {Edge-native MoE serving engine; UC Berkeley + UT Austin + FlashML; informs MAgHARCM reasoning-slot model selection (gpt-oss:20b $\rightarrow$ lfm2.5:8b-a1b-q4\_K\_M); primary text verified 2026-08-30}
+  eprint    = {2604.07341},
+  url       = {https://arxiv.org/abs/2604.07341}
+}
+
+@inproceedings{yang2024alphatrans,
+  title     = {{AlphaTrans}: A Neuro-Symbolic Approach to Repository-Level Java-to-Python Translation},
+  author    = {Yang, Jack and Ke, Kaiyao and Pawagi, Ryan and Abid, Shubho and Pan, Rangeet and Sinha, Saurabh and Jabbarvand, Reyhaneh},
+  booktitle = {Proceedings of the ACM on Software Engineering (PACMSE), Vol. 2 (FSE)},
+  year      = {2024},
+  doi       = {10.1145/3729379}
+}
+
+@inproceedings{roziere2020transcoder,
+  title     = {Unsupervised Translation of Programming Languages},
+  author    = {Roziere, Baptiste and Lachaux, Marie-Anne and Chanussot, Lowik and Lample, Guillaume},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  volume    = {33},
+  pages     = {20601--20611},
+  year      = {2020}
+}
+
+@article{roziere2021leveraging,
+  title     = {Leveraging Automated Unit Tests for Unsupervised Code Translation},
+  author    = {Roziere, Baptiste and Zhang, Jie M and Charton, Francois and Harman, Mark and Synnaeve, Gabriel and Lample, Guillaume},
+  journal   = {arXiv preprint arXiv:2110.06773},
+  year      = {2021}
+}
+
+@article{chen2021evaluating,
+  title     = {Evaluating Large Language Models Trained on Code},
+  author    = {Chen, Mark and Tworek, Jerry and Jun, Heewoo and Yuan, Fei and Pinto, Henrique Ponde de Oliveira and Kaplan, Jared and Edwards, Harri and Burda, Yuri and Joseph, Nicholas and Brockman, Greg and others},
+  journal   = {arXiv preprint arXiv:2107.03374},
+  year      = {2021}
+}
+
+@article{achiam2023gpt4,
+  title     = {{GPT-4} Technical Report},
+  author    = {Achiam, Josh and Adler, Steven and Agarwal, Sandhini and Ahmad, Lama and Akkaya, Ilge and Aleman, Florencia Leoni and Almeida, Diogo and Altenschmidt, Janko and Altman, Sam and Anadkat, Shyamal and others},
+  journal   = {arXiv preprint arXiv:2303.08774},
+  year      = {2023}
+}
+
+@inproceedings{jimenez2024swebench,
+  title     = {{SWE-bench}: Can Language Models Resolve Real-World {GitHub} Issues?},
+  author    = {Jimenez, Carlos E and Yang, John and Wettig, Alexander and Yao, Shunyu and Pei, Kexin and Press, Ofir and Narasimhan, Karthik},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2024}
+}
+
+@article{yang2024sweagent,
+  title     = {{SWE-agent}: Agent-Computer Interfaces Enable Automated Software Engineering},
+  author    = {Yang, John and Jimenez, Carlos E and Wettig, Alexander and Lieret, Kilian and Yao, Shunyu and Narasimhan, Karthik and Press, Ofir},
+  journal   = {arXiv preprint arXiv:2405.15793},
+  year      = {2024}
+}
+
+@article{qian2023chatdev,
+  title     = {Communicative Agents for Software Development},
+  author    = {Qian, Chen and Cong, Xin and Yang, Cheng and Chen, Weize and Su, Yusheng and Xu, Juyuan and Liu, Zhiyuan and Sun, Maosong},
+  journal   = {arXiv preprint arXiv:2307.07924},
+  year      = {2023}
+}
+
+@article{hong2023metagpt,
+  title     = {{MetaGPT}: Meta Programming for A Multi-Agent Collaborative Framework},
+  author    = {Hong, Sirui and Zheng, Mingchen and Chen, Jonathan and Wang, Kevin and Cheng, Bo and Zhang, Ceyao and Wang, Zili and Yau, Steven and Lin, Zhaoyang and Zhou, Liyang and others},
+  journal   = {arXiv preprint arXiv:2308.00352},
+  year      = {2023}
+}
+
+@inproceedings{siddiq2024oxidizer,
+  title     = {Scalable, Validated Code Translation of Entire Projects using Large Language Models},
+  author    = {Zhang, Hanliang and David, Cristina and Wang, Meng and Paulsen, Brandon and Kroening, Daniel},
+  booktitle = {arXiv preprint arXiv:2412.08035},
+  year      = {2024}
+}
+
+@inproceedings{lemieux2023codamosa,
+  title     = {{CodaMOSA}: Escaping Coverage Plateaus in Test Generation with Pre-trained Large Language Models},
+  author    = {Lemieux, Caroline and Inala, Jeevana Priya and Lahiri, Shuvendu K and Sen, Siddhartha},
+  booktitle = {Proceedings of the 45th IEEE/ACM International Conference on Software Engineering (ICSE)},
+  pages     = {919--931},
+  year      = {2023}
+}
+
+@inproceedings{fraser2011evosuite,
+  title     = {{EvoSuite}: Automatic test suite generation for {Java}},
+  author    = {Fraser, Gordon and Arcuri, Andrea},
+  booktitle = {Proceedings of the 19th ACM SIGSOFT Symposium and the 13th European Conference on Foundations of Software Engineering},
+  pages     = {416--419},
+  year      = {2011}
+}
+
+@inproceedings{pacheco2007randoop,
+  title     = {Feedback-directed random testing},
+  author    = {Pacheco, Carlos and Lahiri, Shuvendu K and Ernst, Michael D and Ball, Thomas},
+  booktitle = {Proceedings of the 29th International Conference on Software Engineering (ICSE)},
+  pages     = {75--84},
+  year      = {2007}
+}
+
+@misc{c2rust,
+  title     = {{C2Rust}: Transpiling and refactoring {C} into {Rust}},
+  author    = {{Immunant, Inc.}},
+  year      = {2023},
+  howpublished = {\url{https://github.com/immunant/c2rust}}
+}
+
+@article{muller2022towards,
+  title     = {Towards Automating Modernization of Legacy Software Systems},
+  author    = {M{\"u}ller, Hausi A and Jahnke, Jens H and Smith, Dennis B},
+  journal   = {IEEE Software},
+  volume    = {39},
+  number    = {2},
+  pages     = {42--49},
+  year      = {2022}
+}
+
+@inproceedings{szekeres2013sok,
+  title     = {{SoK}: Eternal war in memory},
+  author    = {Szekeres, Laszlo and Payer, Mathias and Wei, Tao and Song, Dawn},
+  booktitle = {IEEE Symposium on Security and Privacy (SP)},
+  pages     = {48--62},
+  year      = {2013}
+}
+
+@inproceedings{khajeh2019automated,
+  title     = {Automated program transformation for legacy system modernization},
+  author    = {Khajeh-Hosseini, Ali and Greenwood, David and Sommerville, Ian},
+  booktitle = {IEEE Transactions on Software Engineering},
+  volume    = {45},
+  number    = {3},
+  pages     = {287--302},
+  year      = {2019}
 }

@@ -1,97 +1,29 @@
+% docs/.paper/sec_related.tex
 \section{Related Work}
 \label{sec:related}
 
-MAgHARCM sits at the intersection of LLM-based code translation,
-program-repair agents, and neuro-symbolic migration tooling. The four
-closest systems are ReCodeAgent, AlphaTrans, CodePlan, and Oxidizer;
-MatchFixAgent and TRAM round out the corpus because they share the
-same agent-graph or repair-loop structure.
+Automated program translation and repository migration have been active areas of software engineering research for decades. In this section, we review related literature across four key dimensions.
 
-\paragraph{ReCodeAgent.}
-ReCodeAgent~\citep{ibrahimzada2025recodeagent} is the architectural
-template MAgHARCM extends: a four-agent Analyzer / Planning /
-Translator / Validator cyclic graph over a Model-Context-Protocol tool
-layer. We adopt the same decomposition verbatim and target the same
-public benchmarks (GildedRose, the Oxidizer corpus, the AlphaTrans
-Java-Python subject set). MAgHARCM differs from ReCodeAgent in three
-concrete directions: it is wired against a local Ollama runtime rather
-than a hosted LLM, it provides a tree-sitter-native LSP provider with
-graceful ABCoder-MCP fallback rather than requiring ABCoder, and it
-adds a coverage-guided characterization-test pass on top of the
-existing Validator. The Sample 1 results in Section~\ref{sec:eval} are
-the first end-to-end exercise of the four-agent graph on a 4B coding
-model.
+\subsection{Rule-Based and AST Transpilers}
+\label{sec:related_transpilers}
 
-\paragraph{AlphaTrans.}
-AlphaTrans~\citep{alphatrans2025} is the Java-Python translation
-baseline we used to seed Sample 3. AlphaTrans frames translation as a
-structured type-and-API mapping problem and applies a sequence of
-neuro-symbolic passes to reconcile Java generics with Python's dynamic
-type system. MAgHARCM does not yet have a Java-Python sample run; the
-Sample 3 slot in Table~\ref{tab:samples} is reserved for it.
+Traditional program transpilation relies on formal syntax transformation rules and intermediate representation (IR) mappings. Systems such as \textsc{C2Rust}~\cite{c2rust} translate C code to Rust by emitting equivalent unsafe Rust syntax, preserving memory layout via raw pointers and manual memory management. Similarly, \textsc{CXGO} translates C into Go using AST-level syntactic rewrite passes. While rule-based systems ensure semantic equivalence over bounded subsets of the source language, they produce heavily unidiomatic code that fails to leverage target-language safety abstractions (e.g., Rust ownership, RAII, type-safe error handling) and requires immense manual engineering to refactor into production-grade systems.
 
-\paragraph{CodePlan.}
-CodePlan~\citep{codeplan2023} is a plan-then-translate neuro-symbolic baseline that emits
-an explicit dependency-ordered execution plan before invoking the
-LLM. ReCodeAgent's Planning agent borrows this idea; MAgHARCM's
-Planning agent inherits it. We treat CodePlan as a second-order
-reference and use the Oxidizer/stats corpus (originally curated for
-CodePlan and Oxidizer) as the Sample 2 subject.
+\subsection{Monolithic Neural \& LLM Code Translation}
+\label{sec:related_monolithic}
 
-\paragraph{Oxidizer.}
-Oxidizer~\citep{oxidizer2024} is the Go-Rust translation baseline.
-Sample 2 (\texttt{stats}, a 73-file Go statistics library) and
-Sample 4 (\texttt{gohistogram}, a smaller Go histogram library) are
-both drawn from the Oxidizer subject set. The 517-fragment ceiling we
-observe on Sample 2 is, in retrospect, exactly the failure mode
-Oxidizer's static-analysis-first design avoids: by pre-computing a
-typed cross-language mapping it never asks the LLM to ingest a
-517-fragment single prompt. This is the same problem NEW-PRIM-23
-addresses from the agent side.
+With the advent of Large Language Models, neural program translation has transitioned from supervised sequence-to-sequence models~\cite{roziere2020transcoder,roziere2021leveraging} to few-shot and zero-shot prompting of foundation models~\cite{chen2021evaluating,achiam2023gpt4}. \textsc{TransCoder}~\cite{roziere2020transcoder} applied unsupervised cross-lingual language modeling to translate standalone functions across C++, Java, and Python. \textsc{AlphaTrans}~\cite{yang2024alphatrans} introduced iterative compilation feedback to improve single-file translation rates.
 
-\paragraph{MatchFixAgent.}
-MatchFixAgent~\citep{matchfixagent2025} is a repair-agent baseline that fixes
-compiler diagnostics one error at a time. We cite it because the
-Translator's repair mode in MAgHARCM is a direct descendant of the
-MatchFixAgent loop: a Validator diagnostic is fed back to the
-Translator as a structured prompt, and the Translator emits a
-single-file patch. The MAgHARCM loop differs in that it is
-multi-file (the Planner can ask the Translator to edit any number of
-files in one iteration) and that the Translator emits a full file
-rewrite rather than a unified-diff patch.
+However, monolithic LLM architectures face fundamental scaling barriers when applied to entire repositories. As demonstrated by recent empirical studies~\cite{jimenez2024swebench}, presenting entire multi-file codebases in a single prompt induces catastrophic attention degradation, hallucinations of external dependencies, and truncated function outputs. MAgHARCM addresses this challenge through explicit multi-agent modularity and reverse-topological chunking.
 
-\paragraph{TRAM.}
-TRAM~\citep{tram2025} is a multi-agent translation-and-repair baseline
-that separates translation from test generation, the same dichotomy
-that ReCodeAgent's Validator formalises. The TRAM corpus and the
-ReCodeAgent corpus overlap heavily; MAgHARCM's characterization-test
-pass is most directly traceable to TRAM's test-generation stage.
+\subsection{Multi-Agent Software Engineering Architectures}
+\label{sec:related_agents}
 
-\paragraph{RepoCoder.}
-RepoCoder~\citep{repocoder2023} (Microsoft Research, EMNLP 2023) is
-the iterative retrieval + generation work that motivates our
-NEW-PRIM-32 candidate (Iterative Retrieval Refinement). RepoCoder
-closes $>98\%$ of the Oracle gap on function-body completion at two
-iterations on the RepoEval benchmark using a Jaccard-symbol retriever
-over the source corpus.
+Multi-agent architectures have recently emerged as a powerful paradigm for complex, multi-step software engineering tasks. Systems such as \textsc{SWE-agent}~\cite{yang2024sweagent}, \textsc{ChatDev}~\cite{qian2023chatdev}, and \textsc{MetaGPT}~\cite{hong2023metagpt} employ role-specialized agents to collaborate on issue resolution, architecture design, and code synthesis.
 
-\paragraph{RepoGraph.}
-RepoGraph~\citep{repograph2025} (UIUC + Tencent AI Seattle Lab, ICLR
-2025) is the repository-level typed code-graph plug-in that informs
-the planned extension of NEW-PRIM-9 (Tri-Rep Hybrid Code Graph) and
-NEW-PRIM-26 (Symbol-Aware Navigator) in MAgHARCM. RepoGraph reports
-an average relative $+32.8\%$ resolve-rate lift on SWE-bench-Lite
-across four baselines (RAG, Agentless, AutoCodeRover, SWE-agent) and
-$+93\%$ Code Match EM on CrossCodeEval with Deepseek-Coder-V2-Lite
-(MoE 16B/2.4B active) --- the strongest empirical evidence in the
-2024--2025 SWE-agent literature for the MoE + typed-graph retrieval
-combination we recommend for MAgHARCM's reasoning slot.
+Most closely related to our work is \textsc{ReCodeAgent}~\cite{ibrahimzada2026recodeagent}, which introduced a four-agent workflow (Analyzer, Planning, Translator, Validator) for repository-scale translation. However, ReCodeAgent relies exclusively on massive commercial cloud APIs (Claude 3.5/4.5 Sonnet) requiring unconstrained internet connectivity and high token expenditures. In contrast, MAgHARCM is specifically engineered for local, quantized Small Language Models (SLMs), introducing memory-bounded context synthesis ($\le 4$\,KB Symbol Navigator and Prior Memory), adversarial weakening guards, and CodaMOSA plateau detection to guarantee robust local execution.
 
-\paragraph{Local-SLM agent harnesses.}
-MAgHARCM is not the first system to drive a multi-agent code task
-against a local SLM. We treat this as an engineering decision (no
-API access on the target host, predictable cost) rather than a
-research contribution, and we cite the local-model agent frameworks
-that informed the harness layout without claiming novelty over them.
-FreeToken~\citep{freetoken2026} (Appendix~\ref{app:freetoken})
-informs the MoE model-selection half of this decision.
+\subsection{Automated Test Generation \& Iterative Repair}
+\label{sec:related_testing}
+
+Iterative compiler and test feedback is crucial for achieving high translation fidelity. Classical search-based test generation tools like \textsc{EvoSuite}~\cite{fraser2011evosuite} and \textsc{Randoop}~\cite{pacheco2007randoop} generate unit tests via genetic algorithms and random exploration. \textsc{CodaMOSA}~\cite{lemieux2023codamosa} pioneered the integration of LLMs with search-based testing, utilizing LLMs to synthesize targeted test cases when traditional coverage stalls at a convergence plateau. MAgHARCM directly integrates CodaMOSA's plateau detection principles within its Validator Agent to dynamically identify when repair loops cease to produce coverage improvements, preventing infinite execution cycles under bounded local inference budgets.

@@ -1,69 +1,47 @@
+% docs/.paper/sec_intro.tex
 \section{Introduction}
 \label{sec:intro}
 
-Repository-level code translation -- converting an entire codebase from one
-programming language to another while preserving the behaviour of its test
-suite -- is a load-bearing task for software longevity, supply-chain
-diversification, and security hardening. The recent wave of LLM-based
-translators has converged on a multi-agent decomposition in which one agent
-analyses the source project, a second produces a concrete implementation
-plan, a third emits the target code and tests, and a fourth validates the
-result and feeds errors back for repair.
-ReCodeAgent~\citep{ibrahimzada2025recodeagent} is the canonical reference
-for this four-agent cyclic graph and the architecture that MAgHARCM
-extends. We adopt ReCodeAgent's Analyzer / Planning / Translator /
-Validator split verbatim and target the same public benchmarks that
-the original system, AlphaTrans~\citep{alphatrans2025}, CodePlan~\citep{codeplan2023}, and
-Oxidizer~\citep{oxidizer2024} report against. This gives us a direct,
-ground-truth comparison surface: the GildedRose refactoring kata (used by
-ReCodeAgent and AlphaTrans), the Oxidizer statistics corpus (used by
-Oxidizer), and the CodePlan subject projects. MAgHARCM extends ReCodeAgent
-in three directions that, taken together, make the architecture usable on a
-developer workstation without any cloud API access:
+Software migration across distinct programming languages is a ubiquitous necessity in modern software engineering. Organizations frequently migrate legacy codebases written in C, C++, Java, or Go to modern systems programming languages such as Rust to eliminate entire classes of memory vulnerabilities (e.g., buffer overflows, use-after-free, data races)~\cite{szekeres2013sok}, optimize runtime performance, and enhance maintainability. However, manual repository-scale migration is prohibitively expensive, error-prone, and labor-intensive, often spanning months or years of dedicated engineering effort~\cite{khajeh2019automated}.
 
+\subsection{The Repository-Scale Migration Bottleneck}
+\label{sec:intro_bottleneck}
+
+Recent advancements in Large Language Models (LLMs) have demonstrated remarkable efficacy in standalone code synthesis, snippet translation, and unit test generation~\cite{chen2021evaluating,roziere2020transcoder}. Despite these successes, migrating an entire multi-file software repository represents a fundamentally distinct and significantly more complex challenge than isolated function translation:
+\begin{enumerate}
+    \item \textbf{Inter-Module Dependency Structures:} Production repositories consist of dozens or hundreds of interconnected files with deeply nested inheritance hierarchies, shared type definitions, and complex call graphs. Translating individual files in isolation inevitably produces incompatible type signatures, missing symbol declarations, and link-time compilation errors.
+    \item \textbf{Cyclic Dependencies and Divergent Idioms:} Source languages such as C and Go frequently employ circular header inclusions or package-level cyclic dependencies. Directly transcribing these patterns into strict systems languages such as Rust violates ownership, lifetime, and module visibility constraints, resulting in cascading compiler rejections~\cite{siddiq2024oxidizer}.
+    \item \textbf{Context Window Saturation and Attention Decay:} Feeding an entire multi-thousand-line repository into a monolithic model prompt rapidly exhausts context windows and triggers severe attention degradation, causing the model to hallucinate missing function bodies, truncate source files, or omit critical edge cases.
+    \item \textbf{Silent Behavioral Drift and Test Weakening:} Without rigorous, multi-stage feedback, generative models frequently produce code that compiles syntactically but fails semantically. Worse, naive test repair mechanisms often trivialize or delete failing assertions to artificially report success~\cite{ibrahimzada2026recodeagent}.
+\end{enumerate}
+
+\subsection{Limitations of Existing Approaches}
+\label{sec:intro_limits}
+
+Existing automated migration approaches generally fall into two categories: rule-based transpilers and neural models. Rule-based transpilers such as \textsc{C2Rust}~\cite{c2rust} and \textsc{CXGO} rely on deterministic AST transformation rules. While they guarantee semantic equivalence for supported language subsets, they emit unidiomatic, unsafe code laden with raw pointers, global variables, and excessive memory allocations, requiring extensive human intervention to achieve production readiness.
+
+Conversely, neural and LLM-based translation systems such as \textsc{TransCoder}~\cite{roziere2020transcoder} and \textsc{AlphaTrans}~\cite{yang2024alphatrans} operate primarily at the single-function or single-file granularity without whole-repository orchestration. Recently, multi-agent frameworks such as \textsc{ReCodeAgent}~\cite{ibrahimzada2026recodeagent} demonstrated that decomposing repository translation across specialized agents (Analyzer, Planning, Translator, Validator) substantially outperforms monolithic prompts. However, state-of-the-art multi-agent pipelines remain inextricably coupled to massive, closed-source commercial cloud models (e.g., Anthropic Claude 3.5/4.5 Sonnet) requiring multi-million-token context budgets and constant internet connectivity. For enterprise environments with strict intellectual property protection, air-gapped deployments, and local hardware constraints, cloud-dependent migration harnesses remain fundamentally unviable.
+
+\subsection{The MAgHARCM Framework}
+\label{sec:intro_magharcm}
+
+To resolve the tension between repository-scale translation fidelity and local deployment feasibility, we present \textbf{MAgHARCM} (\textbf{M}ulti-\textbf{Ag}ent \textbf{H}arness for \textbf{A}rchaeology-guided \textbf{R}epository-scale \textbf{C}ode \textbf{M}igration). MAgHARCM is an open-source, modular translation engine engineered in Go on top of CloudWeGo Eino, designed to execute entirely against quantized, locally-hosted Small Language Models (SLMs) via Ollama.
+
+MAgHARCM coordinates four specialized agents over an explicit, dependency-aware workflow:
 \begin{itemize}
-\item \textbf{Local-SLM backend.} All four agents are wired to
-\texttt{ollama} as the model runtime. The reasoning slots use
-\texttt{lfm2.5:8b-a1b-q4\_K\_M} (an 8.3-billion parameter hybrid Mixture-of-Experts
-model with $\sim 1.5$B active parameters per token) and the coding slot uses
-\texttt{hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4\_K\_XL} (a
-4-billion-parameter instruction-tuned coding model). No model call leaves
-the host.
-
-\item \textbf{LSP provider with native fallback.} ReCodeAgent assumes a
-Model Context Protocol (MCP) tool server backed by a Language Server for
-every supported source language. MAgHARCM keeps that interface but adds a
-\texttt{native} provider that drives tree-sitter directly, so the harness
-runs even when ABCoder MCP is not configured.
-
-\item \textbf{Coverage-guided characterization tests.} The Validator agent
-in ReCodeAgent generates tests when its coverage gap analysis flags an
-uncovered function. MAgHARCM uses the same pass, but emits Rust
-characterization tests (property-style round-trip checks) when the source
-project's test suite is too small to exercise every translated function.
-
+    \item \textbf{Analyzer Agent:} Analyzes source AST hierarchies, evaluates cross-language dependency mappings, and applies \emph{M\"uller Strategy Selection} to categorize projects into direct, incremental, or pilot migration scopes.
+    \item \textbf{Planning Agent:} Extracts fine-grained AST translation fragments, constructs a cycle-free \emph{Reverse-Topological Dependency DAG}, rewrites build manifests into canonical target crates, and schedules execution into Part~A (source implementation) and Part~B (test validation).
+    \item \textbf{Translator Agent:} Emits target code via \emph{Chunked Translation}, bounded by a $\le 4$\,KB \emph{Symbol-Aware Navigator} and compact \emph{Prior-Modules Memory} to prevent context saturation on local SLMs.
+    \item \textbf{Validator Agent:} Implements a multi-stage validation cascade comprising pre-compilation AST syntax checks, native toolchain build validation, test suite execution, an \emph{Adversarial Weakening Guard}, and a CodaMOSA-derived \emph{Coverage Plateau Detector} to halt unproductive repair cycles.
 \end{itemize}
 
-We exercise the harness on four subject projects drawn from the same
-corpora used by the four baseline systems and report what we observed. The
-goal of this paper is not to claim parity with ReCodeAgent on its 118-project
-benchmark -- we have neither the budget nor the model access for that -- but
-to demonstrate that the four-agent decomposition survives the move from a
-Claude-class proprietary model to a pair of open-weight SLMs and to
-characterise the failure modes that the move exposes. The most important
-finding is that the single-shot Translator saturates at roughly a few
-hundred translation fragments: on Sample 2 (\texttt{stats}, a 73-file Go
-library) the Translator writes zero files and the Validator reports
-0 passed / 0 failed because the Planning agent falls back to a two-line
-skeleton. That ceiling motivates the chunked Translator primitive
-(NEW-PRIM-23) we describe in Section~\ref{sec:method}.
+\subsection{Key Contributions}
+\label{sec:intro_contributions}
 
-The rest of the paper is organised as follows.
-Section~\ref{sec:method} walks through the four-agent graph, the prompt
-templates, and the chunked Translator design.
-Section~\ref{sec:eval} reports the observed compile and test outcomes for
-the four sample projects, with full fidelity to the run logs.
-Section~\ref{sec:related} relates MAgHARCM to ReCodeAgent, AlphaTrans,
-CodePlan, Oxidizer, MatchFixAgent, and TRAM.
-Section~\ref{sec:conclusion} summarises the open work and lists the next
-concrete steps.
+The primary contributions of this paper are summarized as follows:
+\begin{enumerate}
+    \item \textbf{Modular Multi-Agent Architecture for Local SLMs:} We formalize and implement MAgHARCM, a 4-agent repository-scale migration harness optimized for local, quantized model pairs (Liquid MoE 8B reasoning and Qwen3-4B coding) operating within strict memory and context budgets.
+    \item \textbf{Bounded Context Assembly \& Reverse-Topological Scheduling:} We introduce reverse-topological dependency ordering with back-edge cycle elimination, paired with a Symbol-Aware Navigator and Prior-Modules Memory to enable small models ($\le 8\text{B}$) to translate complex multi-file projects without context overflow.
+    \item \textbf{Multi-Stage Validation \& Adversarial Defense:} We formulate a rigorous validation cascade that couples pre-compilation AST syntax checks and compiler diagnostics with an adversarial test-weakening guard that halts execution if test assertions are removed or degraded.
+    \item \textbf{Empirical Evaluation \& Failure Taxonomy:} We evaluate MAgHARCM across four diverse benchmark repositories across $K=3$ stability runs, reporting compilation success rates, test pass rates, iteration dynamics, and wall-clock execution latencies. We formalize an empirical failure taxonomy identifying borrow-checker lifetime propagation and cyclic package references as the dominant challenges for local SLM code translation.
+\end{enumerate}

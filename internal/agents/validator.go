@@ -380,11 +380,12 @@ func scanTargetFiles(state *types.State, compileErrors []string) []types.FileSta
 		if err != nil || info.IsDir() {
 			return nil
 		}
-		if filepath.Ext(path) == "" {
+		rel, _ := filepath.Rel(targetDir, path)
+		if rel == "" || seen[rel] || strings.HasPrefix(rel, "target/") || strings.HasPrefix(rel, "target\\") || strings.HasPrefix(rel, ".") {
 			return nil
 		}
-		rel, _ := filepath.Rel(targetDir, path)
-		if rel == "" || seen[rel] {
+		ext := strings.ToLower(filepath.Ext(path))
+		if ext != ".rs" && ext != ".toml" && ext != ".go" && ext != ".java" && ext != ".py" && ext != ".c" && ext != ".h" && ext != ".cc" && ext != ".cpp" && ext != ".js" && ext != ".ts" {
 			return nil
 		}
 		data, _ := os.ReadFile(path)

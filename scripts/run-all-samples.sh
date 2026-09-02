@@ -107,14 +107,14 @@ for cfg in "${configs[@]}"; do
 
     # Triage outcome from the log.
     compile_ok="false"; tests_pass="0"; tests_total="0"
-    if grep -q 'compilation=true' "$log"; then compile_ok="true"; fi
+    if grep -q 'compilation=true' "$log" || grep -q 'Compilation SUCCESS' "$log" || grep -q 'comp=true' "$log"; then compile_ok="true"; fi
     if grep -qE 'passed=[0-9]+/[0-9]+' "$log"; then
         tests_pass=$(grep -oE 'passed=[0-9]+' "$log" | tail -1 | cut -d= -f2 | cut -d/ -f1)
         tests_total=$(grep -oE 'passed=[0-9]+/[0-9]+' "$log" | tail -1 | cut -d= -f2 | cut -d/ -f2)
     fi
     status="INCOMPLETE"
     grep -q 'Validation INCOMPLETE' "$log" && status="INCOMPLETE"
-    grep -q 'all_success=true' "$log" && status="SUCCESS"
+    (grep -q 'all_success=true' "$log" || grep -q 'Validation SUCCESS' "$log") && status="SUCCESS"
 
     # Append to JSON index.
     python3 -c "

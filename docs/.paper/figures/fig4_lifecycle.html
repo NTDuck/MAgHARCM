@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px;
+      background: #ffffff;
+      font-family: 'Crimson Pro', 'Times New Roman', Times, serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    svg {
+      background: #ffffff;
+    }
+    text {
+      font-family: 'Crimson Pro', 'Times New Roman', Times, serif;
+    }
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+<body>
+<svg width="1100" height="420" viewBox="0 0 1100 420" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow4" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#1e293b"/>
+    </marker>
+    <marker id="arrow-emerald" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#059669"/>
+    </marker>
+    <marker id="arrow-rose4" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#be123c"/>
+    </marker>
+    <filter id="shadow4" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <rect x="10" y="10" width="1080" height="400" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" />
+  <text x="550" y="40" font-size="19" font-weight="700" text-anchor="middle" fill="#0f172a">Figure 4: MAgHARCM Translation Lifecycle State Machine &amp; Guard Conditions</text>
+  <text x="550" y="62" font-size="13" font-style="italic" text-anchor="middle" fill="#475569">State transitions, checkpoint persistence, coverage plateau stall detection, and termination predicates</text>
+
+  <!-- Forward Rail States -->
+  <g transform="translate(30, 90)">
+    <!-- Intake -->
+    <rect x="0" y="0" width="160" height="70" rx="6" fill="#f1f5f9" stroke="#64748b" stroke-width="1.5" filter="url(#shadow4)" />
+    <text x="80" y="30" font-size="14" font-weight="700" text-anchor="middle" fill="#0f172a">1. Intake</text>
+    <text x="80" y="50" font-size="11" text-anchor="middle" fill="#475569">Manifest Parsed ($P_s$)</text>
+
+    <!-- Arrow 1 -> 2 -->
+    <path d="M 160 35 L 215 35" stroke="#1e293b" stroke-width="1.5" marker-end="url(#arrow4)" fill="none" />
+
+    <!-- Analyzing -->
+    <rect x="220" y="0" width="170" height="70" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5" filter="url(#shadow4)" />
+    <text x="305" y="30" font-size="14" font-weight="700" text-anchor="middle" fill="#1d4ed8">2. Analyzing</text>
+    <text x="305" y="50" font-size="11" text-anchor="middle" fill="#1e40af">Müller Strategy Selected</text>
+
+    <!-- Arrow 2 -> 3 -->
+    <path d="M 390 35 L 445 35" stroke="#1e293b" stroke-width="1.5" marker-end="url(#arrow4)" fill="none" />
+
+    <!-- Planning -->
+    <rect x="450" y="0" width="170" height="70" rx="6" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="1.5" filter="url(#shadow4)" />
+    <text x="535" y="30" font-size="14" font-weight="700" text-anchor="middle" fill="#6d28d9">3. Planning</text>
+    <text x="535" y="50" font-size="11" text-anchor="middle" fill="#5b21b6">Reverse-Topo DAG Built</text>
+
+    <!-- Arrow 3 -> 4 -->
+    <path d="M 620 35 L 675 35" stroke="#1e293b" stroke-width="1.5" marker-end="url(#arrow4)" fill="none" />
+
+    <!-- Translating -->
+    <rect x="680" y="0" width="170" height="70" rx="6" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5" filter="url(#shadow4)" />
+    <text x="765" y="30" font-size="14" font-weight="700" text-anchor="middle" fill="#047857">4. Translating</text>
+    <text x="765" y="50" font-size="11" text-anchor="middle" fill="#065f46">Chunked Target Synthesis</text>
+
+    <!-- Arrow 4 -> 5 -->
+    <path d="M 850 35 L 905 35" stroke="#059669" stroke-width="1.8" marker-end="url(#arrow-emerald)" fill="none" />
+
+    <!-- Converged -->
+    <rect x="910" y="0" width="130" height="70" rx="6" fill="#f0fdf4" stroke="#16a34a" stroke-width="2" filter="url(#shadow4)" />
+    <text x="975" y="30" font-size="14" font-weight="700" text-anchor="middle" fill="#15803d">Converged</text>
+    <text x="975" y="50" font-size="11" text-anchor="middle" fill="#166534">100% Tests Pass</text>
+  </g>
+
+  <!-- Middle Rail: Checkpoints & Plateau -->
+  <g transform="translate(30, 200)">
+    <rect x="220" y="0" width="170" height="65" rx="6" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4,3" filter="url(#shadow4)" />
+    <text x="305" y="28" font-size="13" font-weight="700" text-anchor="middle" fill="#92400e">Checkpointed</text>
+    <text x="305" y="48" font-size="11" text-anchor="middle" fill="#78350f">State on Disk (.json)</text>
+
+    <rect x="450" y="0" width="170" height="65" rx="6" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5" filter="url(#shadow4)" />
+    <text x="535" y="28" font-size="13" font-weight="700" text-anchor="middle" fill="#92400e">Plateau Stalled</text>
+    <text x="535" y="48" font-size="11" text-anchor="middle" fill="#78350f">CodaMOSA Detector</text>
+
+    <rect x="680" y="0" width="170" height="65" rx="6" fill="#fff1f2" stroke="#f43f5e" stroke-width="1.5" filter="url(#shadow4)" />
+    <text x="765" y="28" font-size="13" font-weight="700" text-anchor="middle" fill="#be123c">Repair Mode</text>
+    <text x="765" y="48" font-size="11" text-anchor="middle" fill="#9f1239">Compiler Triage (iter $\le K$)</text>
+  </g>
+
+  <!-- Connecting Arrows Between Rails -->
+  <!-- Translating -> Repair -->
+  <path d="M 795 160 L 795 200" stroke="#be123c" stroke-width="1.5" marker-end="url(#arrow-rose4)" fill="none" />
+  <text x="805" y="185" font-size="10" font-weight="600" fill="#be123c">errors</text>
+
+  <!-- Translating -> Checkpoint -->
+  <path d="M 710 160 L 710 185 L 305 185 L 305 200" stroke="#d97706" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arrow4)" fill="none" />
+  
+  <!-- Plateau -> Converged or Stalled -->
+  <path d="M 850 232 L 910 232" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow4)" fill="none" />
+  
+  <!-- Bottom Rail: Terminal Exits -->
+  <g transform="translate(30, 305)">
+    <rect x="450" y="0" width="170" height="60" rx="6" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5" filter="url(#shadow4)" />
+    <text x="535" y="26" font-size="13" font-weight="700" text-anchor="middle" fill="#b91c1c">Test Weakened</text>
+    <text x="535" y="44" font-size="10" text-anchor="middle" fill="#991b1b">Assertion Count Dropped</text>
+
+    <rect x="680" y="0" width="170" height="60" rx="6" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5" filter="url(#shadow4)" />
+    <text x="765" y="26" font-size="13" font-weight="700" text-anchor="middle" fill="#b91c1c">Budget Ceiling</text>
+    <text x="765" y="44" font-size="10" text-anchor="middle" fill="#991b1b">Max Iterations Exceeded</text>
+
+    <rect x="910" y="-105" width="130" height="65" rx="6" fill="#f8fafc" stroke="#64748b" stroke-width="1.5" filter="url(#shadow4)" />
+    <text x="975" y="22" font-size="13" font-weight="700" text-anchor="middle" fill="#334155">Halted</text>
+    <text x="975" y="40" font-size="10" text-anchor="middle" fill="#64748b">Partial Artifacts</text>
+  </g>
+
+  <!-- Repair -> Budget Ceiling -->
+  <path d="M 765 265 L 765 305" stroke="#ef4444" stroke-width="1.5" marker-end="url(#arrow4)" fill="none" />
+  <text x="775" y="288" font-size="10" font-weight="600" fill="#ef4444">iter &gt; K</text>
+
+  <!-- Plateau -> Weakened -->
+  <path d="M 535 265 L 535 305" stroke="#ef4444" stroke-width="1.5" marker-end="url(#arrow4)" fill="none" />
+  <text x="545" y="288" font-size="10" font-weight="600" fill="#ef4444">guard trip</text>
+</svg>
+</body>
+</html>

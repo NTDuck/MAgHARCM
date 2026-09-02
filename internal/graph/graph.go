@@ -45,17 +45,29 @@ func NewMAgHARCMGraph(ctx context.Context, models *llm.Models, runID string) (*M
 	translatorAgent := agents.NewTranslatorAgent(models.Coding, runID)
 	validatorAgent := agents.NewValidatorAgent(models.Reasoning, runID)
 
-	// Register agent execution units as graph nodes
-	if err := g.AddLambdaNode("analyzer", compose.InvokableLambda(analyzerAgent.Run)); err != nil {
+	// Register agent execution units as graph nodes with VRAM management
+	if err := g.AddLambdaNode("analyzer", compose.InvokableLambda(func(ctx context.Context, state *types.State) (*types.State, error) {
+		models.PrepareReasoning()
+		return analyzerAgent.Run(ctx, state)
+	})); err != nil {
 		return nil, err
 	}
-	if err := g.AddLambdaNode("planning", compose.InvokableLambda(planningAgent.Run)); err != nil {
+	if err := g.AddLambdaNode("planning", compose.InvokableLambda(func(ctx context.Context, state *types.State) (*types.State, error) {
+		models.PrepareReasoning()
+		return planningAgent.Run(ctx, state)
+	})); err != nil {
 		return nil, err
 	}
-	if err := g.AddLambdaNode("translator", compose.InvokableLambda(translatorAgent.Run)); err != nil {
+	if err := g.AddLambdaNode("translator", compose.InvokableLambda(func(ctx context.Context, state *types.State) (*types.State, error) {
+		models.PrepareCoding()
+		return translatorAgent.Run(ctx, state)
+	})); err != nil {
 		return nil, err
 	}
-	if err := g.AddLambdaNode("validator", compose.InvokableLambda(validatorAgent.Run)); err != nil {
+	if err := g.AddLambdaNode("validator", compose.InvokableLambda(func(ctx context.Context, state *types.State) (*types.State, error) {
+		models.PrepareReasoning()
+		return validatorAgent.Run(ctx, state)
+	})); err != nil {
 		return nil, err
 	}
 	// Checkpoint lambda nodes: each is a no-op forwarder placed after the

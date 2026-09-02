@@ -77,6 +77,9 @@ func (p *PlanningAgent) extractFragments(sourceDir string) ([]string, []string, 
 	const maxPlannerSummaryBudget = 32 * 1024
 
 	for _, f := range files {
+		if !isTranslatableFile(f) {
+			continue
+		}
 		base := filepath.Base(f)
 		structOut, parseErr := tools.ParseFileStructure(f)
 		if parseErr != nil {
@@ -167,6 +170,11 @@ func (p *PlanningAgent) resolveSkeletonFiles(rawContent string, state *types.Sta
 	if len(skeletonFiles) == 0 {
 		logger.LogWarning("Planning LLM did not emit explicit skeleton files; generating fallback skeleton for `%s`", state.Task.TargetLang)
 		skeletonFiles = defaultProjectSkeleton(state.Task.TargetDir, state.Task.TargetLang, fragments)
+	} else if strings.EqualFold(state.Task.TargetLang, "Rust") {
+		if _, hasCargo := skeletonFiles["Cargo.toml"]; !hasCargo {
+			projectName := sanitizeProjectName(filepath.Base(state.Task.TargetDir))
+			skeletonFiles["Cargo.toml"] = fmt.Sprintf("[package]\nname = \"%s\"\nversion = \"0.1.0\"\nedition = \"2021\"\n\n[dependencies]\n", projectName)
+		}
 	}
 	return skeletonFiles
 }
@@ -327,5 +335,21 @@ func extractBlock(doc, startTag, endTag string) string {
 		}
 	}
 	return strings.TrimSpace(content)
+}
+
+// isTranslatableFile determines if a file is a source, test, or build manifest
+// eligible for AST fragment extraction.
+func isTranslatableFile(path string) bool {
+	base := filepath.Base(path)
+	ext := strings.ToLower(filepath.Ext(path))
+	switch ext {
+	case ".go", ".c", ".h", ".cc", ".cpp", ".cxx", ".hpp", ".java", ".rs", ".py", ".ts", ".js", ".kt", ".scala", ".cs":
+		return true
+	}
+	switch strings.ToLower(base) {
+	case "makefile", "go.mod", "pom.xml", "build.gradle", "cargo.toml":
+		return true
+	}
+	return false
 }
 

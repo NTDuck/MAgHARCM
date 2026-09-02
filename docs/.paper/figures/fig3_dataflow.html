@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px;
+      background: #ffffff;
+      font-family: 'Crimson Pro', 'Times New Roman', Times, serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    svg {
+      background: #ffffff;
+    }
+    text {
+      font-family: 'Crimson Pro', 'Times New Roman', Times, serif;
+    }
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+<body>
+<svg width="1100" height="420" viewBox="0 0 1100 420" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow3" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#1e293b"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#059669"/>
+    </marker>
+    <filter id="shadow3" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <rect x="10" y="10" width="1080" height="400" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" />
+  <text x="550" y="40" font-size="19" font-weight="700" text-anchor="middle" fill="#0f172a">Figure 3: Chunked Translation, Symbol-Aware Navigation &amp; Context Assembly Dataflow</text>
+  <text x="550" y="62" font-size="13" font-style="italic" text-anchor="middle" fill="#475569">Memory-bounded context synthesis pipelines for small local language models</text>
+
+  <!-- Stage Columns -->
+  <g transform="translate(30, 80)">
+    <!-- Stage 1 -->
+    <rect x="0" y="0" width="185" height="300" rx="6" fill="#ffffff" stroke="#94a3b8" stroke-width="1" filter="url(#shadow3)" />
+    <rect x="0" y="0" width="185" height="26" rx="6" fill="#f1f5f9" />
+    <text x="92" y="18" font-size="12" font-weight="700" text-anchor="middle" fill="#1e293b">1. Source Decomposition</text>
+    
+    <rect x="12" y="45" width="161" height="85" rx="4" fill="#f8fafc" stroke="#cbd5e1" />
+    <text x="92" y="65" font-size="12" font-weight="600" text-anchor="middle" fill="#0f172a">Tree-Sitter AST</text>
+    <text x="20" y="85" font-size="11" fill="#475569">• Function definitions</text>
+    <text x="20" y="103" font-size="11" fill="#475569">• Struct / Type signatures</text>
+    <text x="20" y="121" font-size="11" fill="#475569">• Import declarations</text>
+
+    <rect x="12" y="155" width="161" height="85" rx="4" fill="#f8fafc" stroke="#cbd5e1" />
+    <text x="92" y="175" font-size="12" font-weight="600" text-anchor="middle" fill="#0f172a">Source Manifests</text>
+    <text x="20" y="195" font-size="11" fill="#475569">• pom.xml / go.mod</text>
+    <text x="20" y="213" font-size="11" fill="#475569">• Makefile / C headers</text>
+    <text x="20" y="231" font-size="11" fill="#475569">• Third-party dependencies</text>
+  </g>
+
+  <!-- Arrow S1 -> S2 -->
+  <path d="M 220 180 L 255 180" stroke="#1e293b" stroke-width="1.5" marker-end="url(#arrow3)" fill="none" />
+
+  <!-- Stage 2 -->
+  <g transform="translate(260, 80)">
+    <rect x="0" y="0" width="185" height="300" rx="6" fill="#ffffff" stroke="#94a3b8" stroke-width="1" filter="url(#shadow3)" />
+    <rect x="0" y="0" width="185" height="26" rx="6" fill="#f1f5f9" />
+    <text x="92" y="18" font-size="12" font-weight="700" text-anchor="middle" fill="#1e293b">2. Slicing &amp; Planning</text>
+
+    <rect x="12" y="45" width="161" height="85" rx="4" fill="#eff6ff" stroke="#93c5fd" />
+    <text x="92" y="65" font-size="12" font-weight="700" text-anchor="middle" fill="#1d4ed8">Reverse Topo DAG</text>
+    <text x="20" y="85" font-size="11" fill="#1e3a8a">• DFS dependency sort</text>
+    <text x="20" y="103" font-size="11" fill="#1e3a8a">• Cycle back-edge cut</text>
+    <text x="20" y="121" font-size="11" fill="#1e3a8a">• Callee-first ordering</text>
+
+    <rect x="12" y="155" width="161" height="85" rx="4" fill="#eff6ff" stroke="#93c5fd" />
+    <text x="92" y="175" font-size="12" font-weight="700" text-anchor="middle" fill="#1d4ed8">Manifest Rewriter</text>
+    <text x="20" y="195" font-size="11" fill="#1e3a8a">• Canonical crate table</text>
+    <text x="20" y="213" font-size="11" fill="#1e3a8a">• Version resolution</text>
+    <text x="20" y="231" font-size="11" fill="#1e3a8a">• Cargo.toml generation</text>
+  </g>
+
+  <!-- Arrow S2 -> S3 -->
+  <path d="M 450 180 L 485 180" stroke="#1e293b" stroke-width="1.5" marker-end="url(#arrow3)" fill="none" />
+
+  <!-- Stage 3 -->
+  <g transform="translate(490, 80)">
+    <rect x="0" y="0" width="205" height="300" rx="6" fill="#ffffff" stroke="#94a3b8" stroke-width="1" filter="url(#shadow3)" />
+    <rect x="0" y="0" width="205" height="26" rx="6" fill="#f1f5f9" />
+    <text x="102" y="18" font-size="12" font-weight="700" text-anchor="middle" fill="#1e293b">3. Bounded Context Assembly</text>
+
+    <rect x="12" y="45" width="181" height="85" rx="4" fill="#fef3c7" stroke="#fcd34d" />
+    <text x="102" y="65" font-size="12" font-weight="700" text-anchor="middle" fill="#92400e">Symbol Navigator</text>
+    <text x="20" y="85" font-size="11" fill="#78350f">• Slice limit: $\le 4$\,KB</text>
+    <text x="20" y="103" font-size="11" fill="#78350f">• Callee definition lookup</text>
+    <text x="20" y="121" font-size="11" fill="#78350f">• Target struct definitions</text>
+
+    <rect x="12" y="155" width="181" height="85" rx="4" fill="#fef3c7" stroke="#fcd34d" />
+    <text x="102" y="175" font-size="12" font-weight="700" text-anchor="middle" fill="#92400e">Prior Modules Memory</text>
+    <text x="20" y="195" font-size="11" fill="#78350f">• Budget cap: $\le 4$\,KB</text>
+    <text x="20" y="213" font-size="11" fill="#78350f">• Emitted Rust signatures</text>
+    <text x="20" y="231" font-size="11" fill="#78350f">• 200B head/tail snippets</text>
+  </g>
+
+  <!-- Arrow S3 -> S4 -->
+  <path d="M 700 180 L 735 180" stroke="#1e293b" stroke-width="1.5" marker-end="url(#arrow3)" fill="none" />
+
+  <!-- Stage 4 -->
+  <g transform="translate(740, 80)">
+    <rect x="0" y="0" width="160" height="300" rx="6" fill="#ffffff" stroke="#059669" stroke-width="1.5" filter="url(#shadow3)" />
+    <rect x="0" y="0" width="160" height="26" rx="6" fill="#ecfdf5" />
+    <text x="80" y="18" font-size="12" font-weight="700" text-anchor="middle" fill="#065f46">4. Model Synthesis</text>
+
+    <rect x="12" y="70" width="136" height="150" rx="4" fill="#d1fae5" stroke="#6ee7b7" />
+    <text x="80" y="95" font-size="13" font-weight="700" text-anchor="middle" fill="#047857">Local SLM</text>
+    <text x="80" y="115" font-size="11" font-weight="600" text-anchor="middle" fill="#065f46">Qwen3-4B-Instruct</text>
+    <text x="20" y="145" font-size="11" fill="#064e3b">• 4-bit Quantized</text>
+    <text x="20" y="165" font-size="11" fill="#064e3b">• Ollama :11434</text>
+    <text x="20" y="185" font-size="11" fill="#064e3b">• Zero Cloud Leak</text>
+    <text x="20" y="205" font-size="11" fill="#064e3b">• Bounded Prompt</text>
+  </g>
+
+  <!-- Arrow S4 -> S5 -->
+  <path d="M 905 180 L 940 180" stroke="#059669" stroke-width="1.5" marker-end="url(#arrow-green)" fill="none" />
+
+  <!-- Stage 5 -->
+  <g transform="translate(945, 80)">
+    <rect x="0" y="0" width="125" height="300" rx="6" fill="#ffffff" stroke="#94a3b8" stroke-width="1" filter="url(#shadow3)" />
+    <rect x="0" y="0" width="125" height="26" rx="6" fill="#f1f5f9" />
+    <text x="62" y="18" font-size="12" font-weight="700" text-anchor="middle" fill="#1e293b">5. Target Crate</text>
+
+    <rect x="10" y="55" width="105" height="75" rx="4" fill="#f8fafc" stroke="#cbd5e1" />
+    <text x="57" y="75" font-size="11" font-weight="700" text-anchor="middle" fill="#0f172a">Incremental Crate</text>
+    <text x="16" y="95" font-size="10" fill="#475569">src/lib.rs</text>
+    <text x="16" y="112" font-size="10" fill="#475569">src/*.rs modules</text>
+
+    <rect x="10" y="155" width="105" height="85" rx="4" fill="#fff1f2" stroke="#fda4af" />
+    <text x="57" y="175" font-size="11" font-weight="700" text-anchor="middle" fill="#be123c">Validation Cascade</text>
+    <text x="16" y="195" font-size="10" fill="#9f1239">AST syntax</text>
+    <text x="16" y="210" font-size="10" fill="#9f1239">cargo test</text>
+    <text x="16" y="225" font-size="10" fill="#9f1239">weakening guard</text>
+  </g>
+</svg>
+</body>
+</html>
