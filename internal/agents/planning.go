@@ -66,41 +66,62 @@ func (p *PlanningAgent) Run(ctx context.Context, state *types.State) (*types.Sta
 // drops 100+ files on Java corpora where most files are XML/Markdown/properties.
 func (p *PlanningAgent) extractFragments(sourceDir string) ([]string, []string, error) {
 	logger.LogStep("Extracting translation units across source and test files")
-	_, files, err := tools.BuildDirectoryTree(sourceDir, 5)
+	_, files, err := tools.BuildDirectoryTree(sourceDir, 15)
 	if err != nil {
 		return nil, nil, err
 	}
 
 	var fragments []string
 	var sourceSummaries []string
+	var totalSummaryBytes int
+	const maxPlannerSummaryBudget = 32 * 1024
+
 	for _, f := range files {
 		base := filepath.Base(f)
 		structOut, parseErr := tools.ParseFileStructure(f)
 		if parseErr != nil {
 			logger.LogWarning("ParseFileStructure failed for %q; emitting file-level fallback fragment", base)
 			fragments = append(fragments, fmt.Sprintf("%s:file", base))
-			raw, readErr := os.ReadFile(f)
-			if readErr == nil {
-				sourceSummaries = append(sourceSummaries, fmt.Sprintf("File %s:\n%s\n", base, string(raw)))
-			} else {
-				sourceSummaries = append(sourceSummaries, fmt.Sprintf("File %s: <unreadable>\n", base))
+			if totalSummaryBytes < maxPlannerSummaryBudget {
+				raw, readErr := os.ReadFile(f)
+				if readErr == nil {
+					chunk := string(raw)
+					if len(chunk) > 2048 {
+						chunk = chunk[:2048] + "\n// ... (truncated)"
+					}
+					sourceSummaries = append(sourceSummaries, fmt.Sprintf("File %s:\n%s\n", base, chunk))
+					totalSummaryBytes += len(chunk)
+				} else {
+					sourceSummaries = append(sourceSummaries, fmt.Sprintf("File %s: <unreadable>\n", base))
+				}
 			}
 			continue
 		}
 		if len(structOut.Elements) == 0 {
-			// Parsed but no AST elements (e.g., XML/properties/prose). Still want
-			// the chunked translator to see this file as one fragment.
 			fragments = append(fragments, fmt.Sprintf("%s:file", base))
-			sourceSummaries = append(sourceSummaries, fmt.Sprintf("File %s:\n%s\n", base, structOut.RawCode))
+			if totalSummaryBytes < maxPlannerSummaryBudget {
+				chunk := structOut.RawCode
+				if len(chunk) > 2048 {
+					chunk = chunk[:2048] + "\n// ... (truncated)"
+				}
+				sourceSummaries = append(sourceSummaries, fmt.Sprintf("File %s:\n%s\n", base, chunk))
+				totalSummaryBytes += len(chunk)
+			}
 			continue
 		}
 		for _, el := range structOut.Elements {
 			frag := fmt.Sprintf("%s:%s", base, el.Name)
 			fragments = append(fragments, frag)
 		}
-		sourceSummaries = append(sourceSummaries, fmt.Sprintf("File %s:\n%s\n", base, structOut.RawCode))
+		if totalSummaryBytes < maxPlannerSummaryBudget {
+			chunk := structOut.RawCode
+			if len(chunk) > 2048 {
+				chunk = chunk[:2048] + "\n// ... (truncated)"
+			}
+			sourceSummaries = append(sourceSummaries, fmt.Sprintf("File %s:\n%s\n", base, chunk))
+			totalSummaryBytes += len(chunk)
+		}
 	}
-
 	logger.LogTool("fragment_extraction", "Extracted %d translation fragments from source files", len(fragments))
 	for _, fr := range fragments {
 		logger.LogStep("Fragment: `%s`", fr)

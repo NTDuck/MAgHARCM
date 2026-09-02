@@ -2,138 +2,121 @@
 \label{sec:method}
 
 MAgHARCM is implemented in Go on top of CloudWeGo Eino's cyclic graph
-runtime. The graph mirrors ReCodeAgent's four-agent decomposition
-\citep{ibrahimzada2025recodeagent} and uses the same planning / translating
-/ validating loop semantics, but is wired against local Ollama endpoints
-and tree-sitter for static analysis.
+runtime. While inheriting the core multi-agent paradigm of ReCodeAgent
+\citep{ibrahimzada2025recodeagent}, MAgHARCM formalizes a 6-stage
+neuro-symbolic pipeline grounded in 26 evidence-backed primitives
+(Appendix~\ref{app:primitives}) and specifically engineered to execute
+against local Small Language Models (SLMs) through Ollama.
 
-\subsection{Four-Agent Graph}
+\subsection{The 6-Stage Translation Pipeline}
 
-The graph is constructed once at startup and reused across repair
-iterations. Nodes and edges:
+The architecture structures the migration lifecycle into six sequential and
+cyclic stages:
 
 \begin{enumerate}
-\item \textbf{Analyzer} ($\rightarrow$ Planning). Reads the source
-directory through \texttt{get\_directory\_tree} and
-\texttt{get\_file\_structure} (both implemented on top of tree-sitter,
-see below) and emits three documents: (i)~a Source Project Research
-note summarising structure, error-handling style, and dependencies;
-(ii)~a Third-Party Library Analysis that proposes target-language
-analogues; (iii)~a Target Project Design describing the intended
-directory layout, module boundaries, and module dependency order. The
-Analyzer is prompted with \texttt{gpt-oss:20b}.
+\item \textbf{Stage 1: Intake.} Ingests the source codebase path, target language,
+and target framework. Using \texttt{internal/tools/pa.go} backed by Tree-sitter
+parsers across supported grammars, Intake extracts the complete repository
+manifest, file hierarchy, and language AST element inventory.
 
-\item \textbf{Planning} ($\rightarrow$ Translator). Reads the three
-Analyzer documents and emits (i)~a fragment extraction list of the form
-\texttt{file:fragment}, (ii)~a name mapping from source symbols to target
-symbols, and (iii)~a concrete target skeleton: a real \texttt{Cargo.toml}
-plus stub \texttt{src/lib.rs} and test files, written to disk so the
-Translator has a compilable starting point. The Planner is also
-\texttt{gpt-oss:20b}. When the Planner emits a malformed skeleton the
-harness substitutes a minimal fallback (a single-module
-\texttt{lib.rs}) and logs a \texttt{[WARNING] Planning LLM did not emit
-explicit skeleton files} line -- this fallback is what we observed on
-Sample 2 (\texttt{stats}).
+\item \textbf{Stage 2: Analyze (Analyzer Agent).} Emits a comprehensive
+\emph{Source Project Research} document. Driven by a local reasoning model
+(\texttt{lfm2.5:8b-a1b-q4\_K\_M} MoE), the Analyzer assigns architectural
+concepts, extracts dependency mappings, and executes \emph{M\"uller Strategy Selection}
+(NEW-PRIM-21) to classify the codebase into one of five migration strategies
+(\texttt{BIG\_BANG}, \texttt{INCREMENTAL}, \texttt{PILOT}, \texttt{FROZEN\_LEGACY},
+or \texttt{PARALLEL\_CUTOVER}).
 
-\item \textbf{Translator} ($\rightarrow$ Validator). Operates in two
-modes. \emph{Initial Translation Mode} consumes the Planning output
-and writes the actual source and test files for every Part-A and Part-B
-fragment. \emph{Repair Mode} consumes the Validator's diagnostic
-report and applies targeted edits. The Translator is prompted with the
-coding model \texttt{Qwen3-4B-Instruct}.
+\item \textbf{Stage 3: Plan (Planning Agent).} Decomposes the high-level design
+into granular translation units. It generates symbol name mappings, constructs
+the compilable target skeleton files (e.g. \texttt{Cargo.toml}, \texttt{src/lib.rs}),
+invokes the \emph{Manifest Rewriter} (NEW-PRIM-31) to map third-party dependencies to
+canonical target crates, and computes a \emph{Reverse-Topological Order} with
+\emph{Back-Edge Removal} (NEW-PRIM-1, NEW-PRIM-2) over the call/dependency graph to
+ensure callees and dependencies are scheduled before callers.
 
-\item \textbf{Validator} ($\rightarrow$ Translator or terminate).
-Executes the target toolchain (\texttt{cargo}, \texttt{go test},
-\texttt{ctest}, \texttt{pytest}, or a custom Makefile), parses compiler
-diagnostics and test assertions, and produces a structured
-\texttt{ValidationReport}. If the report shows uncovered functions,
-the Validator prompts the reasoning model for additional
-characterization tests and re-runs validation. The Validator uses
-\texttt{gpt-oss:20b}. The Validator emits the same \texttt{ITER[i]}
-metric line used by the run logs we report in Section~\ref{sec:eval}.
+\item \textbf{Stage 4: Translate (Translator Agent \& Navigator).} Operates
+either in single-shot mode (for small repos) or via the \emph{Chunked Translator}
+(NEW-PRIM-23). The chunked dispatcher groups fragments by topological source-file
+order, issue-scoped to $\sim 500$-LoC or function-cluster boundaries. Each step
+queries the \emph{Symbol-Aware Navigator} (NEW-PRIM-26) for precise $\le 4$\,KB
+context slices (definition, references, type signature) and injects a compact
+running summary of previously emitted modules to ensure cross-module symbol coherence.
+
+\item \textbf{Stage 5: Validate (Validator Agent).} Executes a multi-stage
+validation cascade (NEW-PRIM-6): (i)~pre-compilation AST syntax verification (GAP-08);
+(ii)~target toolchain compilation (\texttt{cargo check}); (iii)~test suite execution
+(\texttt{cargo test}); and (iv)~the \emph{Adversarial Weakening Guard} (NEW-PRIM-13),
+which compares assertion counts and test body lengths against prior iterations to
+prevent vacuous test relaxation.
+
+\item \textbf{Stage 6: Repair Loop (Bounded Cyclic Graph).} If compilation or test
+failures are detected, the error diagnostics and failing assertions are fed back to
+the Translator in repair mode. The repair loop is bounded (default 10 iterations) and
+features \emph{Plateau-Bounded Test Remediation} (NEW-PRIM-27) derived from CodaMOSA
+and \emph{Conversable Checkpointing} (NEW-PRIM-28) to persist state snapshots under
+\texttt{.artifacts/<run-id>/checkpoints/} after every iteration.
 \end{enumerate}
 
-The edge Validator$\rightarrow$Translator is the only cycle in the
-graph. Termination occurs when the Validator reports
-\texttt{all\_success = true} (every test passes) or when the iteration
-counter reaches the configured ceiling (default $10$, matching
-ReCodeAgent).
-
-\subsection{Tool Layer}
-
-The Analyzer and Validator both call into a thin tool layer:
-
-\begin{itemize}
-\item \texttt{get\_directory\_tree} walks the source tree and returns a
-list of source, header, and test files.
-\item \texttt{get\_file\_structure} parses each file with the
-language-appropriate tree-sitter grammar and returns a flat AST element
-list plus an import list. The language is resolved from the source
-file extension via the \texttt{LanguageRegistry}.
-\item \texttt{fragment\_extraction} runs the same parser again at the
-fragment level (functions, methods, test cases) and emits the
-\texttt{file:fragment} inventory consumed by the Planning agent.
-\item \texttt{name\_mapping} is implemented inside the Planning node as
-a structured-output prompt: the model is asked to emit a JSON object
-mapping each source symbol to its target counterpart.
-\item \texttt{write\_file} / \texttt{edit\_file} perform atomic writes
-to the target tree under the harness's output directory.
-\item \texttt{validate\_build} and \texttt{run\_tests} shell out to the
-target toolchain, capture stdout and stderr, and parse the result.
-\item \texttt{LSPProvider} is an interface with two implementations: a
-\texttt{native} provider that drives tree-sitter directly, and an
-\texttt{abcoder} provider that talks to CloudWeGo ABCoder over MCP
-JSON-RPC on stdio. If the ABCoder process fails to start, the harness
-falls back to the native provider and logs the fall-back event.
-\end{itemize}
-
-\subsection{Single-Shot vs. Chunked Translator (NEW-PRIM-23)}
-
-The current Translator is \emph{single-shot}: on each repair iteration
-the entire Part A (source) and Part B (test) implementation plan is
-serialised into one prompt and the model is asked to write all the
-files in a single response. This works as long as the fragment count
-fits comfortably in the model's effective context window (we observed
-stable behaviour for 6 fragments on Sample 1) but saturates once the
-fragment count crosses a threshold we have not yet pinned down
-empirically.
-
-On Sample 2 (\texttt{stats}, 517 fragments) the Translator wrote
-\emph{zero} files: the prompt was too long for the 4B model to produce
-a complete answer, and the model returned an empty tool-call list. The
-Validator then reported \texttt{0 passed, 0 failed} against an empty
-target tree -- a vacuous result that the harness's
-\texttt{coverage\_gap\_analysis} cannot rescue because there are no
-functions to cover.
-
-NEW-PRIM-23 is the chunked Translator primitive we are building to fix
-this. The design replaces the single prompt with a bounded loop:
-
-\begin{algorithm}[ht]
-\caption{Chunked Translator (NEW-PRIM-23, design)}
-\label{alg:chunked}
+\begin{algorithm}[t]
+\caption{MAgHARCM 6-Stage Translation and Repair Loop}
+\label{alg:magharcm_pipeline}
 \begin{algorithmic}[1]
-\State Group fragments into batches of size $B$ (default $B=8$).
-\For{each batch $b$}
-  \State Prompt the coding model with $b$'s fragments, the relevant
-  fragment of the skeleton, and the latest Validator report (if any).
-  \State Apply the model's writes to disk.
-  \State Run a fast incremental \texttt{validate\_build} on $b$ alone.
-  \If{compilation fails}
-    \State Re-prompt the model with the diagnostics and the same batch
-    $b$ (local repair, bounded to $L$ iterations).
+\Require Source repo $P_s$, Target lang $L_t$, Max iterations $K$, Timeout $T$
+\Ensure Translated and validated target project $P_t$
+\State $\mathcal{M}_s \gets \Call{Intake}{P_s}$ \Comment{Stage 1: Manifest \& ASTs}
+\State $\mathcal{R}, \mathcal{S} \gets \Call{Analyze}{\mathcal{M}_s, L_t}$ \Comment{Stage 2: Research \& Strategy}
+\State $\mathcal{F}, \mathcal{K}, \mathcal{O}_{topo} \gets \Call{Plan}{\mathcal{M}_s, \mathcal{R}}$ \Comment{Stage 3: Skeleton \& Reverse Topo}
+\State $P_t \gets \mathcal{K}$ \Comment{Initialize target with skeleton}
+\State $P_t \gets \Call{TranslateChunked}{\mathcal{F}, \mathcal{O}_{topo}, P_t}$ \Comment{Stage 4: Chunked Translation}
+\For{$iter \gets 1 \textrm{ to } K$}
+  \State $\mathcal{V} \gets \Call{Validate}{P_t}$ \Comment{Stage 5: Multi-stage validate}
+  \If{$\mathcal{V}.all\_success$}
+    \State \textbf{break}
+  \EndIf
+  \State $\Call{CheckpointState}{P_t, \mathcal{V}, iter}$ \Comment{Conversable checkpoint}
+  \State $P_t \gets \Call{RepairTranslator}{P_t, \mathcal{V}}$ \Comment{Stage 6: Targeted repair}
+  \If{$\Call{DetectWeakening}{\mathcal{V}}$}
+    \State $\Call{LogWarning}{\text{Adversarial test weakening detected}}$
   \EndIf
 \EndFor
-\State Run the global Validator once over the assembled target.
-\State Emit the standard \texttt{ValidationReport}.
+\State \Return $P_t$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Chunked Translation with Running Context (NEW-PRIM-23)}
+
+Single-shot translation fails catastrophically on non-trivial repositories because
+monolithic prompts exceed the effective instruction-following context of small coding
+models (e.g. 4B parameters), leading to empty tool calls or truncated files.
+NEW-PRIM-23 overcomes this by decomposing the translation into topologically ordered
+chunks:
+
+\begin{algorithm}[t]
+\caption{Chunked Translation Dispatch (NEW-PRIM-23)}
+\label{alg:chunked}
+\begin{algorithmic}[1]
+\Require Fragments $\mathcal{F}$, Topological Order $\mathcal{O}$, Target Skeleton $\mathcal{K}$
+\Ensure Translated Files map $\mathcal{T}$
+\State $\mathcal{T} \gets \mathcal{K}$
+\State $\mathcal{G} \gets \Call{GroupBySourceFile}{\mathcal{F}, \mathcal{O}}$
+\For{each source group $g \in \mathcal{G}$}
+  \State $\mathcal{C}_{prior} \gets \Call{BuildPriorModulesSummary}{\mathcal{T}, \text{budget}=4\text{KB}}$
+  \State $\mathcal{S}_{nav} \gets \Call{NavigatorLookupSymbols}{g.symbols}$
+  \State $\mathcal{P} \gets \Call{RenderChunkPrompt}{g, \mathcal{C}_{prior}, \mathcal{S}_{nav}}$
+  \State $\mathcal{T}_{new} \gets \Call{CodingModelGenerate}{\mathcal{P}}$
+  \State $\mathcal{T} \gets \mathcal{T} \cup \mathcal{T}_{new}$
+  \State $\Call{SyncToDisk}{\mathcal{T}}$
+\EndFor
+\State \Call{EnsureTargetManifest}{\mathcal{T}} \Comment{Ensure Cargo.toml / go.mod present}
+\State \Return $\mathcal{T}$
 \end{algorithmic}
 \end{algorithm}
 
 \noindent
-Two design notes. First, the batch boundary $B$ is a hyper-parameter;
-we expect to tune it against the 4B model's effective context window.
-Second, per-batch local repair keeps the model focused on a small
-diagnostic set, which we expect to reduce the empty-response failure
-mode we observed on Sample 2. We have not yet implemented the chunked
-loop; the single-shot Translator remains in production for the Sample~1
-results we report.
+As shown in Algorithm~\ref{alg:chunked}, each chunk prompt is furnished with:
+(1)~the current source fragment; (2)~a bounded 4\,KB summary of prior emitted
+module signatures and public types (\texttt{BuildPriorModulesSummary}); and
+(3)~symbol definitions from the Navigator. This gives the local coding model
+the exact context required to emit valid cross-file references without blowing up
+its context window.

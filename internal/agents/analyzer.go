@@ -59,7 +59,7 @@ func (a *AnalyzerAgent) Run(ctx context.Context, state *types.State) (*types.Sta
 // discoverSourceFiles scans the source directory hierarchy.
 func (a *AnalyzerAgent) discoverSourceFiles(sourceDir string) (string, []string, error) {
 	logger.LogStep("Scanning directory hierarchy via `get_directory_tree`")
-	treeStr, files, err := tools.BuildDirectoryTree(sourceDir, 5)
+	treeStr, files, err := tools.BuildDirectoryTree(sourceDir, 15)
 	if err != nil {
 		return "", nil, fmt.Errorf("failed to build directory tree: %w", err)
 	}
@@ -68,9 +68,14 @@ func (a *AnalyzerAgent) discoverSourceFiles(sourceDir string) (string, []string,
 }
 
 // extractFileStructures parses the AST structure and imports for discovered files.
+// maxAnalyzerCodeBudgetBytes caps the total raw source code fed to the analyzer reasoning prompt.
+const maxAnalyzerCodeBudgetBytes = 32 * 1024
+
+// extractFileStructures parses the AST structure and imports for discovered files.
 func (a *AnalyzerAgent) extractFileStructures(files []string) ([]string, []string) {
 	var fileStructures []string
 	var fileContents []string
+	var totalBytes int
 
 	for _, f := range files {
 		logger.LogStep("Parsing AST structure with Tree-Sitter: `%s`", filepath.Base(f))
@@ -83,8 +88,13 @@ func (a *AnalyzerAgent) extractFileStructures(files []string) ([]string, []strin
 			fileStructures = append(fileStructures, elemDesc)
 			logger.LogTool("get_file_structure", "`%s` -> %d AST elements, %d imports",
 				filepath.Base(f), len(structOut.Elements), len(structOut.Imports))
-			if structOut.RawCode != "" {
-				fileContents = append(fileContents, fmt.Sprintf("=== File: %s ===\n%s\n", filepath.Base(f), structOut.RawCode))
+			if structOut.RawCode != "" && totalBytes < maxAnalyzerCodeBudgetBytes {
+				chunk := structOut.RawCode
+				if len(chunk) > 2048 {
+					chunk = chunk[:2048] + "\n// ... (truncated)"
+				}
+				fileContents = append(fileContents, fmt.Sprintf("=== File: %s ===\n%s\n", filepath.Base(f), chunk))
+				totalBytes += len(chunk)
 			}
 		}
 	}

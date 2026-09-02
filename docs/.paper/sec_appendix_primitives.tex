@@ -108,12 +108,15 @@ At translation iteration $i$, the Navigator is re-invoked with (\texttt{unfinish
 \end{enumerate}
 
 \paragraph{Code-landing tracker.}
-Four of the 32 primitives listed above have been code-integrated into
-MAgHARCM as of round 21:
+Nine of the primitives enumerated above are code-integrated into MAgHARCM:
 \begin{itemize}
-\item NEW-PRIM-28 --- \texttt{internal/agents/checkpoint.go} (round 12, AutoGen-derived interrupt/resume).
-\item NEW-PRIM-27 --- \texttt{internal/agents/plateau.go} (round 14, CodaMOSA-derived coverage-guided plateau detector).
-\item NEW-PRIM-31 --- \texttt{internal/agents/manifest\_rewriter.go} (round 18, P58 + P60-derived manifest rewriter).
-\item NEW-PRIM-26 --- \texttt{internal/agents/navigator.go} (round 19, HyperAgent-derived symbol-aware navigator).
+\item NEW-PRIM-1 \& NEW-PRIM-2 --- \texttt{internal/agents/planning.go} (AlphaTrans-derived Reverse Topo Scheduling with Back-Edge Removal).
+\item NEW-PRIM-6 --- \texttt{internal/agents/validator.go} (Multi-Stage Build/Test Feedback with AST Syntax Pre-Check).
+\item NEW-PRIM-13 --- \texttt{internal/agents/validator.go} (Adversarial Test-Weakening Guard against assertion relaxation).
+\item NEW-PRIM-21 --- \texttt{internal/agents/analyzer.go} (M\"uller Migration Strategy Selection).
+\item NEW-PRIM-23 --- \texttt{internal/agents/chunked\_translator.go} (Chunked Translator with Prior-Modules Summary).
+\item NEW-PRIM-26 --- \texttt{internal/agents/navigator.go} (HyperAgent-derived Symbol-Aware Navigator).
+\item NEW-PRIM-27 --- \texttt{internal/agents/plateau.go} (CodaMOSA-derived Coverage-Guided Plateau Detector).
+\item NEW-PRIM-28 --- \texttt{internal/agents/checkpoint.go} (AutoGen-derived Interrupt and State Persistence).
+\item NEW-PRIM-31 --- \texttt{internal/agents/manifest\_rewriter.go} (P58/P60-derived Source-to-Target Manifest Rewriter).
 \end{itemize}
-The remaining primitives are absorbed into \texttt{research/synthesis/MAgHARCM\_GAP\_TODOS.md} for future landing.

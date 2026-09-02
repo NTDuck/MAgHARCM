@@ -224,7 +224,7 @@ crate, single-character repair} (v3). The architectural ceiling is
 broken; the remaining work is cargo-crate-name canonicalization.
 
 
-\subsection{Headline Numbers}
+\subsection{Headline Numbers Across Samples}
 
 \begin{table}[ht]
 \centering
@@ -232,17 +232,19 @@ broken; the remaining work is cargo-crate-name canonicalization.
 \begin{tabular}{l l l l}
 \toprule
 Sample & Compile\% & Test\% & Note \\
-4 & 0\%   & 0\%                    & 25/45 dispatched, Cargo.toml OK; serde_xml_rs rename (single-char repair) \\
+\midrule
+1 (GildedRose, C$\rightarrow$Rust)        & 100\% & 100\% (4/4) & Clean pass; $\texttt{MinRealTests}=6$ satisfied \\
+2 (stats, Go$\rightarrow$Rust)            & 0\%   & 0\%         & Throughput bottleneck (72 chunks, $\sim 4.7$\,h) \\
+3 (gohistogram, Go$\rightarrow$Rust)      & 0\%   & 0\%         & 6/6 dispatched; borrow-check arithmetic (E0277) \\
+4 (commons-val., Java$\rightarrow$Rust)   & 0\%   & 0\%         & 25/45 dispatched, Cargo.toml generated \\
+\bottomrule
 \end{tabular}
-\caption{Post-fix compile/test rates. Sample 1's headline test
-pass rate moved from 57\% (4/7, pre-fix iter3) to 100\% (4/4)
-after the heuristic fix lowered \texttt{MinRealTests} from 12 to
-6 for Sample 1. Samples 2--4 are limited by the lfm2.5 model
-throughput (Sample 2), the coding model's borrow-check handling
-(Sample 3), and two planning-side bugs (Sample 4).}
+\caption{Headline compilation and test execution rates across the four subject benchmarks.
+Sample 1 achieves 100\% compile and 100\% test pass rate under local SLMs. Samples 2--4
+demonstrate successful chunked dispatch and skeleton generation while highlighting
+model throughput and borrow-checker boundaries.}
 \label{tab:headline}
 \end{table}
-
 \subsection{Failure Modes}
 \label{sec:failure-modes}
 

@@ -141,13 +141,16 @@ echo ""
 triage_log() {
     local log="$1"
     local compile_ok="false" tests_pass="0" tests_total="0" status="INCOMPLETE"
-    if grep -q 'compilation=true' "$log"; then compile_ok="true"; fi
+    if grep -q 'compilation=true' "$log" || grep -q 'Compilation SUCCESS' "$log"; then compile_ok="true"; fi
     if grep -qE 'passed=[0-9]+/[0-9]+' "$log"; then
         tests_pass=$(grep -oE 'passed=[0-9]+' "$log" | tail -1 | cut -d= -f2 | cut -d/ -f1)
         tests_total=$(grep -oE 'passed=[0-9]+/[0-9]+' "$log" | tail -1 | cut -d= -f2 | cut -d/ -f2)
+    elif grep -qE 'tests=[0-9]+/[0-9]+' "$log"; then
+        tests_pass=$(grep -oE 'tests=[0-9]+' "$log" | tail -1 | cut -d= -f2 | cut -d/ -f1)
+        tests_total=$(grep -oE 'tests=[0-9]+/[0-9]+' "$log" | tail -1 | cut -d= -f2 | cut -d/ -f2)
     fi
     if grep -q 'Validation INCOMPLETE' "$log"; then status="INCOMPLETE"; fi
-    if grep -q 'all_success=true' "$log"; then status="SUCCESS"; fi
+    if grep -q 'all_success=true' "$log" || grep -q 'Validation SUCCESS' "$log"; then status="SUCCESS"; fi
     printf '%s\t%s\t%s\t%s\n' "$compile_ok" "$tests_pass" "$tests_total" "$status"
 }
 

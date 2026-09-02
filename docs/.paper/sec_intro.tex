@@ -24,8 +24,8 @@ developer workstation without any cloud API access:
 \begin{itemize}
 \item \textbf{Local-SLM backend.} All four agents are wired to
 \texttt{ollama} as the model runtime. The reasoning slots use
-\texttt{gpt-oss:20b} (a 20-billion-parameter open-weight reasoning model)
-and the coding slot uses
+\texttt{lfm2.5:8b-a1b-q4\_K\_M} (an 8.3-billion parameter hybrid Mixture-of-Experts
+model with $\sim 1.5$B active parameters per token) and the coding slot uses
 \texttt{hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4\_K\_XL} (a
 4-billion-parameter instruction-tuned coding model). No model call leaves
 the host.
