@@ -51,8 +51,9 @@ func (p *PlanningAgent) Run(ctx context.Context, state *types.State) (*types.Sta
 		return nil, err
 	}
 
-	state.PlanningOutput.Plan = p.parseImplementationPlan(rawContent)
-	logger.LogAgent("Planning", "Planning complete: %d skeleton files written to filesystem, implementation plan ready", len(skeletonFiles))
+	state.PlanningOutput.Plan = p.parseImplementationPlan(rawContent, fragments)
+	logger.LogAgent("Planning", "Planning complete: %d skeleton files written, %d steps in reverse-topological order",
+		len(skeletonFiles), len(state.PlanningOutput.Plan.PartA))
 	return state, nil
 }
 
@@ -164,22 +165,78 @@ func (p *PlanningAgent) writeSkeletonFiles(targetDir string, skeletonFiles map[s
 	return nil
 }
 
-// parseImplementationPlan parses the implementation plan sections into structured steps.
-func (p *PlanningAgent) parseImplementationPlan(rawContent string) types.ImplementationPlan {
+// parseImplementationPlan parses the implementation plan sections into structured steps
+// and schedules them in reverse topological order (NEW-PRIM-1, NEW-PRIM-2 / GAP-02).
+func (p *PlanningAgent) parseImplementationPlan(rawContent string, fragments []string) types.ImplementationPlan {
 	planStr := extractBlock(rawContent, "=== IMPLEMENTATION_PLAN ===", "")
 	if planStr == "" {
 		planStr = rawContent
 	}
+
+	orderedFrags := ComputeReverseTopoOrder(fragments, nil)
+	var partASteps []types.PlanStep
+	if len(orderedFrags) > 0 {
+		for i, frag := range orderedFrags {
+			partASteps = append(partASteps, types.PlanStep{
+				ID:              fmt.Sprintf("A%d", i+1),
+				Description:     fmt.Sprintf("Translate module fragment: %s", frag),
+				Type:            "source",
+				StepName:        frag,
+				ReverseTopoRank: i + 1,
+			})
+		}
+	} else {
+		partASteps = []types.PlanStep{
+			{ID: "A1", Description: "Translate all source modules to target language", Type: "source", ReverseTopoRank: 1},
+		}
+	}
+
 	return types.ImplementationPlan{
 		Overview: extractSection(planStr, "## Overview", "## Part A"),
-		PartA: []types.PlanStep{
-			{ID: "A1", Description: "Translate all source modules to target language", Type: "source"},
-		},
+		PartA:    partASteps,
 		PartB: []types.PlanStep{
-			{ID: "B1", Description: "Translate and execute test suite", Type: "test"},
+			{ID: "B1", Description: "Translate and execute test suite", Type: "test", ReverseTopoRank: len(partASteps) + 1},
 		},
 		RawPlan: planStr,
 	}
+}
+
+// ComputeReverseTopoOrder builds a reverse topological ordering (dependencies/leaves first)
+// with back-edge removal (AlphaTrans NEW-PRIM-1 + NEW-PRIM-2 / GAP-02) to break cycles.
+func ComputeReverseTopoOrder(items []string, dependencies map[string][]string) []string {
+	if dependencies == nil {
+		dependencies = make(map[string][]string)
+	}
+	visited := make(map[string]bool)
+	inStack := make(map[string]bool)
+	var ordered []string
+
+	var dfs func(node string)
+	dfs = func(node string) {
+		visited[node] = true
+		inStack[node] = true
+
+		for _, dep := range dependencies[node] {
+			if inStack[dep] {
+				// Back-edge detected (cycle): remove/skip back-edge
+				continue
+			}
+			if !visited[dep] {
+				dfs(dep)
+			}
+		}
+
+		inStack[node] = false
+		ordered = append(ordered, node)
+	}
+
+	for _, item := range items {
+		if !visited[item] {
+			dfs(item)
+		}
+	}
+
+	return ordered
 }
 
 // defaultProjectSkeleton dynamically generates standard project boilerplate files for the target language.

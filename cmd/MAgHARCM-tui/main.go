@@ -1,4 +1,4 @@
-// magtui is the interactive user-facing front-end for MAgHARCM.
+// MAgHARCM-tui is the interactive user-facing front-end for MAgHARCM.
 //
 // Phase 1: collect a translation request via prompts and write a YAML
 //
@@ -403,8 +403,7 @@ func dumpYAML(cfg *config.Config) string {
 	return b.String()
 }
 
-// samplesList enumerates the bundled config.sample*.yml files in the
-// current working directory. Empty list is fine — magtui is useful even
+// current working directory. Empty list is fine — MAgHARCM-tui is useful even
 // without samples.
 func samplesList() string {
 	matches, err := filepath.Glob("config.sample*.yml")

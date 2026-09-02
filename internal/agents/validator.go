@@ -58,9 +58,15 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.St
 	iterStart := time.Now()
 	logger.LogAgent("Validator", "Validating target project `%s` (Iteration %d/%d)",
 		state.Task.TargetDir, state.Iteration, state.MaxIterations)
-
 	report := types.ValidationReport{
 		IterationStart: iterStart,
+	}
+
+	// Step 1: Pre-compilation AST syntax check (NEW-PRIM-6 / GAP-08)
+	syntaxErrs := v.checkASTSyntax(state.Task.TargetDir, state.Task.TargetLang)
+	report.ASTSyntaxErrors = syntaxErrs
+	if len(syntaxErrs) > 0 {
+		logger.LogStep("AST Syntax check: %d syntax issues flagged before compilation", len(syntaxErrs))
 	}
 
 	buildRes, err := v.checkCompilation(ctx, state)
@@ -110,6 +116,18 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.St
 	}
 
 	report.PerFile = scanTargetFiles(state, buildRes.Errors)
+
+	// Step 2: Adversarial weakening detection (NEW-PRIM-13 / GAP-01)
+	currentTests := v.collectCurrentTestFiles(state)
+	if state.PriorTestSnapshots != nil {
+		weakened, reasons := v.DetectTestWeakening(state.PriorTestSnapshots, currentTests)
+		report.AdversarialWeakeningDetected = weakened
+		report.WeakeningReasons = reasons
+		if weakened {
+			logger.LogWarning("Adversarial test weakening detected: %v", reasons)
+		}
+	}
+	state.PriorTestSnapshots = currentTests
 
 	v.finalizeReport(&report, state, testRes.Output)
 	report.IterationWallMs = time.Since(iterStart).Milliseconds()
@@ -394,4 +412,63 @@ func scanTargetFiles(state *types.State, compileErrors []string) []types.FileSta
 		}
 	}
 	return statuses
+}
+
+// checkASTSyntax scans target source files for tree-sitter syntax errors before running compiler (NEW-PRIM-6 / GAP-08).
+func (v *ValidatorAgent) checkASTSyntax(targetDir, targetLang string) []string {
+	var syntaxErrors []string
+	_ = filepath.Walk(targetDir, func(path string, info os.FileInfo, err error) error {
+		if err != nil || info == nil || info.IsDir() {
+			return nil
+		}
+		ext := filepath.Ext(path)
+		if ext == ".rs" || ext == ".go" || ext == ".java" || ext == ".py" || ext == ".c" || ext == ".cpp" {
+			structOut, parseErr := tools.ParseFileStructure(path)
+			if parseErr != nil {
+				syntaxErrors = append(syntaxErrors, fmt.Sprintf("%s: parse error: %v", filepath.Base(path), parseErr))
+			} else if structOut != nil && len(structOut.Elements) == 0 && info.Size() > 200 {
+				syntaxErrors = append(syntaxErrors, fmt.Sprintf("%s: 0 AST elements extracted from %d bytes", filepath.Base(path), info.Size()))
+			}
+		}
+		return nil
+	})
+	return syntaxErrors
+}
+
+// countAssertions counts assertion calls in test source code (NEW-PRIM-13 / GAP-01).
+func countAssertions(code string) int {
+	re := regexp.MustCompile(`(?i)\b(?:assert|expect|should|require)\w*\s*[\(!]`)
+	return len(re.FindAllString(code, -1))
+}
+
+// DetectTestWeakening detects whether tests were modified, deleted, or weakened during repair (NEW-PRIM-13 / GAP-01).
+func (v *ValidatorAgent) DetectTestWeakening(prevTests, currentTests map[string]string) (bool, []string) {
+	if len(prevTests) == 0 {
+		return false, nil
+	}
+	var reasons []string
+	for file, prevContent := range prevTests {
+		currContent, exists := currentTests[file]
+		if !exists {
+			reasons = append(reasons, fmt.Sprintf("Test file `%s` was removed", file))
+			continue
+		}
+		prevAsserts := countAssertions(prevContent)
+		currAsserts := countAssertions(currContent)
+		if currAsserts < prevAsserts {
+			reasons = append(reasons, fmt.Sprintf("Test file `%s`: assertions reduced from %d to %d", file, prevAsserts, currAsserts))
+		}
+	}
+	return len(reasons) > 0, reasons
+}
+
+// collectCurrentTestFiles extracts a snapshot of all test files in the target project.
+func (v *ValidatorAgent) collectCurrentTestFiles(state *types.State) map[string]string {
+	tests := make(map[string]string)
+	for path, content := range state.TranslatedProject.Files {
+		if strings.Contains(path, "test") || strings.HasSuffix(path, "_test.go") || strings.HasSuffix(path, "_test.rs") {
+			tests[path] = content
+		}
+	}
+	return tests
 }

@@ -49,8 +49,10 @@ func (a *AnalyzerAgent) Run(ctx context.Context, state *types.State) (*types.Sta
 		return nil, err
 	}
 
-	a.populateAnalyzerOutput(state, rawDoc)
-	logger.LogAgent("Analyzer", "Analysis complete: Research, Library Analysis, and Target Design generated")
+	strategy, rationale := SelectMigrationStrategy(len(files), countSourceLoC(state.Task.SourceDir), true, true)
+	a.populateAnalyzerOutput(state, rawDoc, strategy, rationale)
+	logger.LogAgent("Analyzer", "Analysis complete: strategy=%s (%s), Research, Library Analysis, and Target Design generated",
+		strategy, rationale)
 	return state, nil
 }
 
@@ -114,15 +116,16 @@ func (a *AnalyzerAgent) synthesizeAnalysis(ctx context.Context, state *types.Sta
 }
 
 // populateAnalyzerOutput unpacks markdown sections into structured documents on state.
-func (a *AnalyzerAgent) populateAnalyzerOutput(state *types.State, rawDoc string) {
+func (a *AnalyzerAgent) populateAnalyzerOutput(state *types.State, rawDoc, strategy, rationale string) {
 	state.AnalyzerOutput.Research = types.DocumentWrapper[types.SourceProjectResearch]{
 		Data: types.SourceProjectResearch{
 			Overview:           extractSection(rawDoc, "## 1. Overview", "## 2. Directory Structure"),
 			DirectoryStructure: extractSection(rawDoc, "## 2. Directory Structure", "## 3. Data Structures"),
+			MigrationStrategy:  strategy,
+			StrategyRationale:  rationale,
 		},
 		RawMarkdown: rawDoc,
 	}
-
 	state.AnalyzerOutput.Library = types.DocumentWrapper[types.ThirdPartyLibraryAnalysis]{
 		Data: types.ThirdPartyLibraryAnalysis{
 			Libraries: []types.LibraryMapping{},
@@ -151,4 +154,22 @@ func extractSection(doc, startHeader, endHeader string) string {
 		}
 	}
 	return strings.TrimSpace(content)
+}
+
+// SelectMigrationStrategy classifies the repository into one of Mueller's 5 strategies (NEW-PRIM-21):
+// BIG_BANG, INCREMENTAL, PILOT, FROZEN_LEGACY, PARALLEL_CUTOVER.
+func SelectMigrationStrategy(fileCount, loc int, hasTests, hasBuild bool) (string, string) {
+	if fileCount <= 3 && loc < 500 {
+		return "BIG_BANG", "Small self-contained project (<500 LoC, <=3 files): single-pass direct translation."
+	}
+	if fileCount > 50 || loc > 10000 {
+		return "PILOT", "Large-scale codebase (>50 files or >10k LoC): chunked subsystem pilot translation."
+	}
+	if !hasTests {
+		return "FROZEN_LEGACY", "Legacy codebase without test harness: requires test synthesis and boundary freezing."
+	}
+	if hasTests && fileCount > 10 {
+		return "PARALLEL_CUTOVER", "Modular project with comprehensive test suite: multi-stage parallel module cutover."
+	}
+	return "INCREMENTAL", "Standard multi-module project: reverse-topological incremental translation."
 }

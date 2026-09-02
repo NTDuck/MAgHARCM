@@ -26,7 +26,7 @@ Run a single sample by name:
 
 ```bash
 go run ./cmd/MAgHARCM --config .config/oxidizer-gohistogram.yml
-go run ./cmd/magtui --config .config/gildedrose.yml
+go run ./cmd/MAgHARCM-tui --config .config/gildedrose.yml
 ```
 
 Configs are generated from the corpus under `assets/samples/`. Regenerate them
@@ -41,7 +41,7 @@ with `python3 scripts/generate-configs.py` whenever the corpus changes.
 | `mise run bench`    | `bash scripts/run-all-samples.sh` — one run per config    |
 | `mise run bench-k`  | `K=3 bash scripts/run-samples-k.sh` — K runs per config   |
 | `mise run retry`    | `bash scripts/retry-stable.sh <config>`                  |
-| `mise run build`    | Compile `bin/MAgHARCM` and `bin/magtui`                   |
+| `mise run build`    | Compile `bin/MAgHARCM` and `bin/MAgHARCM-tui`             |
 | `mise run test`     | `go test ./...`                                           |
 | `mise run lint`     | `go vet ./...`                                            |
 | `mise run fmt`      | `go fmt ./...`                                            |

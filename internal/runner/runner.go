@@ -1,5 +1,5 @@
 // Package runner executes the MAgHARCM translation pipeline given a
-// populated *config.Config. Both cmd/MAgHARCM (one-shot) and cmd/magtui
+//	populated *config.Config. Both cmd/MAgHARCM (one-shot) and cmd/MAgHARCM-tui
 // (interactive REPL) call into Run so the wiring stays in one place.
 package runner
 

@@ -22,6 +22,8 @@ type SourceProjectResearch struct {
 	DataModels         string   `json:"data_models"`
 	ErrorHandling      string   `json:"error_handling"`
 	Dependencies       []string `json:"dependencies"`
+	MigrationStrategy  string   `json:"migration_strategy,omitempty"`
+	StrategyRationale  string   `json:"strategy_rationale,omitempty"`
 	RawDocument        string   `json:"raw_document"`
 }
 
@@ -63,15 +65,17 @@ type DocumentWrapper[T any] struct {
 	Data        T      `json:"data"`
 	RawMarkdown string `json:"raw_markdown"`
 }
-
 // PlanStep represents a single step in Part A or Part B of the implementation plan.
 type PlanStep struct {
-	ID          string `json:"id"`
-	Description string `json:"description"`
-	SourceFile  string `json:"source_file"`
-	TargetFile  string `json:"target_file"`
-	Type        string `json:"type"` // "source" or "test"
-	Completed   bool   `json:"completed"`
+	ID              string `json:"id"`
+	Description     string `json:"description"`
+	SourceFile      string `json:"source_file,omitempty"`
+	TargetFile      string `json:"target_file,omitempty"`
+	Type            string `json:"type,omitempty"` // "source" or "test"
+	Completed       bool   `json:"completed,omitempty"`
+	StepName        string `json:"step_name,omitempty"`
+	Details         string `json:"details,omitempty"`
+	ReverseTopoRank int    `json:"reverse_topo_rank,omitempty"`
 }
 
 // ImplementationPlan organizes code translation and test verification steps into ordered phases.
@@ -127,9 +131,14 @@ type ValidationReport struct {
 	// entered; MaxRemedyIterations means the loop exhausted without plateau.
 	RemedyIterations int `json:"remedy_iterations,omitempty"`
 	// PlateauDetected is true when the PlateauDetector signaled insufficient
-	// marginal coverage gain and the bounded loop terminated early.
 	PlateauDetected bool `json:"plateau_detected,omitempty"`
- }
+	// AdversarialWeakeningDetected is true when test weakening (e.g. dropped assertions,
+	// emptied test functions, relaxed predicates) is detected across repair iterations (NEW-PRIM-13).
+	AdversarialWeakeningDetected bool `json:"adversarial_weakening_detected,omitempty"`
+	WeakeningReasons             []string `json:"weakening_reasons,omitempty"`
+	// ASTSyntaxErrors contains parse/syntax errors found before compilation (NEW-PRIM-6 / GAP-08).
+	ASTSyntaxErrors              []string `json:"ast_syntax_errors,omitempty"`
+}
 
 // HasUncoveredFunctions determines if any discovered AST functions lack test assertions.
 func (v *ValidationReport) HasUncoveredFunctions() bool {
@@ -154,12 +163,13 @@ func (v *ValidationReport) String() string {
 }
 // State is the shared context passed between Eino graph nodes.
 type State struct {
-	Task             TranslationTask    `json:"task"`
-	AnalyzerOutput   AnalyzerOutput     `json:"analyzer_output"`
-	PlanningOutput   PlanningOutput     `json:"planning_output"`
-	TranslatedProject TranslatedProject `json:"translated_project"`
-	ValidationReport ValidationReport   `json:"validation_report"`
-	Iteration        int                `json:"iteration"`
-	MaxIterations    int                `json:"max_iterations"`
-	IsComplete       bool               `json:"is_complete"`
+	Task               TranslationTask    `json:"task"`
+	AnalyzerOutput     AnalyzerOutput     `json:"analyzer_output"`
+	PlanningOutput     PlanningOutput     `json:"planning_output"`
+	TranslatedProject  TranslatedProject  `json:"translated_project"`
+	ValidationReport   ValidationReport   `json:"validation_report"`
+	Iteration          int                `json:"iteration"`
+	MaxIterations      int                `json:"max_iterations"`
+	IsComplete         bool               `json:"is_complete"`
+	PriorTestSnapshots map[string]string  `json:"prior_test_snapshots,omitempty"`
 }

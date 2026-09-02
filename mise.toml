@@ -12,7 +12,7 @@ run = "go run ./cmd/MAgHARCM --config .config/default.yml"
 
 [tasks.ui]
 description = "Launch the interactive MAgHARCM TUI"
-run = "go run ./cmd/magtui"
+run = "go run ./cmd/MAgHARCM-tui"
 
 [tasks.bench]
 description = "Run every .config/*.yml once"
@@ -32,7 +32,7 @@ run = "python3 scripts/generate-configs.py"
 
 [tasks.build]
 description = "Build binaries"
-run = "go build -o bin/MAgHARCM ./cmd/MAgHARCM && go build -o bin/magtui ./cmd/magtui"
+run = "go build -o bin/MAgHARCM ./cmd/MAgHARCM && go build -o bin/MAgHARCM-tui ./cmd/MAgHARCM-tui"
 
 [tasks.test]
 description = "Run tests"
