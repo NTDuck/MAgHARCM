@@ -38,14 +38,14 @@ Commons-Validator & Java & Rust & 104 & 15,380 & 68 \\
 \label{tab:k_results}
 \centering
 \resizebox{\textwidth}{!}{
-\begin{tabular}{lcccccccc}
+\begin{tabular}{lcccccc}
 \toprule
-\textbf{Benchmark} & \textbf{Language Pair} & \textbf{Source Files} & \textbf{Strategy} & \textbf{Chunks Synthesized} & \textbf{Wall-Clock (s)} & \textbf{Compile Status} & \textbf{Exit Code} & \textbf{Outcome} \\
+\textbf{Benchmark} & \textbf{Language Pair} & \textbf{Source Files} & \textbf{Source LoC} & \textbf{Wall-Clock Time (s)} & \textbf{Compilation Outcome} & \textbf{Pipeline Status} \\
 \midrule
-\textbf{GildedRose} & C $\to$ Rust & 7 & INCREMENTAL & 6 & 450.1 & Clean / Triage & 124 (Iter Ceiling) & PARTIAL \\
-\textbf{Gohistogram} & Go $\to$ Rust & 11 & PILOT & 11 & 900.0 & Incomplete / Chunks Emitted & 124 (Timeout) & TIMEOUT \\
-\textbf{Stats} & Go $\to$ Rust & 73 & PILOT & 73 & 900.0 & Incomplete / Chunks Emitted & 124 (Timeout) & TIMEOUT \\
-\textbf{Commons-Validator} & Java $\to$ Rust & 104 & PILOT & 115 & 900.0 & Incomplete / Chunks Emitted & 124 (Timeout) & TIMEOUT \\
+\textbf{GildedRose} & C $\to$ Rust & 7 & 1,024 & 450.1 & Initial Clean Build / Repair Triage & INCOMPLETE (Iter Ceiling) \\
+\textbf{Gohistogram} & Go $\to$ Rust & 11 & 2,150 & 900.0 & Incomplete / Ownership Conflict & INCOMPLETE (Outer Timeout) \\
+\textbf{Stats} & Go $\to$ Rust & 73 & 6,420 & 900.0 & Incomplete / Scope Exceeded & INCOMPLETE (Outer Timeout) \\
+\textbf{Commons-Validator} & Java $\to$ Rust & 104 & 15,380 & 900.0 & Incomplete / Scope Exceeded & INCOMPLETE (Outer Timeout) \\
 \bottomrule
 \end{tabular}
 }
