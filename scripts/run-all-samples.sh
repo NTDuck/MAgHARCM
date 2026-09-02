@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # scripts/run-all-samples.sh
 #
-# Run every .config/<category>-<project>.yml in sequence, capturing
-# per-sample outcome to docs/sample-results/<category>-<project>.md
+# Run every sample .config/<category>-<project>.yml in sequence,
+# capturing per-sample outcome to docs/sample-results/<category>-<project>.md
 # and a JSON index to docs/sample-results/index.json.
 #
 # Behaves like the harness: exits 0 when finished regardless of
@@ -11,9 +11,9 @@
 # propagate). Designed for overnight unattended batches.
 #
 # Usage:
-#   bash scripts/run-all-samples.sh                    # all configs
-#   bash scripts/run-all-samples.sh crust-*            # glob filter
-#   bash scripts/run-all-samples.sh oxidizer-gohistogram   # one specific
+#   bash scripts/run-all-samples.sh                  # all samples
+#   bash scripts/run-all-samples.sh oxidizer-*       # glob filter
+#   bash scripts/run-all-samples.sh oxidizer-gohistogram
 #
 # Skip-already-run:
 #   Touch docs/sample-results/.skip-<name> before running to mark
@@ -38,18 +38,38 @@ echo "[batch] building magharcm-cli..."
 go build -o "$REPO_ROOT/bin/MAgHARCM" ./cmd/MAgHARCM || exit 1
 echo "[batch] built $(ls -la "$REPO_ROOT/bin/MAgHARCM" | awk '{print $5}') bytes"
 
-# Resolve config glob. If no args, run all 120.
+# Resolve config glob. If user passed a partial pattern, expand it;
+# otherwise take everything under .config/.
 shopt -s nullglob
-configs=("$REPO_ROOT"/.config/"${1:-}"*.yml)
+if [[ $# -gt 0 ]]; then
+    all_configs=("$REPO_ROOT"/.config/$1*.yml)
+else
+    all_configs=("$REPO_ROOT"/.config/*.yml)
+fi
 shopt -u nullglob
 
-# If user passed a partial pattern, expand it.
-if [[ $# -gt 0 ]]; then
-    configs=("$REPO_ROOT"/.config/$1*.yml)
-    if [[ ${#configs[@]} -eq 0 ]]; then
-        echo "[batch] no configs match pattern: $1*"
-        exit 0
+# Drop meta-configs (default.yml is the flag default for ad-hoc runs,
+# not a sample to benchmark). Sample configs are everything else; the
+# exclusion list is explicit so single-word sample names like
+# `stats.yml` or `gildedrose.yml` are NOT skipped.
+META_CONFIGS=(default)
+configs=()
+for cfg in "${all_configs[@]}"; do
+    name="$(basename "$cfg" .yml)"
+    skip=0
+    for meta in "${META_CONFIGS[@]}"; do
+        if [[ "$name" == "$meta" ]]; then skip=1; break; fi
+    done
+    if [[ $skip -eq 1 ]]; then
+        echo "[skip ] $name (meta-config, not a sample)"
+    else
+        configs+=("$cfg")
     fi
+done
+
+if [[ ${#configs[@]} -eq 0 ]]; then
+    echo "[batch] no sample configs match (got 0 after filtering meta-configs)"
+    exit 0
 fi
 
 total=${#configs[@]}

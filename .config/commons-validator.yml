@@ -1,6 +1,6 @@
 translation:
   source:
-    dir: "assets/samples/data/tool_projects/alphatrans/commons-validator/java"
+    dir: "assets/samples/alphatrans/commons-validator/java"
     language: "Java"
   target:
     dir: ".artifacts/commons-validator/rust"

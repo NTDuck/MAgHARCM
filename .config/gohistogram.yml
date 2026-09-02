@@ -1,6 +1,6 @@
 translation:
   source:
-    dir: "assets/samples/data/tool_projects/oxidizer/gohistogram/go"
+    dir: "assets/samples/oxidizer/gohistogram/go"
     language: "Go"
   target:
     dir: ".artifacts/gohistogram/rust"

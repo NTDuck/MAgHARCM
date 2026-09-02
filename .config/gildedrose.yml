@@ -1,6 +1,6 @@
 translation:
   source:
-    dir: "assets/manual-samples/GildedRose-Refactoring-Kata/C"
+    dir: "assets/samples/GildedRose-Refactoring-Kata/C"
     language: "C"
   target:
     dir: ".artifacts/GildedRose-Refactoring-Kata/rust"

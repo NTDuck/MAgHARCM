@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # scripts/run-samples-k.sh
 #
-# Run every .config/<category>-<project>.yml in sequence, K times each,
-# capturing per-run outcome and aggregating per-sample metrics into a
-# single JSON file (docs/sample-results/k-summary.json).
+# Run every sample .config/<category>-<project>.yml in sequence, K
+# times each, capturing per-run outcome and aggregating per-sample
+# metrics into a single JSON file (docs/sample-results/k-summary.json).
 #
 # Purpose: stability measurement. One-shot runs of a stochastic LLM
 # pipeline tell you nothing about variance. Re-running each sample K
@@ -12,10 +12,10 @@
 # drift detection.
 #
 # Usage:
-#   bash scripts/run-samples-k.sh                       # all configs, K=3
-#   K=5 bash scripts/run-samples-k.sh                   # all configs, K=5
-#   bash scripts/run-samples-k.sh crust-csyncmers        # one config, K=3
-#   K=2 bash scripts/run-samples-k.sh oxidizer-gohistogram skel-bst
+#   bash scripts/run-samples-k.sh                       # all samples, K=3
+#   K=5 bash scripts/run-samples-k.sh                   # all samples, K=5
+#   bash scripts/run-samples-k.sh gohistogram            # substring filter
+#   K=2 bash scripts/run-samples-k.sh stats gohistogram
 #
 # Skip-already-run:
 #   Touch docs/sample-results/.skip-<name> before running to mark
@@ -89,8 +89,27 @@ fi
 echo "[k-run] built $(stat -c %s "$REPO_ROOT/bin/MAgHARCM") bytes"
 
 shopt -s nullglob
-configs=("$CONFIG_DIR"/*.yml)
+all_configs=("$CONFIG_DIR"/*.yml)
 shopt -u nullglob
+
+# Drop meta-configs (default.yml is the flag default for ad-hoc runs,
+# not a sample to benchmark). Sample configs are everything else; the
+# exclusion list is explicit so single-word sample names like
+# `stats.yml` or `gildedrose.yml` are NOT skipped.
+META_CONFIGS=(default)
+configs=()
+for cfg in "${all_configs[@]}"; do
+    name="$(basename "$cfg" .yml)"
+    skip=0
+    for meta in "${META_CONFIGS[@]}"; do
+        if [[ "$name" == "$meta" ]]; then skip=1; break; fi
+    done
+    if [[ $skip -eq 1 ]]; then
+        echo "[skip ] $name (meta-config, not a sample)"
+    else
+        configs+=("$cfg")
+    fi
+done
 
 # If user passed positional args, treat each as a substring filter
 # against the config basename (sans .yml).

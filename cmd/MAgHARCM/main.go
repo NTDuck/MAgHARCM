@@ -12,7 +12,7 @@ import (
 
 func main() {
 	var configFile string
-	flag.StringVar(&configFile, "config", "config.yml", "Path to YAML configuration file")
+	flag.StringVar(&configFile, "config", ".config/default.yml", "Path to YAML configuration file")
 	flag.Parse()
 
 	cfg, err := config.LoadYAML(configFile)
