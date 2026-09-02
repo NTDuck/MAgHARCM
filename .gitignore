@@ -36,13 +36,26 @@ examples/
 
 # Default TUI save artifact (overridable via /save <path>).
 magharcm-request.yml
-# paper/ build artifacts
-paper/main.aux
-paper/main.bbl
-paper/main.blg
-paper/main.log
-paper/main.out
-paper/main.pdf
 
-# Python plot script caches
-paper/figures/__pycache__/
+# Paper build artifacts (LaTeX auxiliary output).
+docs/.paper/main.aux
+docs/.paper/main.bbl
+docs/.paper/main.blg
+docs/.paper/main.log
+docs/.paper/main.out
+docs/.paper/main.pdf
+
+# Python plot script caches.
+docs/.paper/figures/__pycache__/
+
+# Claude Code / agent tool local state. Skill source-of-truth lives
+# under .agents/skills/; .claude/skills/ is a Claude-Code-only mirror.
+.claude/
+
+# Per-sample runner skip flags. Touch to mark a sample as already-
+# exercised; the runner leaves it alone.
+docs/sample-results/.skip-*
+
+# Manual tmp save dirs (created by editor workflows that back up
+# in-flight edits before destructive ops like `git checkout -- .`).
+/tmp-magh-save-*/

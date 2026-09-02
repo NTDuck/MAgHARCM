@@ -3,16 +3,32 @@ go = "1.26.5"
 rust = "latest"
 
 [tasks.start]
-description = "Run MAgHARCM translation with the configured sample"
-run = "go run ./cmd/MAgHARCM --config config.yml"
+description = "Run MAgHARCM translation with the default config (if present)"
+run = "go run ./cmd/MAgHARCM --config .config/default.yml"
 
 [tasks.dev]
 description = "Alias for start"
-run = "go run ./cmd/MAgHARCM --config config.yml"
+run = "go run ./cmd/MAgHARCM --config .config/default.yml"
 
 [tasks.ui]
 description = "Launch the interactive MAgHARCM TUI"
 run = "go run ./cmd/magtui"
+
+[tasks.bench]
+description = "Run every .config/*.yml once"
+run = "bash scripts/run-all-samples.sh"
+
+[tasks.bench-k]
+description = "Run every .config/*.yml K times (K=3) for stability"
+run = "K=3 bash scripts/run-samples-k.sh"
+
+[tasks.retry]
+description = "Retry a sample whose first attempt was unstable (usage: mise run retry -- <config>)"
+run = "bash scripts/retry-stable.sh"
+
+[tasks.gen-configs]
+description = "Regenerate .config/*.yml from assets/samples/ corpus"
+run = "python3 scripts/generate-configs.py"
 
 [tasks.build]
 description = "Build binaries"
