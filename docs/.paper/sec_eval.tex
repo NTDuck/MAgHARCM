@@ -34,18 +34,18 @@ Commons-Validator & Java & Rust & 104 & 15,380 & 68 \\
 \end{table}
 
 \begin{table*}[t]
-\caption{Comprehensive Multi-Run Stability Evaluation ($K=3$ Runs per Benchmark Repository)}
+\caption{Empirical Benchmark Evaluation Across Four Repository Scales}
 \label{tab:k_results}
 \centering
 \resizebox{\textwidth}{!}{
 \begin{tabular}{lcccccccc}
 \toprule
-\textbf{Benchmark} & \textbf{Pair} & \textbf{Runs ($K$)} & \textbf{Compile Rate} & \textbf{Test Pass Rate} & \textbf{Mean Wall (s)} & \textbf{StDev (s)} & \textbf{Min / Max (s)} & \textbf{Status} \\
+\textbf{Benchmark} & \textbf{Language Pair} & \textbf{Source Files} & \textbf{Strategy} & \textbf{Chunks Synthesized} & \textbf{Wall-Clock (s)} & \textbf{Compile Status} & \textbf{Exit Code} & \textbf{Outcome} \\
 \midrule
-\textbf{GildedRose} & C $\to$ Rust & 3 & \textbf{3 / 3 (100\%)} & \textbf{100.0\%} & 450.0 & $\pm$ 45.2 & 395.1 / 488.4 & \textbf{CONVERGED} \\
-\textbf{Gohistogram} & Go $\to$ Rust & 3 & \textbf{1 / 3 (33.3\%)} & 50.0\% & 750.8 & $\pm$ 82.4 & 665.2 / 828.1 & \textbf{PARTIAL} \\
-\textbf{Stats} & Go $\to$ Rust & 3 & 0 / 3 (0.0\%) & 0.0\% & 900.0 & $\pm$ 0.0 & 900.0 / 900.0 & TIMEOUT \\
-\textbf{Commons-Validator} & Java $\to$ Rust & 3 & 0 / 3 (0.0\%) & 0.0\% & 900.0 & $\pm$ 0.0 & 900.0 / 900.0 & TIMEOUT \\
+\textbf{GildedRose} & C $\to$ Rust & 7 & INCREMENTAL & 6 & 450.1 & Clean / Triage & 124 (Iter Ceiling) & PARTIAL \\
+\textbf{Gohistogram} & Go $\to$ Rust & 11 & PILOT & 11 & 900.0 & Incomplete / Chunks Emitted & 124 (Timeout) & TIMEOUT \\
+\textbf{Stats} & Go $\to$ Rust & 73 & PILOT & 73 & 900.0 & Incomplete / Chunks Emitted & 124 (Timeout) & TIMEOUT \\
+\textbf{Commons-Validator} & Java $\to$ Rust & 104 & PILOT & 115 & 900.0 & Incomplete / Chunks Emitted & 124 (Timeout) & TIMEOUT \\
 \bottomrule
 \end{tabular}
 }
