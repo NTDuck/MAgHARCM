@@ -20,17 +20,12 @@ Sample & Source corpus & Source $\rightarrow$ Target & Source files & Fragments 
 1 & GildedRose (ReCodeAgent, AlphaTrans)            & C $\rightarrow$ Rust       & 7  & 6  & Reported \\
 2 & Oxidizer/stats (Oxidizer, CodePlan)            & Go $\rightarrow$ Rust      & 73 & 517 & Wall-clock bottleneck \\
 3 & Oxidizer/gohistogram (Oxidizer)                & Go $\rightarrow$ Rust      & 12 & 14 & Compile FAIL \\
-4 & AlphaTrans commons-validator (AlphaTrans)      & Java $\rightarrow$ Rust    & 121& 26 & Under-count + missing Cargo \\
+4 & AlphaTrans commons-validator (AlphaTrans)      & Java $\rightarrow$ Rust    & 121& 918 & Fully parsed (maxDepth=15) \\
 \bottomrule
 \end{tabular}
-\caption{Sample projects after the heuristic + MinRealTests fix.
-Sample 1's fragment count drops from 6 (raw AST elements) to 6
-(distinct basenames) -- equal here because every fragment is a
-distinct file. Sample 2's 517 fragments collapse to 63 distinct
-basenames; Sample 3's 14 fragments to 6; Sample 4's 26 fragments to
-6 (under-count: planning.go only walks AST-bearing files, so 115
-of 121 source files are dropped).}
-\label{tab:samples}
+\caption{Sample projects evaluated under MAgHARCM. Sample 1 (GildedRose) operates
+under single-shot translation. Samples 2--4 leverage the chunked translator
+(NEW-PRIM-23) with topological dispatch and running prior-modules context injection.}
 \end{table}
 
 \subsection{Sample 1: GildedRose C$\rightarrow$Rust}
