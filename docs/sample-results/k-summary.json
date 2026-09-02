@@ -32,7 +32,9 @@
       "mean_ms": 450053,
       "stdev_ms": 0,
       "min_ms": 450053,
-      "max_ms": 450053
+      "max_ms": 450053,
+      "source_files": 4,
+      "source_loc": 199
     },
     {
       "name": "gohistogram",
@@ -63,7 +65,9 @@
       "mean_ms": 900019,
       "stdev_ms": 0,
       "min_ms": 900019,
-      "max_ms": 900019
+      "max_ms": 900019,
+      "source_files": 7,
+      "source_loc": 15470
     },
     {
       "name": "stats",
@@ -94,7 +98,9 @@
       "mean_ms": 900016,
       "stdev_ms": 0,
       "min_ms": 900016,
-      "max_ms": 900016
+      "max_ms": 900016,
+      "source_files": 65,
+      "source_loc": 5625
     },
     {
       "name": "commons-validator",
@@ -125,7 +131,9 @@
       "mean_ms": 900018,
       "stdev_ms": 0,
       "min_ms": 900018,
-      "max_ms": 900018
+      "max_ms": 900018,
+      "source_files": 121,
+      "source_loc": 28110
     }
   ]
 }
