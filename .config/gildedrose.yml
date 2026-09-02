@@ -7,7 +7,7 @@ translation:
     language: "Rust"
     toolchain: "cargo"
   models:
-    reasoning: "qwen2.5-coder:7b-base-q5_0"
+    reasoning: "lfm2.5:8b-a1b-q4_K_M"
     coding: "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4_K_XL"
     ollama_url: "http://localhost:11434"
   execution:
