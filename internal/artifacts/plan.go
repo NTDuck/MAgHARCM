@@ -1,4 +1,4 @@
-package types
+package artifacts
 
 // PlanStep represents a single step in Part A or Part B of the implementation plan.
 type PlanStep struct {

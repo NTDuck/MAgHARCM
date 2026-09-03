@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"MAgHARCM/internal/agents"
+	"MAgHARCM/internal/artifacts"
 	"MAgHARCM/internal/tools"
 	"MAgHARCM/internal/types"
 )
@@ -284,7 +285,7 @@ func TestNavigatorAgentResolvesSymbols(t *testing.T) {
 	agent := agents.NewNavigatorAgent(nil, provider)
 
 	state := &types.State{
-		PlanningOutput: types.PlanningOutput{
+		PlanningOutput: artifacts.PlanningOutput{
 			NameMapping: map[string]string{
 				"alpha": "ALPHA",
 				"beta":  "BETA",

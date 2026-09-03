@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 
 	"MAgHARCM/internal/agents"
+	"MAgHARCM/internal/artifacts"
 	"MAgHARCM/internal/config"
 	"MAgHARCM/internal/graph"
 	"MAgHARCM/internal/llm"
@@ -60,7 +61,7 @@ func Run(ctx context.Context, cfg *config.Config) (*types.State, error) {
 		initialState = &types.State{
 			Task:          task,
 			MaxIterations: cfg.MaxIterations,
-			TranslatedProject: types.TranslatedProject{
+			TranslatedProject: artifacts.TranslatedProject{
 				Files: make(map[string]string),
 			},
 		}

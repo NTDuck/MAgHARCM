@@ -1,10 +1,4 @@
-package types
-
-// DocumentWrapper keeps both structured data and markdown representation.
-type DocumentWrapper[T any] struct {
-	Data        T      `json:"data"`
-	RawMarkdown string `json:"raw_markdown"`
-}
+package artifacts
 
 // SourceProjectResearch represents the research document produced in phase 3.2.1.
 type SourceProjectResearch struct {

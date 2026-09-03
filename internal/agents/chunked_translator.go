@@ -12,6 +12,7 @@ import (
 
 	"github.com/cloudwego/eino/schema"
 
+	"MAgHARCM/internal/artifacts"
 	"MAgHARCM/internal/logger"
 	"MAgHARCM/internal/types"
 )
@@ -145,7 +146,7 @@ func GroupFragmentsBySourceFile(fragments []string) map[string][]string {
 // It populates state.TranslatedProject.Files (merged with the existing skeleton
 // entries), persists everything to disk via syncFilesToDisk, and returns the
 // merged TranslatedProject.
-func (t *TranslatorAgent) RunChunked(ctx context.Context, state *types.State) (*types.TranslatedProject, error) {
+func (t *TranslatorAgent) RunChunked(ctx context.Context, state *types.State) (*artifacts.TranslatedProject, error) {
 	if state == nil {
 		return nil, fmt.Errorf("nil state passed to RunChunked")
 	}

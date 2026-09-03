@@ -15,6 +15,7 @@ import (
 	"github.com/cloudwego/eino/components/model"
 	"github.com/cloudwego/eino/schema"
 
+	"MAgHARCM/internal/artifacts"
 	"MAgHARCM/internal/logger"
 	"MAgHARCM/internal/tools"
 	"MAgHARCM/internal/types"
@@ -56,7 +57,7 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.St
 	iterStart := time.Now()
 	logger.LogAgent("Validator", "Validating target project `%s` (Iteration %d/%d)",
 		state.Task.TargetDir, state.Iteration, state.MaxIterations)
-	report := types.ValidationReport{
+	report := artifacts.ValidationReport{
 		IterationStart: iterStart,
 	}
 
@@ -207,7 +208,7 @@ func (v *ValidatorAgent) findUncoveredFunctions(state *types.State) []string {
 // It now delegates to remedyWithPlateau, which wraps the per-iteration
 // (generate tests → re-run suite) cycle in a bounded plateau-detected loop
 // (CodaMOSA / NEW-PRIM-27). The wrapped inner behavior is unchanged.
-func (v *ValidatorAgent) remedyCoverageGaps(ctx context.Context, state *types.State, uncovered []string, report *types.ValidationReport) {
+func (v *ValidatorAgent) remedyCoverageGaps(ctx context.Context, state *types.State, uncovered []string, report *artifacts.ValidationReport) {
 	v.remedyWithPlateau(ctx, state, uncovered, report)
 }
 
@@ -224,7 +225,7 @@ func (v *ValidatorAgent) remedyCoverageGaps(ctx context.Context, state *types.St
 // observed trajectory. If v.Plateau is nil (legacy callers / unit tests that
 // construct ValidatorAgent directly), a fresh detector is allocated so the
 // loop is always safe.
-func (v *ValidatorAgent) remedyWithPlateau(ctx context.Context, state *types.State, uncovered []string, report *types.ValidationReport) {
+func (v *ValidatorAgent) remedyWithPlateau(ctx context.Context, state *types.State, uncovered []string, report *artifacts.ValidationReport) {
 	detector := v.Plateau
 	if detector == nil {
 		detector = NewPlateauDetector()
@@ -290,7 +291,7 @@ func (v *ValidatorAgent) remedyWithPlateau(ctx context.Context, state *types.Sta
 }
 
 // finalizeReport evaluates convergence criteria and sets milestone diagnostics.
-func (v *ValidatorAgent) finalizeReport(report *types.ValidationReport, state *types.State, testOutput string) {
+func (v *ValidatorAgent) finalizeReport(report *artifacts.ValidationReport, state *types.State, testOutput string) {
 	report.AllSuccess = report.CompilationSuccess && len(report.CompilationErrors) == 0 && report.FailedTests == 0 && report.RealTests >= report.MinRealTests
 	if report.AllSuccess {
 		report.Diagnostics = fmt.Sprintf("All %d tests passed successfully! Codebase compiled cleanly without errors.", report.PassedTests)
@@ -303,7 +304,7 @@ func (v *ValidatorAgent) finalizeReport(report *types.ValidationReport, state *t
 	}
 }
 
-func (v *ValidatorAgent) generateAdditionalTests(ctx context.Context, state *types.State, uncovered []string, report *types.ValidationReport) {
+func (v *ValidatorAgent) generateAdditionalTests(ctx context.Context, state *types.State, uncovered []string, report *artifacts.ValidationReport) {
 	var sourceFilesData []string
 	for relPath, content := range state.TranslatedProject.Files {
 		if !strings.HasPrefix(relPath, "tests/") {
@@ -354,9 +355,9 @@ var fileErrorPattern = regexp.MustCompile(`(?:^|["'\s])([A-Za-z0-9_./\-]+\.[A-Za
 
 // scanTargetFiles enumerates target source + test files and joins each file to
 // any compilation error mentioning it. Used for per-file observability.
-func scanTargetFiles(state *types.State, compileErrors []string) []types.FileStatus {
+func scanTargetFiles(state *types.State, compileErrors []string) []artifacts.FileStatus {
 	targetDir := state.Task.TargetDir
-	statuses := []types.FileStatus{}
+	statuses := []artifacts.FileStatus{}
 	seen := map[string]bool{}
 
 	// First: in-memory translated project files (most authoritative).
@@ -365,7 +366,7 @@ func scanTargetFiles(state *types.State, compileErrors []string) []types.FileSta
 		if strings.HasPrefix(relPath, "tests/") || strings.HasSuffix(relPath, "_test."+strings.ToLower(state.Task.TargetLang)) {
 			kind = "test"
 		}
-		statuses = append(statuses, types.FileStatus{
+		statuses = append(statuses, artifacts.FileStatus{
 			Path:      relPath,
 			Kind:      kind,
 			Compiles:  true, // assume yes; failure is signaled by error grep below
@@ -392,7 +393,7 @@ func scanTargetFiles(state *types.State, compileErrors []string) []types.FileSta
 		if strings.HasPrefix(rel, "tests/") || strings.HasSuffix(rel, "_test."+strings.ToLower(state.Task.TargetLang)) {
 			kind = "test"
 		}
-		statuses = append(statuses, types.FileStatus{
+		statuses = append(statuses, artifacts.FileStatus{
 			Path:      rel,
 			Kind:      kind,
 			Compiles:  true,

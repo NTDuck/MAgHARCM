@@ -14,6 +14,7 @@ import (
 	"github.com/cloudwego/eino/components/model"
 	"github.com/cloudwego/eino/schema"
 
+	"MAgHARCM/internal/artifacts"
 	"MAgHARCM/internal/languages"
 	"MAgHARCM/internal/logger"
 	"MAgHARCM/internal/tools"
@@ -198,17 +199,17 @@ func (p *PlanningAgent) writeSkeletonFiles(targetDir string, skeletonFiles map[s
 
 // parseImplementationPlan parses the implementation plan sections into structured steps
 // and schedules them in reverse topological order (NEW-PRIM-1, NEW-PRIM-2 / GAP-02).
-func (p *PlanningAgent) parseImplementationPlan(rawContent string, fragments []string) types.ImplementationPlan {
+func (p *PlanningAgent) parseImplementationPlan(rawContent string, fragments []string) artifacts.ImplementationPlan {
 	planStr := extractBlock(rawContent, "=== IMPLEMENTATION_PLAN ===", "")
 	if planStr == "" {
 		planStr = rawContent
 	}
 
 	orderedFrags := ComputeReverseTopoOrder(fragments, nil)
-	var partASteps []types.PlanStep
+	var partASteps []artifacts.PlanStep
 	if len(orderedFrags) > 0 {
 		for i, frag := range orderedFrags {
-			partASteps = append(partASteps, types.PlanStep{
+			partASteps = append(partASteps, artifacts.PlanStep{
 				ID:              fmt.Sprintf("A%d", i+1),
 				Description:     fmt.Sprintf("Translate module fragment: %s", frag),
 				Type:            "source",
@@ -217,15 +218,15 @@ func (p *PlanningAgent) parseImplementationPlan(rawContent string, fragments []s
 			})
 		}
 	} else {
-		partASteps = []types.PlanStep{
+		partASteps = []artifacts.PlanStep{
 			{ID: "A1", Description: "Translate all source modules to target language", Type: "source", ReverseTopoRank: 1},
 		}
 	}
 
-	return types.ImplementationPlan{
+	return artifacts.ImplementationPlan{
 		Overview: extractSection(planStr, "## Overview", "## Part A"),
 		PartA:    partASteps,
-		PartB: []types.PlanStep{
+		PartB: []artifacts.PlanStep{
 			{ID: "B1", Description: "Translate and execute test suite", Type: "test", ReverseTopoRank: len(partASteps) + 1},
 		},
 		RawPlan: planStr,

@@ -11,6 +11,7 @@ import (
 	"github.com/cloudwego/eino/components/model"
 	"github.com/cloudwego/eino/schema"
 
+	"MAgHARCM/internal/artifacts"
 	"MAgHARCM/internal/logger"
 	"MAgHARCM/internal/tools"
 	"MAgHARCM/internal/types"
@@ -136,8 +137,8 @@ func (a *AnalyzerAgent) synthesizeAnalysis(ctx context.Context, state *types.Sta
 
 // populateAnalyzerOutput unpacks markdown sections into structured documents on state.
 func (a *AnalyzerAgent) populateAnalyzerOutput(state *types.State, rawDoc, strategy, rationale string) {
-	state.AnalyzerOutput.Research = types.DocumentWrapper[types.SourceProjectResearch]{
-		Data: types.SourceProjectResearch{
+	state.AnalyzerOutput.Research = artifacts.DocumentWrapper[artifacts.SourceProjectResearch]{
+		Data: artifacts.SourceProjectResearch{
 			Overview:           extractSection(rawDoc, "## 1. Overview", "## 2. Directory Structure"),
 			DirectoryStructure: extractSection(rawDoc, "## 2. Directory Structure", "## 3. Data Structures"),
 			MigrationStrategy:  strategy,
@@ -145,15 +146,15 @@ func (a *AnalyzerAgent) populateAnalyzerOutput(state *types.State, rawDoc, strat
 		},
 		RawMarkdown: rawDoc,
 	}
-	state.AnalyzerOutput.Library = types.DocumentWrapper[types.ThirdPartyLibraryAnalysis]{
-		Data: types.ThirdPartyLibraryAnalysis{
-			Libraries: []types.LibraryMapping{},
+	state.AnalyzerOutput.Library = artifacts.DocumentWrapper[artifacts.ThirdPartyLibraryAnalysis]{
+		Data: artifacts.ThirdPartyLibraryAnalysis{
+			Libraries: []artifacts.LibraryMapping{},
 		},
 		RawMarkdown: extractSection(rawDoc, "=== SECTION: LIBRARY_ANALYSIS ===", "=== SECTION: TARGET_DESIGN ==="),
 	}
 
-	state.AnalyzerOutput.Design = types.DocumentWrapper[types.TargetProjectDesign]{
-		Data: types.TargetProjectDesign{
+	state.AnalyzerOutput.Design = artifacts.DocumentWrapper[artifacts.TargetProjectDesign]{
+		Data: artifacts.TargetProjectDesign{
 			Overview: extractSection(rawDoc, "## Target Architecture", "## Module Decomposition"),
 		},
 		RawMarkdown: extractSection(rawDoc, "=== SECTION: TARGET_DESIGN ===", ""),

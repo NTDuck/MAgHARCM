@@ -1,4 +1,4 @@
-package types
+package artifacts
 
 // TranslatedProject contains the files written or edited in the target repository.
 type TranslatedProject struct {

@@ -7,6 +7,7 @@ import (
 	"strings"
 	"testing"
 
+	"MAgHARCM/internal/artifacts"
 	"MAgHARCM/internal/types"
 )
 
@@ -20,7 +21,7 @@ func TestCheckpointSaveLoadRoundTrip(t *testing.T) {
 		Iteration:     3,
 		MaxIterations: 50,
 		IsComplete:    false,
-		TranslatedProject: types.TranslatedProject{
+		TranslatedProject: artifacts.TranslatedProject{
 			Files: map[string]string{"src/lib.rs": "fn hi() {}"},
 		},
 	}
