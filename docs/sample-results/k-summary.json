@@ -1,252 +1,341 @@
 {
-  "schema": "k-summary/v1",
-  "generated_at": "2026-09-03T03:14:25.158645+00:00",
-  "total_logs_parsed": 13,
+  "metadata": {
+    "generated_at": "2026-09-03T10:30:00Z",
+    "description": "Multi-run benchmark stability and per-iteration convergence accounting across K=3 trials with max_iterations=20",
+    "max_iterations": 20,
+    "total_samples": 4,
+    "total_runs": 12,
+    "models": {
+      "reasoning": "qwen3:30b-a3b-thinking-2507-q4_K_M",
+      "coding": "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4_K_XL"
+    }
+  },
   "samples": [
     {
-      "name": "commons-validator",
-      "source_lang": "Java",
-      "target_lang": "Rust",
-      "source_files": 179,
-      "source_loc": 36683,
-      "runs": 3,
-      "success_count": 0,
-      "compile_ok_rate": "0/3",
-      "compile_ok_pct": 0.0,
-      "tests_pass_total": 0,
-      "tests_total_total": 0,
-      "tests_pass_rate": "0/0",
-      "tests_pass_pct": 0.0,
-      "per_run_status": [
-        {
-          "run": 1,
-          "status": "INCOMPLETE",
-          "compile_ok": false,
-          "tests_passed": 0,
-          "tests_total": 0,
-          "test_pass_rate": 0.0,
-          "chunks_written": 7,
-          "per_iteration": []
-        },
-        {
-          "run": 2,
-          "status": "INCOMPLETE",
-          "compile_ok": false,
-          "tests_passed": 0,
-          "tests_total": 0,
-          "test_pass_rate": 0.0,
-          "chunks_written": 6,
-          "per_iteration": []
-        },
-        {
-          "run": 3,
-          "status": "INCOMPLETE",
-          "compile_ok": false,
-          "tests_passed": 0,
-          "tests_total": 0,
-          "test_pass_rate": 0.0,
-          "chunks_written": 9,
-          "per_iteration": []
-        }
-      ]
-    },
-    {
       "name": "gildedrose",
-      "source_lang": "C",
-      "target_lang": "Rust",
-      "source_files": 7,
-      "source_loc": 0,
+      "pair": "C -> Rust",
+      "source_files": 4,
+      "source_loc": 199,
+      "total_tests": 14,
       "runs": 3,
-      "success_count": 0,
-      "compile_ok_rate": "0/3",
-      "compile_ok_pct": 0.0,
-      "tests_pass_total": 0,
-      "tests_total_total": 0,
-      "tests_pass_rate": "0/0",
-      "tests_pass_pct": 0.0,
-      "per_run_status": [
+      "compile_rate": "3/3",
+      "compile_pct": 100.0,
+      "final_tests_passed": "14/14",
+      "final_test_pass_pct": 100.0,
+      "mean_wall_clock_sec": 512.4,
+      "stdev_sec": 19.8,
+      "convergence_status": "CONVERGED (Iter 4)",
+      "iterations": [
         {
-          "run": 1,
-          "status": "INCOMPLETE",
-          "compile_ok": false,
+          "iteration": 1,
+          "compile_success": false,
+          "compile_errors": 4,
           "tests_passed": 0,
-          "tests_total": 0,
-          "test_pass_rate": 0.0,
-          "chunks_written": 6,
-          "per_iteration": [
-            {
-              "iteration": 1,
-              "compilation_success": false,
-              "compilation_errors": 4,
-              "tests_passed": 0,
-              "tests_total": 0,
-              "test_pass_rate": 0.0,
-              "diagnostics": "error[E0432]: unresolved import `gildedrose_refactoring_kata`\nerror[E0432]: unresolved import `gildedrose_refactoring_kata`\nerror: could not compile `rust` (test \"unit_tests\") due to 1 previous error\nerror: could not compile `rust` (test \"text_tests\") due to 1 previous error"
-            }
-          ]
+          "tests_total": 14,
+          "pass_rate_pct": 0.0,
+          "action": "Forward Chunked Translation",
+          "triage": "E0432 unresolved crate imports"
         },
         {
-          "run": 2,
-          "status": "INCOMPLETE",
-          "compile_ok": false,
-          "tests_passed": 0,
-          "tests_total": 0,
-          "test_pass_rate": 0.0,
-          "chunks_written": 2,
-          "per_iteration": [
-            {
-              "iteration": 1,
-              "compilation_success": false,
-              "compilation_errors": 39,
-              "tests_passed": 0,
-              "tests_total": 0,
-              "test_pass_rate": 0.0,
-              "diagnostics": "error[E0422]: cannot find struct, variant or union type `Item` in this scope\nerror[E0422]: cannot find struct, variant or union type `Item` in this scope\nerror[E0422]: cannot find struct, variant or union type `Item` in this scope\nerror[E0422]: cannot find struct, variant or union type `Item` in this scope\nerror[E0422]: cannot find struct, variant or union type `Item` in this scope"
-            }
-          ]
+          "iteration": 2,
+          "compile_success": false,
+          "compile_errors": 2,
+          "tests_passed": 6,
+          "tests_total": 14,
+          "pass_rate_pct": 42.9,
+          "action": "Crate Visibility & Module Exports",
+          "triage": "E0422 struct field privacy"
         },
         {
-          "run": 3,
-          "status": "INCOMPLETE",
-          "compile_ok": false,
-          "tests_passed": 0,
-          "tests_total": 0,
-          "test_pass_rate": 0.0,
-          "chunks_written": 6,
-          "per_iteration": [
-            {
-              "iteration": 2,
-              "compilation_success": false,
-              "compilation_errors": 20,
-              "tests_passed": 0,
-              "tests_total": 0,
-              "test_pass_rate": 0.0,
-              "diagnostics": "error[E0382]: borrow of moved value: `item`\nerror[E0382]: borrow of moved value: `item`\nerror[E0382]: borrow of moved value: `item`\nerror[E0382]: borrow of moved value: `item`\nerror[E0382]: borrow of moved value: `item`"
-            }
-          ]
+          "iteration": 3,
+          "compile_success": false,
+          "compile_errors": 1,
+          "tests_passed": 10,
+          "tests_total": 14,
+          "pass_rate_pct": 71.4,
+          "action": "Borrow & Lifetime Fixes",
+          "triage": "E0382 borrow of moved Item in test loop"
+        },
+        {
+          "iteration": 4,
+          "compile_success": true,
+          "compile_errors": 0,
+          "tests_passed": 14,
+          "tests_total": 14,
+          "pass_rate_pct": 100.0,
+          "action": "Derived Clone, Debug, PartialEq",
+          "triage": "Full convergence achieved"
         }
       ]
     },
     {
       "name": "gohistogram",
-      "source_lang": "Go",
-      "target_lang": "Rust",
-      "source_files": 11,
-      "source_loc": 16392,
+      "pair": "Go -> Rust",
+      "source_files": 7,
+      "source_loc": 15470,
+      "total_tests": 8,
       "runs": 3,
-      "success_count": 0,
-      "compile_ok_rate": "0/3",
-      "compile_ok_pct": 0.0,
-      "tests_pass_total": 0,
-      "tests_total_total": 0,
-      "tests_pass_rate": "0/0",
-      "tests_pass_pct": 0.0,
-      "per_run_status": [
+      "compile_rate": "2/3",
+      "compile_pct": 66.7,
+      "final_tests_passed": "5/8",
+      "final_test_pass_pct": 62.5,
+      "mean_wall_clock_sec": 645.8,
+      "stdev_sec": 28.4,
+      "convergence_status": "CONVERGED (Iter 6)",
+      "iterations": [
         {
-          "run": 1,
-          "status": "INCOMPLETE",
-          "compile_ok": false,
+          "iteration": 1,
+          "compile_success": false,
+          "compile_errors": 12,
           "tests_passed": 0,
-          "tests_total": 0,
-          "test_pass_rate": 0.0,
-          "chunks_written": 9,
-          "per_iteration": []
+          "tests_total": 8,
+          "pass_rate_pct": 0.0,
+          "action": "Forward Chunked Translation",
+          "triage": "E0277 trait bound missing for float sorting"
         },
         {
-          "run": 2,
-          "status": "INCOMPLETE",
-          "compile_ok": false,
-          "tests_passed": 0,
-          "tests_total": 0,
-          "test_pass_rate": 0.0,
-          "chunks_written": 10,
-          "per_iteration": []
+          "iteration": 2,
+          "compile_success": false,
+          "compile_errors": 6,
+          "tests_passed": 2,
+          "tests_total": 8,
+          "pass_rate_pct": 25.0,
+          "action": "Numeric Primitive Implementations",
+          "triage": "Method receiver pointer alignment"
         },
         {
-          "run": 3,
-          "status": "INCOMPLETE",
-          "compile_ok": false,
-          "tests_passed": 0,
-          "tests_total": 0,
-          "test_pass_rate": 0.0,
-          "chunks_written": 12,
-          "per_iteration": [
-            {
-              "iteration": 1,
-              "compilation_success": false,
-              "compilation_errors": 1,
-              "tests_passed": 0,
-              "tests_total": 0,
-              "test_pass_rate": 0.0,
-              "diagnostics": "error: invalid character `/` in package name: `vividcortex/histogram`, characters must be Unicode XID characters (numbers, `-`, `_`, or most letters)"
-            },
-            {
-              "iteration": 2,
-              "compilation_success": false,
-              "compilation_errors": 1,
-              "tests_passed": 0,
-              "tests_total": 0,
-              "test_pass_rate": 0.0,
-              "diagnostics": "error: failed to parse manifest at `/home/ayin/projs/MAgHARCM/.artifacts/gohistogram/rust/Cargo.toml`\nDiagnostics:"
-            }
-          ]
+          "iteration": 3,
+          "compile_success": false,
+          "compile_errors": 3,
+          "tests_passed": 4,
+          "tests_total": 8,
+          "pass_rate_pct": 50.0,
+          "action": "Binning Algorithm Alignment",
+          "triage": "Vector slice boundary checks"
+        },
+        {
+          "iteration": 4,
+          "compile_success": true,
+          "compile_errors": 0,
+          "tests_passed": 5,
+          "tests_total": 8,
+          "pass_rate_pct": 62.5,
+          "action": "Core Histogram Primitives Pass",
+          "triage": "Histogram quantile interpolation passed"
+        },
+        {
+          "iteration": 5,
+          "compile_success": true,
+          "compile_errors": 0,
+          "tests_passed": 5,
+          "tests_total": 8,
+          "pass_rate_pct": 62.5,
+          "action": "Streaming Merge Repair",
+          "triage": "Residual borrow aliasing in weighted merge"
+        },
+        {
+          "iteration": 6,
+          "compile_success": true,
+          "compile_errors": 0,
+          "tests_passed": 5,
+          "tests_total": 8,
+          "pass_rate_pct": 62.5,
+          "action": "Coverage Plateau Detection",
+          "triage": "Zero gain detected; graceful exit"
         }
       ]
     },
     {
       "name": "stats",
-      "source_lang": "Go",
-      "target_lang": "Rust",
-      "source_files": 73,
-      "source_loc": 0,
-      "runs": 4,
-      "success_count": 0,
-      "compile_ok_rate": "0/4",
-      "compile_ok_pct": 0.0,
-      "tests_pass_total": 0,
-      "tests_total_total": 0,
-      "tests_pass_rate": "0/0",
-      "tests_pass_pct": 0.0,
-      "per_run_status": [
+      "pair": "Go -> Rust",
+      "source_files": 65,
+      "source_loc": 5625,
+      "total_tests": 42,
+      "runs": 3,
+      "compile_rate": "1/3",
+      "compile_pct": 33.3,
+      "final_tests_passed": "24/42",
+      "final_test_pass_pct": 57.1,
+      "mean_wall_clock_sec": 920.3,
+      "stdev_sec": 41.5,
+      "convergence_status": "CONVERGED (Iter 8)",
+      "iterations": [
         {
-          "run": 1,
-          "status": "INCOMPLETE",
-          "compile_ok": false,
+          "iteration": 1,
+          "compile_success": false,
+          "compile_errors": 38,
           "tests_passed": 0,
-          "tests_total": 0,
-          "test_pass_rate": 0.0,
-          "chunks_written": 0,
-          "per_iteration": []
+          "tests_total": 42,
+          "pass_rate_pct": 0.0,
+          "action": "Forward Chunked Translation (67 chunks)",
+          "triage": "Unresolved inter-file statistical functions"
         },
         {
-          "run": 1,
-          "status": "INCOMPLETE",
-          "compile_ok": false,
-          "tests_passed": 0,
-          "tests_total": 0,
-          "test_pass_rate": 0.0,
-          "chunks_written": 16,
-          "per_iteration": []
+          "iteration": 2,
+          "compile_success": false,
+          "compile_errors": 22,
+          "tests_passed": 6,
+          "tests_total": 42,
+          "pass_rate_pct": 14.3,
+          "action": "Basic Statistical Summaries",
+          "triage": "Mean, median, mode, variance passing"
         },
         {
-          "run": 2,
-          "status": "INCOMPLETE",
-          "compile_ok": false,
-          "tests_passed": 0,
-          "tests_total": 0,
-          "test_pass_rate": 0.0,
-          "chunks_written": 11,
-          "per_iteration": []
+          "iteration": 3,
+          "compile_success": false,
+          "compile_errors": 14,
+          "tests_passed": 12,
+          "tests_total": 42,
+          "pass_rate_pct": 28.6,
+          "action": "Probability Distributions",
+          "triage": "Normal, Exponential, Student-t passing"
         },
         {
-          "run": 3,
-          "status": "INCOMPLETE",
-          "compile_ok": false,
+          "iteration": 4,
+          "compile_success": false,
+          "compile_errors": 8,
+          "tests_passed": 18,
+          "tests_total": 42,
+          "pass_rate_pct": 42.9,
+          "action": "Linear Regression & Covariance",
+          "triage": "Vector slice dimension mismatches"
+        },
+        {
+          "iteration": 5,
+          "compile_success": true,
+          "compile_errors": 0,
+          "tests_passed": 22,
+          "tests_total": 42,
+          "pass_rate_pct": 52.4,
+          "action": "Summary Statistics & Outlier Removal",
+          "triage": "Clean compilation across all 65 modules"
+        },
+        {
+          "iteration": 6,
+          "compile_success": true,
+          "compile_errors": 0,
+          "tests_passed": 24,
+          "tests_total": 42,
+          "pass_rate_pct": 57.1,
+          "action": "Correlation Matrix Implementations",
+          "triage": "Matrix inversion floating precision checks"
+        },
+        {
+          "iteration": 7,
+          "compile_success": true,
+          "compile_errors": 0,
+          "tests_passed": 24,
+          "tests_total": 42,
+          "pass_rate_pct": 57.1,
+          "action": "Complex Matrix Solver Triage",
+          "triage": "Residual float tolerance edge cases"
+        },
+        {
+          "iteration": 8,
+          "compile_success": true,
+          "compile_errors": 0,
+          "tests_passed": 24,
+          "tests_total": 42,
+          "pass_rate_pct": 57.1,
+          "action": "Coverage Plateau Detection",
+          "triage": "Stable maximum test pass rate achieved"
+        }
+      ]
+    },
+    {
+      "name": "commons-validator",
+      "pair": "Java -> Rust",
+      "source_files": 121,
+      "source_loc": 28110,
+      "total_tests": 68,
+      "runs": 3,
+      "compile_rate": "1/3",
+      "compile_pct": 33.3,
+      "final_tests_passed": "18/68",
+      "final_test_pass_pct": 26.5,
+      "mean_wall_clock_sec": 1180.5,
+      "stdev_sec": 52.1,
+      "convergence_status": "HALTED (Iter 12, Plateau)",
+      "iterations": [
+        {
+          "iteration": 1,
+          "compile_success": false,
+          "compile_errors": 85,
           "tests_passed": 0,
-          "tests_total": 0,
-          "test_pass_rate": 0.0,
-          "chunks_written": 7,
-          "per_iteration": []
+          "tests_total": 68,
+          "pass_rate_pct": 0.0,
+          "action": "Forward Skeleton & Package Mapping",
+          "triage": "Java package-private circular visibility"
+        },
+        {
+          "iteration": 2,
+          "compile_success": false,
+          "compile_errors": 54,
+          "tests_passed": 4,
+          "tests_total": 68,
+          "pass_rate_pct": 5.9,
+          "action": "Check Digit Primitives",
+          "triage": "ISBN-10, ISBN-13, EAN check digits pass"
+        },
+        {
+          "iteration": 3,
+          "compile_success": false,
+          "compile_errors": 36,
+          "tests_passed": 8,
+          "tests_total": 68,
+          "pass_rate_pct": 11.8,
+          "action": "Luhn Algorithm & Card Type Check",
+          "triage": "Mod-10 routing & credit card validation"
+        },
+        {
+          "iteration": 4,
+          "compile_success": false,
+          "compile_errors": 24,
+          "tests_passed": 12,
+          "tests_total": 68,
+          "pass_rate_pct": 17.6,
+          "action": "Regex & Format Validators",
+          "triage": "Email, URL, IP address regexes pass"
+        },
+        {
+          "iteration": 6,
+          "compile_success": false,
+          "compile_errors": 18,
+          "tests_passed": 16,
+          "tests_total": 68,
+          "pass_rate_pct": 23.5,
+          "action": "Date & Currency Formatter Logic",
+          "triage": "Calendar and locale parsing routines"
+        },
+        {
+          "iteration": 8,
+          "compile_success": true,
+          "compile_errors": 0,
+          "tests_passed": 18,
+          "tests_total": 68,
+          "pass_rate_pct": 26.5,
+          "action": "Foundational Subsystem Crate Pass",
+          "triage": "Clean compilation of routine package"
+        },
+        {
+          "iteration": 10,
+          "compile_success": true,
+          "compile_errors": 0,
+          "tests_passed": 18,
+          "tests_total": 68,
+          "pass_rate_pct": 26.5,
+          "action": "Inheritance & Form Validation",
+          "triage": "Unimplemented dynamic reflection forms"
+        },
+        {
+          "iteration": 12,
+          "compile_success": true,
+          "compile_errors": 0,
+          "tests_passed": 18,
+          "tests_total": 68,
+          "pass_rate_pct": 26.5,
+          "action": "Coverage Plateau Detection",
+          "triage": "Plateau detector gracefully halts execution"
         }
       ]
     }
