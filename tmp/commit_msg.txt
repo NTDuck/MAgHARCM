@@ -1,35 +1,37 @@
-paper+figures+obsidian: complete ReCodeAgent-style rewrite
+figure(dataflow): replace obsolete tool-centric spine with 4-agent pipeline
 
-Paper:
-- Re-author intro with 4 numbered challenges framing the research gap
-- Rewrite method section with Problem Definition + Architecture overview
-- Restructure tools subsection ahead of 4 numbered agent subsections
-- Add Algorithm 1 box for the analyze-plan-translate-validate loop
-- Rebuild sec_eval around 4 research questions (effectiveness, test
-  translation quality, ablation, cost)
-- Group sec_related by rule-based / neuro-symbolic / agentic
-- Rewrite sec_conclusion with summary, findings, limitations, future work
-- Add missing bib entries (codemod, leaderboards)
-- Define missing \sem macro
+Per advisory: the dataflow still showed the obsolete PRIM-2 Symbol
+Navigator + Prior Memory as the spine, when the actual architecture
+is parser -> analyzer -> planner -> translator -> validator.
 
-Figures:
-- Validate 3 figures against archify showcase 9-checkpoint standard
-- Fix micro-segments via proper channel routing
-- Shrink viewBox widths to keep text >=6px at 1440x900 desktop
-- Fix validate-repair via diagonal in lifecycle diagram
-- All 3 figures pass archify validate + visual-check
+Restructured the dataflow to show:
+- Source Intake stage: parser (Tree-Sitter) + Manifest
+- Analyze stage: Analyzer (8B reasoning) emitting 3 documents
+- Plan & Slice stage: Planner (Reverse-Topo DAG)
+- Translate stage: Translator (4B coding) bounded by Symbol
+  Navigator + Prior Memory as context inputs (not spine)
+- Validate stage: Target Crate -> Validator cascade -> Weakening
+  Guard
+- Dashed repair back-edge: validator -> translator routed around
+  the bottom of the diagram (mirrors workflow's repair loop)
 
-Obsidian:
-- Fix 30B reasoning-model reference to match the actual 8B default
-  in mise.toml and .config/gildedrose.yml
+Routing fixes (10 flows, all showcase-validated):
+- Use explicit via arrays with x/y alignment to neighbor segments
+- Spread spine corridor at x=620 (right of stage 2 nodes) to
+  prevent edge-through-node collisions on stacked nodes
+- Route translator -> rust_crate via x=820 (left of validator column)
+- Route repair via x=725 corridor below node row
+- labelAt positions chosen to avoid label-route-clearance violations
 
-Result: 16-page main.pdf, 982KB, all references resolved, zero
-undefined warnings. Three figures at showcase quality.
+Result: archify validate --quality showcase passes for all 9 checks
+on the dataflow; lifecycle unchanged and still passing.
 
 Verification:
-- pdflatex + bibtex + pdflatex + pdflatex: clean compile
-- archify validate workflow/dataflow/lifecycle --quality showcase: all pass
-- archify visual-check at 1440x900 light/dark: figures render cleanly
+- python3 -c 'import json; json.load(open("chunked-translation.dataflow.json"))'
+  passes (10 flows, 3 cards)
+- archify validate dataflow --quality showcase: ok=true
+- archify render dataflow: produces chunked-translation.html
+- archify visual-check 1440x900: diagram fits, header controls extend
+  past viewport (benign; the diagram content is within bounds)
 
-Refs: p01_recodeagent (ReCodeAgent ICLR 2026 paper).
-
+Refs: structure audit advisory on PRIM-2 obsolescence.

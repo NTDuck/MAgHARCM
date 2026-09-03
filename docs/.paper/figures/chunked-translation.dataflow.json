@@ -2,69 +2,69 @@
   "schema_version": 1,
   "diagram_type": "dataflow",
   "meta": {
-    "title": "Chunked Translation & Bounded-Context Synthesis Data Flow",
-    "subtitle": "Translator Agent assembles \u2264 4KB context per fragment from Symbol Navigator and Prior-Modules Memory.",
+    "title": "MAgHARCM 4-Agent Pipeline Data Flow",
+    "subtitle": "parser -> analyzer -> planner -> translator -> validator with dashed repair back-edge.",
     "output": "docs/.paper/figures/chunked-translation.html",
     "viewBox": [1080, 820]
   },
   "stages": [
-    { "label": "Source Codebase" },
+    { "label": "Source Intake" },
+    { "label": "Analyze" },
     { "label": "Plan & Slice" },
-    { "label": "Bounded Context" },
-    { "label": "Translator" },
-    { "label": "Validate & Repair" }
+    { "label": "Translate" },
+    { "label": "Validate" }
   ],
   "nodes": [
-    { "id": "src_ast", "type": "backend", "label": "Tree-Sitter", "sublabel": "Source AST", "stage": 0, "row": 0, "tag": "PA tool" },
-    { "id": "src_manifest", "type": "backend", "label": "Manifest", "sublabel": "pom / go.mod", "stage": 0, "row": 1, "tag": "Deps" },
-    { "id": "reverse_topo", "type": "backend", "label": "Reverse-Topo", "sublabel": "Back-Edge Cut", "stage": 1, "row": 0, "tag": "Planner" },
-    { "id": "skeleton", "type": "backend", "label": "Skeleton", "sublabel": "Sigs + Traits", "stage": 1, "row": 1, "tag": "Part A" },
-    { "id": "nav_symbols", "type": "backend", "label": "Symbol Navigator", "sublabel": "Defs + Refs", "stage": 2, "row": 0, "tag": "<= 4KB" },
-    { "id": "prior_summary", "type": "database", "label": "Prior Memory", "sublabel": "Signatures", "stage": 2, "row": 1, "tag": "<= 4KB" },
-    { "id": "coding_slm", "type": "cloud", "label": "Coding SLM", "sublabel": "Qwen3-4B", "stage": 3, "row": 0, "tag": "Ollama" },
+    { "id": "src_ast", "type": "backend", "label": "Tree-Sitter", "sublabel": "Source AST", "stage": 0, "row": 0, "tag": "parser" },
+    { "id": "src_manifest", "type": "backend", "label": "Manifest", "sublabel": "pom / go.mod", "stage": 0, "row": 1, "tag": "deps" },
+    { "id": "analyzer_doc", "type": "backend", "label": "Analyzer", "sublabel": "Research + Design", "stage": 1, "row": 0, "tag": "8B reasoning" },
+    { "id": "skeleton", "type": "backend", "label": "Planner", "sublabel": "Reverse-Topo DAG", "stage": 2, "row": 0, "tag": "Part A + B" },
+    { "id": "nav_symbols", "type": "backend", "label": "Symbol Navigator", "sublabel": "<= 4KB Defs", "stage": 2, "row": 1, "tag": "context" },
+    { "id": "prior_memory", "type": "database", "label": "Prior Memory", "sublabel": "<= 4KB Signatures", "stage": 2, "row": 2, "tag": "context" },
+    { "id": "translator_agent", "type": "cloud", "label": "Translator", "sublabel": "Chunked Emit", "stage": 3, "row": 0, "tag": "4B coding" },
     { "id": "rust_crate", "type": "database", "label": "Target Crate", "sublabel": "lib.rs + Tests", "stage": 4, "row": 0, "tag": "Cargo Build" },
-    { "id": "validation_report", "type": "backend", "label": "Validator", "sublabel": "Cascade", "stage": 4, "row": 1, "tag": "Diagnostics" },
+    { "id": "validator_agent", "type": "backend", "label": "Validator", "sublabel": "Cascade", "stage": 4, "row": 1, "tag": "AST + cargo" },
     { "id": "weakening_guard", "type": "security", "label": "Weakening Guard", "sublabel": "Assertions", "stage": 4, "row": 2, "tag": "Defense" }
   ],
   "flows": [
-    { "from": "src_ast", "to": "reverse_topo", "label": "fragments", "variant": "emphasis" },
-    { "from": "src_manifest", "to": "skeleton", "label": "deps", "variant": "default" },
-    { "from": "reverse_topo", "to": "skeleton", "label": "ordering", "variant": "default", "labelDy": 24 },
-    { "from": "skeleton", "to": "nav_symbols", "label": "fragment", "variant": "emphasis" },
-    { "from": "prior_summary", "to": "nav_symbols", "label": "signatures", "variant": "default", "route": "auto" },
-    { "from": "nav_symbols", "to": "coding_slm", "label": "context", "variant": "emphasis", "route": "auto", "labelDy": 56, "via": [[700, 157], [700, 220], [670, 220], [670, 200], [689, 200]] },
-    { "from": "coding_slm", "to": "rust_crate", "label": "translated", "variant": "emphasis", "route": "auto", "labelDy": 56, "via": [[915, 157], [915, 220], [885, 220], [885, 200], [904, 200]] },
-    { "from": "coding_slm", "to": "prior_summary", "label": "emit", "variant": "default" },
-    { "from": "rust_crate", "to": "validation_report", "label": "build + test", "variant": "default", "labelDy": 24 },
-    { "from": "validation_report", "to": "weakening_guard", "label": "assert diff", "variant": "security", "labelDy": 24 },
-    { "from": "validation_report", "to": "coding_slm", "label": "repair", "variant": "dashed" }
+    { "from": "src_ast", "to": "analyzer_doc", "label": "fragments", "variant": "emphasis", "via": [[280, 157], [280, 245], [280, 157]], "labelAt": [220, 235] },
+    { "from": "src_manifest", "to": "analyzer_doc", "label": "deps", "variant": "default", "via": [[156, 271], [156, 295], [280, 295], [280, 157]], "labelAt": [200, 305] },
+    { "from": "analyzer_doc", "to": "skeleton", "label": "3 documents", "variant": "emphasis", "via": [[395, 157], [395, 245], [395, 157]], "labelAt": [335, 235] },
+    { "from": "skeleton", "to": "translator_agent", "label": "plan (A+B)", "variant": "emphasis", "via": [[586, 157], [620, 157], [620, 230], [665, 230], [665, 157]], "labelAt": [615, 235] },
+    { "from": "nav_symbols", "to": "translator_agent", "label": "context", "variant": "emphasis", "via": [[586, 271], [620, 271], [620, 250], [665, 250], [665, 157]], "labelAt": [615, 260] },
+    { "from": "prior_memory", "to": "translator_agent", "label": "signatures", "variant": "default", "via": [[586, 385], [620, 385], [620, 280], [665, 280], [665, 157]], "labelAt": [615, 290] },
+    { "from": "translator_agent", "to": "rust_crate", "label": "translated files", "variant": "emphasis", "via": [[785, 157], [820, 157], [820, 175], [904, 175]], "labelAt": [820, 200] },
+    { "from": "rust_crate", "to": "validator_agent", "label": "build + test", "variant": "default", "labelDy": 24 },
+    { "from": "validator_agent", "to": "weakening_guard", "label": "assert diff", "variant": "security", "labelDy": 24 },
+    { "from": "validator_agent", "to": "translator_agent", "label": "repair", "variant": "dashed", "via": [[1100, 271], [1100, 650], [725, 650], [725, 157]] }
   ],
   "cards": [
     {
       "dot": "emerald",
-      "title": "Topological Slicing",
+      "title": "4-Agent Pipeline Spine",
       "items": [
-        "Tree-sitter extracts granular AST fragments across every source file",
-        "Reverse-topological sort cuts cyclic back-edges into a forward schedule",
-        "Part A (source) and Part B (tests) emitted in dependency order"
+        "parser emits source AST + manifest to the Analyzer",
+        "Analyzer produces 3 documents via Strategy Registry (TryInOrder)",
+        "Planner fragments AST into reverse-topological translation units",
+        "Translator emits target files in Part A + Part B order"
       ]
     },
     {
       "dot": "amber",
       "title": "Bounded Context Assembly",
       "items": [
-        "Symbol Navigator returns \u2264 4KB def/reference slice via LSP provider",
-        "Prior-Modules Memory injects compact 4KB emitted signatures",
-        "Small coding SLM operates within effective attention budget"
+        "Symbol Navigator returns <= 4KB def/reference slice via LSP",
+        "Prior-Modules Memory injects compact <= 4KB emitted signatures",
+        "Small 4B coding SLM operates within effective attention budget"
       ]
     },
     {
       "dot": "rose",
-      "title": "Validation & Repair Cascade",
+      "title": "Validation + Repair Cascade",
       "items": [
-        "AST pre-check before compiler, then cargo test, then guard, then plateau",
-        "Repair loop feeds diagnostics back to the Translator until convergence",
-        "Coverage plateau detector bounds repair spinning on large repositories"
+        "AST pre-check then cargo build then cargo test then guard",
+        "Dashed repair back-edge feeds diagnostics to the Translator",
+        "Plateau detector bounds repair spinning on large repositories"
       ]
     }
   ]

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="generator" content="archify 2.17.0-dev.1">
-  <title>Chunked Translation &amp; Bounded-Context Synthesis Data Flow Diagram</title>
+  <title>MAgHARCM 4-Agent Pipeline Data Flow Diagram</title>
   <script>
     // Resolve the theme before first paint so light-preference users don't
     // see a dark flash. The toolbar script below re-applies with UI state.
@@ -4955,9 +4955,9 @@
            data-preset-badge-blueprint="BLUEPRINT / REV 01"
            data-preset-badge-editorial="EDITORIAL / FIELD NOTE">
         <div class="pulse-dot"></div>
-        <h1>Chunked Translation &amp; Bounded-Context Synthesis Data Flow</h1>
+        <h1>MAgHARCM 4-Agent Pipeline Data Flow</h1>
       </div>
-      <p class="subtitle">Translator Agent assembles ≤ 4KB context per fragment from Symbol Navigator and Prior-Modules Memory.</p>
+      <p class="subtitle">parser -&gt; analyzer -&gt; planner -&gt; translator -&gt; validator with dashed repair back-edge.</p>
     </div>
 
     <script id="archify-guided-views-data" type="application/json">[]</script>
@@ -5006,8 +5006,8 @@
     <div class="diagram-container" data-detail-level="read"
          data-preset-badge-editorial-plate="ARCHIFY / PLATE 04">
       <svg viewBox="0 0 1080 820" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-preset="classic" data-quality-profile="showcase">
-        <title id="archify-diagram-title">Chunked Translation &amp; Bounded-Context Synthesis Data Flow</title>
-        <desc id="archify-diagram-description">Translator Agent assembles ≤ 4KB context per fragment from Symbol Navigator and Prior-Modules Memory.</desc>
+        <title id="archify-diagram-title">MAgHARCM 4-Agent Pipeline Data Flow</title>
+        <desc id="archify-diagram-description">parser -&gt; analyzer -&gt; planner -&gt; translator -&gt; validator with dashed repair back-edge.</desc>
         <!-- Definitions -->
         <defs>
           <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
@@ -5032,36 +5032,35 @@
 
         <!-- Data Stages -->
         <rect data-graph-role="structural-frame" data-composition-frame-kind="stage" data-composition-frame-id="0" x="16" y="46" width="168" height="700" rx="10" class="c-lane" stroke-width="1"/>
-        <text x="100" y="68" class="t-dim" font-size="9" font-weight="600" text-anchor="middle">01 / Source Codebase</text>
+        <text x="100" y="68" class="t-dim" font-size="9" font-weight="600" text-anchor="middle">01 / Source Intake</text>
 
         <rect data-graph-role="structural-frame" data-composition-frame-kind="stage" data-composition-frame-id="1" x="231" y="46" width="168" height="700" rx="10" class="c-lane" stroke-width="1"/>
-        <text x="315" y="68" class="t-dim" font-size="9" font-weight="600" text-anchor="middle">02 / Plan &amp; Slice</text>
+        <text x="315" y="68" class="t-dim" font-size="9" font-weight="600" text-anchor="middle">02 / Analyze</text>
 
         <rect data-graph-role="structural-frame" data-composition-frame-kind="stage" data-composition-frame-id="2" x="446" y="46" width="168" height="700" rx="10" class="c-lane" stroke-width="1"/>
-        <text x="530" y="68" class="t-dim" font-size="9" font-weight="600" text-anchor="middle">03 / Bounded Context</text>
+        <text x="530" y="68" class="t-dim" font-size="9" font-weight="600" text-anchor="middle">03 / Plan &amp; Slice</text>
 
         <rect data-graph-role="structural-frame" data-composition-frame-kind="stage" data-composition-frame-id="3" x="661" y="46" width="168" height="700" rx="10" class="c-lane" stroke-width="1"/>
-        <text x="745" y="68" class="t-dim" font-size="9" font-weight="600" text-anchor="middle">04 / Translator</text>
+        <text x="745" y="68" class="t-dim" font-size="9" font-weight="600" text-anchor="middle">04 / Translate</text>
 
         <rect data-graph-role="structural-frame" data-composition-frame-kind="stage" data-composition-frame-id="4" x="876" y="46" width="168" height="700" rx="10" class="c-lane" stroke-width="1"/>
-        <text x="960" y="68" class="t-dim" font-size="9" font-weight="600" text-anchor="middle">05 / Validate &amp; Repair</text>
+        <text x="960" y="68" class="t-dim" font-size="9" font-weight="600" text-anchor="middle">05 / Validate</text>
 
         <!-- Flow paths -->
-        <path data-edge-from="src_ast" data-edge-to="reverse_topo" data-edge-label="fragments" data-edge-key="0" data-composition-points="156,157;259,157" d="M 156 157 L 259 157" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="src_manifest" data-edge-to="skeleton" data-edge-label="deps" data-edge-key="1" data-composition-points="156,271;259,271" d="M 156 271 L 259 271" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="reverse_topo" data-edge-to="skeleton" data-edge-label="ordering" data-edge-key="2" data-composition-points="315,186;315,242" d="M 315 186 L 315 242" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="skeleton" data-edge-to="nav_symbols" data-edge-label="fragment" data-edge-key="3" data-composition-points="371,271;422.5,271;422.5,157;474,157" d="M 371 271 L 422.5 271 L 422.5 157 L 474 157" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="prior_summary" data-edge-to="nav_symbols" data-edge-label="signatures" data-edge-key="4" data-composition-points="530,242;530,186" d="M 530 242 L 530 186" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="nav_symbols" data-edge-to="coding_slm" data-edge-label="context" data-edge-key="5" data-composition-points="586,157;700,157;700,220;670,220;670,200;689,200;689,157" d="M 586 157 L 700 157 L 700 220 L 670 220 L 670 200 L 689 200 L 689 157" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="coding_slm" data-edge-to="rust_crate" data-edge-label="translated" data-edge-key="6" data-composition-points="801,157;915,157;915,220;885,220;885,200;904,200;904,157" d="M 801 157 L 915 157 L 915 220 L 885 220 L 885 200 L 904 200 L 904 157" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="coding_slm" data-edge-to="prior_summary" data-edge-label="emit" data-edge-key="7" data-composition-points="689,157;637.5,157;637.5,271;586,271" d="M 689 157 L 637.5 157 L 637.5 271 L 586 271" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="rust_crate" data-edge-to="validation_report" data-edge-label="build + test" data-edge-key="8" data-composition-points="960,186;960,242" d="M 960 186 L 960 242" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="validation_report" data-edge-to="weakening_guard" data-edge-label="assert diff" data-edge-key="9" data-composition-points="960,300;960,356" d="M 960 300 L 960 356" class="a-security" stroke-width="1.4" marker-end="url(#arrowhead-security)"/>
-        <path data-edge-from="validation_report" data-edge-to="coding_slm" data-edge-label="repair" data-edge-key="10" data-composition-points="904,271;852.5,271;852.5,157;801,157" d="M 904 271 L 852.5 271 L 852.5 157 L 801 157" class="a-dashed" stroke-width="1.4" marker-end="url(#arrowhead-dashed)"/>
+        <path data-edge-from="src_ast" data-edge-to="analyzer_doc" data-edge-label="fragments" data-edge-key="0" data-composition-points="156,157;280,157;280,245;280,157;259,157" d="M 156 157 L 280 157 L 280 245 L 280 157 L 259 157" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="src_manifest" data-edge-to="analyzer_doc" data-edge-label="deps" data-edge-key="1" data-composition-points="156,271;156,295;280,295;280,157;259,157" d="M 156 271 L 156 295 L 280 295 L 280 157 L 259 157" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="analyzer_doc" data-edge-to="skeleton" data-edge-label="3 documents" data-edge-key="2" data-composition-points="371,157;395,157;395,245;395,157;474,157" d="M 371 157 L 395 157 L 395 245 L 395 157 L 474 157" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="skeleton" data-edge-to="translator_agent" data-edge-label="plan (A+B)" data-edge-key="3" data-composition-points="586,157;620,157;620,230;665,230;665,157;689,157" d="M 586 157 L 620 157 L 620 230 L 665 230 L 665 157 L 689 157" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="nav_symbols" data-edge-to="translator_agent" data-edge-label="context" data-edge-key="4" data-composition-points="586,271;620,271;620,250;665,250;665,157;689,157" d="M 586 271 L 620 271 L 620 250 L 665 250 L 665 157 L 689 157" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="prior_memory" data-edge-to="translator_agent" data-edge-label="signatures" data-edge-key="5" data-composition-points="586,385;620,385;620,280;665,280;665,157;689,157" d="M 586 385 L 620 385 L 620 280 L 665 280 L 665 157 L 689 157" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="translator_agent" data-edge-to="rust_crate" data-edge-label="translated files" data-edge-key="6" data-composition-points="801,157;785,157;820,157;820,175;904,175;904,157" d="M 801 157 L 785 157 L 820 157 L 820 175 L 904 175 L 904 157" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="rust_crate" data-edge-to="validator_agent" data-edge-label="build + test" data-edge-key="7" data-composition-points="960,186;960,242" d="M 960 186 L 960 242" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="validator_agent" data-edge-to="weakening_guard" data-edge-label="assert diff" data-edge-key="8" data-composition-points="960,300;960,356" d="M 960 300 L 960 356" class="a-security" stroke-width="1.4" marker-end="url(#arrowhead-security)"/>
+        <path data-edge-from="validator_agent" data-edge-to="translator_agent" data-edge-label="repair" data-edge-key="9" data-composition-points="904,271;1100,271;1100,650;725,650;725,157;801,157" d="M 904 271 L 1100 271 L 1100 650 L 725 650 L 725 157 L 801 157" class="a-dashed" stroke-width="1.4" marker-end="url(#arrowhead-dashed)"/>
 
         <!-- Nodes -->
-        <g id="node-src_ast" data-node-id="src_ast" data-node-label="Tree-Sitter" tabindex="0" role="button" aria-label="Focus Tree-Sitter, Source AST, 01 / Source Codebase" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Source AST" data-node-tag="PA tool" data-node-context="01 / Source Codebase">
-          <title>Tree-Sitter · Source AST · 01 / Source Codebase · PA tool</title>
+        <g id="node-src_ast" data-node-id="src_ast" data-node-label="Tree-Sitter" tabindex="0" role="button" aria-label="Focus Tree-Sitter, Source AST, 01 / Source Intake" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Source AST" data-node-tag="parser" data-node-context="01 / Source Intake">
+          <title>Tree-Sitter · Source AST · 01 / Source Intake · parser</title>
           <rect x="44" y="128" width="112" height="58" rx="6" class="c-mask"/>
           <rect x="44" y="128" width="112" height="58" rx="6" class="c-backend" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(50 134) scale(0.6875)">
@@ -5069,11 +5068,11 @@
           </g>
           <text data-node-label="" data-detail-anchor="" x="100" y="149" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Tree-Sitter</text>
           <text data-detail="context" x="100" y="165" class="t-muted" font-size="7" text-anchor="middle">Source AST</text>
-        <text data-detail="fine" x="100" y="175" class="t-backend" font-size="7" text-anchor="middle">PA tool</text>
+        <text data-detail="fine" x="100" y="175" class="t-backend" font-size="7" text-anchor="middle">parser</text>
         </g>
 
-        <g id="node-src_manifest" data-node-id="src_manifest" data-node-label="Manifest" tabindex="0" role="button" aria-label="Focus Manifest, pom / go.mod, 01 / Source Codebase" aria-pressed="false" data-node-kind="backend" data-node-sublabel="pom / go.mod" data-node-tag="Deps" data-node-context="01 / Source Codebase">
-          <title>Manifest · pom / go.mod · 01 / Source Codebase · Deps</title>
+        <g id="node-src_manifest" data-node-id="src_manifest" data-node-label="Manifest" tabindex="0" role="button" aria-label="Focus Manifest, pom / go.mod, 01 / Source Intake" aria-pressed="false" data-node-kind="backend" data-node-sublabel="pom / go.mod" data-node-tag="deps" data-node-context="01 / Source Intake">
+          <title>Manifest · pom / go.mod · 01 / Source Intake · deps</title>
           <rect x="44" y="242" width="112" height="58" rx="6" class="c-mask"/>
           <rect x="44" y="242" width="112" height="58" rx="6" class="c-backend" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(50 248) scale(0.6875)">
@@ -5081,72 +5080,72 @@
           </g>
           <text data-node-label="" data-detail-anchor="" x="100" y="263" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Manifest</text>
           <text data-detail="context" x="100" y="279" class="t-muted" font-size="7" text-anchor="middle">pom / go.mod</text>
-        <text data-detail="fine" x="100" y="289" class="t-backend" font-size="7" text-anchor="middle">Deps</text>
+        <text data-detail="fine" x="100" y="289" class="t-backend" font-size="7" text-anchor="middle">deps</text>
         </g>
 
-        <g id="node-reverse_topo" data-node-id="reverse_topo" data-node-label="Reverse-Topo" tabindex="0" role="button" aria-label="Focus Reverse-Topo, Back-Edge Cut, 02 / Plan &amp; Slice" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Back-Edge Cut" data-node-tag="Planner" data-node-context="02 / Plan &amp; Slice">
-          <title>Reverse-Topo · Back-Edge Cut · 02 / Plan &amp; Slice · Planner</title>
+        <g id="node-analyzer_doc" data-node-id="analyzer_doc" data-node-label="Analyzer" tabindex="0" role="button" aria-label="Focus Analyzer, Research + Design, 02 / Analyze" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Research + Design" data-node-tag="8B reasoning" data-node-context="02 / Analyze">
+          <title>Analyzer · Research + Design · 02 / Analyze · 8B reasoning</title>
           <rect x="259" y="128" width="112" height="58" rx="6" class="c-mask"/>
           <rect x="259" y="128" width="112" height="58" rx="6" class="c-backend" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(265 134) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="315" y="149" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Reverse-Topo</text>
-          <text data-detail="context" x="315" y="165" class="t-muted" font-size="7" text-anchor="middle">Back-Edge Cut</text>
-        <text data-detail="fine" x="315" y="175" class="t-backend" font-size="7" text-anchor="middle">Planner</text>
+          <text data-node-label="" data-detail-anchor="" x="315" y="149" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Analyzer</text>
+          <text data-detail="context" x="315" y="165" class="t-muted" font-size="7" text-anchor="middle">Research + Design</text>
+        <text data-detail="fine" x="315" y="175" class="t-backend" font-size="7" text-anchor="middle">8B reasoning</text>
         </g>
 
-        <g id="node-skeleton" data-node-id="skeleton" data-node-label="Skeleton" tabindex="0" role="button" aria-label="Focus Skeleton, Sigs + Traits, 02 / Plan &amp; Slice" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Sigs + Traits" data-node-tag="Part A" data-node-context="02 / Plan &amp; Slice">
-          <title>Skeleton · Sigs + Traits · 02 / Plan &amp; Slice · Part A</title>
-          <rect x="259" y="242" width="112" height="58" rx="6" class="c-mask"/>
-          <rect x="259" y="242" width="112" height="58" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(265 248) scale(0.6875)">
-            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
-          </g>
-          <text data-node-label="" data-detail-anchor="" x="315" y="263" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Skeleton</text>
-          <text data-detail="context" x="315" y="279" class="t-muted" font-size="7" text-anchor="middle">Sigs + Traits</text>
-        <text data-detail="fine" x="315" y="289" class="t-backend" font-size="7" text-anchor="middle">Part A</text>
-        </g>
-
-        <g id="node-nav_symbols" data-node-id="nav_symbols" data-node-label="Symbol Navigator" tabindex="0" role="button" aria-label="Focus Symbol Navigator, Defs + Refs, 03 / Bounded Context" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Defs + Refs" data-node-tag="&lt;= 4KB" data-node-context="03 / Bounded Context">
-          <title>Symbol Navigator · Defs + Refs · 03 / Bounded Context · &lt;= 4KB</title>
+        <g id="node-skeleton" data-node-id="skeleton" data-node-label="Planner" tabindex="0" role="button" aria-label="Focus Planner, Reverse-Topo DAG, 03 / Plan &amp; Slice" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Reverse-Topo DAG" data-node-tag="Part A + B" data-node-context="03 / Plan &amp; Slice">
+          <title>Planner · Reverse-Topo DAG · 03 / Plan &amp; Slice · Part A + B</title>
           <rect x="474" y="128" width="112" height="58" rx="6" class="c-mask"/>
           <rect x="474" y="128" width="112" height="58" rx="6" class="c-backend" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(480 134) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="530" y="149" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Symbol Navigator</text>
-          <text data-detail="context" x="530" y="165" class="t-muted" font-size="7" text-anchor="middle">Defs + Refs</text>
-        <text data-detail="fine" x="530" y="175" class="t-backend" font-size="7" text-anchor="middle">&lt;= 4KB</text>
+          <text data-node-label="" data-detail-anchor="" x="530" y="149" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Planner</text>
+          <text data-detail="context" x="530" y="165" class="t-muted" font-size="7" text-anchor="middle">Reverse-Topo DAG</text>
+        <text data-detail="fine" x="530" y="175" class="t-backend" font-size="7" text-anchor="middle">Part A + B</text>
         </g>
 
-        <g id="node-prior_summary" data-node-id="prior_summary" data-node-label="Prior Memory" tabindex="0" role="button" aria-label="Focus Prior Memory, Signatures, 03 / Bounded Context" aria-pressed="false" data-node-kind="database" data-node-sublabel="Signatures" data-node-tag="&lt;= 4KB" data-node-context="03 / Bounded Context">
-          <title>Prior Memory · Signatures · 03 / Bounded Context · &lt;= 4KB</title>
+        <g id="node-nav_symbols" data-node-id="nav_symbols" data-node-label="Symbol Navigator" tabindex="0" role="button" aria-label="Focus Symbol Navigator, &lt;= 4KB Defs, 03 / Plan &amp; Slice" aria-pressed="false" data-node-kind="backend" data-node-sublabel="&lt;= 4KB Defs" data-node-tag="context" data-node-context="03 / Plan &amp; Slice">
+          <title>Symbol Navigator · &lt;= 4KB Defs · 03 / Plan &amp; Slice · context</title>
           <rect x="474" y="242" width="112" height="58" rx="6" class="c-mask"/>
-          <rect x="474" y="242" width="112" height="58" rx="6" class="c-database" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(480 248) scale(0.6875)">
+          <rect x="474" y="242" width="112" height="58" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(480 248) scale(0.6875)">
+            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="530" y="263" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Symbol Navigator</text>
+          <text data-detail="context" x="530" y="279" class="t-muted" font-size="7" text-anchor="middle">&lt;= 4KB Defs</text>
+        <text data-detail="fine" x="530" y="289" class="t-backend" font-size="7" text-anchor="middle">context</text>
+        </g>
+
+        <g id="node-prior_memory" data-node-id="prior_memory" data-node-label="Prior Memory" tabindex="0" role="button" aria-label="Focus Prior Memory, &lt;= 4KB Signatures, 03 / Plan &amp; Slice" aria-pressed="false" data-node-kind="database" data-node-sublabel="&lt;= 4KB Signatures" data-node-tag="context" data-node-context="03 / Plan &amp; Slice">
+          <title>Prior Memory · &lt;= 4KB Signatures · 03 / Plan &amp; Slice · context</title>
+          <rect x="474" y="356" width="112" height="58" rx="6" class="c-mask"/>
+          <rect x="474" y="356" width="112" height="58" rx="6" class="c-database" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(480 362) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="530" y="263" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Prior Memory</text>
-          <text data-detail="context" x="530" y="279" class="t-muted" font-size="7" text-anchor="middle">Signatures</text>
-        <text data-detail="fine" x="530" y="289" class="t-database" font-size="7" text-anchor="middle">&lt;= 4KB</text>
+          <text data-node-label="" data-detail-anchor="" x="530" y="377" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Prior Memory</text>
+          <text data-detail="context" x="530" y="393" class="t-muted" font-size="7" text-anchor="middle">&lt;= 4KB Signatures</text>
+        <text data-detail="fine" x="530" y="403" class="t-database" font-size="7" text-anchor="middle">context</text>
         </g>
 
-        <g id="node-coding_slm" data-node-id="coding_slm" data-node-label="Coding SLM" tabindex="0" role="button" aria-label="Focus Coding SLM, Qwen3-4B, 04 / Translator" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="Qwen3-4B" data-node-tag="Ollama" data-node-context="04 / Translator">
-          <title>Coding SLM · Qwen3-4B · 04 / Translator · Ollama</title>
+        <g id="node-translator_agent" data-node-id="translator_agent" data-node-label="Translator" tabindex="0" role="button" aria-label="Focus Translator, Chunked Emit, 04 / Translate" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="Chunked Emit" data-node-tag="4B coding" data-node-context="04 / Translate">
+          <title>Translator · Chunked Emit · 04 / Translate · 4B coding</title>
           <rect x="689" y="128" width="112" height="58" rx="6" class="c-mask"/>
           <rect x="689" y="128" width="112" height="58" rx="6" class="c-cloud" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="cloud" class="semantic-sigil s-cloud" transform="translate(695 134) scale(0.6875)">
             <path d="M4.3 12.5h7.3a2.4 2.4 0 0 0 .2-4.8 4 4 0 0 0-7.5-1.3A3.1 3.1 0 0 0 4.3 12.5Z"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="745" y="149" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Coding SLM</text>
-          <text data-detail="context" x="745" y="165" class="t-muted" font-size="7" text-anchor="middle">Qwen3-4B</text>
-        <text data-detail="fine" x="745" y="175" class="t-cloud" font-size="7" text-anchor="middle">Ollama</text>
+          <text data-node-label="" data-detail-anchor="" x="745" y="149" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Translator</text>
+          <text data-detail="context" x="745" y="165" class="t-muted" font-size="7" text-anchor="middle">Chunked Emit</text>
+        <text data-detail="fine" x="745" y="175" class="t-cloud" font-size="7" text-anchor="middle">4B coding</text>
         </g>
 
-        <g id="node-rust_crate" data-node-id="rust_crate" data-node-label="Target Crate" tabindex="0" role="button" aria-label="Focus Target Crate, lib.rs + Tests, 05 / Validate &amp; Repair" aria-pressed="false" data-node-kind="database" data-node-sublabel="lib.rs + Tests" data-node-tag="Cargo Build" data-node-context="05 / Validate &amp; Repair">
-          <title>Target Crate · lib.rs + Tests · 05 / Validate &amp; Repair · Cargo Build</title>
+        <g id="node-rust_crate" data-node-id="rust_crate" data-node-label="Target Crate" tabindex="0" role="button" aria-label="Focus Target Crate, lib.rs + Tests, 05 / Validate" aria-pressed="false" data-node-kind="database" data-node-sublabel="lib.rs + Tests" data-node-tag="Cargo Build" data-node-context="05 / Validate">
+          <title>Target Crate · lib.rs + Tests · 05 / Validate · Cargo Build</title>
           <rect x="904" y="128" width="112" height="58" rx="6" class="c-mask"/>
           <rect x="904" y="128" width="112" height="58" rx="6" class="c-database" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(910 134) scale(0.6875)">
@@ -5158,8 +5157,8 @@
         <text data-detail="fine" x="960" y="175" class="t-database" font-size="7" text-anchor="middle">Cargo Build</text>
         </g>
 
-        <g id="node-validation_report" data-node-id="validation_report" data-node-label="Validator" tabindex="0" role="button" aria-label="Focus Validator, Cascade, 05 / Validate &amp; Repair" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Cascade" data-node-tag="Diagnostics" data-node-context="05 / Validate &amp; Repair">
-          <title>Validator · Cascade · 05 / Validate &amp; Repair · Diagnostics</title>
+        <g id="node-validator_agent" data-node-id="validator_agent" data-node-label="Validator" tabindex="0" role="button" aria-label="Focus Validator, Cascade, 05 / Validate" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Cascade" data-node-tag="AST + cargo" data-node-context="05 / Validate">
+          <title>Validator · Cascade · 05 / Validate · AST + cargo</title>
           <rect x="904" y="242" width="112" height="58" rx="6" class="c-mask"/>
           <rect x="904" y="242" width="112" height="58" rx="6" class="c-backend" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(910 248) scale(0.6875)">
@@ -5167,11 +5166,11 @@
           </g>
           <text data-node-label="" data-detail-anchor="" x="960" y="263" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Validator</text>
           <text data-detail="context" x="960" y="279" class="t-muted" font-size="7" text-anchor="middle">Cascade</text>
-        <text data-detail="fine" x="960" y="289" class="t-backend" font-size="7" text-anchor="middle">Diagnostics</text>
+        <text data-detail="fine" x="960" y="289" class="t-backend" font-size="7" text-anchor="middle">AST + cargo</text>
         </g>
 
-        <g id="node-weakening_guard" data-node-id="weakening_guard" data-node-label="Weakening Guard" tabindex="0" role="button" aria-label="Focus Weakening Guard, Assertions, 05 / Validate &amp; Repair" aria-pressed="false" data-node-kind="security" data-node-sublabel="Assertions" data-node-tag="Defense" data-node-context="05 / Validate &amp; Repair">
-          <title>Weakening Guard · Assertions · 05 / Validate &amp; Repair · Defense</title>
+        <g id="node-weakening_guard" data-node-id="weakening_guard" data-node-label="Weakening Guard" tabindex="0" role="button" aria-label="Focus Weakening Guard, Assertions, 05 / Validate" aria-pressed="false" data-node-kind="security" data-node-sublabel="Assertions" data-node-tag="Defense" data-node-context="05 / Validate">
+          <title>Weakening Guard · Assertions · 05 / Validate · Defense</title>
           <rect x="904" y="356" width="112" height="58" rx="6" class="c-mask"/>
           <rect x="904" y="356" width="112" height="58" rx="6" class="c-security" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="security" class="semantic-sigil s-security" transform="translate(910 362) scale(0.6875)">
@@ -5184,49 +5183,45 @@
         </g>
 
         <!-- Flow labels -->
-        <g data-detail="context" data-edge-from="src_ast" data-edge-to="reverse_topo" data-edge-label="fragments" data-edge-key="0">
-          <rect x="179.45" y="136" width="56.1" height="16" rx="4" class="c-mask"/>
-          <text x="207.5" y="147" class="t-backend" font-size="8" text-anchor="middle">fragments</text>
+        <g data-detail="context" data-edge-from="src_ast" data-edge-to="analyzer_doc" data-edge-label="fragments" data-edge-key="0">
+          <rect x="191.95" y="224" width="56.1" height="16" rx="4" class="c-mask"/>
+          <text x="220" y="235" class="t-backend" font-size="8" text-anchor="middle">fragments</text>
         </g>
-        <g data-detail="context" data-edge-from="src_manifest" data-edge-to="skeleton" data-edge-label="deps" data-edge-key="1">
-          <rect x="190.5" y="250" width="34" height="16" rx="4" class="c-mask"/>
-          <text x="207.5" y="261" class="t-muted" font-size="8" text-anchor="middle">deps</text>
+        <g data-detail="context" data-edge-from="src_manifest" data-edge-to="analyzer_doc" data-edge-label="deps" data-edge-key="1">
+          <rect x="183" y="294" width="34" height="16" rx="4" class="c-mask"/>
+          <text x="200" y="305" class="t-muted" font-size="8" text-anchor="middle">deps</text>
         </g>
-        <g data-detail="context" data-edge-from="reverse_topo" data-edge-to="skeleton" data-edge-label="ordering" data-edge-key="2">
-          <rect x="289.4" y="189" width="51.2" height="16" rx="4" class="c-mask"/>
-          <text x="315" y="200" class="t-muted" font-size="8" text-anchor="middle">ordering</text>
+        <g data-detail="context" data-edge-from="analyzer_doc" data-edge-to="skeleton" data-edge-label="3 documents" data-edge-key="2">
+          <rect x="302.05" y="224" width="65.9" height="16" rx="4" class="c-mask"/>
+          <text x="335" y="235" class="t-backend" font-size="8" text-anchor="middle">3 documents</text>
         </g>
-        <g data-detail="context" data-edge-from="skeleton" data-edge-to="nav_symbols" data-edge-label="fragment" data-edge-key="3">
-          <rect x="396.9" y="193" width="51.2" height="16" rx="4" class="c-mask"/>
-          <text x="422.5" y="204" class="t-backend" font-size="8" text-anchor="middle">fragment</text>
+        <g data-detail="context" data-edge-from="skeleton" data-edge-to="translator_agent" data-edge-label="plan (A+B)" data-edge-key="3">
+          <rect x="584.5" y="224" width="61" height="16" rx="4" class="c-mask"/>
+          <text x="615" y="235" class="t-backend" font-size="8" text-anchor="middle">plan (A+B)</text>
         </g>
-        <g data-detail="context" data-edge-from="prior_summary" data-edge-to="nav_symbols" data-edge-label="signatures" data-edge-key="4">
-          <rect x="499.5" y="221" width="61" height="16" rx="4" class="c-mask"/>
-          <text x="530" y="232" class="t-muted" font-size="8" text-anchor="middle">signatures</text>
+        <g data-detail="context" data-edge-from="nav_symbols" data-edge-to="translator_agent" data-edge-label="context" data-edge-key="4">
+          <rect x="591.85" y="249" width="46.3" height="16" rx="4" class="c-mask"/>
+          <text x="615" y="260" class="t-backend" font-size="8" text-anchor="middle">context</text>
         </g>
-        <g data-detail="context" data-edge-from="nav_symbols" data-edge-to="coding_slm" data-edge-label="context" data-edge-key="5">
-          <rect x="676.85" y="223.5" width="46.3" height="16" rx="4" class="c-mask"/>
-          <text x="700" y="234.5" class="t-backend" font-size="8" text-anchor="middle">context</text>
+        <g data-detail="context" data-edge-from="prior_memory" data-edge-to="translator_agent" data-edge-label="signatures" data-edge-key="5">
+          <rect x="584.5" y="279" width="61" height="16" rx="4" class="c-mask"/>
+          <text x="615" y="290" class="t-muted" font-size="8" text-anchor="middle">signatures</text>
         </g>
-        <g data-detail="context" data-edge-from="coding_slm" data-edge-to="rust_crate" data-edge-label="translated" data-edge-key="6">
-          <rect x="884.5" y="223.5" width="61" height="16" rx="4" class="c-mask"/>
-          <text x="915" y="234.5" class="t-backend" font-size="8" text-anchor="middle">translated</text>
+        <g data-detail="context" data-edge-from="translator_agent" data-edge-to="rust_crate" data-edge-label="translated files" data-edge-key="6">
+          <rect x="774.8" y="189" width="90.4" height="16" rx="4" class="c-mask"/>
+          <text x="820" y="200" class="t-backend" font-size="8" text-anchor="middle">translated files</text>
         </g>
-        <g data-detail="context" data-edge-from="coding_slm" data-edge-to="prior_summary" data-edge-label="emit" data-edge-key="7">
-          <rect x="620.5" y="193" width="34" height="16" rx="4" class="c-mask"/>
-          <text x="637.5" y="204" class="t-muted" font-size="8" text-anchor="middle">emit</text>
-        </g>
-        <g data-detail="context" data-edge-from="rust_crate" data-edge-to="validation_report" data-edge-label="build + test" data-edge-key="8">
+        <g data-detail="context" data-edge-from="rust_crate" data-edge-to="validator_agent" data-edge-label="build + test" data-edge-key="7">
           <rect x="924.6" y="189" width="70.8" height="16" rx="4" class="c-mask"/>
           <text x="960" y="200" class="t-muted" font-size="8" text-anchor="middle">build + test</text>
         </g>
-        <g data-detail="context" data-edge-from="validation_report" data-edge-to="weakening_guard" data-edge-label="assert diff" data-edge-key="9">
+        <g data-detail="context" data-edge-from="validator_agent" data-edge-to="weakening_guard" data-edge-label="assert diff" data-edge-key="8">
           <rect x="927.05" y="303" width="65.9" height="16" rx="4" class="c-mask"/>
           <text x="960" y="314" class="t-security" font-size="8" text-anchor="middle">assert diff</text>
         </g>
-        <g data-detail="context" data-edge-from="validation_report" data-edge-to="coding_slm" data-edge-label="repair" data-edge-key="10">
-          <rect x="831.8" y="193" width="41.4" height="16" rx="4" class="c-mask"/>
-          <text x="852.5" y="204" class="t-messagebus" font-size="8" text-anchor="middle">repair</text>
+        <g data-detail="context" data-edge-from="validator_agent" data-edge-to="translator_agent" data-edge-label="repair" data-edge-key="9">
+          <rect x="1079.3" y="439.5" width="41.4" height="16" rx="4" class="c-mask"/>
+          <text x="1100" y="450.5" class="t-messagebus" font-size="8" text-anchor="middle">repair</text>
         </g>
 
         <!-- Legend -->
@@ -5442,12 +5437,13 @@
       <div class="card">
         <div class="card-header">
           <div class="card-dot emerald"></div>
-          <h3>Topological Slicing</h3>
+          <h3>4-Agent Pipeline Spine</h3>
         </div>
         <ul>
-          <li>&bull; Tree-sitter extracts granular AST fragments across every source file</li>
-          <li>&bull; Reverse-topological sort cuts cyclic back-edges into a forward schedule</li>
-          <li>&bull; Part A (source) and Part B (tests) emitted in dependency order</li>
+          <li>&bull; parser emits source AST + manifest to the Analyzer</li>
+          <li>&bull; Analyzer produces 3 documents via Strategy Registry (TryInOrder)</li>
+          <li>&bull; Planner fragments AST into reverse-topological translation units</li>
+          <li>&bull; Translator emits target files in Part A + Part B order</li>
         </ul>
       </div>
 
@@ -5457,21 +5453,21 @@
           <h3>Bounded Context Assembly</h3>
         </div>
         <ul>
-          <li>&bull; Symbol Navigator returns ≤ 4KB def/reference slice via LSP provider</li>
-          <li>&bull; Prior-Modules Memory injects compact 4KB emitted signatures</li>
-          <li>&bull; Small coding SLM operates within effective attention budget</li>
+          <li>&bull; Symbol Navigator returns &lt;= 4KB def/reference slice via LSP</li>
+          <li>&bull; Prior-Modules Memory injects compact &lt;= 4KB emitted signatures</li>
+          <li>&bull; Small 4B coding SLM operates within effective attention budget</li>
         </ul>
       </div>
 
       <div class="card">
         <div class="card-header">
           <div class="card-dot rose"></div>
-          <h3>Validation &amp; Repair Cascade</h3>
+          <h3>Validation + Repair Cascade</h3>
         </div>
         <ul>
-          <li>&bull; AST pre-check before compiler, then cargo test, then guard, then plateau</li>
-          <li>&bull; Repair loop feeds diagnostics back to the Translator until convergence</li>
-          <li>&bull; Coverage plateau detector bounds repair spinning on large repositories</li>
+          <li>&bull; AST pre-check then cargo build then cargo test then guard</li>
+          <li>&bull; Dashed repair back-edge feeds diagnostics to the Translator</li>
+          <li>&bull; Plateau detector bounds repair spinning on large repositories</li>
         </ul>
       </div>
     </div>
