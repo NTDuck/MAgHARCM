@@ -124,6 +124,7 @@ func fragmentBase(fragment string) string {
 	}
 	return fragment[:idx]
 }
+
 // groupFragmentsBySourceFile buckets fragment IDs by their source-file basename
 // using fragmentBase. Fragments with an unparsable basename ("") are dropped.
 // Iteration order of the returned map is unspecified; callers must sort keys
@@ -246,7 +247,6 @@ func (t *TranslatorAgent) ensureRustCargoManifest(state *types.State) {
 	}
 	logger.LogStep("Emitted fallback Cargo.toml for target %q", state.Task.TargetDir)
 }
-
 
 // translateFragment calls the Coding Model once for a single source fragment,
 // supplying a compact summary of previously emitted modules so the model can

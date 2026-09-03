@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 )
+
 // TranslationTask defines the input specification for the translation pipeline.
 type TranslationTask struct {
 	SourceDir   string `json:"source_dir"`
@@ -65,6 +66,7 @@ type DocumentWrapper[T any] struct {
 	Data        T      `json:"data"`
 	RawMarkdown string `json:"raw_markdown"`
 }
+
 // PlanStep represents a single step in Part A or Part B of the implementation plan.
 type PlanStep struct {
 	ID              string `json:"id"`
@@ -88,9 +90,9 @@ type ImplementationPlan struct {
 
 // PlanningOutput captures AST fragments, symbol mappings, generated skeletons, and translation steps.
 type PlanningOutput struct {
-	Fragments     []string          `json:"fragments"`      // file_name:fragment_name
-	NameMapping   map[string]string `json:"name_mapping"`   // source_name -> target_name
-	SkeletonFiles map[string]string `json:"skeleton_files"` // relative_path -> skeleton_content
+	Fragments     []string           `json:"fragments"`      // file_name:fragment_name
+	NameMapping   map[string]string  `json:"name_mapping"`   // source_name -> target_name
+	SkeletonFiles map[string]string  `json:"skeleton_files"` // relative_path -> skeleton_content
 	Plan          ImplementationPlan `json:"plan"`
 }
 
@@ -134,10 +136,10 @@ type ValidationReport struct {
 	PlateauDetected bool `json:"plateau_detected,omitempty"`
 	// AdversarialWeakeningDetected is true when test weakening (e.g. dropped assertions,
 	// emptied test functions, relaxed predicates) is detected across repair iterations (NEW-PRIM-13).
-	AdversarialWeakeningDetected bool `json:"adversarial_weakening_detected,omitempty"`
+	AdversarialWeakeningDetected bool     `json:"adversarial_weakening_detected,omitempty"`
 	WeakeningReasons             []string `json:"weakening_reasons,omitempty"`
 	// ASTSyntaxErrors contains parse/syntax errors found before compilation (NEW-PRIM-6 / GAP-08).
-	ASTSyntaxErrors              []string `json:"ast_syntax_errors,omitempty"`
+	ASTSyntaxErrors []string `json:"ast_syntax_errors,omitempty"`
 }
 
 // HasUncoveredFunctions determines if any discovered AST functions lack test assertions.
@@ -161,15 +163,16 @@ func (v *ValidationReport) String() string {
 	return fmt.Sprintf("Validation INCOMPLETE: compilation=%v, passed=%d/%d (%.1f%%), compile_errs=%d, test_fails=%d, uncovered=%d\nDiagnostics:\n%s",
 		v.CompilationSuccess, v.PassedTests, v.TotalTests, v.TestPassRate, len(v.CompilationErrors), len(v.TestFailures), len(v.UncoveredFunctions), v.Diagnostics)
 }
+
 // State is the shared context passed between Eino graph nodes.
 type State struct {
-	Task               TranslationTask    `json:"task"`
-	AnalyzerOutput     AnalyzerOutput     `json:"analyzer_output"`
-	PlanningOutput     PlanningOutput     `json:"planning_output"`
-	TranslatedProject  TranslatedProject  `json:"translated_project"`
-	ValidationReport   ValidationReport   `json:"validation_report"`
-	Iteration          int                `json:"iteration"`
-	MaxIterations      int                `json:"max_iterations"`
-	IsComplete         bool               `json:"is_complete"`
-	PriorTestSnapshots map[string]string  `json:"prior_test_snapshots,omitempty"`
+	Task               TranslationTask   `json:"task"`
+	AnalyzerOutput     AnalyzerOutput    `json:"analyzer_output"`
+	PlanningOutput     PlanningOutput    `json:"planning_output"`
+	TranslatedProject  TranslatedProject `json:"translated_project"`
+	ValidationReport   ValidationReport  `json:"validation_report"`
+	Iteration          int               `json:"iteration"`
+	MaxIterations      int               `json:"max_iterations"`
+	IsComplete         bool              `json:"is_complete"`
+	PriorTestSnapshots map[string]string `json:"prior_test_snapshots,omitempty"`
 }

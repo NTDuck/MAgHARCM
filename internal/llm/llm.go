@@ -127,4 +127,3 @@ func UnloadModel(baseURL, modelName string) {
 		_ = resp.Body.Close()
 	}
 }
-

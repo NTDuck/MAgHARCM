@@ -227,8 +227,6 @@ func RenderPromptTemplate(name, tmplStr string, data any) (string, error) {
 	return buf.String(), nil
 }
 
-
-
 var renderPromptTemplate = RenderPromptTemplate
 var analyzerPromptTemplate = AnalyzerPromptTemplate
 var planningPromptTemplate = PlanningPromptTemplate

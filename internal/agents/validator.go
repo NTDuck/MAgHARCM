@@ -12,10 +12,6 @@ import (
 	"strings"
 	"time"
 
-
-
-
-
 	"github.com/cloudwego/eino/components/model"
 	"github.com/cloudwego/eino/schema"
 
@@ -170,6 +166,7 @@ func (v *ValidatorAgent) checkCompilation(ctx context.Context, state *types.Stat
 	}
 	return buildRes, nil
 }
+
 // runTestSuite executes the target test suite and records test metrics.
 func (v *ValidatorAgent) runTestSuite(ctx context.Context, state *types.State) (*tools.RunTestsOutput, error) {
 	testRes, err := tools.RunProjectTests(ctx, state.Task.TargetDir, state.Task.TargetLang, state.Task.Toolchain, "")

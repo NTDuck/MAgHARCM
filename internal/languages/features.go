@@ -28,9 +28,10 @@ const (
 
 // FeatureTemplate is the target-language snippet for a given feature kind.
 // Templates use Go text/template syntax with a small surface:
-//   {{.PackageName}} — resolved target package
-//   {{.Name}}        — symbol name being constructed
-//   {{.Lifetime}}    — 'a / 'static — only relevant for Rust
+//
+//	{{.PackageName}} — resolved target package
+//	{{.Name}}        — symbol name being constructed
+//	{{.Lifetime}}    — 'a / 'static — only relevant for Rust
 type FeatureTemplate struct {
 	Kind        FeatureKind `json:"kind" yaml:"kind"`
 	TargetLang  string      `json:"target_lang" yaml:"target_lang"`
@@ -202,7 +203,6 @@ package {{.PackageName}}`, "Packages (one per dir)"})
 	m.Add(FeatureTemplate{FeatureModules, "java", `package com.example;`, "Packages + Maven coords"})
 	m.Add(FeatureTemplate{FeatureModules, "python", `# __init__.py marks packages; PEP 420 namespace packages
 from .submodule import *`, "Packages via __init__.py"})
-
 
 	return m
 }

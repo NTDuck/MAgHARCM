@@ -12,7 +12,7 @@ func TestParseAllFileMarkersVariations(t *testing.T) {
 		expected map[string]string
 	}{
 		{
-			name: "Standard FILE: header with fenced code",
+			name:  "Standard FILE: header with fenced code",
 			input: "FILE: src/lib.rs\n```rust\npub fn hello() {}\n```\n\nFILE: Cargo.toml\n```toml\n[package]\nname = \"test\"\n```",
 			expected: map[string]string{
 				"src/lib.rs": "pub fn hello() {}",
@@ -20,15 +20,15 @@ func TestParseAllFileMarkersVariations(t *testing.T) {
 			},
 		},
 		{
-			name: "Markdown bold and backtick header: ### FILE: `src/item.rs`",
+			name:  "Markdown bold and backtick header: ### FILE: `src/item.rs`",
 			input: "### FILE: `src/item.rs`\n```rust\npub struct Item;\n```\n\n**Path:** `tests/main.rs`\n```rust\n#[test]\nfn test_it() {}\n```",
 			expected: map[string]string{
-				"src/item.rs":  "pub struct Item;",
+				"src/item.rs":   "pub struct Item;",
 				"tests/main.rs": "#[test]\nfn test_it() {}",
 			},
 		},
 		{
-			name: "Fence annotation: ```rust src/lib.rs",
+			name:  "Fence annotation: ```rust src/lib.rs",
 			input: "```rust src/lib.rs\npub fn add(a: i32, b: i32) -> i32 { a + b }\n```\n\n```toml Cargo.toml\n[package]\nname = \"test\"\n```",
 			expected: map[string]string{
 				"src/lib.rs": "pub fn add(a: i32, b: i32) -> i32 { a + b }",
@@ -36,14 +36,14 @@ func TestParseAllFileMarkersVariations(t *testing.T) {
 			},
 		},
 		{
-			name: "Inline comment marker: // FILE: src/main.rs",
+			name:  "Inline comment marker: // FILE: src/main.rs",
 			input: "// FILE: src/main.rs\n```rust\nfn main() {}\n```",
 			expected: map[string]string{
 				"src/main.rs": "fn main() {}",
 			},
 		},
 		{
-			name: "Unfenced file block with descriptions",
+			name:  "Unfenced file block with descriptions",
 			input: "FILE: src/main.rs (optional example usage)\n```rust\nfn main() {}\n```",
 			expected: map[string]string{
 				"src/main.rs": "fn main() {}",

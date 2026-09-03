@@ -345,4 +345,3 @@ func isTranslatableFile(path string) bool {
 	}
 	return false
 }
-

@@ -187,10 +187,10 @@ func (t *TranslatorAgent) generateTranslation(ctx context.Context, state *types.
 func (t *TranslatorAgent) generateRepair(ctx context.Context, state *types.State, targetFiles []string, packageName string) (map[string]string, error) {
 	logger.LogStep("Feeding compiler diagnostics and test failures to Coding Model for targeted repair")
 	prompt, err := renderPromptTemplate("translator_repair", translatorRepairPromptTemplate, map[string]any{
-		"PackageName":     packageName,
-		"TargetLang":      state.Task.TargetLang,
-		"TargetLangLower": strings.ToLower(state.Task.TargetLang),
-		"Diagnostics":     state.ValidationReport.Diagnostics,
+		"PackageName":         packageName,
+		"TargetLang":          state.Task.TargetLang,
+		"TargetLangLower":     strings.ToLower(state.Task.TargetLang),
+		"Diagnostics":         state.ValidationReport.Diagnostics,
 		"CrateCanonicalHints": CrateCanonicalHints(state.Task.TargetLang),
 	})
 	if err != nil {

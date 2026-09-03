@@ -35,9 +35,9 @@ func RunIDForTask(task types.TranslationTask) string {
 // Checkpoint is a snapshot of *types.State plus a version + timestamp.
 // Fields are versioned via Version so future schema changes don't break old checkpoints.
 type Checkpoint struct {
-	Version   int         `json:"version"`
-	CreatedAt time.Time   `json:"created_at"`
-	Iteration int         `json:"iteration"`
+	Version   int          `json:"version"`
+	CreatedAt time.Time    `json:"created_at"`
+	Iteration int          `json:"iteration"`
 	State     *types.State `json:"state"`
 }
 
