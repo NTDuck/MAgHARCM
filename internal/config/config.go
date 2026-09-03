@@ -10,8 +10,8 @@ const (
 	DefaultOllamaBaseURL  = "http://localhost:11434"
 	DefaultReasoningModel = "qwen3:30b-a3b-thinking-2507-q4_K_M"
 	DefaultCodingModel    = "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4_K_XL"
-	DefaultMaxIterations  = 10
-	DefaultTimeoutSeconds = 5000
+	DefaultMaxIterations  = 20
+	DefaultTimeoutSeconds = 7200
 )
 
 // Config holds centralized configuration for the MAgHARCM translation pipeline.
