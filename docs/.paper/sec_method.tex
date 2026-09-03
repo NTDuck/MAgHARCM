@@ -50,11 +50,11 @@ in target language $L_t$ (such as Rust) such that the following three formal cor
 \begin{algorithmic}[1]
 \Require Source project $P_s$, Source language $L_s$, Target language $L_t$, Max iterations $K$
 \Ensure Translated target project $P_t$
-\State $G_{\text{AST}}, \text{Manifest} \gets \text{ExtractTreeSitterAST}(P_s)$
-\State $\mathcal{S}_{\text{strat}}, \text{Design} \gets \text{AnalyzerAgent}(G_{\text{AST}}, \text{Manifest}, L_s, L_t)$
-\State $DAG_{\text{topo}}, \text{Plan}, \text{Skeleton} \gets \text{PlanningAgent}(G_{\text{AST}}, \text{Design}, L_s, L_t)$
-\State $P_t \gets \text{InitializeTargetCrate}(\text{Skeleton}, \text{Plan})$
-\State $P_t \gets \text{TranslatorAgent}.\text{TranslateChunked}(P_t, DAG_{\text{topo}}, \text{Plan})$
+\State $G_{\text{AST}}, \text{Manifest} \gets \Call{ExtractAST}{P_s}$
+\State $\mathcal{S}_{\text{strat}}, \text{Design} \gets \Call{Analyze}{G_{\text{AST}}, \text{Manifest}, L_s, L_t}$
+\State $DAG, \text{Plan}, \text{Skel} \gets \Call{Plan}{G_{\text{AST}}, \text{Design}, L_s, L_t}$
+\State $P_t \gets \Call{InitializeCrate}{\text{Skel}, \text{Plan}}$
+\State $P_t \gets \Call{TranslateChunked}{\text{Translator}, P_t, \text{Plan}}$
 \State $\text{SaveCheckpoint}(P_t, \text{iter}=0)$
 \State $\text{iter} \gets 0$
 \While{$\text{iter} < K$}
@@ -130,7 +130,7 @@ When circular dependencies are detected (i.e., node $v$ is on the active DFS rec
 \subsection{Translator Agent \& Bounded Context Synthesis}
 \label{sec:method_translator}
 
-The Translator Agent implements chunked code synthesis using our dedicated coding model (Qwen3-4B). Because local SLMs have strictly bounded effective context windows (typically 8K--16K tokens), attempting to provide full source file histories causes catastrophic forgetting and attention degradation.
+The Translator Agent implements chunked code synthesis using our dedicated coding model (Qwen3-4B-Instruct) guided by the high-level topological plan emitted by the reasoning model (Qwen3-30B-Thinking). Because local models operate under bounded context budgets, providing full repository source histories causes catastrophic attention degradation.
 
 As shown in Figure~\ref{fig:dataflow}, MAgHARCM employs a two-tier context bounding mechanism:
 \begin{enumerate}

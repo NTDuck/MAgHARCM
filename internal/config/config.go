@@ -26,7 +26,7 @@ type Config struct {
 func Defaults() *Config {
 	return &Config{
 		OllamaBaseURL:  envOrDefault("OLLAMA_BASE_URL", "http://localhost:11434"),
-		ReasoningModel: envOrDefault("OLLAMA_REASONING_MODEL", "gpt-oss:20b"),
+		ReasoningModel: envOrDefault("OLLAMA_REASONING_MODEL", "qwen3:30b-a3b-thinking-2507-q4_K_M"),
 		CodingModel:    envOrDefault("OLLAMA_CODING_MODEL", "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4_K_XL"),
 		MaxIterations:  envIntOrDefault("MAGHARCM_MAX_ITERATIONS", 10),
 		Timeout:        time.Duration(envIntOrDefault("MAGHARCM_TIMEOUT_SECONDS", 5000)) * time.Second,

@@ -7,12 +7,12 @@ translation:
     dir: ".artifacts/stats/rust"
     language: "Rust"
   models:
-    # Default reasoning slot: Liquid's MoE lfm2.5 8B total / ~1.5B active.
-    reasoning: "lfm2.5:8b-a1b-q4_K_M"
+    # Default reasoning slot: Qwen3 30B thinking reasoning model
+    reasoning: "qwen3:30b-a3b-thinking-2507-q4_K_M"
     coding: "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4_K_XL"
     ollama_url: "http://localhost:11434"
   execution:
     max_iterations: 10
-    timeout_seconds: 3600
+    timeout_seconds: 7200
   lsp:
     provider: "native"

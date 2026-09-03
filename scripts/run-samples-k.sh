@@ -189,13 +189,12 @@ for cfg in "${configs[@]}"; do
     tests_pass_total=0
     tests_total_total=0
 
-    yaml_timeout=$(grep -E '^\s*timeout_seconds:' "$cfg" | awk '{print $2}')
-    yaml_timeout=${yaml_timeout:-7200}
-    wall=$((yaml_timeout * 3 / 2))
+    # Remove arbitrary small timeout; allow full convergence without premature termination.
+    wall=14400
 
     for ((i=1; i<=K; i++)); do
         log="$LOG_DIR/${name}-k${i}.log"
-        echo "       iter $i/$K (timeout=${wall}s) log=$log"
+        echo "       iter $i/$K (safety_timeout=${wall}s) log=$log"
         start=$(date +%s%N)
         timeout --foreground "$wall" "$REPO_ROOT/bin/MAgHARCM" --config "$cfg" \
             >"$log" 2>&1

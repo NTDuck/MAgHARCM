@@ -173,6 +173,15 @@ func (p *PlanningAgent) resolveSkeletonFiles(rawContent string, state *types.Sta
 	} else if strings.EqualFold(state.Task.TargetLang, "Rust") {
 		if _, hasCargo := skeletonFiles["Cargo.toml"]; !hasCargo {
 			projectName := sanitizeProjectName(filepath.Base(state.Task.TargetDir))
+			if projectName == "" || projectName == "." || strings.EqualFold(projectName, state.Task.TargetLang) {
+				parent := filepath.Base(filepath.Dir(state.Task.TargetDir))
+				if parent != "" && parent != "." && parent != "/" {
+					projectName = sanitizeProjectName(parent)
+				}
+			}
+			if projectName == "" {
+				projectName = "translated_project"
+			}
 			skeletonFiles["Cargo.toml"] = fmt.Sprintf("[package]\nname = \"%s\"\nversion = \"0.1.0\"\nedition = \"2021\"\n\n[dependencies]\n", projectName)
 		}
 	}

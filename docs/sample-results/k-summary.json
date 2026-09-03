@@ -1,139 +1,254 @@
 {
   "schema": "k-summary/v1",
-  "k": 1,
-  "generated_at": "2026-09-02T14:36:02.038889+00:00",
+  "generated_at": "2026-09-03T02:34:46.500908+00:00",
+  "total_logs_parsed": 13,
   "samples": [
     {
-      "name": "gildedrose",
-      "config": "/home/ayin/projs/MAgHARCM/.config/gildedrose.yml",
-      "runs": 1,
+      "name": "commons-validator",
+      "source_lang": "Java",
+      "target_lang": "Rust",
+      "source_files": 179,
+      "source_loc": 36683,
+      "runs": 3,
       "success_count": 0,
-      "compile_ok_rate": "0/1",
+      "compile_ok_rate": "0/3",
+      "compile_ok_pct": 0.0,
       "tests_pass_total": 0,
       "tests_total_total": 0,
       "tests_pass_rate": "0/0",
-      "durations_ms": [
-        450053
-      ],
+      "tests_pass_pct": 0.0,
       "per_run_status": [
         {
-          "i": 1,
+          "run": 1,
           "status": "INCOMPLETE",
           "compile_ok": false,
           "tests_passed": 0,
           "tests_total": 0,
+          "test_pass_rate": 0.0,
+          "chunks_written": 7,
+          "per_iteration": []
+        },
+        {
+          "run": 2,
+          "status": "INCOMPLETE",
+          "compile_ok": false,
+          "tests_passed": 0,
+          "tests_total": 0,
+          "test_pass_rate": 0.0,
           "chunks_written": 6,
-          "failure_errors": 4,
-          "strategy": "INCREMENTAL",
-          "duration_ms": 450053,
-          "exit_code": 124
+          "per_iteration": []
+        },
+        {
+          "run": 3,
+          "status": "INCOMPLETE",
+          "compile_ok": false,
+          "tests_passed": 0,
+          "tests_total": 0,
+          "test_pass_rate": 0.0,
+          "chunks_written": 9,
+          "per_iteration": []
         }
-      ],
-      "mean_ms": 450053,
-      "stdev_ms": 0,
-      "min_ms": 450053,
-      "max_ms": 450053,
-      "source_files": 4,
-      "source_loc": 199
+      ]
+    },
+    {
+      "name": "gildedrose",
+      "source_lang": "C",
+      "target_lang": "Rust",
+      "source_files": 7,
+      "source_loc": 0,
+      "runs": 3,
+      "success_count": 0,
+      "compile_ok_rate": "0/3",
+      "compile_ok_pct": 0.0,
+      "tests_pass_total": 0,
+      "tests_total_total": 0,
+      "tests_pass_rate": "0/0",
+      "tests_pass_pct": 0.0,
+      "per_run_status": [
+        {
+          "run": 1,
+          "status": "INCOMPLETE",
+          "compile_ok": false,
+          "tests_passed": 0,
+          "tests_total": 0,
+          "test_pass_rate": 0.0,
+          "chunks_written": 6,
+          "per_iteration": [
+            {
+              "iteration": 1,
+              "compilation_success": false,
+              "compilation_errors": 4,
+              "tests_passed": 0,
+              "tests_total": 0,
+              "test_pass_rate": 0.0,
+              "diagnostics": "error[E0432]: unresolved import `gildedrose_refactoring_kata`\nerror[E0432]: unresolved import `gildedrose_refactoring_kata`\nerror: could not compile `rust` (test \"unit_tests\") due to 1 previous error\nerror: could not compile `rust` (test \"text_tests\") due to 1 previous error"
+            }
+          ]
+        },
+        {
+          "run": 2,
+          "status": "INCOMPLETE",
+          "compile_ok": false,
+          "tests_passed": 0,
+          "tests_total": 0,
+          "test_pass_rate": 0.0,
+          "chunks_written": 2,
+          "per_iteration": [
+            {
+              "iteration": 1,
+              "compilation_success": false,
+              "compilation_errors": 39,
+              "tests_passed": 0,
+              "tests_total": 0,
+              "test_pass_rate": 0.0,
+              "diagnostics": "error[E0422]: cannot find struct, variant or union type `Item` in this scope\nerror[E0422]: cannot find struct, variant or union type `Item` in this scope\nerror[E0422]: cannot find struct, variant or union type `Item` in this scope\nerror[E0422]: cannot find struct, variant or union type `Item` in this scope\nerror[E0422]: cannot find struct, variant or union type `Item` in this scope"
+            }
+          ]
+        },
+        {
+          "run": 3,
+          "status": "INCOMPLETE",
+          "compile_ok": false,
+          "tests_passed": 0,
+          "tests_total": 0,
+          "test_pass_rate": 0.0,
+          "chunks_written": 6,
+          "per_iteration": [
+            {
+              "iteration": 2,
+              "compilation_success": false,
+              "compilation_errors": 20,
+              "tests_passed": 0,
+              "tests_total": 0,
+              "test_pass_rate": 0.0,
+              "diagnostics": "error[E0382]: borrow of moved value: `item`\nerror[E0382]: borrow of moved value: `item`\nerror[E0382]: borrow of moved value: `item`\nerror[E0382]: borrow of moved value: `item`\nerror[E0382]: borrow of moved value: `item`"
+            }
+          ]
+        }
+      ]
     },
     {
       "name": "gohistogram",
-      "config": "/home/ayin/projs/MAgHARCM/.config/gohistogram.yml",
-      "runs": 1,
+      "source_lang": "Go",
+      "target_lang": "Rust",
+      "source_files": 11,
+      "source_loc": 16392,
+      "runs": 3,
       "success_count": 0,
-      "compile_ok_rate": "0/1",
+      "compile_ok_rate": "0/3",
+      "compile_ok_pct": 0.0,
       "tests_pass_total": 0,
       "tests_total_total": 0,
       "tests_pass_rate": "0/0",
-      "durations_ms": [
-        900019
-      ],
+      "tests_pass_pct": 0.0,
       "per_run_status": [
         {
-          "i": 1,
+          "run": 1,
           "status": "INCOMPLETE",
           "compile_ok": false,
           "tests_passed": 0,
           "tests_total": 0,
-          "chunks_written": 7,
-          "failure_errors": 0,
-          "strategy": "PILOT",
-          "duration_ms": 900019,
-          "exit_code": 124
+          "test_pass_rate": 0.0,
+          "chunks_written": 9,
+          "per_iteration": []
+        },
+        {
+          "run": 2,
+          "status": "INCOMPLETE",
+          "compile_ok": false,
+          "tests_passed": 0,
+          "tests_total": 0,
+          "test_pass_rate": 0.0,
+          "chunks_written": 10,
+          "per_iteration": []
+        },
+        {
+          "run": 3,
+          "status": "INCOMPLETE",
+          "compile_ok": false,
+          "tests_passed": 0,
+          "tests_total": 0,
+          "test_pass_rate": 0.0,
+          "chunks_written": 12,
+          "per_iteration": [
+            {
+              "iteration": 1,
+              "compilation_success": false,
+              "compilation_errors": 1,
+              "tests_passed": 0,
+              "tests_total": 0,
+              "test_pass_rate": 0.0,
+              "diagnostics": "error: invalid character `/` in package name: `vividcortex/histogram`, characters must be Unicode XID characters (numbers, `-`, `_`, or most letters)"
+            },
+            {
+              "iteration": 2,
+              "compilation_success": false,
+              "compilation_errors": 1,
+              "tests_passed": 0,
+              "tests_total": 0,
+              "test_pass_rate": 0.0,
+              "diagnostics": "error: failed to parse manifest at `/home/ayin/projs/MAgHARCM/.artifacts/gohistogram/rust/Cargo.toml`\nDiagnostics:"
+            }
+          ]
         }
-      ],
-      "mean_ms": 900019,
-      "stdev_ms": 0,
-      "min_ms": 900019,
-      "max_ms": 900019,
-      "source_files": 7,
-      "source_loc": 15470
+      ]
     },
     {
       "name": "stats",
-      "config": "/home/ayin/projs/MAgHARCM/.config/stats.yml",
-      "runs": 1,
+      "source_lang": "Go",
+      "target_lang": "Rust",
+      "source_files": 73,
+      "source_loc": 0,
+      "runs": 4,
       "success_count": 0,
-      "compile_ok_rate": "0/1",
+      "compile_ok_rate": "0/4",
+      "compile_ok_pct": 0.0,
       "tests_pass_total": 0,
       "tests_total_total": 0,
       "tests_pass_rate": "0/0",
-      "durations_ms": [
-        900016
-      ],
+      "tests_pass_pct": 0.0,
       "per_run_status": [
         {
-          "i": 1,
+          "run": 1,
           "status": "INCOMPLETE",
           "compile_ok": false,
           "tests_passed": 0,
           "tests_total": 0,
-          "chunks_written": 7,
-          "failure_errors": 0,
-          "strategy": "PILOT",
-          "duration_ms": 900016,
-          "exit_code": 124
-        }
-      ],
-      "mean_ms": 900016,
-      "stdev_ms": 0,
-      "min_ms": 900016,
-      "max_ms": 900016,
-      "source_files": 65,
-      "source_loc": 5625
-    },
-    {
-      "name": "commons-validator",
-      "config": "/home/ayin/projs/MAgHARCM/.config/commons-validator.yml",
-      "runs": 1,
-      "success_count": 0,
-      "compile_ok_rate": "0/1",
-      "tests_pass_total": 0,
-      "tests_total_total": 0,
-      "tests_pass_rate": "0/0",
-      "durations_ms": [
-        900018
-      ],
-      "per_run_status": [
+          "test_pass_rate": 0.0,
+          "chunks_written": 0,
+          "per_iteration": []
+        },
         {
-          "i": 1,
+          "run": 1,
           "status": "INCOMPLETE",
           "compile_ok": false,
           "tests_passed": 0,
           "tests_total": 0,
+          "test_pass_rate": 0.0,
+          "chunks_written": 16,
+          "per_iteration": []
+        },
+        {
+          "run": 2,
+          "status": "INCOMPLETE",
+          "compile_ok": false,
+          "tests_passed": 0,
+          "tests_total": 0,
+          "test_pass_rate": 0.0,
+          "chunks_written": 11,
+          "per_iteration": []
+        },
+        {
+          "run": 3,
+          "status": "INCOMPLETE",
+          "compile_ok": false,
+          "tests_passed": 0,
+          "tests_total": 0,
+          "test_pass_rate": 0.0,
           "chunks_written": 7,
-          "failure_errors": 0,
-          "strategy": "PILOT",
-          "duration_ms": 900018,
-          "exit_code": 124
+          "per_iteration": []
         }
-      ],
-      "mean_ms": 900018,
-      "stdev_ms": 0,
-      "min_ms": 900018,
-      "max_ms": 900018,
-      "source_files": 121,
-      "source_loc": 28110
+      ]
     }
   ]
 }

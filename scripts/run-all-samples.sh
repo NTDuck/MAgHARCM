@@ -93,10 +93,8 @@ for cfg in "${configs[@]}"; do
     echo "[run  ] $name ($((ran + skipped + failed + 1))/$total)"
     log="$LOG_DIR/$name.log"
 
-    # Get the YAML's timeout_seconds; pad by 1.5x for the outer timeout.
-    yaml_timeout=$(grep -E '^\s*timeout_seconds:' "$cfg" | awk '{print $2}')
-    yaml_timeout=${yaml_timeout:-7200}
-    wall=$((yaml_timeout * 3 / 2))
+    # Remove arbitrary small timeout; allow full convergence without premature termination.
+    wall=14400
 
     start=$(date +%s)
     timeout --foreground "$wall" "$REPO_ROOT/bin/MAgHARCM" --config "$cfg" \

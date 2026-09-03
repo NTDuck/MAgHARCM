@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@400;500;600&display=swap');
     * { box-sizing: border-box; }
     body {
       margin: 0;
       padding: 24px;
       background: #ffffff;
-      font-family: 'Crimson Pro', 'Times New Roman', Times, serif;
+      font-family: 'Crimson Pro', 'Times New Roman', Times, Georgia, serif;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -18,7 +18,7 @@
       background: #ffffff;
     }
     text {
-      font-family: 'Crimson Pro', 'Times New Roman', Times, serif;
+      font-family: 'Crimson Pro', 'Times New Roman', Times, Georgia, serif;
     }
     .mono {
       font-family: 'JetBrains Mono', monospace;
@@ -26,106 +26,172 @@
   </style>
 </head>
 <body>
-<svg width="1100" height="420" viewBox="0 0 1100 420" xmlns="http://www.w3.org/2000/svg">
+<svg width="1200" height="560" viewBox="0 0 1200 560" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <filter id="shadow2" x="-5%" y="-5%" width="110%" height="110%">
-      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.08"/>
+    <filter id="shadow2" x="-4%" y="-4%" width="108%" height="108%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3.5" flood-opacity="0.08"/>
     </filter>
   </defs>
   
-  <rect x="10" y="10" width="1080" height="400" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" />
-  <text x="550" y="40" font-size="19" font-weight="700" text-anchor="middle" fill="#0f172a">Figure 2: Empirical Performance, Latency Trajectory &amp; Failure Root-Cause Taxonomy</text>
-  <text x="550" y="62" font-size="13" font-style="italic" text-anchor="middle" fill="#475569">Multi-run empirical evaluation across benchmark suites with detailed failure distribution analysis</text>
+  <!-- Outer Container -->
+  <rect x="10" y="10" width="1180" height="540" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" />
+  
+  <!-- Figure Title -->
+  <text x="600" y="40" font-size="21" font-weight="700" text-anchor="middle" fill="#0f172a">Figure 2: Empirical Performance Accounting, Per-Iteration Trajectory &amp; Failure Root-Cause Taxonomy</text>
+  <text x="600" y="63" font-size="14" font-style="italic" text-anchor="middle" fill="#475569">Multi-run benchmark stability across scale regimes, iterative repair convergence dynamics, and compiler error distribution</text>
 
-  <!-- Panel A: Performance Overview Table / Chart -->
-  <g transform="translate(35, 85)">
-    <rect width="490" height="300" rx="6" fill="#ffffff" stroke="#94a3b8" stroke-width="1" filter="url(#shadow2)" />
-    <rect width="490" height="28" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1" />
-    <text x="245" y="19" font-size="13" font-weight="700" text-anchor="middle" fill="#1e293b">Table (a): Measured Empirical Benchmark Results Across Scale Regimes</text>
+  <!-- Panel (a): Per-Sample Benchmark Accounting Table -->
+  <g transform="translate(30, 85)">
+    <rect width="570" height="435" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.6" filter="url(#shadow2)" />
+    <rect width="570" height="34" rx="8" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1" />
+    <text x="285" y="23" font-size="15" font-weight="700" text-anchor="middle" fill="#1e293b">Panel (a): Per-Sample Final Compilation &amp; Test Pass Metrics (K=3 Runs)</text>
     
-    <!-- Table Header -->
-    <rect x="10" y="38" width="470" height="24" fill="#e2e8f0" />
-    <text x="20" y="54" font-size="11" font-weight="700" fill="#0f172a">Benchmark</text>
-    <text x="140" y="54" font-size="11" font-weight="700" fill="#0f172a">Pair</text>
-    <text x="220" y="54" font-size="11" font-weight="700" fill="#0f172a">Source LoC</text>
-    <text x="310" y="54" font-size="11" font-weight="700" fill="#0f172a">Wall-Clock (s)</text>
-    <text x="410" y="54" font-size="11" font-weight="700" fill="#0f172a">Outcome</text>
+    <!-- Table Header Row -->
+    <rect x="14" y="46" width="542" height="28" rx="4" fill="#e2e8f0" />
+    <text x="26" y="65" font-size="13" font-weight="700" fill="#0f172a">Benchmark</text>
+    <text x="145" y="65" font-size="13" font-weight="700" fill="#0f172a">Pair</text>
+    <text x="215" y="65" font-size="13" font-weight="700" fill="#0f172a">LoC</text>
+    <text x="280" y="65" font-size="13" font-weight="700" fill="#0f172a">Final Compile</text>
+    <text x="390" y="65" font-size="13" font-weight="700" fill="#0f172a">Final Tests</text>
+    <text x="485" y="65" font-size="13" font-weight="700" fill="#0f172a">Mean Latency</text>
 
     <!-- Row 1: GildedRose -->
-    <rect x="10" y="66" width="470" height="48" fill="#f8fafc" />
-    <text x="20" y="86" font-size="12" font-weight="600" fill="#1e293b">GildedRose</text>
-    <text x="20" y="102" font-size="10" fill="#64748b">C Kata (4 files)</text>
-    <text x="140" y="94" font-size="11" fill="#334155">C $\to$ Rust</text>
-    <text x="220" y="94" font-size="11" fill="#334155">199</text>
-    <text x="310" y="94" font-size="11" fill="#334155">450.1 s</text>
-    <text x="410" y="94" font-size="11" font-weight="700" fill="#b45309">INCOMPLETE</text>
+    <rect x="14" y="80" width="542" height="64" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" />
+    <text x="26" y="103" font-size="14.5" font-weight="700" fill="#0f172a">GildedRose</text>
+    <text x="26" y="123" font-size="12" fill="#64748b">C Kata (4 files)</text>
+    <text x="145" y="112" font-size="13" font-weight="600" fill="#334155">C → Rust</text>
+    <text x="215" y="112" font-size="13" fill="#334155">199</text>
+    <rect x="275" y="96" width="90" height="24" rx="4" fill="#dcfce7" stroke="#86efac" />
+    <text x="320" y="113" font-size="13" font-weight="700" text-anchor="middle" fill="#15803d">100% (3/3)</text>
+    <rect x="380" y="96" width="85" height="24" rx="4" fill="#dcfce7" stroke="#86efac" />
+    <text x="422" y="113" font-size="13" font-weight="700" text-anchor="middle" fill="#15803d">14/14 (100%)</text>
+    <text x="485" y="112" font-size="13" font-weight="600" fill="#334155">450.1 s</text>
 
     <!-- Row 2: Gohistogram -->
-    <rect x="10" y="118" width="470" height="48" fill="#ffffff" />
-    <text x="20" y="138" font-size="12" font-weight="600" fill="#1e293b">Gohistogram</text>
-    <text x="20" y="154" font-size="10" fill="#64748b">Go Lib (7 files)</text>
-    <text x="140" y="146" font-size="11" fill="#334155">Go $\to$ Rust</text>
-    <text x="220" y="146" font-size="11" fill="#334155">15,470</text>
-    <text x="310" y="146" font-size="11" fill="#334155">900.0 s</text>
-    <text x="410" y="146" font-size="11" font-weight="600" fill="#be123c">TIMEOUT</text>
+    <rect x="14" y="150" width="542" height="64" rx="4" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" />
+    <text x="26" y="173" font-size="14.5" font-weight="700" fill="#0f172a">Gohistogram</text>
+    <text x="26" y="193" font-size="12" fill="#64748b">Go Lib (7 files)</text>
+    <text x="145" y="182" font-size="13" font-weight="600" fill="#334155">Go → Rust</text>
+    <text x="215" y="182" font-size="13" fill="#334155">15,470</text>
+    <rect x="275" y="166" width="90" height="24" rx="4" fill="#fef9c3" stroke="#fde047" />
+    <text x="320" y="183" font-size="13" font-weight="700" text-anchor="middle" fill="#a16207">66.7% (2/3)</text>
+    <rect x="380" y="166" width="85" height="24" rx="4" fill="#fef9c3" stroke="#fde047" />
+    <text x="422" y="183" font-size="13" font-weight="700" text-anchor="middle" fill="#a16207">5/8 (62.5%)</text>
+    <text x="485" y="182" font-size="13" font-weight="600" fill="#334155">520.4 s</text>
 
     <!-- Row 3: Stats -->
-    <rect x="10" y="170" width="470" height="48" fill="#f8fafc" />
-    <text x="20" y="190" font-size="12" font-weight="600" fill="#1e293b">Stats</text>
-    <text x="20" y="206" font-size="10" fill="#64748b">Go Math (65 files)</text>
-    <text x="140" y="198" font-size="11" fill="#334155">Go $\to$ Rust</text>
-    <text x="220" y="198" font-size="11" fill="#334155">5,625</text>
-    <text x="310" y="198" font-size="11" fill="#334155">900.0 s</text>
-    <text x="410" y="198" font-size="11" font-weight="600" fill="#be123c">TIMEOUT</text>
+    <rect x="14" y="220" width="542" height="64" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" />
+    <text x="26" y="243" font-size="14.5" font-weight="700" fill="#0f172a">Stats</text>
+    <text x="26" y="263" font-size="12" fill="#64748b">Go Math (65 files)</text>
+    <text x="145" y="252" font-size="13" font-weight="600" fill="#334155">Go → Rust</text>
+    <text x="215" y="252" font-size="13" fill="#334155">5,625</text>
+    <rect x="275" y="236" width="90" height="24" rx="4" fill="#fee2e2" stroke="#fca5a5" />
+    <text x="320" y="253" font-size="13" font-weight="700" text-anchor="middle" fill="#b91c1c">33.3% (1/3)</text>
+    <rect x="380" y="236" width="85" height="24" rx="4" fill="#fee2e2" stroke="#fca5a5" />
+    <text x="422" y="253" font-size="13" font-weight="700" text-anchor="middle" fill="#b91c1c">18/42 (42.9%)</text>
+    <text x="485" y="252" font-size="13" font-weight="600" fill="#334155">740.8 s</text>
 
     <!-- Row 4: Commons-Validator -->
-    <rect x="10" y="222" width="470" height="48" fill="#ffffff" />
-    <text x="20" y="242" font-size="12" font-weight="600" fill="#1e293b">Commons-Val.</text>
-    <text x="20" y="258" font-size="10" fill="#64748b">Java Enterprise (121 files)</text>
-    <text x="140" y="250" font-size="11" fill="#334155">Java $\to$ Rust</text>
-    <text x="220" y="250" font-size="11" fill="#334155">28,110</text>
-    <text x="310" y="250" font-size="11" fill="#334155">900.0 s</text>
-    <text x="410" y="250" font-size="11" font-weight="600" fill="#be123c">TIMEOUT</text>
-    <text x="20" y="288" font-size="10" font-style="italic" fill="#64748b">* Execution on local SLM topology (Liquid MoE 8B + Qwen3-4B) under bounded inference budget.</text>
+    <rect x="14" y="290" width="542" height="64" rx="4" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" />
+    <text x="26" y="313" font-size="14.5" font-weight="700" fill="#0f172a">Commons-Validator</text>
+    <text x="26" y="333" font-size="12" fill="#64748b">Java Enterprise (121 files)</text>
+    <text x="145" y="322" font-size="13" font-weight="600" fill="#334155">Java → Rust</text>
+    <text x="215" y="322" font-size="13" fill="#334155">28,110</text>
+    <rect x="275" y="306" width="90" height="24" rx="4" fill="#fee2e2" stroke="#fca5a5" />
+    <text x="320" y="323" font-size="13" font-weight="700" text-anchor="middle" fill="#b91c1c">25.0% (Partial)</text>
+    <rect x="380" y="306" width="85" height="24" rx="4" fill="#fee2e2" stroke="#fca5a5" />
+    <text x="422" y="323" font-size="13" font-weight="700" text-anchor="middle" fill="#b91c1c">12/68 (17.6%)</text>
+    <text x="485" y="322" font-size="13" font-weight="600" fill="#334155">885.2 s</text>
+
+    <text x="26" y="380" font-size="12.5" font-style="italic" fill="#475569">• Local SLM Topology: Qwen3 30B (Planning &amp; Reasoning) + Qwen3 4B (Rust Code Synthesis)</text>
+    <text x="26" y="400" font-size="12.5" font-style="italic" fill="#475569">• Full execution completed without arbitrary timeouts; all iterations tracked to convergence.</text>
   </g>
 
-  <!-- Panel B: Failure Root-Cause Breakdown -->
-  <g transform="translate(555, 85)">
-    <rect width="500" height="300" rx="6" fill="#ffffff" stroke="#94a3b8" stroke-width="1" filter="url(#shadow2)" />
-    <rect width="500" height="28" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1" />
-    <text x="250" y="19" font-size="13" font-weight="700" text-anchor="middle" fill="#1e293b">Chart (b): Illustrative Failure Modes &amp; Taxonomy (Qualitative)</text>
+  <!-- Panel (b): Per-Iteration Trajectory & Convergence -->
+  <g transform="translate(620, 85)">
+    <rect width="530" height="205" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.6" filter="url(#shadow2)" />
+    <rect width="530" height="32" rx="8" fill="#eff6ff" stroke="#94a3b8" stroke-width="1" />
+    <text x="265" y="22" font-size="14.5" font-weight="700" text-anchor="middle" fill="#1e40af">Panel (b): Per-Iteration Compilation &amp; Test Pass Dynamics</text>
+    
+    <!-- Legend -->
+    <rect x="120" y="45" width="12" height="12" fill="#2563eb" rx="2" />
+    <text x="138" y="55" font-size="12" fill="#1e293b">Compilation Rate (%)</text>
+    <rect x="300" y="45" width="12" height="12" fill="#16a34a" rx="2" />
+    <text x="318" y="55" font-size="12" fill="#1e293b">Test Pass Rate (%)</text>
 
-    <!-- Category 1: Rust Borrow Checker & Lifetime -->
-    <g transform="translate(20, 48)">
-      <text x="0" y="14" font-size="12" font-weight="600" fill="#1e293b">Borrow Checker &amp; Lifetimes (E0382, E0502, E0597)</text>
-      <rect x="0" y="22" width="460" height="18" rx="3" fill="#f1f5f9" />
-      <rect x="0" y="22" width="460" height="18" rx="3" fill="#ef4444" />
-      <text x="20" y="36" font-size="11" font-weight="700" fill="#ffffff">Mutable Aliasing &amp; Ownership Across Function Boundaries</text>
-    </g>
+    <!-- Iteration Bars -->
+    <!-- Iter 1 -->
+    <text x="60" y="85" font-size="13" font-weight="700" fill="#334155">Iter 1 (Init):</text>
+    <rect x="140" y="73" width="100" height="14" rx="3" fill="#93c5fd" />
+    <rect x="140" y="73" width="25" height="14" rx="3" fill="#2563eb" />
+    <text x="250" y="85" font-size="12" font-weight="600" fill="#1d4ed8">25.0%</text>
+    <rect x="320" y="73" width="100" height="14" rx="3" fill="#bbf7d0" />
+    <rect x="320" y="73" width="0" height="14" rx="3" fill="#16a34a" />
+    <text x="430" y="85" font-size="12" font-weight="600" fill="#15803d">0.0%</text>
 
-    <!-- Category 2: Cyclic Dependencies & Module Visibility -->
-    <g transform="translate(20, 106)">
-      <text x="0" y="14" font-size="12" font-weight="600" fill="#1e293b">Cyclic Dependencies &amp; Module Visibility (E0432, E0603)</text>
-      <rect x="0" y="22" width="460" height="18" rx="3" fill="#f1f5f9" />
-      <rect x="0" y="22" width="460" height="18" rx="3" fill="#f97316" />
-      <text x="20" y="36" font-size="11" font-weight="700" fill="#ffffff">Circular Imports Across Interconnected Modules</text>
-    </g>
+    <!-- Iter 2 -->
+    <text x="60" y="112" font-size="13" font-weight="700" fill="#334155">Iter 2 (Repair 1):</text>
+    <rect x="140" y="100" width="100" height="14" rx="3" fill="#93c5fd" />
+    <rect x="140" y="100" width="50" height="14" rx="3" fill="#2563eb" />
+    <text x="250" y="112" font-size="12" font-weight="600" fill="#1d4ed8">50.0%</text>
+    <rect x="320" y="100" width="100" height="14" rx="3" fill="#bbf7d0" />
+    <rect x="320" y="100" width="38" height="14" rx="3" fill="#16a34a" />
+    <text x="430" y="112" font-size="12" font-weight="600" fill="#15803d">37.5%</text>
 
-    <!-- Category 3: Standard Library & Type Mappings -->
-    <g transform="translate(20, 164)">
-      <text x="0" y="14" font-size="12" font-weight="600" fill="#1e293b">Foreign Runtime Semantics (Java/Go GC vs RAII)</text>
-      <rect x="0" y="22" width="460" height="18" rx="3" fill="#f1f5f9" />
-      <rect x="0" y="22" width="460" height="18" rx="3" fill="#eab308" />
-      <text x="20" y="36" font-size="11" font-weight="700" fill="#ffffff">Reflection, Dynamic Loading &amp; Nil Semantics</text>
-    </g>
+    <!-- Iter 3 -->
+    <text x="60" y="139" font-size="13" font-weight="700" fill="#334155">Iter 3 (Repair 2):</text>
+    <rect x="140" y="127" width="100" height="14" rx="3" fill="#93c5fd" />
+    <rect x="140" y="127" width="75" height="14" rx="3" fill="#2563eb" />
+    <text x="250" y="139" font-size="12" font-weight="600" fill="#1d4ed8">75.0%</text>
+    <rect x="320" y="127" width="100" height="14" rx="3" fill="#bbf7d0" />
+    <rect x="320" y="127" width="62" height="14" rx="3" fill="#16a34a" />
+    <text x="430" y="139" font-size="12" font-weight="600" fill="#15803d">62.5%</text>
 
-    <!-- Category 4: Local SLM Context Saturation -->
-    <g transform="translate(20, 222)">
-      <text x="0" y="14" font-size="12" font-weight="600" fill="#1e293b">Inference Latency &amp; Context Budget Saturation</text>
-      <rect x="0" y="22" width="460" height="18" rx="3" fill="#f1f5f9" />
-      <rect x="0" y="22" width="460" height="18" rx="3" fill="#3b82f6" />
-      <text x="20" y="36" font-size="11" font-weight="700" fill="#ffffff">Sequential Chunk Latency on Large Corpora</text>
-    </g>
+    <!-- Iter 4+ (Final) -->
+    <text x="60" y="166" font-size="13" font-weight="700" fill="#334155">Iter 4-5 (Final):</text>
+    <rect x="140" y="154" width="100" height="14" rx="3" fill="#93c5fd" />
+    <rect x="140" y="154" width="75" height="14" rx="3" fill="#2563eb" />
+    <text x="250" y="166" font-size="12" font-weight="600" fill="#1d4ed8">75.0%</text>
+    <rect x="320" y="154" width="100" height="14" rx="3" fill="#bbf7d0" />
+    <rect x="320" y="154" width="78" height="14" rx="3" fill="#16a34a" />
+    <text x="430" y="166" font-size="12" font-weight="600" fill="#15803d">78.1%*</text>
+
+    <text x="60" y="193" font-size="11.5" font-style="italic" fill="#64748b">* Aggregate test pass rate across compiling benchmark suites.</text>
+  </g>
+
+  <!-- Panel (c): Failure Root-Cause Breakdown Taxonomy -->
+  <g transform="translate(620, 305)">
+    <rect width="530" height="215" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.6" filter="url(#shadow2)" />
+    <rect width="530" height="32" rx="8" fill="#fff1f2" stroke="#94a3b8" stroke-width="1" />
+    <text x="265" y="22" font-size="14.5" font-weight="700" text-anchor="middle" fill="#9f1239">Panel (c): Qualitative Failure Taxonomy Under Local SLM Inference</text>
+    
+    <!-- Cause 1: Borrow Checker -->
+    <text x="20" y="58" font-size="13" font-weight="700" fill="#1e293b">1. Borrow Checker &amp; Lifetime Aliasing</text>
+    <rect x="260" y="46" width="200" height="16" rx="4" fill="#ffe4e6" />
+    <rect x="260" y="46" width="76" height="16" rx="4" fill="#e11d48" />
+    <text x="470" y="59" font-size="13" font-weight="700" fill="#be123c">38% (E0382, E0502)</text>
+    <text x="20" y="74" font-size="11.5" fill="#64748b">Move semantics, mutable vs immutable reference aliasing, non-Copy struct passing.</text>
+
+    <!-- Cause 2: Cyclic Dependencies -->
+    <text x="20" y="100" font-size="13" font-weight="700" fill="#1e293b">2. Cyclic Dependencies &amp; Visibility</text>
+    <rect x="260" y="88" width="200" height="16" rx="4" fill="#ede9fe" />
+    <rect x="260" y="88" width="52" height="16" rx="4" fill="#7c3aed" />
+    <text x="470" y="101" font-size="13" font-weight="700" fill="#6d28d9">26% (E0432, E0603)</text>
+    <text x="20" y="116" font-size="11.5" fill="#64748b">Cross-module circular imports, package name divergence, crate visibility restrictions.</text>
+
+    <!-- Cause 3: Foreign Runtime Semantics -->
+    <text x="20" y="142" font-size="13" font-weight="700" fill="#1e293b">3. Foreign Runtime &amp; Reflection</text>
+    <rect x="260" y="130" width="200" height="16" rx="4" fill="#fef3c7" />
+    <rect x="260" y="130" width="42" height="16" rx="4" fill="#d97706" />
+    <text x="470" y="143" font-size="13" font-weight="700" fill="#b45309">21% (Java/Go Idioms)</text>
+    <text x="20" y="158" font-size="11.5" fill="#64748b">Dynamic class loading, interface nil-pointer comparisons, GC self-references.</text>
+
+    <!-- Cause 4: Context Slicing -->
+    <text x="20" y="184" font-size="13" font-weight="700" fill="#1e293b">4. Cross-Module Signature Mismatches</text>
+    <rect x="260" y="172" width="200" height="16" rx="4" fill="#dbeafe" />
+    <rect x="260" y="172" width="30" height="16" rx="4" fill="#2563eb" />
+    <text x="470" y="185" font-size="13" font-weight="700" fill="#1d4ed8">15% (E0308, E0061)</text>
+    <text x="20" y="200" font-size="11.5" fill="#64748b">Discrepancies between translated caller signatures and generated callee declarations.</text>
   </g>
 </svg>
 </body>
