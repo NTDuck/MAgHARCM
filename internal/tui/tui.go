@@ -316,10 +316,10 @@ func SetField(cfg *config.Config, key, val string) error {
 // Phase. The caller (main) updates its own Phase variable.
 func Phase1Finalize(cfg *config.Config) error {
 	if cfg.SourceDir == "" || cfg.TargetDir == "" {
-		return fmt.Errorf("source_dir and target_dir are required before finishing Phase 1")
+		return fmt.Errorf("set source_dir and target_dir before finishing Phase 1")
 	}
 	if cfg.SourceLang == "" || cfg.TargetLang == "" {
-		return fmt.Errorf("source_language and target_language are required")
+		return fmt.Errorf("set source_language and target_language before finishing Phase 1")
 	}
 	out := defaultRequestPath()
 	if err := WriteYAML(out, cfg); err != nil {
@@ -479,7 +479,7 @@ func HandleSlash(line string, cfg *config.Config, current Phase, state *ReplStat
 
 func runPhase2(cfg config.Config) error {
 	if cfg.SourceDir == "" || cfg.TargetDir == "" {
-		return fmt.Errorf("refusing: source_dir and target_dir are required (use /load <path> or finish Phase 1)")
+		return fmt.Errorf("set source_dir and target_dir first (use /load <path> or finish Phase 1)")
 	}
 	final, err := runner.Run(context.Background(), &cfg)
 	if err != nil {
