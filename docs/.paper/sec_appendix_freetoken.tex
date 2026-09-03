@@ -6,7 +6,7 @@
 MAgHARCM currently drives translation through two local Ollama models invoked
 from \texttt{internal/llm/llm.go} (lines 20--36): a \textbf{reasoning} planner
 and a \textbf{coding} translator. \texttt{config.yml:12} pins
-\texttt{reasoning: "gpt-oss:20b"} --- a dense $\sim$20B model. As the project
+\texttt{reasoning: "qwen3:30b-a3b-thinking-2507-q4_K_M"} --- a dense $\sim$20B model. As the project
 corpus grew (Sample 2: 38 files / 5,625 LoC of \texttt{oxidizer/stats}; Sample 3:
 15k LoC test data; Sample 4: 100+ Java files), the dense planner hit the VRAM
 wall on consumer-class hardware: a 20B dense Q4\_K\_M runs $\sim$12--13 GB on
@@ -66,17 +66,17 @@ Ollama library pages as of 2026-08-30.
 \toprule
 Tag & Total & Active & Type & Disk (local) & Fit \\
 \midrule
-\texttt{lfm2.5:8b-a1b-q4\_K\_M} & \textbf{8.3B} & \textbf{$\sim$1.5B} & MoE & \textbf{5.2 GB} & Best fit \\
+\texttt{qwen3:30b-thinking-a1b-q4\_K\_M} & \textbf{8.3B} & \textbf{$\sim$1.5B} & MoE & \textbf{5.2 GB} & Best fit \\
 \texttt{qwen3.8:27b} & \textbf{27.8B} & 27.8B & dense & \textbf{17 GB} & Baseline dense alt \\
 \texttt{qwen2.5-coder:7b-base-q5\_0} & 7.6B & 7.6B & dense & 5.3 GB & Small dense fallback \\
 \texttt{mistral:7b-instruct-v0.2-q5\_0} & 7.3B & 7.3B & dense & 5.0 GB & Small dense fallback \\
-\texttt{gpt-oss:20b} (current default) & $\sim$21B & $\sim$21B & dense (MoE variant) & $\sim$12 GB & \textbf{Current pin} \\
+\texttt{qwen3:30b-a3b-thinking-2507-q4_K_M} (current default) & $\sim$21B & $\sim$21B & dense (MoE variant) & $\sim$12 GB & \textbf{Current pin} \\
 \bottomrule
 \end{tabular}
 \caption{Local Ollama model candidates for MAgHARCM reasoning slot.}
 \end{table}
 
-\texttt{lfm2.5:8b-a1b-q4\_K\_M} is the MoE option that delivers 8B-class
+\texttt{qwen3:30b-thinking-a1b-q4\_K\_M} is the MoE option that delivers 8B-class
 reasoning capacity while activating only $\sim$1.5B params/token --- the exact
 total/active split FreeToken targets. The naming convention is
 \texttt{<total>B-a<active>B}; the ``a1b'' suffix = 1B active (Liquid AI rounds
@@ -84,8 +84,8 @@ to 1 in the tag, the model card reports 1.5B).
 
 \subsection{Recommendation}
 
-Replace \texttt{reasoning: "gpt-oss:20b"} in \texttt{config.yml:12} with
-\textbf{\texttt{reasoning: "lfm2.5:8b-a1b-q4\_K\_M"}}.
+Replace \texttt{reasoning: "qwen3:30b-a3b-thinking-2507-q4_K_M"} in \texttt{config.yml:12} with
+\textbf{\texttt{reasoning: "qwen3:30b-thinking-a1b-q4\_K\_M"}}.
 
 Rationale:
 \begin{enumerate}
@@ -110,7 +110,7 @@ two metrics:
 \begin{itemize}
 \item Inference latency (sec/sample, log to \texttt{run-2026-08-30-sN.log}).
 \item Quality: pass/fail of the build/test cascade (ReCodeAgent 3-tier
-  validation flow from PRIM-06).
+  validation flow from Multi-Stage Build/Test Feedback Repair).
 \end{itemize}
 
 If the MoE planner shows quality regression on Sample 1, fall back to
@@ -130,8 +130,8 @@ the host has $\geq$24 GB RAM to spare.
 @@ -9,7 +9,7 @@ translation:
      toolchain: "cargo"
    models:
--    reasoning: "gpt-oss:20b"
-+    reasoning: "lfm2.5:8b-a1b-q4_K_M"
+-    reasoning: "qwen3:30b-a3b-thinking-2507-q4_K_M"
++    reasoning: "qwen3:30b-a3b-thinking-2507-q4_K_M"
      coding: "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4_K_XL"
      ollama_url: "http://localhost:11434"
 \end{verbatim}
@@ -147,7 +147,7 @@ No code change in \texttt{internal/llm/llm.go} --- it is a pure string lookup
 \toprule
 Slot & Model & Disk & Active VRAM & Peak RAM \\
 \midrule
-Reasoning & \texttt{lfm2.5:8b-a1b-q4\_K\_M} & 5.2 GB & $\sim$1.0 GB & $\sim$6 GB \\
+Reasoning & \texttt{qwen3:30b-thinking-a1b-q4\_K\_M} & 5.2 GB & $\sim$1.0 GB & $\sim$6 GB \\
 Coding & \texttt{hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4\_K\_XL} & 2.5 GB & $\sim$1.6 GB & $\sim$3 GB \\
 Ollama runtime + KV (8k ctx) & --- & --- & $\sim$1.5 GB & $\sim$2 GB \\
 \midrule
@@ -164,7 +164,7 @@ the reasoning MoE stays on-GPU --- the inverse of the FreeToken 35B-on-8GB demo.
 \subsubsection{Rollback plan}
 
 \begin{enumerate}
-\item Revert \texttt{config.yml:12} to \texttt{gpt-oss:20b} (or whichever prior
+\item Revert \texttt{config.yml:12} to \texttt{qwen3:30b-a3b-thinking-2507-q4_K_M} (or whichever prior
   pin was in effect before this change). One-line edit.
 \item No persistent state changes --- Ollama keeps pulled weights in
   \texttt{\$OLLAMA\_MODELS} and the swap is non-destructive.

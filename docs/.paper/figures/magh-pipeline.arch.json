@@ -24,7 +24,7 @@
       "sublabel": ":11434 local",
       "pos": [40, 90],
       "size": [150, 80],
-      "tag": "lfm2.5 MoE + Qwen3-4B"
+      "tag": "Qwen3-30B Thinking + Qwen3-4B"
     },
     {
       "id": "intake",
@@ -221,7 +221,7 @@
       "title": "Inputs & Models",
       "items": [
         "YAML config specifies source/target paths and toolchain",
-        "MoE reasoning slot (lfm2.5:8b) + coding slot (Qwen3-4B) via Ollama"
+        "Reasoning slot (Qwen3-30B Thinking) + coding slot (Qwen3-4B) via Ollama"
       ]
     },
     {

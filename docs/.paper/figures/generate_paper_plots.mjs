@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH || '/run/current-system/sw/bin/chromium';
 
-async function renderHTMLFileToPNG(htmlFilePath, outPngPath, width = 1200, height = 540) {
+async function renderHTMLFileToPNG(htmlFilePath, outPngPath, width = 1200, height = 560) {
   const browser = await puppeteer.launch({
     headless: true,
     executablePath: fs.existsSync(executablePath) ? executablePath : undefined,
@@ -26,26 +26,49 @@ async function renderHTMLFileToPNG(htmlFilePath, outPngPath, width = 1200, heigh
 
   await page.goto(`file://${path.resolve(htmlFilePath)}`, { waitUntil: 'networkidle0' });
 
-  // Force light theme and clean white background on viewer DOM
+  // Hide all viewer chrome, toolbars, buttons, headers, export menus, and force light theme
   await page.evaluate(() => {
     document.documentElement.setAttribute('data-theme', 'light');
     document.documentElement.classList.remove('dark');
     document.documentElement.classList.add('light');
+    
     document.body.style.backgroundColor = '#ffffff';
     document.body.style.color = '#0f172a';
-    
-    // If there is an archify theme button, click light if needed
-    const lightBtn = document.querySelector('[data-theme-value="light"], [aria-label*="Light"], .theme-toggle');
-    if (lightBtn && document.documentElement.getAttribute('data-theme') !== 'light') {
-      lightBtn.click();
+    document.body.style.margin = '0';
+    document.body.style.padding = '0';
+
+    // Hide any toolbar or viewer chrome
+    const hideSelectors = [
+      'header',
+      'nav',
+      '.viewer-toolbar',
+      '.viewer-chrome',
+      '.theme-toggle',
+      '.nav-controls',
+      '.chapter-rail',
+      '.chapter-delta-preview',
+      '[data-viewer-toolbar]',
+      '.export-btn',
+      '.present-btn',
+      '.viewer-header',
+      '.toolbar',
+      '.controls-bar'
+    ];
+    hideSelectors.forEach(sel => {
+      document.querySelectorAll(sel).forEach(el => el.style.display = 'none');
+    });
+
+    const svg = document.querySelector('svg');
+    if (svg) {
+      svg.style.backgroundColor = '#ffffff';
     }
   });
 
   // Wait for layout settlement
   await new Promise(r => setTimeout(r, 200));
 
-  // Find main svg or root container
-  const svgEl = await page.$('svg');
+  // Find the primary svg element or diagram canvas
+  const svgEl = await page.$('svg.diagram-svg') || await page.$('svg');
   if (svgEl) {
     await svgEl.screenshot({ path: outPngPath, omitBackground: false });
   } else {
@@ -53,7 +76,7 @@ async function renderHTMLFileToPNG(htmlFilePath, outPngPath, width = 1200, heigh
   }
   
   await browser.close();
-  console.log(`Generated light-theme publication PNG: ${outPngPath}`);
+  console.log(`Generated publication PNG (no menus, pure white): ${outPngPath}`);
 }
 
 async function main() {
@@ -73,7 +96,7 @@ async function main() {
       console.warn(`Missing HTML file: ${htmlPath}`);
     }
   }
-  console.log('All publication figures rendered with clean white background and sharp typography.');
+  console.log('All publication figures rendered cleanly with zero viewer menus.');
 }
 
 main().catch(console.error);

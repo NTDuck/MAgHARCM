@@ -1,122 +1,116 @@
-\section{NewPrimitives: Re-Derived Methodology Primitives}
+% docs/.paper/sec_appendix_primitives.tex
+\section{Methodology Primitives}
 \label{app:primitives}
 
-This appendix enumerates the methodology primitives re-derived for
-code-archaeology-guided repository-level code migration. Where the
-methodology branch's prior primitives are cited, the new numbering
-supersedes the old. Marker legend: \texttt{[MEASURED]} --- directly
-observed in primary text; \texttt{[AUTHOR\_CLAIM]} --- authors stated,
-no independent replication; \texttt{[INFERRED]} --- derived reasoning
-across multiple sources; \texttt{[HYPOTHESIS]} --- proposed but
-unvalidated.
+This appendix details the foundational primitives derived for repository-scale software migration. Marker legend: \texttt{[MEASURED]} --- directly observed in primary literature; \texttt{[AUTHOR\_CLAIM]} --- authors stated, no independent replication; \texttt{[INFERRED]} --- derived reasoning across multiple sources; \texttt{[HYPOTHESIS]} --- proposed but unvalidated.
 
 \begin{enumerate}
 
-\item \textbf{Reverse Topological Translation Ordering (supersedes PRIM-01).}
+\item \textbf{Reverse Topological Translation Ordering.}
 Bottom-up implementation plan specifying target module order (ReCodeAgent [P01: Sec 3.3, p. 5]) / reverse-topological method translation (AlphaTrans [P02 \S6 \P1]).
 
-\item \textbf{Back-Edge-Conditioned Reverse-Topological Scheduling (NEW, supersedes deprecated ``PRIM-02'').}
+\item \textbf{Back-Edge-Conditioned Reverse-Topological Scheduling.}
 Build a directed call graph, detect cycles, remove back edges to obtain a DAG, compute a reverse-topological linearization, and translate leaves first (AlphaTrans [P02 \S6 \P1]).
 
-\item \textbf{Target Skeleton-First Generation (carried from PRIM-03).}
+\item \textbf{Target Skeleton-First Generation.}
 Before method bodies, emit target-language interface stubs, type declarations, imports, and signature-only functions for every source module (ReCodeAgent [P01 Sec 3.3.3]; AlphaTrans [P02 \S5.2]).
 
-\item \textbf{SpecMiner-Style Dynamic Invariant Recovery (PRIM-04, confirmed).}
+\item \textbf{SpecMiner-Style Dynamic Invariant Recovery.}
 Instrument source binaries at runtime to record allocation sizes, nullability of pointer targets, aliasing relationships, lifetime ranges, and branch coverage under representative inputs (Syzygy [P58 \S3.2, p. 4]).
 
-\item \textbf{Test Suite Co-Translation \& Synthesis (carried from PRIM-05).}
+\item \textbf{Test Suite Co-Translation \& Synthesis.}
 Translate source-language unit tests into the target language as part of the translation pipeline; when source tests are insufficient, generate additional tests for uncovered functions (ReCodeAgent [P01 Sec 3.5.2; Alg 1 lines 14--21]; AlphaTrans [P02 \S6 --- testCheck]; AdvTestGen [P25]).
 
-\item \textbf{Multi-Stage Build/Test Feedback Repair (carried from PRIM-06, with drift correction).}
+\item \textbf{Multi-Stage Build/Test Feedback Repair.}
 After initial translation, run a 3-tier validation cascade (AST/syntax check, target compiler check, translated test suite execution) and feed diagnostics back to the translator up to a fixed budget (ReCodeAgent [P01 Alg 1]; AlphaTrans [P02 \S6 Alg 2]).
 
-\item \textbf{Multi-Agent Verdict Validation (PRIM-07 --- corrected; was mis-attributed).}
+\item \textbf{Multi-Agent Verdict Validation.}
 After translating, deploy multiple LLM verdict agents to independently judge whether the target translation is semantically equivalent to the source; on disagreement, prompt the translator to repair (MatchFixAgent [P08 \S3]).
 
-\item \textbf{State-Grounded Mock-Based In-Isolation Validation (PRIM-08 --- corrected; was mis-attributed).}
+\item \textbf{State-Grounded Mock-Based In-Isolation Validation.}
 For each module under translation, generate a mock of its dependencies using state-equivalent stubs and validate the module against the mock in isolation, then assemble and validate the full system (TRAM [P10 \S3]).
 
-\item \textbf{Tri-Representation Hybrid Code Graph (NEW-PRIM-09, from proto ADR-0029 + RepoGraph [P62]).}
-A unified graph combining the Abstract Syntax Tree (AST, Tree-sitter structural parse), Code Property Graph (CPG, Yamaguchi AST $\cup$ CFG $\cup$ PDG), and System Dependence Graph (SDG, Horwitz/Reps/Binkley inter-procedural PDG extension). RepoGraph [P62] grounds the typed code-graph layer empirically with a $+32.8\%$ average relative resolve-rate lift across four SWE-agent baselines and a $+93\%$ Code Match EM lift on CrossCodeEval with a small open MoE model --- the strongest evidence available for MoE + structural retrieval.
+\item \textbf{Tri-Representation Hybrid Code Graph.}
+A unified graph combining the Abstract Syntax Tree (AST, Tree-sitter structural parse), Code Property Graph (CPG, Yamaguchi AST $\cup$ CFG $\cup$ PDG), and System Dependence Graph (SDG, Horwitz/Reps/Binkley inter-procedural PDG extension). RepoGraph [P62] grounds the typed code-graph layer empirically with a $+32.8\%$ average relative resolve-rate lift across four SWE-agent baselines and a $+93\%$ Code Match EM lift on CrossCodeEval with a small open model.
 
-\item \textbf{Feature-Mapping \& Type-Compatibility Validation (NEW-PRIM-10).}
+\item \textbf{Feature-Mapping \& Type-Compatibility Validation.}
 Maintain an explicit mapping table from source-language idioms to target-language equivalents (e.g., Go interfaces $\leftrightarrow$ Rust traits; Java checked exceptions $\leftrightarrow$ Rust \texttt{Result}) and validate every target symbol against its source counterpart (Oxidizer [P05 \S3]; RustRepoTrans [P07 \S3]).
 
-\item \textbf{Implementation-Agnostic Testing (NEW-PRIM-11).}
+\item \textbf{Implementation-Agnostic Testing.}
 Validate target behavior using black-box I/O test vectors rather than asserting on the structure of the translated code (RepoMod-Bench [P11 \S3]).
 
-\item \textbf{Wasm-Based Reference Execution Oracle (NEW-PRIM-12).}
+\item \textbf{Wasm-Based Reference Execution Oracle.}
 Compile the original source code to WebAssembly; run the same input through the Wasm-compiled source and the target-language implementation; compare observable outputs (VERT [P12 \S3]).
 
-\item \textbf{Adversarial Test-Weakening Guard (NEW-PRIM-13, expanded from old PRIM-12).}
+\item \textbf{Adversarial Test-Weakening Guard.}
 During repair iterations, AST-validate that the translator has not weakened tests (deleted assertions, widened tolerances, removed negative cases, relaxed catch blocks) (AdvTestGen [P25: ISSTA 2024]; MatchFixAgent [P08 \S3]).
 
-\item \textbf{Software-Archaeology Stage (NEW-PRIM-14, from S10 + S11).}
+\item \textbf{Software-Archaeology Stage.}
 A pre-translation multi-step comprehension pass: boundary extraction, time-capsule execution harness, DRSpace \& churn bisection, naming \& type forensics, and test \& documentation archaeology (pp-besm dev.to playbook; AgentPatterns.ai Legacy Code Archaeology; Rajlich; M\"uller; Foltz; Baldwin \& Clark; Kazman \& Cai).
 
-\item \textbf{Evidence-First Adaptation Pattern (NEW-PRIM-15, from S12 Reeper).}
+\item \textbf{Evidence-First Adaptation Pattern.}
 Before adapting external code into a target system, produce four artifacts: (1) target-preserving spec, (2) contract-before-code, (3) provenance-aware diff, (4) untrusted-source model (Reeper [S12 \S2]).
 
-\item \textbf{Spec-Driven Development Lifecycle (NEW-PRIM-16, from S13 spec-kit).}
+\item \textbf{Spec-Driven Development Lifecycle.}
 Strict sequence: constitution $\rightarrow$ specify $\rightarrow$ plan $\rightarrow$ tasks $\rightarrow$ implement $\rightarrow$ converge; each phase produces a reviewable artifact and transitions are gated (spec-kit [S13]).
 
-\item \textbf{Asynchronous Software Engineering Agent Architecture (NEW-PRIM-17, from P54 CAID).}
+\item \textbf{Asynchronous Software Engineering Agent Architecture.}
 Multiple agents operate concurrently over a shared memory blackboard; agents wake on blackboard events, claim work units, and post results; a central scheduler arbitrates conflicts (CAID [P54 \S3]).
 
-\item \textbf{Jaccard-Coupling Architecture Recovery (NEW-PRIM-18, from P52 MSR4SA).}
+\item \textbf{Jaccard-Coupling Architecture Recovery.}
 Compute Jaccard similarity of commit neighborhoods between modules to detect hidden coupling invisible to static import edges (MSR4SA [P52 \S4]).
 
-\item \textbf{Design Rule Hierarchy Partitioning (NEW-PRIM-19, from P51 DRSpace).}
+\item \textbf{Design Rule Hierarchy Partitioning.}
 Classify every architectural element by stability layer (L1 interfaces, L2 subsystems, L3 leaves) and apply the load-bearing concentration check (Kazman et al.\ [P51 \S4]).
 
-\item \textbf{Concept Assignment and Redocumentation (NEW-PRIM-20, from P45 Rajlich).}
+\item \textbf{Concept Assignment and Redocumentation.}
 Before translation, perform concept-locator analysis: identify what concepts the code implements, where they live, and how they relate; output a concept $\rightarrow$ location map (Rajlich [P45 \S2]).
 
-\item \textbf{Migration Strategy Selection (NEW-PRIM-21, from P46 M\"uller).}
+\item \textbf{Migration Strategy Selection.}
 For each migration target, classify into one of five strategies: Ignore, COTS, Cold Turkey, Integrate-in-Place, or Chicken Little, plus the LIS (Legacy Integration Strategy) decomposability assessment (M\"uller [P46 slides 18--25]).
 
-\item \textbf{Four Phases of Comprehension (NEW-PRIM-22, from P47 Foltz).}
+\item \textbf{Four Phases of Comprehension.}
 Apply the DR.\ JONES model (Decomposition, Recognition, Organization, Navigation, Explanation, Search) with empirically grounded cognitive observations: linear traversal preferred, recency bias, breadth before depth, and hotspot concentration (Foltz [P47 \S3]).
 
-\item \textbf{Chunked Translator (NEW-PRIM-23, observed 2026-08-30 Sample 2 ceiling).}
-Replace the single-shot translator with a per-fragment dispatcher that groups planning fragments by topological order, issues one LLM call per source file or per $\sim$500-LoC chunk, and maintains a persistent state dict (emitted\_modules, public\_symbols, type\_aliases, use\_statements, dependencies\_so\_far) between calls.
+\item \textbf{Chunked Translation.}
+Replace single-shot translation with a per-fragment dispatcher that groups planning fragments by topological order, issues one LLM call per source file or per $\sim$500-LoC chunk, and maintains a persistent state summary (emitted modules, public symbols, type aliases, use statements) between calls.
 
-\item \textbf{SOP-Anchored Role-Artifact Schema (NEW-PRIM-24, from MetaGPT [P42] \S3.2.2).}
-Each agent emits a strictly-typed intermediate artifact (JSON/markdown with required fields and cardinality constraints); parse-or-retry gates the next agent; each schema carries a version field for forward-compatible migrations.
+\item \textbf{SOP-Anchored Role-Artifact Schema.}
+Each agent emits a strictly-typed intermediate artifact (JSON/markdown with required fields and cardinality constraints); parse-or-retry gates the next agent; each schema carries a version field for forward-compatible migrations (MetaGPT [P42] \S3.2.2).
 
-\item \textbf{Communicative-De-hallucination Role-Flip Gate (NEW-PRIM-25, from ChatDev [P46] \S2.4).}
-After the Translator emits code, a second agent with a role-flipped system prompt (``you are a critical reviewer who must find at least one bug'') inspects the output; if it returns no defect, the Translator is re-prompted with a meta-instruction to re-check for the common bug classes.
+\item \textbf{Communicative-De-hallucination Role-Flip Gate.}
+After the Translator emits code, a second agent with a role-flipped system prompt (``you are a critical reviewer who must find at least one bug'') inspects the output; if it returns no defect, the Translator is re-prompted with a meta-instruction to re-check for common bug classes (ChatDev [P46] \S2.4).
 
-\item \textbf{Symbol-Aware Navigator (NEW-PRIM-26, from HyperAgent [P47] \S6.2 Table 6; extended by RepoGraph [P62]).}
-A dedicated retrieval agent that exposes \texttt{SearchSymbols}, \texttt{GetDefinition}, \texttt{GetReferences}, and the proposed \texttt{SearchRepoGraph(term)} action; before each fragment translation, the Translator calls the Navigator and gets back a tight context window ($\le$ 4 KB) of code excerpts ranked by proximity + symbol-importance. RepoGraph's empirical ablation (k=1 + flatten is Pareto-optimal at $29.67\%$ resolve, $\le 2{,}310$ tokens) is the recommended default for \texttt{SearchRepoGraph}.
+\item \textbf{Symbol-Aware Navigator.}
+A dedicated retrieval agent that exposes \texttt{SearchSymbols}, \texttt{GetDefinition}, \texttt{GetReferences}, and \texttt{SearchRepoGraph(term)}; before each fragment translation, the Translator queries the Navigator and receives a tight context window ($\le 4$\,KB) of code excerpts ranked by proximity and symbol importance (HyperAgent [P47] \S6.2 Table 6; RepoGraph [P62]).
 
-\item \textbf{LLM-Augmented Genetic Test Synthesis (NEW-PRIM-27, from CodaMOSA [P49] ICSE 2023).}
-Combine search-based software testing (SBST, MOSA-style genetic algorithm) with LLM-suggested tests injected when coverage plateaus are detected; per-fragment LLM query when GA stalls for $N$ iterations on a branch.
+\item \textbf{Coverage-Guided Plateau Detection.}
+Combine search-based software testing with LLM-suggested tests injected when coverage plateaus are detected; halts unproductive repair loops when test gains stagnate (CodaMOSA [P49] ICSE 2023).
 
-\item \textbf{Conversable Human-in-the-Loop Interrupt (NEW-PRIM-28, from AutoGen [P48] arXiv 2308.08155v2).}
-A conversation between agents can be paused mid-flight (after each \texttt{reply()} call or on a custom termination condition) and resumed later from the saved state, with a human or external system able to inject input between pauses.
+\item \textbf{Conversable State Checkpoints \& Interrupts.}
+A translation pipeline can be paused mid-flight after each stage or iteration and resumed from persistent disk snapshots, enabling human review or external interrupt handling (AutoGen [P48]).
 
-\item \textbf{Recruitment-Adaptive Planner (NEW-PRIM-29, from AgentVerse [P26] \S2).}
-Replace the fixed Planner $\rightarrow$ Translator $\rightarrow$ Validator pipeline with a recruitment step before each iteration: pick the per-iteration tool/agent configuration, decide which agents to call, and re-evaluate after the validator pass.
+\item \textbf{Recruitment-Adaptive Planning.}
+Replace fixed pipeline structures with a dynamic recruitment step before each iteration: pick per-iteration tool/agent configurations and re-evaluate after the validator pass (AgentVerse [P26] \S2).
 
-\item \textbf{Source-to-Target Manifest Rewriter (NEW-PRIM-31, from P58 \S5.3 + P60 \S3; promoted round 18).}
-For each translation target, take the source-language dependency list, apply a curated \texttt{CrateMapping} table, and emit a minimal target-language manifest containing only the crates the translation output actually uses; unmapped deps are returned in an \texttt{unmapped} slice so the planner can decide whether to skip, stub, or LLM-infer. Implementation lives at \texttt{internal/agents/manifest\_rewriter.go}.
+\item \textbf{Source-to-Target Manifest Rewriter.}
+For each translation target, take the source dependency list, apply a curated crate mapping table, and emit a minimal target manifest containing only required crates; unmapped dependencies are isolated for explicit review (Syzygy [P58] \S5.3; JavaC2Rust [P60] \S3).
 
-\item \textbf{Iterative Retrieval Refinement (NEW-PRIM-32, candidate from RepoCoder [P61]).}
-At translation iteration $i$, the Navigator is re-invoked with (\texttt{unfinished\_code} $\cup$ \texttt{prior\_translated\_fragments}) and produces a tighter context window for fragment $i+1$. Distinct from NEW-PRIM-23 (generator-side state dict) and NEW-PRIM-26 (single-shot retrieval). Held as candidate; substrate = NEW-PRIM-26 \texttt{SearchRepoGraph(term)} once RepoGraph is integrated. RepoCoder's iter-2 = Oracle (42.63\% PR = 42.63\% PR) on function-body completion is the empirical anchor.
+\item \textbf{Iterative Retrieval Refinement.}
+At translation iteration $i$, the Navigator re-indexes with prior translated fragments to produce an updated, tighter context window for fragment $i+1$ (RepoCoder [P61]).
 
 \end{enumerate}
 
-\paragraph{Code-landing tracker.}
-Nine of the primitives enumerated above are code-integrated into MAgHARCM:
+\paragraph{Implementation Mapping.}
+Key primitives implemented in the MAgHARCM codebase include:
 \begin{itemize}
-\item NEW-PRIM-1 \& NEW-PRIM-2 --- \texttt{internal/agents/planning.go} (AlphaTrans-derived Reverse Topo Scheduling with Back-Edge Removal).
-\item NEW-PRIM-6 --- \texttt{internal/agents/validator.go} (Multi-Stage Build/Test Feedback with AST Syntax Pre-Check).
-\item NEW-PRIM-13 --- \texttt{internal/agents/validator.go} (Adversarial Test-Weakening Guard against assertion relaxation).
-\item NEW-PRIM-21 --- \texttt{internal/agents/analyzer.go} (M\"uller Migration Strategy Selection).
-\item NEW-PRIM-23 --- \texttt{internal/agents/chunked\_translator.go} (Chunked Translator with Prior-Modules Summary).
-\item NEW-PRIM-26 --- \texttt{internal/agents/navigator.go} (HyperAgent-derived Symbol-Aware Navigator).
-\item NEW-PRIM-27 --- \texttt{internal/agents/plateau.go} (CodaMOSA-derived Coverage-Guided Plateau Detector).
-\item NEW-PRIM-28 --- \texttt{internal/agents/checkpoint.go} (AutoGen-derived Interrupt and State Persistence).
-\item NEW-PRIM-31 --- \texttt{internal/agents/manifest\_rewriter.go} (P58/P60-derived Source-to-Target Manifest Rewriter).
+\item Reverse Topological Scheduling \& Back-Edge Cycle Removal --- \texttt{internal/agents/planning.go}
+\item Multi-Stage Build/Test Feedback Repair --- \texttt{internal/agents/validator.go}
+\item Adversarial Test-Weakening Guard --- \texttt{internal/agents/validator.go}
+\item Migration Strategy Selection --- \texttt{internal/agents/analyzer.go}
+\item Chunked Translation Dispatch --- \texttt{internal/agents/chunked\_translator.go}
+\item Symbol-Aware Navigator --- \texttt{internal/agents/navigator.go}
+\item Coverage Plateau Detection --- \texttt{internal/agents/plateau.go}
+\item Conversable State Checkpoint Persistence --- \texttt{internal/agents/checkpoint.go}
+\item Source-to-Target Manifest Rewriter --- \texttt{internal/agents/manifest_rewriter.go}
 \end{itemize}

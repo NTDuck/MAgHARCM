@@ -5005,7 +5005,7 @@
     <!-- Main Diagram -->
     <div class="diagram-container" data-detail-level="read"
          data-preset-badge-editorial-plate="ARCHIFY / PLATE 04">
-      <svg viewBox="0 0 1080 760" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-preset="classic" data-quality-profile="standard" data-quality-gates="advisory">
+      <svg viewBox="0 0 1080 760" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-preset="classic" data-quality-profile="showcase">
         <title id="archify-diagram-title">Chunked Translation &amp; Context Synthesis Data Flow</title>
         <desc id="archify-diagram-description">Data flow from AST fragments and symbol lookups through prior-modules memory to local coding SLM.</desc>
         <!-- Definitions -->
@@ -5057,20 +5057,20 @@
         <path data-edge-from="rust_crate" data-edge-to="validation_report" data-edge-label="cargo test results" data-edge-key="7" data-composition-points="960,186;960,356" d="M 960 186 L 960 356" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
 
         <!-- Nodes -->
-        <g id="node-src_ast" data-node-id="src_ast" data-node-label="Tree-Sitter AST" tabindex="0" role="button" aria-label="Focus Tree-Sitter AST, source functions, 01 / Source Codebase" aria-pressed="false" data-node-kind="backend" data-node-sublabel="source functions" data-node-tag="Code IR" data-node-context="01 / Source Codebase">
-          <title>Tree-Sitter AST · source functions · 01 / Source Codebase · Code IR</title>
+        <g id="node-src_ast" data-node-id="src_ast" data-node-label="Tree-Sitter AST" tabindex="0" role="button" aria-label="Focus Tree-Sitter AST, Source Functions, 01 / Source Codebase" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Source Functions" data-node-tag="Code IR" data-node-context="01 / Source Codebase">
+          <title>Tree-Sitter AST · Source Functions · 01 / Source Codebase · Code IR</title>
           <rect x="44" y="128" width="112" height="58" rx="6" class="c-mask"/>
           <rect x="44" y="128" width="112" height="58" rx="6" class="c-backend" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(50 134) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
           <text data-node-label="" data-detail-anchor="" x="100" y="149" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Tree-Sitter AST</text>
-          <text data-detail="context" x="100" y="165" class="t-muted" font-size="7" text-anchor="middle">source functions</text>
+          <text data-detail="context" x="100" y="165" class="t-muted" font-size="7" text-anchor="middle">Source Functions</text>
         <text data-detail="fine" x="100" y="175" class="t-backend" font-size="7" text-anchor="middle">Code IR</text>
         </g>
 
-        <g id="node-src_manifest" data-node-id="src_manifest" data-node-label="Source Manifest" tabindex="0" role="button" aria-label="Focus Source Manifest, pom / go.mod, 01 / Source Codebase" aria-pressed="false" data-node-kind="backend" data-node-sublabel="pom / go.mod" data-node-tag="dependencies" data-node-context="01 / Source Codebase">
-          <title>Source Manifest · pom / go.mod · 01 / Source Codebase · dependencies</title>
+        <g id="node-src_manifest" data-node-id="src_manifest" data-node-label="Source Manifest" tabindex="0" role="button" aria-label="Focus Source Manifest, pom / go.mod, 01 / Source Codebase" aria-pressed="false" data-node-kind="backend" data-node-sublabel="pom / go.mod" data-node-tag="Dependencies" data-node-context="01 / Source Codebase">
+          <title>Source Manifest · pom / go.mod · 01 / Source Codebase · Dependencies</title>
           <rect x="44" y="356" width="112" height="58" rx="6" class="c-mask"/>
           <rect x="44" y="356" width="112" height="58" rx="6" class="c-backend" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(50 362) scale(0.6875)">
@@ -5078,47 +5078,47 @@
           </g>
           <text data-node-label="" data-detail-anchor="" x="100" y="377" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Source Manifest</text>
           <text data-detail="context" x="100" y="393" class="t-muted" font-size="7" text-anchor="middle">pom / go.mod</text>
-        <text data-detail="fine" x="100" y="403" class="t-backend" font-size="7" text-anchor="middle">dependencies</text>
+        <text data-detail="fine" x="100" y="403" class="t-backend" font-size="7" text-anchor="middle">Dependencies</text>
         </g>
 
-        <g id="node-reverse_topo" data-node-id="reverse_topo" data-node-label="Reverse Topo DAG" tabindex="0" role="button" aria-label="Focus Reverse Topo DAG, NEW-PRIM-1/2, 02 / Planning &amp; Slicing" aria-pressed="false" data-node-kind="backend" data-node-sublabel="NEW-PRIM-1/2" data-node-tag="cycle-free" data-node-context="02 / Planning &amp; Slicing">
-          <title>Reverse Topo DAG · NEW-PRIM-1/2 · 02 / Planning &amp; Slicing · cycle-free</title>
+        <g id="node-reverse_topo" data-node-id="reverse_topo" data-node-label="Reverse Topo DAG" tabindex="0" role="button" aria-label="Focus Reverse Topo DAG, Cycle Elimination, 02 / Planning &amp; Slicing" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Cycle Elimination" data-node-tag="Topological" data-node-context="02 / Planning &amp; Slicing">
+          <title>Reverse Topo DAG · Cycle Elimination · 02 / Planning &amp; Slicing · Topological</title>
           <rect x="259" y="128" width="112" height="58" rx="6" class="c-mask"/>
           <rect x="259" y="128" width="112" height="58" rx="6" class="c-backend" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(265 134) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
           <text data-node-label="" data-detail-anchor="" x="315" y="149" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Reverse Topo DAG</text>
-          <text data-detail="context" x="315" y="165" class="t-muted" font-size="7" text-anchor="middle">NEW-PRIM-1/2</text>
-        <text data-detail="fine" x="315" y="175" class="t-backend" font-size="7" text-anchor="middle">cycle-free</text>
+          <text data-detail="context" x="315" y="165" class="t-muted" font-size="7" text-anchor="middle">Cycle Elimination</text>
+        <text data-detail="fine" x="315" y="175" class="t-backend" font-size="7" text-anchor="middle">Topological</text>
         </g>
 
-        <g id="node-crate_rewriter" data-node-id="crate_rewriter" data-node-label="Manifest Rewriter" tabindex="0" role="button" aria-label="Focus Manifest Rewriter, NEW-PRIM-31, 02 / Planning &amp; Slicing" aria-pressed="false" data-node-kind="backend" data-node-sublabel="NEW-PRIM-31" data-node-tag="canonical crates" data-node-context="02 / Planning &amp; Slicing">
-          <title>Manifest Rewriter · NEW-PRIM-31 · 02 / Planning &amp; Slicing · canonical crates</title>
+        <g id="node-crate_rewriter" data-node-id="crate_rewriter" data-node-label="Manifest Rewriter" tabindex="0" role="button" aria-label="Focus Manifest Rewriter, Dependency Mapping, 02 / Planning &amp; Slicing" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Dependency Mapping" data-node-tag="Cargo Specs" data-node-context="02 / Planning &amp; Slicing">
+          <title>Manifest Rewriter · Dependency Mapping · 02 / Planning &amp; Slicing · Cargo Specs</title>
           <rect x="259" y="356" width="112" height="58" rx="6" class="c-mask"/>
           <rect x="259" y="356" width="112" height="58" rx="6" class="c-backend" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(265 362) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
           <text data-node-label="" data-detail-anchor="" x="315" y="377" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Manifest Rewriter</text>
-          <text data-detail="context" x="315" y="393" class="t-muted" font-size="7" text-anchor="middle">NEW-PRIM-31</text>
-        <text data-detail="fine" x="315" y="403" class="t-backend" font-size="7" text-anchor="middle">canonical crates</text>
+          <text data-detail="context" x="315" y="393" class="t-muted" font-size="7" text-anchor="middle">Dependency Mapping</text>
+        <text data-detail="fine" x="315" y="403" class="t-backend" font-size="7" text-anchor="middle">Cargo Specs</text>
         </g>
 
-        <g id="node-nav_symbols" data-node-id="nav_symbols" data-node-label="Navigator Symbols" tabindex="0" role="button" aria-label="Focus Navigator Symbols, NEW-PRIM-26, 03 / Context Assembly" aria-pressed="false" data-node-kind="backend" data-node-sublabel="NEW-PRIM-26" data-node-tag="&lt;= 4KB slice" data-node-context="03 / Context Assembly">
-          <title>Navigator Symbols · NEW-PRIM-26 · 03 / Context Assembly · &lt;= 4KB slice</title>
+        <g id="node-nav_symbols" data-node-id="nav_symbols" data-node-label="Navigator Symbols" tabindex="0" role="button" aria-label="Focus Navigator Symbols, Symbol Lookup, 03 / Context Assembly" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Symbol Lookup" data-node-tag="&lt;= 4KB Slice" data-node-context="03 / Context Assembly">
+          <title>Navigator Symbols · Symbol Lookup · 03 / Context Assembly · &lt;= 4KB Slice</title>
           <rect x="474" y="128" width="112" height="58" rx="6" class="c-mask"/>
           <rect x="474" y="128" width="112" height="58" rx="6" class="c-backend" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(480 134) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
           <text data-node-label="" data-detail-anchor="" x="530" y="149" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Navigator Symbols</text>
-          <text data-detail="context" x="530" y="165" class="t-muted" font-size="7" text-anchor="middle">NEW-PRIM-26</text>
-        <text data-detail="fine" x="530" y="175" class="t-backend" font-size="7" text-anchor="middle">&lt;= 4KB slice</text>
+          <text data-detail="context" x="530" y="165" class="t-muted" font-size="7" text-anchor="middle">Symbol Lookup</text>
+        <text data-detail="fine" x="530" y="175" class="t-backend" font-size="7" text-anchor="middle">&lt;= 4KB Slice</text>
         </g>
 
-        <g id="node-prior_summary" data-node-id="prior_summary" data-node-label="Prior Memory" tabindex="0" role="button" aria-label="Focus Prior Memory, NEW-PRIM-23, 03 / Context Assembly" aria-pressed="false" data-node-kind="database" data-node-sublabel="NEW-PRIM-23" data-node-tag="&lt;= 4KB budget" data-node-context="03 / Context Assembly">
-          <title>Prior Memory · NEW-PRIM-23 · 03 / Context Assembly · &lt;= 4KB budget</title>
+        <g id="node-prior_summary" data-node-id="prior_summary" data-node-label="Prior Memory" tabindex="0" role="button" aria-label="Focus Prior Memory, Emitted Signatures, 03 / Context Assembly" aria-pressed="false" data-node-kind="database" data-node-sublabel="Emitted Signatures" data-node-tag="&lt;= 4KB Budget" data-node-context="03 / Context Assembly">
+          <title>Prior Memory · Emitted Signatures · 03 / Context Assembly · &lt;= 4KB Budget</title>
           <rect x="474" y="356" width="112" height="58" rx="6" class="c-mask"/>
           <rect x="474" y="356" width="112" height="58" rx="6" class="c-database" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(480 362) scale(0.6875)">
@@ -5126,24 +5126,24 @@
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
           <text data-node-label="" data-detail-anchor="" x="530" y="377" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Prior Memory</text>
-          <text data-detail="context" x="530" y="393" class="t-muted" font-size="7" text-anchor="middle">NEW-PRIM-23</text>
-        <text data-detail="fine" x="530" y="403" class="t-database" font-size="7" text-anchor="middle">&lt;= 4KB budget</text>
+          <text data-detail="context" x="530" y="393" class="t-muted" font-size="7" text-anchor="middle">Emitted Signatures</text>
+        <text data-detail="fine" x="530" y="403" class="t-database" font-size="7" text-anchor="middle">&lt;= 4KB Budget</text>
         </g>
 
-        <g id="node-coding_slm" data-node-id="coding_slm" data-node-label="Coding SLM" tabindex="0" role="button" aria-label="Focus Coding SLM, Qwen3-4B local, 04 / Model Synthesis" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="Qwen3-4B local" data-node-tag="Ollama" data-node-context="04 / Model Synthesis">
-          <title>Coding SLM · Qwen3-4B local · 04 / Model Synthesis · Ollama</title>
+        <g id="node-coding_slm" data-node-id="coding_slm" data-node-label="Coding SLM" tabindex="0" role="button" aria-label="Focus Coding SLM, Qwen3-4B Instruct, 04 / Model Synthesis" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="Qwen3-4B Instruct" data-node-tag="Ollama" data-node-context="04 / Model Synthesis">
+          <title>Coding SLM · Qwen3-4B Instruct · 04 / Model Synthesis · Ollama</title>
           <rect x="689" y="242" width="112" height="58" rx="6" class="c-mask"/>
           <rect x="689" y="242" width="112" height="58" rx="6" class="c-cloud" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="cloud" class="semantic-sigil s-cloud" transform="translate(695 248) scale(0.6875)">
             <path d="M4.3 12.5h7.3a2.4 2.4 0 0 0 .2-4.8 4 4 0 0 0-7.5-1.3A3.1 3.1 0 0 0 4.3 12.5Z"/>
           </g>
           <text data-node-label="" data-detail-anchor="" x="745" y="263" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Coding SLM</text>
-          <text data-detail="context" x="745" y="279" class="t-muted" font-size="7" text-anchor="middle">Qwen3-4B local</text>
+          <text data-detail="context" x="745" y="279" class="t-muted" font-size="7" text-anchor="middle">Qwen3-4B Instruct</text>
         <text data-detail="fine" x="745" y="289" class="t-cloud" font-size="7" text-anchor="middle">Ollama</text>
         </g>
 
-        <g id="node-rust_crate" data-node-id="rust_crate" data-node-label="Target Crate" tabindex="0" role="button" aria-label="Focus Target Crate, lib.rs + tests, 05 / Target Delivery" aria-pressed="false" data-node-kind="database" data-node-sublabel="lib.rs + tests" data-node-tag="Cargo build" data-node-context="05 / Target Delivery">
-          <title>Target Crate · lib.rs + tests · 05 / Target Delivery · Cargo build</title>
+        <g id="node-rust_crate" data-node-id="rust_crate" data-node-label="Target Crate" tabindex="0" role="button" aria-label="Focus Target Crate, lib.rs &amp; Tests, 05 / Target Delivery" aria-pressed="false" data-node-kind="database" data-node-sublabel="lib.rs &amp; Tests" data-node-tag="Cargo Build" data-node-context="05 / Target Delivery">
+          <title>Target Crate · lib.rs &amp; Tests · 05 / Target Delivery · Cargo Build</title>
           <rect x="904" y="128" width="112" height="58" rx="6" class="c-mask"/>
           <rect x="904" y="128" width="112" height="58" rx="6" class="c-database" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(910 134) scale(0.6875)">
@@ -5151,20 +5151,20 @@
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
           <text data-node-label="" data-detail-anchor="" x="960" y="149" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Target Crate</text>
-          <text data-detail="context" x="960" y="165" class="t-muted" font-size="7" text-anchor="middle">lib.rs + tests</text>
-        <text data-detail="fine" x="960" y="175" class="t-database" font-size="7" text-anchor="middle">Cargo build</text>
+          <text data-detail="context" x="960" y="165" class="t-muted" font-size="7" text-anchor="middle">lib.rs &amp; Tests</text>
+        <text data-detail="fine" x="960" y="175" class="t-database" font-size="7" text-anchor="middle">Cargo Build</text>
         </g>
 
-        <g id="node-validation_report" data-node-id="validation_report" data-node-label="Validation Suite" tabindex="0" role="button" aria-label="Focus Validation Suite, NEW-PRIM-6/13, 05 / Target Delivery" aria-pressed="false" data-node-kind="backend" data-node-sublabel="NEW-PRIM-6/13" data-node-tag="AST + test run" data-node-context="05 / Target Delivery">
-          <title>Validation Suite · NEW-PRIM-6/13 · 05 / Target Delivery · AST + test run</title>
+        <g id="node-validation_report" data-node-id="validation_report" data-node-label="Validation Suite" tabindex="0" role="button" aria-label="Focus Validation Suite, Compiler &amp; Tests, 05 / Target Delivery" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Compiler &amp; Tests" data-node-tag="Diagnostic Pass" data-node-context="05 / Target Delivery">
+          <title>Validation Suite · Compiler &amp; Tests · 05 / Target Delivery · Diagnostic Pass</title>
           <rect x="904" y="356" width="112" height="58" rx="6" class="c-mask"/>
           <rect x="904" y="356" width="112" height="58" rx="6" class="c-backend" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(910 362) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
           <text data-node-label="" data-detail-anchor="" x="960" y="377" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Validation Suite</text>
-          <text data-detail="context" x="960" y="393" class="t-muted" font-size="7" text-anchor="middle">NEW-PRIM-6/13</text>
-        <text data-detail="fine" x="960" y="403" class="t-backend" font-size="7" text-anchor="middle">AST + test run</text>
+          <text data-detail="context" x="960" y="393" class="t-muted" font-size="7" text-anchor="middle">Compiler &amp; Tests</text>
+        <text data-detail="fine" x="960" y="403" class="t-backend" font-size="7" text-anchor="middle">Diagnostic Pass</text>
         </g>
 
         <!-- Flow labels -->
@@ -5429,8 +5429,8 @@
           <h3>Bounded Context Assembly</h3>
         </div>
         <ul>
-          <li>&bull; Symbol-Aware Navigator (NEW-PRIM-26) retrieves &lt;= 4KB definition slices</li>
-          <li>&bull; Prior-Modules Memory (NEW-PRIM-23) injects compact 4KB emitted signatures</li>
+          <li>&bull; Symbol-Aware Navigator retrieves &lt;= 4KB definition slices</li>
+          <li>&bull; Prior-Modules Memory injects compact 4KB emitted signatures</li>
           <li>&bull; Small coding SLM operates within its effective context window without saturation</li>
         </ul>
       </div>

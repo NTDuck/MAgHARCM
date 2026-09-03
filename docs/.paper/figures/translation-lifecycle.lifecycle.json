@@ -13,16 +13,16 @@
     { "id": "terminal", "label": "Terminal Exits" }
   ],
   "states": [
-    { "id": "intake", "type": "start", "label": "Intake", "sublabel": "manifest parsed", "lane": "main", "col": 0, "step": "01", "tag": "entry" },
-    { "id": "analyzing", "type": "active", "label": "Analyzing", "sublabel": "Müller strategy", "lane": "main", "col": 1, "step": "02", "tag": "reasoning" },
-    { "id": "planning", "type": "active", "label": "Planning", "sublabel": "reverse-topo DAG", "lane": "main", "col": 2, "step": "03", "tag": "back-edge" },
-    { "id": "translating", "type": "active", "label": "Translating", "sublabel": "chunked dispatch", "lane": "main", "col": 3, "step": "04", "tag": "coding" },
-    { "id": "completed", "type": "success", "label": "Converged", "sublabel": "100% tests pass", "lane": "main", "col": 4, "step": "05", "tag": "success" },
-    { "id": "checkpoint", "type": "waiting", "label": "Checkpointed", "sublabel": "NEW-PRIM-28", "lane": "events", "col": 0, "tag": "resume" },
-    { "id": "repairing", "type": "failure", "label": "Repair Mode", "sublabel": "compiler triage", "lane": "events", "col": 1, "tag": "iter <= K" },
-    { "id": "plateau", "type": "waiting", "label": "Plateau Stalled", "sublabel": "NEW-PRIM-27", "lane": "events", "col": 2, "tag": "stall" },
-    { "id": "exhausted", "type": "failure", "label": "Budget Ceiling", "sublabel": "max iterations", "lane": "terminal", "col": 1, "tag": "terminal" },
-    { "id": "weakened", "type": "failure", "label": "Test Weakened", "sublabel": "NEW-PRIM-13", "lane": "terminal", "col": 2, "tag": "terminal" }
+    { "id": "intake", "type": "start", "label": "Intake", "sublabel": "Manifest Parsed", "lane": "main", "col": 0, "step": "01", "tag": "entry" },
+    { "id": "analyzing", "type": "active", "label": "Analyzing", "sublabel": "Müller Strategy", "lane": "main", "col": 1, "step": "02", "tag": "reasoning" },
+    { "id": "planning", "type": "active", "label": "Planning", "sublabel": "Reverse-Topo DAG", "lane": "main", "col": 2, "step": "03", "tag": "back-edge" },
+    { "id": "translating", "type": "active", "label": "Translating", "sublabel": "Chunked Dispatch", "lane": "main", "col": 3, "step": "04", "tag": "coding" },
+    { "id": "completed", "type": "success", "label": "Converged", "sublabel": "100% Tests Pass", "lane": "main", "col": 4, "step": "05", "tag": "success" },
+    { "id": "checkpoint", "type": "waiting", "label": "Checkpointed", "sublabel": "State Snapshot", "lane": "events", "col": 0, "tag": "resume" },
+    { "id": "repairing", "type": "failure", "label": "Repair Mode", "sublabel": "Compiler Triage", "lane": "events", "col": 1, "tag": "iter <= K" },
+    { "id": "plateau", "type": "waiting", "label": "Plateau Stalled", "sublabel": "Coverage Stagnant", "lane": "events", "col": 2, "tag": "stall" },
+    { "id": "exhausted", "type": "failure", "label": "Budget Ceiling", "sublabel": "Max Iterations", "lane": "terminal", "col": 1, "tag": "terminal" },
+    { "id": "weakened", "type": "failure", "label": "Test Weakened", "sublabel": "Assertion Dropped", "lane": "terminal", "col": 2, "tag": "terminal" }
   ],
   "transitions": [
     { "from": "planning", "to": "checkpoint", "variant": "default", "fromSide": "bottom", "toSide": "top", "route": "straight" },
@@ -46,7 +46,7 @@
       "title": "State Checkpoints & Stalls",
       "items": [
         "State serialized under .artifacts/<run-id>/checkpoints/ after each iteration",
-        "CodaMOSA-derived coverage plateau detector halts zero-gain repair cycles",
+        "Coverage plateau detector halts zero-gain repair cycles",
         "Idempotent resume restarts from the latest checkpoint snapshot"
       ]
     },

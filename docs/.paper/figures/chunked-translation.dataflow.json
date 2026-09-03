@@ -15,15 +15,15 @@
     { "label": "Target Delivery" }
   ],
   "nodes": [
-    { "id": "src_ast", "type": "backend", "label": "Tree-Sitter AST", "sublabel": "source functions", "stage": 0, "row": 0, "tag": "Code IR" },
-    { "id": "src_manifest", "type": "backend", "label": "Source Manifest", "sublabel": "pom / go.mod", "stage": 0, "row": 2, "tag": "dependencies" },
-    { "id": "reverse_topo", "type": "backend", "label": "Reverse Topo DAG", "sublabel": "NEW-PRIM-1/2", "stage": 1, "row": 0, "tag": "cycle-free" },
-    { "id": "crate_rewriter", "type": "backend", "label": "Manifest Rewriter", "sublabel": "NEW-PRIM-31", "stage": 1, "row": 2, "tag": "canonical crates" },
-    { "id": "nav_symbols", "type": "backend", "label": "Navigator Symbols", "sublabel": "NEW-PRIM-26", "stage": 2, "row": 0, "tag": "<= 4KB slice" },
-    { "id": "prior_summary", "type": "database", "label": "Prior Memory", "sublabel": "NEW-PRIM-23", "stage": 2, "row": 2, "tag": "<= 4KB budget" },
-    { "id": "coding_slm", "type": "cloud", "label": "Coding SLM", "sublabel": "Qwen3-4B local", "stage": 3, "row": 1, "tag": "Ollama" },
-    { "id": "rust_crate", "type": "database", "label": "Target Crate", "sublabel": "lib.rs + tests", "stage": 4, "row": 0, "tag": "Cargo build" },
-    { "id": "validation_report", "type": "backend", "label": "Validation Suite", "sublabel": "NEW-PRIM-6/13", "stage": 4, "row": 2, "tag": "AST + test run" }
+    { "id": "src_ast", "type": "backend", "label": "Tree-Sitter AST", "sublabel": "Source Functions", "stage": 0, "row": 0, "tag": "Code IR" },
+    { "id": "src_manifest", "type": "backend", "label": "Source Manifest", "sublabel": "pom / go.mod", "stage": 0, "row": 2, "tag": "Dependencies" },
+    { "id": "reverse_topo", "type": "backend", "label": "Reverse Topo DAG", "sublabel": "Cycle Elimination", "stage": 1, "row": 0, "tag": "Topological" },
+    { "id": "crate_rewriter", "type": "backend", "label": "Manifest Rewriter", "sublabel": "Dependency Mapping", "stage": 1, "row": 2, "tag": "Cargo Specs" },
+    { "id": "nav_symbols", "type": "backend", "label": "Navigator Symbols", "sublabel": "Symbol Lookup", "stage": 2, "row": 0, "tag": "<= 4KB Slice" },
+    { "id": "prior_summary", "type": "database", "label": "Prior Memory", "sublabel": "Emitted Signatures", "stage": 2, "row": 2, "tag": "<= 4KB Budget" },
+    { "id": "coding_slm", "type": "cloud", "label": "Coding SLM", "sublabel": "Qwen3-4B Instruct", "stage": 3, "row": 1, "tag": "Ollama" },
+    { "id": "rust_crate", "type": "database", "label": "Target Crate", "sublabel": "lib.rs & Tests", "stage": 4, "row": 0, "tag": "Cargo Build" },
+    { "id": "validation_report", "type": "backend", "label": "Validation Suite", "sublabel": "Compiler & Tests", "stage": 4, "row": 2, "tag": "Diagnostic Pass" }
   ],
   "flows": [
     { "from": "src_ast", "to": "reverse_topo", "label": "function fragments", "classification": "AST elements", "variant": "emphasis", "route": "straight" },
@@ -49,8 +49,8 @@
       "dot": "amber",
       "title": "Bounded Context Assembly",
       "items": [
-        "Symbol-Aware Navigator (NEW-PRIM-26) retrieves <= 4KB definition slices",
-        "Prior-Modules Memory (NEW-PRIM-23) injects compact 4KB emitted signatures",
+        "Symbol-Aware Navigator retrieves <= 4KB definition slices",
+        "Prior-Modules Memory injects compact 4KB emitted signatures",
         "Small coding SLM operates within its effective context window without saturation"
       ]
     },

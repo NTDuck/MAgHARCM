@@ -3,7 +3,7 @@
   "diagram_type": "workflow",
   "meta": {
     "title": "MAgHARCM 6-Stage Translation & Repair Pipeline",
-    "subtitle": "Neuro-symbolic multi-agent code translation with local MoE reasoning + coding SLMs via Ollama.",
+    "subtitle": "Neuro-symbolic multi-agent translation with local Qwen3-30B reasoning and Qwen3-4B coding models via Ollama.",
     "output": "docs/.paper/figures/magh-pipeline.html"
   },
   "lanes": [
@@ -21,24 +21,24 @@
     { "id": "phase_val", "label": "Stage 5 & 6: Validate", "fromCol": 4, "toCol": 5, "variant": "dashed" }
   ],
   "groups": [
-    { "id": "reasoning_group", "label": "MoE Reasoning Loop (lfm2.5:8b)", "lane": "agent_lane", "fromCol": 1, "toCol": 2, "variant": "emphasis" },
-    { "id": "chunked_loop", "label": "Chunked Dispatch & Memory", "lane": "agent_lane", "fromCol": 3, "toCol": 3, "variant": "emphasis" },
+    { "id": "reasoning_group", "label": "Reasoning Loop (Qwen3-30B Thinking)", "lane": "agent_lane", "fromCol": 1, "toCol": 2, "variant": "emphasis" },
+    { "id": "chunked_loop", "label": "Chunked Dispatch (Qwen3-4B Instruct)", "lane": "agent_lane", "fromCol": 3, "toCol": 3, "variant": "emphasis" },
     { "id": "validation_cascade", "label": "Validation & Defense Cascade", "lane": "validation_lane", "fromCol": 4, "toCol": 5, "variant": "security" }
   ],
   "mainPath": ["yaml_cfg", "intake_parser", "analyzer_agent", "planner_agent", "translator_agent", "target_crate", "validator_agent", "weakening_guard"],
   "nodes": [
-    { "id": "yaml_cfg", "lane": "input_lane", "col": 0, "type": "external", "label": "YAML Config", "sublabel": "source/target", "tag": "Ollama local" },
-    { "id": "intake_parser", "lane": "orchestrator_lane", "col": 0, "type": "backend", "label": "1. Intake", "sublabel": "Tree-sitter AST", "tag": "manifest" },
-    { "id": "analyzer_agent", "lane": "agent_lane", "col": 1, "type": "backend", "label": "2. Analyzer", "sublabel": "lfm2.5 MoE", "tag": "Müller" },
-    { "id": "planner_agent", "lane": "agent_lane", "col": 2, "type": "backend", "label": "3. Planner", "sublabel": "Reverse-topo", "tag": "DAG" },
-    { "id": "manifest_rewriter", "lane": "context_lane", "col": 2, "type": "backend", "label": "Rewriter", "sublabel": "NEW-PRIM-31", "tag": "crates" },
-    { "id": "navigator", "lane": "context_lane", "col": 3, "type": "backend", "label": "Navigator", "sublabel": "NEW-PRIM-26", "tag": "<= 4KB" },
-    { "id": "translator_agent", "lane": "agent_lane", "col": 3, "type": "backend", "label": "4. Translator", "sublabel": "Qwen3-4B coding", "tag": "chunked" },
-    { "id": "checkpoint_store", "lane": "storage_lane", "col": 3, "type": "database", "label": "Checkpoints", "sublabel": "NEW-PRIM-28", "tag": "resume" },
-    { "id": "target_crate", "lane": "storage_lane", "col": 4, "type": "database", "label": "Target Crate", "sublabel": "Rust / Go", "tag": "synced" },
-    { "id": "validator_agent", "lane": "validation_lane", "col": 4, "type": "backend", "label": "5. Validator", "sublabel": "Multi-stage", "tag": "build/test" },
-    { "id": "weakening_guard", "lane": "validation_lane", "col": 5, "type": "security", "label": "Guard", "sublabel": "NEW-PRIM-13", "tag": "asserts" },
-    { "id": "plateau_detector", "lane": "orchestrator_lane", "col": 5, "type": "backend", "label": "Plateau", "sublabel": "NEW-PRIM-27", "tag": "exit" }
+    { "id": "yaml_cfg", "lane": "input_lane", "col": 0, "type": "external", "label": "YAML Config", "sublabel": "Source & Target", "tag": "Ollama local" },
+    { "id": "intake_parser", "lane": "orchestrator_lane", "col": 0, "type": "backend", "label": "1. Intake", "sublabel": "Tree-Sitter AST", "tag": "Manifest" },
+    { "id": "analyzer_agent", "lane": "agent_lane", "col": 1, "type": "backend", "label": "2. Analyzer", "sublabel": "Strategy Selection", "tag": "Müller" },
+    { "id": "planner_agent", "lane": "agent_lane", "col": 2, "type": "backend", "label": "3. Planner", "sublabel": "Reverse-Topo DAG", "tag": "Cycle-Free" },
+    { "id": "manifest_rewriter", "lane": "context_lane", "col": 2, "type": "backend", "label": "Rewriter", "sublabel": "Manifest Rewriting", "tag": "Crates" },
+    { "id": "navigator", "lane": "context_lane", "col": 3, "type": "backend", "label": "Navigator", "sublabel": "Symbol Retrieval", "tag": "<= 4KB" },
+    { "id": "translator_agent", "lane": "agent_lane", "col": 3, "type": "backend", "label": "4. Translator", "sublabel": "Chunked Synthesis", "tag": "Qwen3-4B" },
+    { "id": "checkpoint_store", "lane": "storage_lane", "col": 3, "type": "database", "label": "Checkpoints", "sublabel": "State Persistence", "tag": "Resume" },
+    { "id": "target_crate", "lane": "storage_lane", "col": 4, "type": "database", "label": "Target Crate", "sublabel": "Rust / Cargo", "tag": "Synced" },
+    { "id": "validator_agent", "lane": "validation_lane", "col": 4, "type": "backend", "label": "5. Validator", "sublabel": "Multi-Stage Build", "tag": "Compiler" },
+    { "id": "weakening_guard", "lane": "validation_lane", "col": 5, "type": "security", "label": "Guard", "sublabel": "Weakening Guard", "tag": "Assertions" },
+    { "id": "plateau_detector", "lane": "orchestrator_lane", "col": 5, "type": "backend", "label": "Plateau", "sublabel": "Plateau Detection", "tag": "Exit" }
   ],
   "edges": [
     { "from": "yaml_cfg", "to": "intake_parser", "variant": "default" },
@@ -60,28 +60,28 @@
       "title": "Local SLM Pipeline",
       "items": [
         "6 stages: Intake -> Analyze -> Plan -> Translate -> Validate -> Repair Loop",
-        "Liquid MoE reasoning slot (lfm2.5:8b, 1.5B active) + Qwen3-4B coding slot",
+        "Qwen3-30B Thinking reasoning model paired with Qwen3-4B Instruct coding model",
         "100% self-hosted via Ollama with zero external cloud dependencies"
       ]
     },
     {
       "dot": "emerald",
-      "title": "Evidence-Backed Primitives",
+      "title": "Methodology Primitives",
       "items": [
-        "Chunked translation (NEW-PRIM-23) with prior-modules context summary",
-        "Symbol-Aware Navigator (NEW-PRIM-26) with <= 4KB context windows",
-        "Reverse-topological DAG scheduling with back-edge removal (NEW-PRIM-1/2)",
-        "Automated source-to-target manifest rewriter (NEW-PRIM-31)"
+        "Chunked translation with prior-modules context summary",
+        "Symbol-Aware Navigator with <= 4KB context windows",
+        "Reverse-topological DAG scheduling with back-edge cycle removal",
+        "Automated source-to-target manifest rewriter"
       ]
     },
     {
       "dot": "amber",
       "title": "Multi-Stage Defense & Recovery",
       "items": [
-        "Pre-compilation AST syntax validation (GAP-08 / NEW-PRIM-6)",
-        "Adversarial test-weakening guard against relaxed assertions (NEW-PRIM-13)",
-        "CodaMOSA-derived coverage plateau detector prevents stalling (NEW-PRIM-27)",
-        "Conversable checkpointing with idempotent state resume (NEW-PRIM-28)"
+        "Pre-compilation AST syntax validation before native toolchain invocation",
+        "Adversarial test-weakening guard against relaxed assertions",
+        "Coverage plateau detector prevents unproductive repair spinning",
+        "Conversable checkpointing with idempotent state resume"
       ]
     }
   ]
