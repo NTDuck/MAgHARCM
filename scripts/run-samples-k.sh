@@ -88,8 +88,8 @@ if ! go build -o "$REPO_ROOT/bin/MAgHARCM" ./cmd/MAgHARCM; then
 fi
 echo "[k-run] built $(stat -c %s "$REPO_ROOT/bin/MAgHARCM") bytes"
 
-shopt -s nullglob
-all_configs=("$CONFIG_DIR"/*.yml)
+shopt -s nullglob globstar
+all_configs=("$CONFIG_DIR"/**/*.yml "$CONFIG_DIR"/*.yml)
 shopt -u nullglob
 
 # Drop meta-configs (default.yml is the flag default for ad-hoc runs,

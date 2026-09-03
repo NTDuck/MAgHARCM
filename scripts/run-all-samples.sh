@@ -40,7 +40,7 @@ echo "[batch] built $(ls -la "$REPO_ROOT/bin/MAgHARCM" | awk '{print $5}') bytes
 
 # Resolve config glob. If user passed a partial pattern, expand it;
 # otherwise take everything under .config/.
-shopt -s nullglob
+shopt -s nullglob globstar
 if [[ $# -gt 0 ]]; then
     all_configs=("$REPO_ROOT"/.config/$1*.yml)
 else
