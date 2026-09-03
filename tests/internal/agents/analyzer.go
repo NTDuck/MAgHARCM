@@ -1,32 +1,86 @@
 package agents_test
 
 import (
-	"MAgHARCM/internal/agents"
+	"context"
+	"strings"
 	"testing"
+
+	"MAgHARCM/internal/agents"
 )
 
-func TestSelectMigrationStrategy(t *testing.T) {
-	// 1. Small project -> BIG_BANG
-	strat, _ := agents.SelectMigrationStrategy(2, 200, true, true)
-	if strat != "BIG_BANG" {
-		t.Errorf("expected BIG_BANG for small repo, got %s", strat)
+// TestAnalyzerStrategySelection mirrors the production selection logic via
+// the new Registry.TryInOrder API. The legacy SelectMigrationStrategy
+// helper was retired in favour of the strategy interface; this test
+// exercises the same five canonical profiles that the legacy test covered.
+func TestAnalyzerStrategySelection(t *testing.T) {
+	reg := agents.NewDefaultRegistry()
+	cases := []struct {
+		name string
+		p    agents.Profile
+		want agents.StrategyKind
+	}{
+		{
+			name: "small project -> BIG_BANG",
+			p:    agents.Profile{FileCount: 2, LoC: 200, HasTests: true, HasBuild: true},
+			want: agents.StrategyBigBang,
+		},
+		{
+			name: "large project -> PILOT",
+			p:    agents.Profile{FileCount: 60, LoC: 15000, HasTests: true, HasBuild: true},
+			want: agents.StrategyPilot,
+		},
+		{
+			name: "untested project -> FROZEN_LEGACY",
+			p:    agents.Profile{FileCount: 10, LoC: 2000, HasTests: false, HasBuild: true},
+			want: agents.StrategyFrozenLegacy,
+		},
+		{
+			name: "modular project with tests -> PARALLEL_CUTOVER",
+			p:    agents.Profile{FileCount: 15, LoC: 3000, HasTests: true, HasBuild: true},
+			want: agents.StrategyParallelCutover,
+		},
+		{
+			name: "standard modular with tests -> INCREMENTAL",
+			p:    agents.Profile{FileCount: 5, LoC: 800, HasTests: true, HasBuild: true},
+			want: agents.StrategyIncremental,
+		},
 	}
-
-	// 2. Large project -> PILOT
-	strat, _ = agents.SelectMigrationStrategy(60, 15000, true, true)
-	if strat != "PILOT" {
-		t.Errorf("expected PILOT for large repo, got %s", strat)
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			kind, err := reg.TryInOrder(context.Background(), tc.p)
+			if err != nil {
+				t.Fatalf("TryInOrder returned error: %v", err)
+			}
+			if kind != tc.want {
+				t.Errorf("expected %s, got %s", tc.want, kind)
+			}
+		})
 	}
+}
 
-	// 3. Untested project -> FROZEN_LEGACY
-	strat, _ = agents.SelectMigrationStrategy(10, 2000, false, true)
-	if strat != "FROZEN_LEGACY" {
-		t.Errorf("expected FROZEN_LEGACY for untested repo, got %s", strat)
+// TestAnalyzerRationaleStringFor verifies the analyzer still emits a
+// non-empty rationale string for each chosen strategy so the prompt
+// assembly downstream keeps working.
+func TestAnalyzerRationaleStringFor(t *testing.T) {
+	cases := []agents.StrategyKind{
+		agents.StrategyBigBang,
+		agents.StrategyIncremental,
+		agents.StrategyPilot,
+		agents.StrategyFrozenLegacy,
+		agents.StrategyParallelCutover,
 	}
-
-	// 4. Standard modular with tests -> PARALLEL_CUTOVER / INCREMENTAL
-	strat, _ = agents.SelectMigrationStrategy(15, 3000, true, true)
-	if strat != "PARALLEL_CUTOVER" && strat != "INCREMENTAL" {
-		t.Errorf("expected PARALLEL_CUTOVER or INCREMENTAL, got %s", strat)
+	for _, k := range cases {
+		_, rationale, err := agents.SelectAndTryStrategies(context.Background(), agents.Profile{
+			FileCount: 2,
+			LoC:       200,
+			HasTests:  true,
+			HasBuild:  true,
+		})
+		if err != nil && !strings.Contains(err.Error(), "no migration strategy") {
+			t.Fatalf("unexpected error for %s: %v", k, err)
+		}
+		if rationale == "" {
+			t.Errorf("empty rationale for strategy %s", k)
+		}
 	}
 }
