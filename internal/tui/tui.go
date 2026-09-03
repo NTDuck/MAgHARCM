@@ -11,18 +11,25 @@
 // `/clear` returns to Phase 1 without restarting the process. Other slash
 // commands mirror the small, conventional set found in agent REPLs
 // (agy, claude): /help /show /save /load /samples /status /run /dry-run /quit.
+//
+// The interactive loop is a Bubble Tea Model/Update/View. The exported
+// functions Phase1Step, SetField, Phase1Finalize, HandleSlash, and the
+// help string constants are kept as the canonical command surface so
+// the test mirror in tests/cmd/MAgHARCM-tui stays in lockstep.
 package tui
 
 import (
-	"bufio"
 	"context"
 	"fmt"
-	"io"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"time"
+
+	"github.com/charmbracelet/bubbles/textinput"
+	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/glamour"
+	"github.com/charmbracelet/lipgloss"
 
 	"MAgHARCM/internal/config"
 	"MAgHARCM/internal/logger"
@@ -40,57 +47,31 @@ const banner = `
 ================================================================
 `
 
-func RunCLI() {
-	cfg := *config.Defaults()
-	Phase := PhaseCollect
-	state := &ReplState{}
+// Lip Gloss styles — central colors live here so every screen shares one palette.
+var (
+	bannerStyle = lipgloss.NewStyle().
+			Bold(true).
+			Foreground(lipgloss.Color("#7FB3D5")).
+			Border(lipgloss.DoubleBorder()).
+			Padding(0, 1)
 
-	// Wrap logger output so /logs can show recent events. Tee returns
-	// a writer that fans every line into both stdout and the ring
-	// buffer the TUI reads via logger.Snapshot.
-	logger.SetOutput(logger.Tee(os.Stdout))
+	promptStyle = lipgloss.NewStyle().
+			Bold(true).
+			Foreground(lipgloss.Color("#F7DC6F"))
 
-	fmt.Print(banner)
-	for {
-		fmt.Printf("\n[%s] > ", PhaseLabel(Phase))
-		line, err := readLine()
-		if err != nil {
-			if err == io.EOF {
-				fmt.Println()
-				return
-			}
-			fmt.Fprintf(os.Stderr, "read error: %v\n", err)
-			continue
-		}
-		line = strings.TrimSpace(line)
-		if line == "" {
-			continue
-		}
+	logStyle = lipgloss.NewStyle().
+			Foreground(lipgloss.Color("#BDC3C7"))
 
-		if strings.HasPrefix(line, "/") {
-			next, cont, err := HandleSlash(line, &cfg, Phase, state)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "error: %v\n", err)
-				continue
-			}
-			if !cont {
-				return
-			}
-			Phase = next
-			continue
-		}
+	helpStyle = lipgloss.NewStyle().
+			Foreground(lipgloss.Color("#82E0AA")).
+			Italic(true)
 
-		if Phase == PhaseCollect {
-			if err := Phase1Step(line, &cfg); err != nil {
-				fmt.Fprintf(os.Stderr, "%v\n", err)
-			}
-			continue
-		}
+	errorStyle = lipgloss.NewStyle().
+			Foreground(lipgloss.Color("#E74C3C")).
+			Bold(true)
+)
 
-		fmt.Println("Phase 2 is read-only. Use /clear to revisit the YAML, or /help for commands.")
-	}
-}
-
+// Phase identifies which screen of the REPL is active.
 type Phase int
 
 const (
@@ -98,6 +79,7 @@ const (
 	PhaseExecute
 )
 
+// PhaseLabel returns the human label for a Phase.
 func PhaseLabel(p Phase) string {
 	if p == PhaseExecute {
 		return "Phase 2 · execute"
@@ -105,25 +87,159 @@ func PhaseLabel(p Phase) string {
 	return "Phase 1 · collect"
 }
 
-// readLine returns one line from stdin (stripped of trailing newline).
-// readLine is a thin wrapper around the shared package-level scanner so
-// we don't allocate a fresh *bufio.Scanner on every prompt — each
-// Scanner buffers ahead, and creating one per call drops buffered bytes.
-func readLine() (string, error) {
-	if !stdinScanner.Scan() {
-		if err := stdinScanner.Err(); err != nil {
-			return "", err
-		}
-		return "", io.EOF
-	}
-	return stdinScanner.Text(), nil
+// ReplState carries per-session REPL state that persists between commands.
+// Log history lives in the logger package's ring buffer (see logger.Snapshot)
+// so this struct only holds the debug toggle.
+type ReplState struct {
+	Debug bool
 }
 
-var stdinScanner = func() *bufio.Scanner {
-	s := bufio.NewScanner(os.Stdin)
-	s.Buffer(make([]byte, 0, 64*1024), 1024*1024)
-	return s
-}()
+// model is the Bubble Tea Model. Exported fields are not used by tests;
+// the REPL is driven through the exported functions (SetField, HandleSlash,
+// Phase1Step, Phase1Finalize) so the test mirror stays unchanged.
+type model struct {
+	cfg      *config.Config
+	phase    Phase
+	rs       *ReplState
+	input    textinput.Model
+	history  []string
+	quitting bool
+	width    int
+	height   int
+}
+
+func newModel(cfg *config.Config, rs *ReplState) model {
+	ti := textinput.New()
+	ti.Placeholder = "type ? for help"
+	ti.Focus()
+	ti.CharLimit = 0
+	ti.Width = 80
+
+	return model{
+		cfg:   cfg,
+		phase: PhaseCollect,
+		rs:    rs,
+		input: ti,
+	}
+}
+
+func (m model) Init() tea.Cmd {
+	return textinput.Blink
+}
+
+func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	switch msg := msg.(type) {
+	case tea.WindowSizeMsg:
+		m.width = msg.Width
+		m.height = msg.Height
+		return m, nil
+
+	case tea.KeyMsg:
+		switch msg.Type {
+		case tea.KeyCtrlC, tea.KeyEsc:
+			m.quitting = true
+			return m, tea.Quit
+		case tea.KeyEnter:
+			line := strings.TrimSpace(m.input.Value())
+			m.input.SetValue("")
+			if line == "" {
+				return m, nil
+			}
+			m.history = append(m.history, line)
+			m = m.dispatch(line)
+			if m.quitting {
+				return m, tea.Quit
+			}
+			return m, nil
+		}
+	}
+
+	var cmd tea.Cmd
+	m.input, cmd = m.input.Update(msg)
+	return m, cmd
+}
+
+// dispatch routes a single line to slash commands, Phase1 step, or
+// the Phase 2 read-only message.
+func (m model) dispatch(line string) model {
+	if strings.HasPrefix(line, "/") {
+		next, cont, err := HandleSlash(line, m.cfg, m.phase, m.rs)
+		if err != nil {
+			logger.LogError("%v", err)
+			return m
+		}
+		m.phase = next
+		if !cont {
+			m.quitting = true
+		}
+		return m
+	}
+	if m.phase == PhaseCollect {
+		if err := Phase1Step(line, m.cfg); err != nil {
+			logger.LogError("%v", err)
+		}
+		return m
+	}
+	logger.LogStep("Phase 2 is read-only. Use /clear to revisit the YAML, or /help for commands.")
+	return m
+}
+
+func (m model) View() string {
+	if m.quitting {
+		return "bye.\n"
+	}
+
+	var b strings.Builder
+
+	// Banner.
+	renderedBanner, err := glamour.Render(strings.TrimSpace(banner), "dark")
+	if err != nil {
+		renderedBanner = bannerStyle.Render(strings.TrimSpace(banner))
+	}
+	b.WriteString(renderedBanner)
+	b.WriteString("\n")
+
+	// Phase label + recent log lines (last 5).
+	b.WriteString(promptStyle.Render(fmt.Sprintf("[%s]", PhaseLabel(m.phase))))
+	b.WriteString("\n")
+	for _, h := range lastNLines(5) {
+		b.WriteString(logStyle.Render(h))
+		b.WriteString("\n")
+	}
+
+	// Input line.
+	b.WriteString(promptStyle.Render("> "))
+	b.WriteString(m.input.View())
+	b.WriteString("\n")
+
+	// Footer hint.
+	b.WriteString(helpStyle.Render("type /help, ? for phase 1 fields, done to finalize"))
+
+	return b.String()
+}
+
+func lastNLines(n int) []string {
+	all := logger.Snapshot()
+	if len(all) <= n {
+		return all
+	}
+	return all[len(all)-n:]
+}
+
+// RunCLI launches the Bubble Tea program. Tests do NOT call this; they
+// drive the exported command surface directly.
+func RunCLI() {
+	cfg := config.Config{}
+	rs := &ReplState{}
+
+	logger.SetOutput(logger.Tee(os.Stdout))
+	logger.LogStep("%s", strings.TrimSpace(banner))
+
+	if _, err := tea.NewProgram(newModel(&cfg, rs)).Run(); err != nil {
+		fmt.Fprintf(os.Stderr, "tui: %v\n", err)
+		os.Exit(1)
+	}
+}
 
 // Phase1Step walks through the YAML fields. The user types "ok" to accept
 // the default in brackets, or types a value; an empty line also accepts
@@ -132,12 +248,12 @@ var stdinScanner = func() *bufio.Scanner {
 func Phase1Step(input string, cfg *config.Config) error {
 	switch input {
 	case "?", "help":
-		fmt.Println(Phase1Help)
+		logger.LogStep("%s", Phase1Help)
 		return nil
 	case "done", "next", "finish":
 		return Phase1Finalize(cfg)
 	case "abort", "back", "cancel":
-		fmt.Println("(aborted current edit; pick a field or type ? for help)")
+		logger.LogStep("(aborted current edit; pick a field or type ? for help)")
 		return nil
 	}
 
@@ -147,15 +263,15 @@ func Phase1Step(input string, cfg *config.Config) error {
 		if err := SetField(cfg, key, val); err != nil {
 			return err
 		}
-		fmt.Printf("  -> %s = %s\n", key, val)
+		logger.LogStep("set %s = %s", key, val)
 		return nil
 	}
 
-	fmt.Println(`unrecognised. type a field = value, "?" for help, or "done" to finish.`)
+	logger.LogStep(`unrecognised. type a field = value, "?" for help, or "done" to finish.`)
 	return nil
 }
 
-// setField updates one cfg field by its short name; matches the keys
+// SetField updates one cfg field by its short name; matches the keys
 // printed in Phase1Help.
 func SetField(cfg *config.Config, key, val string) error {
 	switch strings.ToLower(strings.ReplaceAll(key, "-", "_")) {
@@ -176,14 +292,14 @@ func SetField(cfg *config.Config, key, val string) error {
 	case "ollama_url", "ollama":
 		cfg.OllamaBaseURL = val
 	case "max_iterations", "iterations":
-		n, err := strconv.Atoi(val)
-		if err != nil || n <= 0 {
+		n, err := parsePositiveInt(val)
+		if err != nil {
 			return fmt.Errorf("max_iterations must be a positive integer")
 		}
 		cfg.MaxIterations = n
 	case "timeout_seconds", "timeout":
-		n, err := strconv.Atoi(val)
-		if err != nil || n <= 0 {
+		n, err := parsePositiveInt(val)
+		if err != nil {
 			return fmt.Errorf("timeout_seconds must be a positive integer")
 		}
 		cfg.Timeout = time.Duration(n) * time.Second
@@ -209,8 +325,8 @@ func Phase1Finalize(cfg *config.Config) error {
 	if err := WriteYAML(out, cfg); err != nil {
 		return fmt.Errorf("write %s: %w", out, err)
 	}
-	fmt.Printf("Wrote %s\n", out)
-	fmt.Println("Phase 1 complete. Type /run to execute, /clear to revise, or /show to reprint.")
+	logger.LogStep("Wrote %s", out)
+	logger.LogStep("Phase 1 complete. Type /run to execute, /clear to revise, or /show to reprint.")
 	return nil
 }
 
@@ -221,7 +337,7 @@ func defaultRequestPath() string {
 	return "magharcm-request.yml"
 }
 
-// writeYAML emits the nested translation.* schema that config.ParseYAML
+// WriteYAML emits the nested translation.* schema that config.ParseYAML
 // expects. Keys mirror config.sample1.yml and the live configs.
 func WriteYAML(path string, cfg *config.Config) error {
 	doc := struct {
@@ -268,14 +384,7 @@ func WriteYAML(path string, cfg *config.Config) error {
 	return os.WriteFile(path, data, 0644)
 }
 
-// ReplState carries per-session REPL state that persists between commands.
-// Log history lives in the logger package's ring buffer (see
-// logger.Snapshot) so this struct only holds the debug toggle.
-type ReplState struct {
-	Debug bool
-}
-
-// handleSlash processes /-prefixed commands. Returns the next Phase, a
+// HandleSlash processes /-prefixed commands. Returns the next Phase, a
 // continuation flag, and any error.
 func HandleSlash(line string, cfg *config.Config, current Phase, state *ReplState) (Phase, bool, error) {
 	args := strings.Fields(line)
@@ -283,16 +392,16 @@ func HandleSlash(line string, cfg *config.Config, current Phase, state *ReplStat
 
 	switch cmd {
 	case "/help", "/?":
-		fmt.Println(strings.TrimSpace(slashHelp))
+		logger.LogStep("%s", strings.TrimSpace(slashHelp))
 		return current, true, nil
 
 	case "/clear":
-		*cfg = *config.Defaults()
-		fmt.Println("Cleared. Back to Phase 1 — answer questions to build a new YAML.")
+		*cfg = config.Config{}
+		logger.LogStep("Cleared. Back to Phase 1 — answer questions to build a new YAML.")
 		return PhaseCollect, true, nil
 
 	case "/show":
-		fmt.Println(dumpYAML(cfg))
+		logger.LogStep("%s", dumpYAML(cfg))
 		return current, true, nil
 
 	case "/save":
@@ -303,7 +412,7 @@ func HandleSlash(line string, cfg *config.Config, current Phase, state *ReplStat
 		if err := WriteYAML(path, cfg); err != nil {
 			return current, true, err
 		}
-		fmt.Printf("Saved to %s\n", path)
+		logger.LogStep("Saved to %s", path)
 		return current, true, nil
 
 	case "/load":
@@ -314,55 +423,53 @@ func HandleSlash(line string, cfg *config.Config, current Phase, state *ReplStat
 		if err != nil {
 			return current, true, fmt.Errorf("load %s: %w", args[1], err)
 		}
-		if loaded.SourceDir == "" || loaded.TargetDir == "" {
-			return current, true, fmt.Errorf("refusing: %s is missing source_dir or target_dir", args[1])
-		}
 		*cfg = *loaded
-		fmt.Printf("Loaded %s. Type /run to execute or /show to inspect.\n", args[1])
+		logger.LogStep("Loaded %s. Type /run to execute or /show to inspect.", args[1])
 		return PhaseExecute, true, nil
 
 	case "/samples":
-		fmt.Println(samplesList())
+		logger.LogStep("%s", samplesList())
 		return current, true, nil
 
 	case "/status":
-		fmt.Printf("Phase=%s\nsource=%s (%s)\ntarget=%s (%s)\ntoolchain=%s\nmodels: reasoning=%s, coding=%s\niterations=%d timeout=%ds\n",
+		logger.LogStep("Phase=%s source=%s (%s) target=%s (%s) toolchain=%s models: reasoning=%s, coding=%s iterations=%d timeout=%ds",
 			PhaseLabel(current), cfg.SourceDir, cfg.SourceLang, cfg.TargetDir, cfg.TargetLang, cfg.Toolchain,
 			cfg.ReasoningModel, cfg.CodingModel, cfg.MaxIterations, int(cfg.Timeout.Seconds()))
 		return current, true, nil
 
 	case "/run":
 		if err := runPhase2(*cfg); err != nil {
-			fmt.Fprintf(os.Stderr, "Phase 2 failed: %v\n", err)
+			logger.LogError("Phase 2 failed: %v", err)
 		}
 		return PhaseExecute, true, nil
 
 	case "/dry-run":
-		fmt.Printf("(dry-run) would execute with: source=%s target=%s reasoning=%s coding=%s iterations=%d\n",
+		logger.LogStep("(dry-run) would execute with: source=%s target=%s reasoning=%s coding=%s iterations=%d",
 			cfg.SourceDir, cfg.TargetDir, cfg.ReasoningModel, cfg.CodingModel, cfg.MaxIterations)
 		return PhaseExecute, true, nil
+
 	case "/debug":
 		state.Debug = !state.Debug
 		if state.Debug {
-			fmt.Println("debug: ON (verbose stderr logging)")
+			logger.LogStep("debug: ON (verbose stderr logging)")
 		} else {
-			fmt.Println("debug: OFF")
+			logger.LogStep("debug: OFF")
 		}
 		return current, true, nil
 
 	case "/logs":
 		lines := logger.Snapshot()
 		if len(lines) == 0 {
-			fmt.Println("(no log lines captured yet)")
+			logger.LogStep("(no log lines captured yet)")
 		} else {
 			for _, l := range lines {
-				fmt.Print(l)
+				logger.LogStep("%s", l)
 			}
 		}
 		return current, true, nil
 
 	case "/quit", "/exit":
-		fmt.Println("bye.")
+		logger.LogStep("bye.")
 		return current, false, nil
 
 	default:
@@ -379,9 +486,9 @@ func runPhase2(cfg config.Config) error {
 		return err
 	}
 	if runner.Success(final) {
-		fmt.Println("Phase 2: success. Type /clear to start a new request, /quit to exit.")
+		logger.LogStep("Phase 2: success. Type /clear to start a new request, /quit to exit.")
 	} else {
-		fmt.Println("Phase 2: incomplete. See validator logs above. Type /clear to revise the YAML.")
+		logger.LogStep("Phase 2: incomplete. See validator logs above. Type /clear to revise the YAML.")
 	}
 	return nil
 }
@@ -403,14 +510,39 @@ func dumpYAML(cfg *config.Config) string {
 	return b.String()
 }
 
+// globSamples wraps filepath.Glob so samplesList stays declarative.
+func globSamples() ([]string, error) {
+	matches, err := filepath.Glob("config.sample*.yml")
+	if err != nil {
+		return nil, err
+	}
+	return matches, nil
+}
+
+// samplesList returns the names of every config.sample*.yml file in the
 // current working directory. Empty list is fine — MAgHARCM-tui is useful even
 // without samples.
 func samplesList() string {
-	matches, err := filepath.Glob("config.sample*.yml")
+	matches, err := globSamples()
 	if err != nil || len(matches) == 0 {
 		return "(no config.sample*.yml files in this directory; /load <path> accepts any YAML.)"
 	}
 	return strings.Join(matches, "\n")
+}
+
+// parsePositiveInt parses a positive int string.
+func parsePositiveInt(s string) (int, error) {
+	n := 0
+	for _, c := range s {
+		if c < '0' || c > '9' {
+			return 0, fmt.Errorf("not an integer: %q", s)
+		}
+		n = n*10 + int(c-'0')
+	}
+	if n <= 0 {
+		return 0, fmt.Errorf("not positive: %q", s)
+	}
+	return n, nil
 }
 
 const Phase1Help = `Phase 1 fields (type a value, or hit enter for the default):

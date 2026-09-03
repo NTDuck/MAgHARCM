@@ -129,7 +129,19 @@ func TestPhase1FinalizeWritesYAML(t *testing.T) {
 }
 
 func TestHandleSlashShow(t *testing.T) {
-	cfg := &config.Config{SourceDir: "x", SourceLang: "Go", TargetDir: "y", TargetLang: "Rust"}
+	cfg := &config.Config{
+		SourceDir:      "x",
+		SourceLang:     "Go",
+		TargetDir:      "y",
+		TargetLang:     "Rust",
+		Toolchain:      "cargo",
+		ReasoningModel: "r1",
+		CodingModel:    "c1",
+		OllamaBaseURL:  "http://localhost:11434",
+		MaxIterations:  3,
+		Timeout:        600 * time.Second,
+		LSPProvider:    "native",
+	}
 	out := captureStdout(t, func() {
 		if _, _, err := tui.HandleSlash("/show", cfg, tui.PhaseCollect, &tui.ReplState{}); err != nil {
 			t.Errorf("show: %v", err)
@@ -191,6 +203,16 @@ func TestHandleSlashLoadValidJumpsToPhase2(t *testing.T) {
   target:
     dir: b
     language: Rust
+    toolchain: cargo
+  models:
+    reasoning: r1
+    coding: c1
+    ollama_url: http://localhost:11434
+  execution:
+    max_iterations: 3
+    timeout_seconds: 600
+  lsp:
+    provider: native
 `
 	if err := os.WriteFile(good, []byte(body), 0644); err != nil {
 		t.Fatalf("write: %v", err)
@@ -235,7 +257,11 @@ func captureStdout(t *testing.T, fn func()) string {
 		t.Fatalf("pipe: %v", err)
 	}
 	os.Stdout = w
-	defer func() { os.Stdout = old }()
+	prevLog := logger.SetOutput(w)
+	defer func() {
+		os.Stdout = old
+		logger.SetOutput(prevLog)
+	}()
 
 	done := make(chan string, 1)
 	go func() {
