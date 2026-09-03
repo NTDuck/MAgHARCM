@@ -2,28 +2,17 @@
 \section{Related Work}
 \label{sec:related}
 
-Automated program translation and repository migration have been active areas of software engineering research for decades. In this section, we review related literature across four key dimensions.
-
-\subsection{Rule-Based and AST Transpilers}
+\subsection{Rule-Based Transpilation \& Migration}
 \label{sec:related_transpilers}
 
-Traditional program transpilation relies on formal syntax transformation rules and intermediate representation (IR) mappings. Systems such as \textsc{C2Rust}~\cite{c2rust} translate C code to Rust by emitting equivalent unsafe Rust syntax, preserving memory layout via raw pointers and manual memory management. Similarly, \textsc{CXGO} translates C into Go using AST-level syntactic rewrite passes. While rule-based systems ensure semantic equivalence over bounded subsets of the source language, they produce heavily unidiomatic code that fails to leverage target-language safety abstractions (e.g., Rust ownership, RAII, type-safe error handling) and requires immense manual engineering to refactor into production-grade systems.
+Traditional code translation systems use deterministic abstract syntax tree (AST) transformations. \textsc{C2Rust}~\cite{c2rust} translates C code into Rust by preserving C memory layouts and emitting \texttt{unsafe} blocks with raw pointers. While semantics are preserved, the generated Rust code requires extensive human refactoring to achieve idiomatic safety~\cite{siddiq2024oxidizer}. Similarly, tools like \textsc{CXGO} and \textsc{Java2Rust} rely on hand-engineered mapping rules that do not easily generalize across divergent type systems and idiomatic concurrency models.
 
-\subsection{Monolithic Neural \& LLM Code Translation}
-\label{sec:related_monolithic}
+\subsection{Neural Code Translation}
+\label{sec:related_neural}
 
-With the advent of Large Language Models, neural program translation has transitioned from supervised sequence-to-sequence models~\cite{roziere2020transcoder,roziere2021leveraging} to few-shot and zero-shot prompting of foundation models~\cite{chen2021evaluating,achiam2023gpt4}. \textsc{TransCoder}~\cite{roziere2020transcoder} applied unsupervised cross-lingual language modeling to translate standalone functions across C++, Java, and Python. \textsc{AlphaTrans}~\cite{yang2024alphatrans} introduced iterative compilation feedback to improve single-file translation rates.
+Neural approaches formulate source code translation as sequence-to-sequence generation. \textsc{TransCoder}~\cite{roziere2020transcoder} introduced unsupervised machine translation for programming languages using cross-lingual masked language modeling. Follow-up works like \textsc{AlphaTrans}~\cite{yang2024alphatrans} added modular call-graph analysis and iterative feedback. However, these systems operate at single-function or single-file scopes, failing to resolve repository-level inter-module references.
 
-However, monolithic LLM architectures face fundamental scaling barriers when applied to entire repositories. As demonstrated by recent empirical studies~\cite{jimenez2024swebench}, presenting entire multi-file codebases in a single prompt induces catastrophic attention degradation, hallucinations of external dependencies, and truncated function outputs. MAgHARCM addresses this challenge through explicit multi-agent modularity and reverse-topological chunking.
+\subsection{Multi-Agent Software Engineering Systems}
+\label{sec:related_mas}
 
-\subsection{Multi-Agent Software Engineering Architectures}
-\label{sec:related_agents}
-
-Multi-agent architectures have recently emerged as a powerful paradigm for complex, multi-step software engineering tasks. Systems such as \textsc{SWE-agent}~\cite{yang2024sweagent}, \textsc{ChatDev}~\cite{qian2023chatdev}, and \textsc{MetaGPT}~\cite{hong2023metagpt} employ role-specialized agents to collaborate on issue resolution, architecture design, and code synthesis.
-
-Most closely related to our work is \textsc{ReCodeAgent}~\cite{ibrahimzada2026recodeagent}, which introduced a four-agent workflow (Analyzer, Planning, Translator, Validator) for repository-scale translation. However, ReCodeAgent relies exclusively on massive commercial cloud APIs (Claude 3.5/4.5 Sonnet) requiring unconstrained internet connectivity and high token expenditures. In contrast, MAgHARCM is specifically engineered for local, quantized Small Language Models (SLMs), introducing memory-bounded context synthesis ($\le 4$\,KB Symbol Navigator and Prior Memory), adversarial weakening guards, and CodaMOSA plateau detection to guarantee robust local execution.
-
-\subsection{Automated Test Generation \& Iterative Repair}
-\label{sec:related_testing}
-
-Iterative compiler and test feedback is crucial for achieving high translation fidelity. Classical search-based test generation tools like \textsc{EvoSuite}~\cite{fraser2011evosuite} and \textsc{Randoop}~\cite{pacheco2007randoop} generate unit tests via genetic algorithms and random exploration. \textsc{CodaMOSA}~\cite{lemieux2023codamosa} pioneered the integration of LLMs with search-based testing, utilizing LLMs to synthesize targeted test cases when traditional coverage stalls at a convergence plateau. MAgHARCM directly integrates CodaMOSA's plateau detection principles within its Validator Agent to dynamically identify when repair loops cease to produce coverage improvements, preventing infinite execution cycles under bounded local inference budgets.
+Multi-agent software engineering frameworks coordinate specialized agents over discrete development roles. \textsc{MetaGPT}~\cite{hong2023metagpt} incorporates standard operating procedures to structure multi-agent communication. \textsc{ChatDev}~\cite{qian2023chatdev} uses communicative de-hallucination loops to generate software projects. \textsc{ReCodeAgent}~\cite{ibrahimzada2026recodeagent} applied multi-agent decomposition to repository translation, reporting substantial compilation gains over monolithic prompting. However, these frameworks depend on large cloud LLMs with multi-million-token context windows. MAgHARCM demonstrates that repository translation can execute entirely on local, quantized SLMs through reverse-topological scheduling and bounded context navigation.

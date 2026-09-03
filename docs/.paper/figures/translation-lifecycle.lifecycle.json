@@ -2,16 +2,15 @@
   "schema_version": 1,
   "diagram_type": "lifecycle",
   "meta": {
-    "title": "MAgHARCM Translation Lifecycle",
-    "subtitle": "State machine for multi-stage analysis, chunked translation, test validation, checkpoints, and repair.",
+    "title": "MAgHARCM Translation Lifecycle State Machine",
+    "subtitle": "State transitions across analysis, chunked translation, validation gates, checkpoints, and repair cycles.",
     "output": "docs/.paper/figures/translation-lifecycle.html",
     "viewBox": [980, 660]
   },
   "lanes": [
-    { "id": "main", "label": "Migration phases" },
-    { "id": "waiting", "label": "Checkpoints & Interruption" },
-    { "id": "exceptions", "label": "Repair loop" },
-    { "id": "terminal", "label": "Terminal exits" }
+    { "id": "main", "label": "Pipeline Phases" },
+    { "id": "events", "label": "Checkpoints & Stalls" },
+    { "id": "terminal", "label": "Terminal Exits" }
   ],
   "states": [
     { "id": "intake", "type": "start", "label": "Intake", "sublabel": "manifest parsed", "lane": "main", "col": 0, "step": "01", "tag": "entry" },
@@ -19,18 +18,18 @@
     { "id": "planning", "type": "active", "label": "Planning", "sublabel": "reverse-topo DAG", "lane": "main", "col": 2, "step": "03", "tag": "back-edge" },
     { "id": "translating", "type": "active", "label": "Translating", "sublabel": "chunked dispatch", "lane": "main", "col": 3, "step": "04", "tag": "coding" },
     { "id": "completed", "type": "success", "label": "Converged", "sublabel": "100% tests pass", "lane": "main", "col": 4, "step": "05", "tag": "success" },
-    { "id": "checkpoint", "type": "waiting", "label": "Checkpointed", "sublabel": "NEW-PRIM-28", "lane": "waiting", "col": 0, "tag": "resume" },
-    { "id": "plateau", "type": "waiting", "label": "Plateau Stalled", "sublabel": "NEW-PRIM-27", "lane": "waiting", "col": 1, "tag": "stall" },
-    { "id": "repairing", "type": "failure", "label": "Repair Mode", "sublabel": "compiler triage", "lane": "exceptions", "col": 0, "yOffset": 78, "tag": "iter <= K" },
-    { "id": "exhausted", "type": "failure", "label": "Budget Ceiling", "sublabel": "max iterations", "lane": "terminal", "col": 0, "tag": "terminal" },
-    { "id": "weakened", "type": "failure", "label": "Test Weakened", "sublabel": "NEW-PRIM-13", "lane": "terminal", "col": 1, "tag": "terminal" }
+    { "id": "checkpoint", "type": "waiting", "label": "Checkpointed", "sublabel": "NEW-PRIM-28", "lane": "events", "col": 0, "tag": "resume" },
+    { "id": "repairing", "type": "failure", "label": "Repair Mode", "sublabel": "compiler triage", "lane": "events", "col": 1, "tag": "iter <= K" },
+    { "id": "plateau", "type": "waiting", "label": "Plateau Stalled", "sublabel": "NEW-PRIM-27", "lane": "events", "col": 2, "tag": "stall" },
+    { "id": "exhausted", "type": "failure", "label": "Budget Ceiling", "sublabel": "max iterations", "lane": "terminal", "col": 1, "tag": "terminal" },
+    { "id": "weakened", "type": "failure", "label": "Test Weakened", "sublabel": "NEW-PRIM-13", "lane": "terminal", "col": 2, "tag": "terminal" }
   ],
   "transitions": [
     { "from": "planning", "to": "checkpoint", "variant": "default", "fromSide": "bottom", "toSide": "top", "route": "straight" },
-    { "from": "translating", "to": "plateau", "variant": "default", "fromSide": "bottom", "toSide": "top", "route": "straight" },
-    { "from": "planning", "to": "repairing", "variant": "security", "fromSide": "left", "toSide": "top", "via": [[320, 157], [320, 342], [402, 342]] },
-    { "from": "plateau", "to": "weakened", "variant": "security", "fromSide": "bottom", "toSide": "top", "route": "straight" },
-    { "from": "checkpoint", "to": "exhausted", "variant": "security", "fromSide": "bottom", "toSide": "top", "via": [[320, 336], [320, 430], [402, 430]] }
+    { "from": "translating", "to": "repairing", "variant": "default", "fromSide": "bottom", "toSide": "top", "route": "straight" },
+    { "from": "repairing", "to": "exhausted", "variant": "security", "fromSide": "bottom", "toSide": "top", "route": "straight" },
+    { "from": "translating", "to": "plateau", "variant": "default", "fromSide": "bottom", "toSide": "top", "route": "drop" },
+    { "from": "plateau", "to": "weakened", "variant": "security", "fromSide": "bottom", "toSide": "top", "route": "straight" }
   ],
   "cards": [
     {

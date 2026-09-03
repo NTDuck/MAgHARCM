@@ -2,32 +2,32 @@
 \section{Problem Formulation \& Methodology}
 \label{sec:method}
 
-In this section, we formally define the repository-scale code translation problem, describe the overall architecture of MAgHARCM, and detail the four cooperating agents comprising our pipeline.
+This section defines the repository translation problem, describes the system architecture of MAgHARCM, and details the four cooperating agents in our pipeline.
 
 \subsection{Problem Formulation}
 \label{sec:method_formulation}
 
-We formalize repository-scale translation as a structured mapping between source and target software projects. A source software project is defined as a tuple:
+We define repository-scale translation as a structured mapping between source and target software projects. A source software project is a tuple:
 \begin{equation}
 P_s = (F_s, T_s, D_s, \mathcal{M}_s)
 \end{equation}
-where $F_s = \{f_1, f_2, \dots, f_n\}$ is the set of source code files written in source language $L_s$, $T_s = \{t_1, t_2, \dots, t_m\}$ is the associated suite of test files, $D_s$ represents the external third-party library dependencies declared in the project build manifest, and $\mathcal{M}_s$ denotes the directory and module structure.
+where $F_s = \{f_1, f_2, \dots, f_n\}$ is the set of source code files in language $L_s$, $T_s = \{t_1, t_2, \dots, t_m\}$ is the test suite, $D_s$ represents external library dependencies from the build manifest, and $\mathcal{M}_s$ defines the module directory structure.
 
-The objective of repository translation is to synthesize a corresponding target project:
+The goal of repository translation is to synthesize a corresponding target project:
 \begin{equation}
 P_t = (F_t, T_t, D_t, \mathcal{M}_t)
 \end{equation}
-in target language $L_t$ (such as Rust) such that the following three formal correctness properties are simultaneously satisfied:
+in target language $L_t$ (such as Rust) satisfying three formal conditions:
 \begin{enumerate}
-    \item \textbf{Syntactic and Type Compilation Validity ($\mathcal{C}$):} The target project $P_t$ compiles cleanly under the standard target compiler toolchain $\mathcal{T}_{L_t}$ without compilation errors:
+    \item \textbf{Syntactic and Type Compilation Validity ($\mathcal{C}$):} The target project $P_t$ compiles cleanly under target compiler toolchain $\mathcal{T}_{L_t}$ with zero errors:
     \begin{equation}
     \mathcal{C}(P_t) = \text{Compile}(\mathcal{T}_{L_t}, P_t) = \text{True}
     \end{equation}
-    \item \textbf{Observational Semantic Equivalence ($\mathcal{E}$):} For every source function $u_s \in F_s$ and its corresponding translated target function $u_t \in F_t$, their execution outputs must be identical across all valid input domains $I$:
+    \item \textbf{Observational Semantic Equivalence ($\mathcal{E}$):} For every source function $u_s \in F_s$ and translated target function $u_t \in F_t$, execution outputs must match for all valid inputs $x \in I$:
     \begin{equation}
     \forall x \in I, \quad \text{Exec}(u_s, x) \equiv \text{Exec}(u_t, x)
     \end{equation}
-    \item \textbf{Test Suite Verification \& Assertion Integrity ($\mathcal{V}$):} The translated test suite $T_t$ must execute cleanly, passing all assertions, while strictly preserving or expanding the assertion coverage of the original test suite $T_s$:
+    \item \textbf{Test Suite Verification \& Assertion Integrity ($\mathcal{V}$):} The translated test suite $T_t$ must pass completely while preserving all test assertions from $T_s$:
     \begin{equation}
     \begin{aligned}
     \mathcal{V}(T_t, P_t) = &\left( \text{TestPassRate}(T_t) = 1.0 \right) \ \land \\
@@ -39,14 +39,18 @@ in target language $L_t$ (such as Rust) such that the following three formal cor
 \begin{figure*}[t]
     \centering
     \includegraphics[width=\textwidth]{figures/fig1_workflow.png}
-    \caption{Overview of the MAgHARCM Multi-Agent Repository Translation Architecture. The pipeline decomposes repository migration across four specialized agents: Analyzer (M\"uller strategy selection), Planning (reverse-topological DAG construction and cycle elimination), Translator (chunked translation with Symbol Navigator and Prior Memory), and Validator (AST syntax check, build compilation, test execution, adversarial weakening guard, and coverage plateau detection).}
+    \caption{Architecture overview of the MAgHARCM multi-agent translation pipeline. The system coordinates four agents: Analyzer (M\"uller strategy selection), Planning (reverse-topological DAG construction and cycle removal), Translator (chunked translation with Symbol Navigator and Prior Memory), and Validator (AST syntax check, compiler build validation, test suite execution, adversarial weakening guard, and coverage plateau detection).}
     \label{fig:workflow}
 \end{figure*}
 
 \subsection{System Architecture Overview}
 \label{sec:method_arch}
+
+\textbf{Figure~\ref{fig:workflow}} illustrates the six execution stages of MAgHARCM. Algorithm~\ref{alg:magharcm_pipeline} outlines the end-to-end orchestration procedure.
+
 \begin{algorithm}[MAgHARCM Repository Translation Orchestration]
 \label{alg:magharcm_pipeline}
+\small
 \begin{algorithmic}[1]
 \Require Source project $P_s$, Source language $L_s$, Target language $L_t$, Max iterations $K$
 \Ensure Translated target project $P_t$
@@ -63,7 +67,7 @@ in target language $L_t$ (such as Rust) such that the following three formal cor
         \State \Return $P_t$ \Comment{Successfully converged}
     \EndIf
     \If{$\text{Report}.\text{PlateauDetected} \lor \text{Report}.\text{Weakened}$}
-        \State \textbf{break} \Comment{Coverage plateau or security guard triggered}
+        \State \textbf{break} \Comment{Plateau or guard triggered}
     \EndIf
     \State $P_t \gets \text{TranslatorAgent}.\text{Repair}(P_t, \text{Report})$
     \State $\text{iter} \gets \text{iter} + 1$
@@ -76,24 +80,27 @@ in target language $L_t$ (such as Rust) such that the following three formal cor
 \subsection{Analyzer Agent \& M\"uller Strategy Selection}
 \label{sec:method_analyzer}
 
-The Analyzer Agent inspects the incoming codebase $P_s$ to construct a structured architectural specification. Using Tree-Sitter grammars for C, Go, and Java, the agent parses the full directory hierarchy, identifying module boundaries, public struct declarations, function signatures, and build configurations.
+The Analyzer Agent inspects the incoming codebase $P_s$ to construct an architectural specification. Using Tree-Sitter grammars for C, Go, and Java, the agent parses the full directory structure, locating module boundaries, structs, and function signatures.
 
-To tailor downstream decomposition to the repository's scale, the Analyzer implements \emph{M\"uller Migration Strategy Selection}~\cite{muller2022towards}, categorizing projects into three distinct regimes:
+To adjust pipeline execution to repository size, the Analyzer uses \emph{M\"uller Migration Strategy Selection}~\cite{muller2022towards}, grouping projects into three scopes:
 \begin{itemize}
-    \item \textbf{Direct Strategy ($\le 5$ files and $\le 1{,}000$ LoC):} Applied to compact utility packages. Translation proceeds in a single unified prompt containing all module definitions.
-    \item \textbf{Incremental Strategy ($5 < |F_s| \le 50$ files or $1{,}000 < \text{LoC} \le 10{,}000$):} Standard multi-module repositories. The codebase is translated module-by-module in reverse-topological order.
-    \item \textbf{Pilot Strategy ($> 50$ files or $> 10{,}000$ LoC):} Large-scale enterprise codebases (e.g., Apache Commons). The Analyzer selects a core foundational subsystem as a self-contained pilot before expanding to peripheral packages.
+    \item \textbf{Direct Strategy ($\le 5$ files and $\le 1{,}000$ LoC):} Used for small utility packages. The system translates all module definitions in a single prompt.
+    \item \textbf{Incremental Strategy ($5 < |F_s| \le 50$ files or $1{,}000 < \text{LoC} \le 10{,}000$):} Used for standard multi-module repositories. The codebase translates module-by-module in reverse-topological order.
+    \item \textbf{Pilot Strategy ($> 50$ files or $> 10{,}000$ LoC):} Used for large enterprise codebases. The Analyzer selects a core foundational subsystem as a self-contained pilot before expanding to remaining packages.
 \end{itemize}
 
 \subsection{Planning Agent \& Reverse-Topological DAG}
 \label{sec:method_planning}
 
-The Planning Agent converts the architectural analysis into an executable dependency schedule. A critical failure mode in multi-file translation is caller-before-callee synthesis: if module $A$ depends on types declared in module $B$, translating $A$ first causes the LLM to invent placeholder type signatures for $B$, resulting in pervasive type mismatches when $B$ is subsequently translated.
+The Planning Agent converts the architectural analysis into an executable dependency schedule. A frequent failure mode in multi-file translation is caller-before-callee synthesis. If module $A$ depends on module $B$, translating $A$ first causes the model to guess type signatures for $B$, causing type mismatches when $B$ translates later.
 
-To guarantee that dependencies are resolved prior to usage, the Planning Agent constructs a fine-grained call graph $G = (V, E)$ over all extracted AST fragments. We then compute a \emph{Reverse-Topological Order} using depth-first search (DFS) with cycle elimination, formalized in Algorithm~\ref{alg:reverse_topo}.
+To ensure dependencies resolve before usage, the Planning Agent builds a directed call graph $G = (V, E)$ over all extracted AST fragments. We compute a \emph{Reverse-Topological Order} using depth-first search with back-edge removal, shown in Algorithm~\ref{alg:reverse_topo}.
+
 \begin{algorithm}[Cycle-Free Reverse-Topological Scheduling]
 \label{alg:reverse_topo}
+\small
 \begin{algorithmic}[1]
+\Require Directed dependency graph $G = (V, E)$
 \Ensure Reverse-topological execution sequence $\mathcal{Q}$
 \State $\text{Visited} \gets \emptyset, \quad \text{OnStack} \gets \emptyset, \quad \mathcal{Q} \gets []$
 \Function{Visit}{$u$}
@@ -118,41 +125,43 @@ To guarantee that dependencies are resolved prior to usage, the Planning Agent c
 \end{algorithmic}
 \end{algorithm}
 
-When circular dependencies are detected (i.e., node $v$ is on the active DFS recursion stack), the back-edge $(u, v)$ is removed from the planning DAG and recorded in the repair ledger. Furthermore, the Planning Agent includes a \emph{Canonical Manifest Rewriter} that deterministically maps source library identifiers (e.g., Java `org.apache.commons.validator` or Go `math/rand`) to standard Rust equivalents (`validator`, `rand`, `regex`) in the target `Cargo.toml`.
+When circular references occur (node $v$ is on the active recursion stack), the back-edge $(u, v)$ is removed from the planning DAG and recorded in the repair ledger. Furthermore, the Planning Agent uses a \emph{Canonical Manifest Rewriter} that maps source dependencies (such as Java `org.apache.commons.validator` or Go `math/rand`) to standard Rust crates (`validator`, `rand`, `regex`) in the target `Cargo.toml`.
 
 \begin{figure}[t]
     \centering
     \includegraphics[width=\columnwidth]{figures/fig3_dataflow.png}
-    \caption{Bounded Context Assembly Dataflow. Tree-Sitter AST fragments and manifests are transformed into Reverse-Topological DAGs, combined with Symbol Navigator lookups ($\le 4$\,KB) and Prior-Modules Memory ($\le 4$\,KB) to synthesize target modules on local SLMs.}
+    \caption{Data flow architecture for chunked translation and context synthesis. Context bounds are capped at $\le 4$\,KB via the Symbol Navigator and Prior Memory to avoid local SLM context saturation.}
     \label{fig:dataflow}
 \end{figure}
 
-\subsection{Translator Agent \& Bounded Context Synthesis}
+\subsection{Translator Agent \& Chunked Context Synthesis}
 \label{sec:method_translator}
 
-The Translator Agent implements chunked code synthesis using our dedicated coding model (Qwen3-4B-Instruct) guided by the high-level topological plan emitted by the reasoning model (Qwen3-30B-Thinking). Because local models operate under bounded context budgets, providing full repository source histories causes catastrophic attention degradation.
+The Translator Agent emits target code from planning fragments. To operate reliably on local 4B--7B coding models, the Translator uses \emph{Chunked Translation} as depicted in \textbf{Figure~\ref{fig:dataflow}}. Instead of transmitting the entire repository, the agent processes one module fragment at a time.
 
-As shown in Figure~\ref{fig:dataflow}, MAgHARCM employs a two-tier context bounding mechanism:
+Context assembly uses two mechanisms:
 \begin{enumerate}
-    \item \textbf{Symbol-Aware Navigator:} When synthesizing module fragment $u_k$, the Navigator extracts only the structural definitions, struct layouts, and public function signatures of its immediate callees, capping the extracted slice to $\le 4$\,KB.
-    \item \textbf{Prior-Modules Memory:} For previously translated modules, the Translator maintains an in-memory digest of emitted Rust signatures, bounded by a 4\,KB total budget with 200-byte head/tail snippets.
+    \item \textbf{Symbol-Aware Navigator ($\le 4$\,KB):} Before translating a fragment, the agent queries the Symbol Navigator for relevant upstream struct definitions, function signatures, and trait bounds, returning a compact context slice.
+    \item \textbf{Prior-Modules Memory ($\le 4$\,KB):} The Translator maintains a compact summary of already emitted module paths and exported signatures. This ensures newly generated modules import and reuse existing types consistently.
 \end{enumerate}
-
-\subsection{Validator Agent \& Adversarial Defense}
-\label{sec:method_validator}
 
 \begin{figure}[t]
     \centering
     \includegraphics[width=\columnwidth]{figures/fig4_lifecycle.png}
-    \caption{Translation Lifecycle State Machine. Highlights the forward translation rail, state checkpoint persistence, coverage plateau stall detection, and adversarial test-weakening guard exits.}
+    \caption{State machine lifecycle of MAgHARCM. The system tracks states across intake, analysis, planning, chunked translation, test validation, checkpoints, and multi-stage repair.}
     \label{fig:lifecycle}
 \end{figure}
 
-The Validator Agent enforces strict verification over the synthesized codebase through a five-stage validation cascade:
+\subsection{Validator Agent \& Multi-Stage Defense Cascade}
+\label{sec:method_validator}
+
+The Validator Agent verifies target code quality and enforces functional correctness. \textbf{Figure~\ref{fig:lifecycle}} depicts the complete state machine lifecycle of the verification and repair process.
+
+The validation cascade includes four checks:
 \begin{enumerate}
-    \item \textbf{Pre-Compilation AST Syntax Validation:} Fast AST verification via Tree-Sitter to detect unclosed delimiters, invalid keywords, or malformed macro expansions prior to invoking compiler toolchains.
-    \item \textbf{Target Toolchain Build Compilation:} Executes \texttt{cargo check} and \texttt{cargo build} in the target workspace, capturing structured diagnostic errors ($E0382, E0502, E0432$).
-    \item \textbf{Test Suite Execution:} Runs native target unit tests (\texttt{cargo test}), computing passed, failed, and total test counts.
-    \item \textbf{Adversarial Weakening Guard:} LLM-driven repair loops frequently delete failing assertions or convert strict equality checks into no-ops (e.g., \texttt{assert\_eq!(a, b)} $\to$ \texttt{assert!(true)}). The Validator parses AST assertion counts across test files: if $\text{AssertCount}(T_t^{\text{new}}) < \text{AssertCount}(T_t^{\text{prev}})$, the update is flagged as an adversarial weakening regression, rejected, and reverted to the last green snapshot.
-    \item \textbf{CodaMOSA-derived Coverage Plateau Detector:} To prevent endless repair loops on unresolvable semantic bugs, the Validator tracks test coverage deltas across iterations. If two consecutive iterations yield a passed-tests delta $< 5$ and an uncovered-function delta $< 1$, execution is gracefully halted at a convergence plateau.
+    \item \textbf{AST Syntax Pre-Check:} Validates target source files using Tree-Sitter before running the compiler toolchain.
+    \item \textbf{Native Toolchain Build Validation:} Executes `cargo check` or `cargo test --no-run` to capture compiler diagnostics and borrow-checker errors ($E0382, E0502$).
+    \item \textbf{Test Suite Execution:} Runs target unit tests and records passing assertion counts.
+    \item \textbf{Adversarial Weakening Guard:} Compares test AST assertions between iterations. If a repair pass deletes assertions or relaxes equality checks, the guard flags the translation as invalid and forces regeneration.
+    \item \textbf{Coverage Plateau Detector:} Adapts CodaMOSA search stagnation logic to track test gain across iterations. If three consecutive repair rounds produce zero test improvements, the loop halts gracefully.
 \end{enumerate}
