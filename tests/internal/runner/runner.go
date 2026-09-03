@@ -4,6 +4,7 @@ import (
 	"MAgHARCM/internal/runner"
 	"context"
 	"errors"
+	"strings"
 	"testing"
 
 	"MAgHARCM/internal/config"
@@ -17,12 +18,21 @@ func TestRunRejectsNilConfig(t *testing.T) {
 
 func TestRunRejectsEmptyDirs(t *testing.T) {
 	cfg := &config.Config{}
-	if _, err := runner.Run(context.Background(), cfg); !errors.Is(err, runner.ErrMissingFields) {
-		t.Errorf("empty dirs: got %v want runner.ErrMissingFields", err)
+	_, err := runner.Run(context.Background(), cfg)
+	if err == nil {
+		t.Fatalf("empty cfg: expected error, got nil")
 	}
+	if !strings.Contains(err.Error(), "config: missing required fields:") {
+		t.Errorf("empty cfg: got %v want substring %q", err, "config: missing required fields:")
+	}
+
 	cfg.SourceDir = "src/c"
-	if _, err := runner.Run(context.Background(), cfg); !errors.Is(err, runner.ErrMissingFields) {
-		t.Errorf("empty target_dir: got %v want runner.ErrMissingFields", err)
+	_, err = runner.Run(context.Background(), cfg)
+	if err == nil {
+		t.Fatalf("only SourceDir set: expected error, got nil")
+	}
+	if !strings.Contains(err.Error(), "config: missing required fields:") {
+		t.Errorf("only SourceDir set: got %v want substring %q", err, "config: missing required fields:")
 	}
 }
 

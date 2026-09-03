@@ -1,5 +1,7 @@
 // Package runner executes the MAgHARCM translation pipeline given a
+//
 //	populated *config.Config. Both cmd/MAgHARCM (one-shot) and cmd/MAgHARCM-tui
+//
 // (interactive REPL) call into Run so the wiring stays in one place.
 package runner
 
@@ -17,36 +19,18 @@ import (
 	"MAgHARCM/internal/types"
 )
 
-// ErrMissingFields is returned when the config lacks the source/target dirs
-// that the pipeline cannot derive from defaults.
-var ErrMissingFields = errors.New("source_dir and target_dir are required")
+// ErrMissingFields is returned when cfg is nil.
+var ErrMissingFields = errors.New("cfg is required")
 
 // Run executes the full analyzer -> planning -> translator -> validator
-// pipeline and returns the final state. cfg must have SourceDir and
-// TargetDir set; other fields fall back to config.Defaults().
+// pipeline and returns the final state. cfg MUST have every required field
+// populated; missing fields produce a structured error from config.Require.
 func Run(ctx context.Context, cfg *config.Config) (*types.State, error) {
 	if cfg == nil {
 		return nil, ErrMissingFields
 	}
-	if cfg.SourceDir == "" || cfg.TargetDir == "" {
-		return nil, ErrMissingFields
-	}
-
-	def := config.Defaults()
-	if cfg.OllamaBaseURL == "" {
-		cfg.OllamaBaseURL = def.OllamaBaseURL
-	}
-	if cfg.ReasoningModel == "" {
-		cfg.ReasoningModel = def.ReasoningModel
-	}
-	if cfg.CodingModel == "" {
-		cfg.CodingModel = def.CodingModel
-	}
-	if cfg.MaxIterations == 0 {
-		cfg.MaxIterations = def.MaxIterations
-	}
-	if cfg.Timeout == 0 {
-		cfg.Timeout = def.Timeout
+	if err := config.Require(cfg); err != nil {
+		return nil, err
 	}
 
 	task := types.TranslationTask{
@@ -58,15 +42,8 @@ func Run(ctx context.Context, cfg *config.Config) (*types.State, error) {
 		LSPProvider: cfg.LSPProvider,
 	}
 
-	fmt.Println("================================================================")
-	fmt.Println("       MAgHARCM - Multi-Agent Code Translation Engine           ")
-	fmt.Println("================================================================")
-	fmt.Printf("  Source Codebase: %s (%s)\n", task.SourceDir, task.SourceLang)
-	fmt.Printf("  Target Directory:%s (%s)\n", task.TargetDir, task.TargetLang)
-	if task.Toolchain != "" {
-		fmt.Printf("  Toolchain:       %s\n", task.Toolchain)
-	}
-	fmt.Println()
+	logger.LogStep("Run: source=%s (%s) -> target=%s (%s) toolchain=%s",
+		task.SourceDir, task.SourceLang, task.TargetDir, task.TargetLang, task.Toolchain)
 
 	runID := agents.RunIDForTask(task)
 	logger.LogStep("Run ID: %s", runID)
@@ -98,7 +75,7 @@ func Run(ctx context.Context, cfg *config.Config) (*types.State, error) {
 		return nil, fmt.Errorf("initialize Ollama models: %w", err)
 	}
 
-	logger.LogStep("Constructing 4-agent Eino Graph (Analyzer, Planning, Translator, Validator)")
+	logger.LogStep("Constructing 5-agent Eino Graph (Analyzer, Navigator, Planning, Translator, Validator)")
 	magharcmGraph, err := graph.NewMAgHARCMGraph(ctx, models, runID)
 	if err != nil {
 		return nil, fmt.Errorf("construct graph: %w", err)

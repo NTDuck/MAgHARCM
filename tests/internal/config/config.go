@@ -7,7 +7,9 @@ import (
 )
 
 func TestConfigDefaults(t *testing.T) {
-	// Defaults reads from env; clear any inherited values for a stable test.
+	// Defaults returns a zero-valued *Config for tests only. Unset any
+	// environment values that older releases used to honor so this test
+	// stays deterministic across environments.
 	for _, k := range []string{
 		"OLLAMA_BASE_URL", "OLLAMA_REASONING_MODEL", "OLLAMA_CODING_MODEL",
 		"MAGHARCM_MAX_ITERATIONS", "MAGHARCM_TIMEOUT_SECONDS",
@@ -16,17 +18,17 @@ func TestConfigDefaults(t *testing.T) {
 	}
 	cfg := config.Defaults()
 
-	if cfg.OllamaBaseURL != "http://localhost:11434" {
-		t.Errorf("ollama URL: got %s", cfg.OllamaBaseURL)
+	if cfg.OllamaBaseURL != "" {
+		t.Errorf("ollama URL: got %q want empty", cfg.OllamaBaseURL)
 	}
-	if cfg.ReasoningModel != "qwen3:30b-a3b-thinking-2507-q4_K_M" {
-		t.Errorf("reasoning model: got %s", cfg.ReasoningModel)
+	if cfg.ReasoningModel != "" {
+		t.Errorf("reasoning model: got %q want empty", cfg.ReasoningModel)
 	}
-	if cfg.CodingModel != "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4_K_XL" {
-		t.Errorf("coding model: got %s", cfg.CodingModel)
+	if cfg.CodingModel != "" {
+		t.Errorf("coding model: got %q want empty", cfg.CodingModel)
 	}
-	if cfg.MaxIterations != 20 {
-		t.Errorf("max iterations: got %d", cfg.MaxIterations)
+	if cfg.MaxIterations != 0 {
+		t.Errorf("max iterations: got %d want 0", cfg.MaxIterations)
 	}
 }
 

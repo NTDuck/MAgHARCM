@@ -3,10 +3,10 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"os"
 
 	"MAgHARCM/internal/config"
+	"MAgHARCM/internal/logger"
 	"MAgHARCM/internal/runner"
 )
 
@@ -17,13 +17,13 @@ func main() {
 
 	cfg, err := config.LoadYAML(configFile)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: failed to load YAML configuration from `%s`: %v\n", configFile, err)
+		logger.LogError("config load failed: %v", err)
 		os.Exit(1)
 	}
 
 	finalState, err := runner.Run(context.Background(), cfg)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		logger.LogError("run failed: %v", err)
 		os.Exit(1)
 	}
 	if !runner.Success(finalState) {

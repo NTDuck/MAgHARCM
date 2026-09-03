@@ -4,18 +4,12 @@ import (
 	"time"
 )
 
-// Default constant values for MAgHARCM pipeline configuration.
-// See Obsidian vault: [[Methodology]] §2 "The 4+1 Agents" and [[Primitives]] §NEW-PRIM-23.
-const (
-	DefaultOllamaBaseURL  = "http://localhost:11434"
-	DefaultReasoningModel = "qwen3:30b-a3b-thinking-2507-q4_K_M"
-	DefaultCodingModel    = "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4_K_XL"
-	DefaultMaxIterations  = 20
-	DefaultTimeoutSeconds = 7200
-)
-
 // Config holds centralized configuration for the MAgHARCM translation pipeline.
 // Backlink: [[Design Space]] §Configuration and [[Methodology]] §4.
+//
+// Every field is required and must be supplied via the YAML configuration
+// file. There are no default fallbacks; missing fields are reported by
+// Require or ParseYAML as a structured error.
 type Config struct {
 	OllamaBaseURL  string
 	ReasoningModel string
@@ -30,15 +24,8 @@ type Config struct {
 	LSPProvider    string
 }
 
-// Defaults returns a Config populated directly with shipped baseline defaults.
-// Default fallbacks via environment variables are omitted per repository configuration standards.
-// Backlink: [[Methodology]] §4 (Balanced MAgHARCM CAND-08).
+// Defaults returns a zero-valued *Config for use in tests only. Production
+// code MUST obtain *Config via LoadYAML / ParseYAML and then call Require.
 func Defaults() *Config {
-	return &Config{
-		OllamaBaseURL:  DefaultOllamaBaseURL,
-		ReasoningModel: DefaultReasoningModel,
-		CodingModel:    DefaultCodingModel,
-		MaxIterations:  DefaultMaxIterations,
-		Timeout:        time.Duration(DefaultTimeoutSeconds) * time.Second,
-	}
+	return &Config{}
 }
