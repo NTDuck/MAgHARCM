@@ -1,26 +1,27 @@
 package agents_test
 
 import (
-	"MAgHARCM/internal/agents"
 	"context"
 	"errors"
 	"reflect"
 	"testing"
 
+	"MAgHARCM/internal/agents"
 	"MAgHARCM/internal/tools"
+	"MAgHARCM/internal/types"
 )
 
 // mockLSPProvider is a programmable LSPProvider used to drive the agents.Navigator
 // through deterministic test paths (success, partial failure, full failure).
 type mockLSPProvider struct {
-	defOut    *tools.DefinitionOutput
-	defErr    error
-	refOut    *tools.ReferencesOutput
-	refErr    error
-	hoverOut  *tools.HoverOutput
-	hoverErr  error
-	defCalls  int
-	refCalls  int
+	defOut     *tools.DefinitionOutput
+	defErr     error
+	refOut     *tools.ReferencesOutput
+	refErr     error
+	hoverOut   *tools.HoverOutput
+	hoverErr   error
+	defCalls   int
+	refCalls   int
 	hoverCalls int
 }
 
@@ -166,8 +167,8 @@ func TestNavigatorLookupSymbolAllFailures(t *testing.T) {
 // with one resolution per symbol.
 func TestNavigatorLookupSymbols(t *testing.T) {
 	mock := &mockLSPProvider{
-		defOut: &tools.DefinitionOutput{Symbol: "x", Definitions: []tools.DefinitionLocation{{FilePath: "f.c", Line: 1}}},
-		refOut: &tools.ReferencesOutput{Symbol: "x", Total: 0},
+		defOut:   &tools.DefinitionOutput{Symbol: "x", Definitions: []tools.DefinitionLocation{{FilePath: "f.c", Line: 1}}},
+		refOut:   &tools.ReferencesOutput{Symbol: "x", Total: 0},
 		hoverOut: &tools.HoverOutput{Symbol: "x", Found: true},
 	}
 	n := agents.NewNavigator(mock)
@@ -238,5 +239,89 @@ func TestProjectDirOrDot(t *testing.T) {
 		if got := agents.ProjectDirOrDot(tc.in); got != tc.want {
 			t.Errorf("agents.ProjectDirOrDot(%q) = %q, want %q", tc.in, got, tc.want)
 		}
+	}
+}
+
+// TestNewNavigatorAgentDisabled: with provider=nil the agent must not panic
+// and Run must return the same state pointer, untouched.
+func TestNewNavigatorAgentDisabled(t *testing.T) {
+	agent := agents.NewNavigatorAgent(nil, nil)
+	if agent == nil {
+		t.Fatal("NewNavigatorAgent(nil, nil) returned nil")
+	}
+	state := &types.State{}
+	out, err := agent.Run(context.Background(), state)
+	if err != nil {
+		t.Fatalf("Run with nil provider returned error: %v", err)
+	}
+	if out != state {
+		t.Errorf("Run should return the same state pointer when disabled, got %p want %p", out, state)
+	}
+}
+
+// TestNavigatorAgentNilState: passing nil state must not panic. The
+// contract returns (nil, nil) so callers can safely forward.
+func TestNavigatorAgentNilState(t *testing.T) {
+	agent := agents.NewNavigatorAgent(nil, nil)
+	out, err := agent.Run(context.Background(), nil)
+	if err != nil {
+		t.Fatalf("Run(nil) returned error: %v", err)
+	}
+	if out != nil {
+		t.Errorf("Run(nil) should return nil state, got %p", out)
+	}
+}
+
+// TestNavigatorAgentResolvesSymbols: with a provider, every key in
+// PlanningOutput.NameMapping must produce exactly one LookupSymbol call.
+// State must be forwarded unchanged (iteration 1 does not fold results back).
+func TestNavigatorAgentResolvesSymbols(t *testing.T) {
+	provider := &mockLSPProvider{
+		defOut:   &tools.DefinitionOutput{},
+		refOut:   &tools.ReferencesOutput{References: nil},
+		hoverOut: &tools.HoverOutput{},
+	}
+	agent := agents.NewNavigatorAgent(nil, provider)
+
+	state := &types.State{
+		PlanningOutput: types.PlanningOutput{
+			NameMapping: map[string]string{
+				"alpha": "ALPHA",
+				"beta":  "BETA",
+				"gamma": "GAMMA",
+			},
+		},
+	}
+	out, err := agent.Run(context.Background(), state)
+	if err != nil {
+		t.Fatalf("Run returned error: %v", err)
+	}
+	if out != state {
+		t.Errorf("Run should return the same state pointer, got %p want %p", out, state)
+	}
+	// 3 symbols × 3 sub-calls each = 9 calls total (def, ref, hover).
+	if provider.defCalls != 3 || provider.refCalls != 3 || provider.hoverCalls != 3 {
+		t.Errorf("expected 3 def/ref/hover calls, got def=%d ref=%d hover=%d",
+			provider.defCalls, provider.refCalls, provider.hoverCalls)
+	}
+}
+
+// TestNavigatorAgentEmptyMapping: a state with no NameMapping entries
+// must short-circuit before hitting the provider.
+func TestNavigatorAgentEmptyMapping(t *testing.T) {
+	provider := &mockLSPProvider{}
+	agent := agents.NewNavigatorAgent(nil, provider)
+
+	state := &types.State{}
+	out, err := agent.Run(context.Background(), state)
+	if err != nil {
+		t.Fatalf("Run returned error: %v", err)
+	}
+	if out != state {
+		t.Errorf("Run should return the same state pointer, got %p want %p", out, state)
+	}
+	if provider.defCalls != 0 || provider.refCalls != 0 || provider.hoverCalls != 0 {
+		t.Errorf("expected zero calls on empty mapping, got def=%d ref=%d hover=%d",
+			provider.defCalls, provider.refCalls, provider.hoverCalls)
 	}
 }

@@ -33,3 +33,19 @@ func TestRefCountRunner(t *testing.T) {
 func TestProjectDirOrDotRunner(t *testing.T) {
 	TestProjectDirOrDot(t)
 }
+
+func TestNewNavigatorAgentDisabledRunner(t *testing.T) {
+	TestNewNavigatorAgentDisabled(t)
+}
+
+func TestNavigatorAgentNilStateRunner(t *testing.T) {
+	TestNavigatorAgentNilState(t)
+}
+
+func TestNavigatorAgentResolvesSymbolsRunner(t *testing.T) {
+	TestNavigatorAgentResolvesSymbols(t)
+}
+
+func TestNavigatorAgentEmptyMappingRunner(t *testing.T) {
+	TestNavigatorAgentEmptyMapping(t)
+}

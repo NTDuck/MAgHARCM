@@ -7,8 +7,11 @@ import (
 	"fmt"
 	"path/filepath"
 
+	"github.com/cloudwego/eino/components/model"
+
 	"MAgHARCM/internal/logger"
 	"MAgHARCM/internal/tools"
+	"MAgHARCM/internal/types"
 )
 
 // SymbolResolution is the planner-callable result of a Navigator.LookupSymbol call.
@@ -128,4 +131,78 @@ func ProjectDirOrDot(filePath string) string {
 		return "."
 	}
 	return dir
+}
+
+// Backlink: [[Methodology]] §1 Stage 2.5 (Symbol Navigation) and [[Primitives]] §NEW-PRIM-26.
+//
+// NavigatorAgent is the 5th node in the MAgHARCM graph: it sits between the
+// Analyzer and the Planner and resolves any unresolved symbols in the
+// analyzer's output via the LSP-backed Navigator. For iteration 1 it is a
+// best-effort no-op when no LSP provider is configured (e.g., a translate
+// run without LSP) — the existing AnalyzerAgent still owns the embedded
+// Navigator and will continue to issue lookups directly. Once the
+// analyzer's symbol-aware path is retired, NavigatorAgent becomes the
+// sole owner of symbol resolution.
+type NavigatorAgent struct {
+	Model     model.BaseChatModel
+	Navigator *Navigator // LSP-backed symbol resolver; nil disables lookups
+}
+
+// NewNavigatorAgent builds a NavigatorAgent. Pass provider=nil to keep
+// the agent in disabled no-op mode (Run returns state unchanged).
+func NewNavigatorAgent(m model.BaseChatModel, provider tools.LSPProvider) *NavigatorAgent {
+	return &NavigatorAgent{
+		Model:     m,
+		Navigator: NewNavigator(provider),
+	}
+}
+
+// maxNavigatorLookups caps the number of symbols resolved per Run. The
+// NameMapping is bounded by source-file count in practice, but a hostile
+// or pathological mapping should not stall the pipeline on N^2 LSP calls.
+const maxNavigatorLookups = 50
+
+// Run resolves every symbol in state.PlanningOutput.NameMapping by
+// delegating to the underlying Navigator. Returned state is the same
+// pointer as the input; the agent does not mutate state in iteration 1
+// (resolved information is logged but not yet folded back into the
+// planning output). When no Navigator or no Provider is configured the
+// state is forwarded unchanged so the rest of the pipeline is unaffected.
+func (n *NavigatorAgent) Run(ctx context.Context, state *types.State) (*types.State, error) {
+	if state == nil {
+		return nil, nil
+	}
+	if n == nil || n.Navigator == nil || n.Navigator.Provider == nil {
+		logger.LogStep("navigator: disabled (no provider); forwarding state unchanged")
+		return state, nil
+	}
+
+	symbols := make([]string, 0, len(state.PlanningOutput.NameMapping))
+	for sym := range state.PlanningOutput.NameMapping {
+		if len(symbols) >= maxNavigatorLookups {
+			break
+		}
+		symbols = append(symbols, sym)
+	}
+	if len(symbols) == 0 {
+		return state, nil
+	}
+
+	logger.LogStep("navigator: resolving %d symbol(s) (capped at %d)",
+		len(state.PlanningOutput.NameMapping), maxNavigatorLookups)
+
+	// Default file path: derived from the task source dir. The LSP provider
+	// may ignore this when the symbol is project-global; passing "" is
+	// safer than fabricating a non-existent path.
+	filePath := state.Task.SourceDir
+	for _, sym := range symbols {
+		res := n.Navigator.LookupSymbol(ctx, sym, filePath)
+		if res.Error != nil {
+			logger.LogTool("navigator", "lookup %q failed: %v", sym, res.Error)
+			continue
+		}
+		logger.LogTool("navigator", "resolved %q: defined=%v refs=%d hover=%v",
+			sym, res.Definition != nil, RefCount(res.References), res.Hover != nil)
+	}
+	return state, nil
 }

@@ -41,6 +41,7 @@ func NewMAgHARCMGraph(ctx context.Context, models *llm.Models, runID string) (*M
 
 	// Initialize reasoning and coding agent instances
 	analyzerAgent := agents.NewAnalyzerAgent(models.Reasoning)
+	navigatorAgent := agents.NewNavigatorAgent(models.Reasoning, nil)
 	planningAgent := agents.NewPlanningAgent(models.Reasoning)
 	translatorAgent := agents.NewTranslatorAgent(models.Coding, runID)
 	validatorAgent := agents.NewValidatorAgent(models.Reasoning, runID)
@@ -49,6 +50,12 @@ func NewMAgHARCMGraph(ctx context.Context, models *llm.Models, runID string) (*M
 	if err := g.AddLambdaNode("analyzer", compose.InvokableLambda(func(ctx context.Context, state *types.State) (*types.State, error) {
 		models.PrepareReasoning()
 		return analyzerAgent.Run(ctx, state)
+	})); err != nil {
+		return nil, err
+	}
+	if err := g.AddLambdaNode("navigator", compose.InvokableLambda(func(ctx context.Context, state *types.State) (*types.State, error) {
+		models.PrepareReasoning()
+		return navigatorAgent.Run(ctx, state)
 	})); err != nil {
 		return nil, err
 	}
@@ -85,7 +92,10 @@ func NewMAgHARCMGraph(ctx context.Context, models *llm.Models, runID string) (*M
 	if err := g.AddEdge(compose.START, "analyzer"); err != nil {
 		return nil, err
 	}
-	if err := g.AddEdge("analyzer", "planning"); err != nil {
+	if err := g.AddEdge("analyzer", "navigator"); err != nil {
+		return nil, err
+	}
+	if err := g.AddEdge("navigator", "planning"); err != nil {
 		return nil, err
 	}
 	if err := g.AddEdge("planning", "translator"); err != nil {
@@ -134,7 +144,6 @@ func NewMAgHARCMGraph(ctx context.Context, models *llm.Models, runID string) (*M
 
 	return &MAgHARCMGraph{Runnable: runnable, RunID: runID}, nil
 }
-
 
 // Execute runs the translation graph with initial state and returns final state.
 func (rg *MAgHARCMGraph) Execute(ctx context.Context, initialState *types.State) (*types.State, error) {
