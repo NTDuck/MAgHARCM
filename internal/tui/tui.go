@@ -397,7 +397,7 @@ func HandleSlash(line string, cfg *config.Config, current Phase, state *ReplStat
 
 	case "/clear":
 		*cfg = config.Config{}
-		logger.LogStep("Cleared. Back to Phase 1 — answer questions to build a new YAML.")
+		logger.LogStep("Cleared. Back to Phase 1: answer the questions to build a new YAML.")
 		return PhaseCollect, true, nil
 
 	case "/show":
@@ -545,22 +545,21 @@ func parsePositiveInt(s string) (int, error) {
 	return n, nil
 }
 
-const Phase1Help = `Phase 1 fields (type a value, or hit enter for the default):
-  source_dir       directory holding the source code
-  source_language  e.g. C, Go, Java, Rust
-  target_dir       directory to write translated code into
-  target_language  e.g. Rust, Go
-  toolchain        build/test toolchain (cargo, go, maven)
+const Phase1Help = `Phase 1 fields (type a value, or hit enter to accept the default):
+  source_dir       directory that holds the source code
+  source_language  one of C, Go, Java, Rust
+  target_dir       directory to write the translated code into
+  target_language  one of Rust, Go
+  toolchain        build or test toolchain (cargo, go, maven)
   reasoning_model  Ollama reasoning model tag
   coding_model     Ollama coding model tag
   ollama_url       base URL for the Ollama HTTP API
-  max_iterations   repair-loop iterations (1-50)
+  max_iterations   repair-loop iterations (1 to 50)
   timeout_seconds  per-run wall-clock budget
   lsp_provider     "native" (tree-sitter) or "abcoder" (MCP)
 
-type ` + "`field = value`" + ` to jump to a specific field, e.g.
-` + "`source_dir = assets/samples/foo`" + `. type ` + "`done`" + `
-when finished.`
+Type ` + "`field = value`" + ` to set a field. Example: ` + "`source_dir = assets/samples/foo`" + `.
+Type ` + "`done`" + ` when you finish.`
 
 const slashHelp = `slash commands (always start with /):
   /help                 show this message
@@ -570,7 +569,7 @@ const slashHelp = `slash commands (always start with /):
   /samples              list bundled sample configs in this directory
   /status               print Phase + key config fields
   /run                  execute Phase 2 with the current YAML
-  /dry-run              print what /run would do, but don't execute
+  /dry-run              print what /run would do, but do not execute
   /debug                toggle verbose debug output
   /logs                 print the in-memory ring buffer of recent log lines
   /clear
