@@ -2,86 +2,93 @@
   "schema_version": 2,
   "diagram_type": "workflow",
   "meta": {
-    "title": "MAgHARCM 6-Stage Translation & Repair Pipeline",
-    "subtitle": "Neuro-symbolic multi-agent translation with local Qwen3-30B reasoning and Qwen3-4B coding models via Ollama.",
+    "title": "MAgHARCM Analyze \u2192 Plan \u2192 Translate \u2192 Validate \u2192 Repair Pipeline",
+    "subtitle": "Four-agent repository translation harness running on local Qwen3-30B reasoning + Qwen3-4B coding SLMs via Ollama.",
     "output": "docs/.paper/figures/magh-pipeline.html"
   },
   "lanes": [
     { "id": "input_lane", "label": "Inputs & Config" },
     { "id": "orchestrator_lane", "label": "Pipeline Lifecycle" },
-    { "id": "agent_lane", "label": "Multi-Agent Core" },
-    { "id": "context_lane", "label": "Context Grounding" },
+    { "id": "agent_lane", "label": "Four-Agent Core" },
+    { "id": "context_lane", "label": "Bounded Context" },
     { "id": "validation_lane", "label": "Validation & Defense" },
     { "id": "storage_lane", "label": "Target Artifacts" }
   ],
   "phases": [
-    { "id": "phase_intake", "label": "Stage 1: Intake", "fromCol": 0, "toCol": 0 },
-    { "id": "phase_plan", "label": "Stage 2 & 3: Plan", "fromCol": 1, "toCol": 2, "variant": "emphasis" },
-    { "id": "phase_trans", "label": "Stage 4: Translate", "fromCol": 3, "toCol": 3, "variant": "emphasis" },
-    { "id": "phase_val", "label": "Stage 5 & 6: Validate", "fromCol": 4, "toCol": 5, "variant": "dashed" }
+    { "id": "phase_intake", "label": "Analyze", "fromCol": 0, "toCol": 1, "variant": "emphasis" },
+    { "id": "phase_plan", "label": "Plan", "fromCol": 2, "toCol": 2, "variant": "emphasis" },
+    { "id": "phase_trans", "label": "Translate", "fromCol": 3, "toCol": 3, "variant": "emphasis" },
+    { "id": "phase_val", "label": "Validate", "fromCol": 4, "toCol": 5, "variant": "dashed" }
   ],
   "groups": [
-    { "id": "reasoning_group", "label": "Reasoning Loop (Qwen3-30B)", "lane": "agent_lane", "fromCol": 1, "toCol": 2, "variant": "emphasis" },
-    { "id": "chunked_loop", "label": "Chunked Dispatch (Qwen3-4B)", "lane": "agent_lane", "fromCol": 3, "toCol": 3, "variant": "emphasis" },
+    { "id": "reasoning_group", "label": "Analyzer + Planner (Qwen3-30B Thinking)", "lane": "agent_lane", "fromCol": 1, "toCol": 2, "variant": "emphasis" },
+    { "id": "coding_group", "label": "Translator (Qwen3-4B Coding)", "lane": "agent_lane", "fromCol": 3, "toCol": 3, "variant": "emphasis" },
     { "id": "validation_cascade", "label": "Defense Cascade", "lane": "validation_lane", "fromCol": 4, "toCol": 5, "variant": "security" }
   ],
   "mainPath": ["yaml_cfg", "intake_parser", "analyzer_agent", "planner_agent", "translator_agent", "target_crate", "validator_agent", "weakening_guard"],
   "nodes": [
-    { "id": "yaml_cfg", "lane": "input_lane", "col": 0, "type": "external", "label": "YAML Config", "sublabel": "Source/Target", "tag": "Ollama local" },
-    { "id": "intake_parser", "lane": "orchestrator_lane", "col": 0, "type": "backend", "label": "1. Intake", "sublabel": "Tree-Sitter", "tag": "Manifest" },
-    { "id": "analyzer_agent", "lane": "agent_lane", "col": 1, "type": "backend", "label": "2. Analyzer", "sublabel": "Strategy Scope", "tag": "Müller" },
-    { "id": "planner_agent", "lane": "agent_lane", "col": 2, "type": "backend", "label": "3. Planner", "sublabel": "Reverse-Topo", "tag": "Cycle-Free" },
-    { "id": "manifest_rewriter", "lane": "context_lane", "col": 2, "type": "backend", "label": "Rewriter", "sublabel": "Manifest Map", "tag": "Crates" },
+    { "id": "yaml_cfg", "lane": "input_lane", "col": 0, "type": "external", "label": "YAML Config", "sublabel": "Source / Target", "tag": "Ollama local" },
+    { "id": "intake_parser", "lane": "orchestrator_lane", "col": 0, "type": "backend", "label": "Intake", "sublabel": "Tree-Sitter PA", "tag": "AST + Manifest" },
+    { "id": "analyzer_agent", "lane": "agent_lane", "col": 1, "type": "backend", "label": "1. Analyzer", "sublabel": "Research + Design", "tag": "3 documents" },
+    { "id": "planner_agent", "lane": "agent_lane", "col": 2, "type": "backend", "label": "2. Planner", "sublabel": "Fragment + Skel", "tag": "Reverse-Topo" },
+    { "id": "translator_agent", "lane": "agent_lane", "col": 3, "type": "backend", "label": "3. Translator", "sublabel": "Chunked Code", "tag": "Qwen3-4B" },
+    { "id": "validator_agent", "lane": "validation_lane", "col": 4, "type": "backend", "label": "4. Validator", "sublabel": "Cascade", "tag": "Build + Tests" },
+    { "id": "weakening_guard", "lane": "validation_lane", "col": 5, "type": "security", "label": "Guard", "sublabel": "Weakening", "tag": "Assertions" },
     { "id": "navigator", "lane": "context_lane", "col": 3, "type": "backend", "label": "Navigator", "sublabel": "Symbol Lookup", "tag": "<= 4KB" },
-    { "id": "translator_agent", "lane": "agent_lane", "col": 3, "type": "backend", "label": "4. Translator", "sublabel": "Chunked Code", "tag": "Qwen3-4B" },
+    { "id": "prior_memory", "lane": "context_lane", "col": 4, "type": "database", "label": "Prior Memory", "sublabel": "Signatures", "tag": "<= 4KB" },
+    { "id": "strategy_registry", "lane": "orchestrator_lane", "col": 1, "type": "backend", "label": "Strategy", "sublabel": "Try-and-fail", "tag": "Registry" },
+    { "id": "manifest_rewriter", "lane": "context_lane", "col": 2, "type": "backend", "label": "Rewriter", "sublabel": "Canonical Crates", "tag": "Cargo.toml" },
     { "id": "checkpoint_store", "lane": "storage_lane", "col": 3, "type": "database", "label": "Checkpoints", "sublabel": "State Snapshot", "tag": "Resume" },
     { "id": "target_crate", "lane": "storage_lane", "col": 4, "type": "database", "label": "Target Crate", "sublabel": "Rust / Cargo", "tag": "Synced" },
-    { "id": "validator_agent", "lane": "validation_lane", "col": 4, "type": "backend", "label": "5. Validator", "sublabel": "Build Validation", "tag": "Compiler" },
-    { "id": "weakening_guard", "lane": "validation_lane", "col": 5, "type": "security", "label": "Guard", "sublabel": "Weakening", "tag": "Assertions" },
     { "id": "plateau_detector", "lane": "orchestrator_lane", "col": 5, "type": "backend", "label": "Plateau", "sublabel": "Stagnation", "tag": "Exit" }
   ],
   "edges": [
     { "from": "yaml_cfg", "to": "intake_parser", "variant": "default" },
-    { "from": "intake_parser", "to": "analyzer_agent", "label": "manifest", "variant": "emphasis" },
-    { "from": "analyzer_agent", "to": "planner_agent", "label": "research", "variant": "default" },
-    { "from": "planner_agent", "to": "manifest_rewriter", "label": "deps", "variant": "default" },
-    { "from": "planner_agent", "to": "translator_agent", "label": "topo steps", "variant": "emphasis" },
-    { "from": "translator_agent", "to": "navigator", "label": "lookup", "variant": "dashed" },
-    { "from": "translator_agent", "to": "checkpoint_store", "label": "persist", "variant": "dashed" },
+    { "from": "intake_parser", "to": "analyzer_agent", "label": "manifest + AST", "variant": "emphasis" },
+    { "from": "analyzer_agent", "to": "planner_agent", "label": "3 documents", "variant": "emphasis" },
+    { "from": "planner_agent", "to": "translator_agent", "label": "plan (A+B)", "variant": "emphasis" },
     { "from": "translator_agent", "to": "target_crate", "label": "emit files", "variant": "emphasis" },
     { "from": "target_crate", "to": "validator_agent", "label": "compile & test", "variant": "default" },
     { "from": "validator_agent", "to": "weakening_guard", "label": "assertions", "variant": "security" },
     { "from": "weakening_guard", "to": "plateau_detector", "label": "coverage delta", "variant": "default" },
-    { "from": "validator_agent", "to": "translator_agent", "label": "repair loop", "variant": "dashed", "role": "return" }
+    { "from": "validator_agent", "to": "translator_agent", "label": "repair loop", "variant": "dashed", "role": "return" },
+    { "from": "translator_agent", "to": "navigator", "label": "lookup", "variant": "dashed" },
+    { "from": "navigator", "to": "translator_agent", "label": "context", "variant": "dashed" },
+    { "from": "translator_agent", "to": "prior_memory", "label": "emit", "variant": "default" },
+    { "from": "prior_memory", "to": "translator_agent", "label": "signatures", "variant": "default" },
+    { "from": "planner_agent", "to": "manifest_rewriter", "label": "deps", "variant": "default" },
+    { "from": "analyzer_agent", "to": "strategy_registry", "label": "select", "variant": "default" },
+    { "from": "translator_agent", "to": "checkpoint_store", "label": "persist", "variant": "dashed" },
+    { "from": "checkpoint_store", "to": "translator_agent", "label": "resume", "variant": "dashed" }
   ],
   "cards": [
     {
       "dot": "cyan",
       "title": "Local SLM Pipeline",
       "items": [
-        "6 stages: Intake -> Analyze -> Plan -> Translate -> Validate -> Repair Loop",
+        "Four-agent Analyze \u2192 Plan \u2192 Translate \u2192 Validate \u2192 Repair loop",
         "Qwen3-30B Thinking reasoning model paired with Qwen3-4B Instruct coding model",
         "100% self-hosted via Ollama with zero external cloud dependencies"
       ]
     },
     {
       "dot": "emerald",
-      "title": "Methodology Primitives",
+      "title": "Agent Decomposition",
       "items": [
-        "Chunked translation with prior-modules context summary",
-        "Symbol-Aware Navigator with <= 4KB context windows",
-        "Reverse-topological DAG scheduling with back-edge cycle removal",
-        "Automated source-to-target manifest rewriter"
+        "Analyzer emits Source Research, Library Analysis, Target Design",
+        "Planner fragments AST, resolves names, builds reverse-topo DAG + skeletons",
+        "Translator executes Part A (source) + Part B (tests) in topological order",
+        "Validator runs AST \u2192 compiler \u2192 tests \u2192 guard \u2192 plateau cascade"
       ]
     },
     {
       "dot": "amber",
-      "title": "Multi-Stage Defense & Recovery",
+      "title": "Strategy Registry & Repair Loop",
       "items": [
-        "Pre-compilation AST syntax validation before native toolchain invocation",
-        "Adversarial test-weakening guard against relaxed assertions",
-        "Coverage plateau detector prevents unproductive repair spinning",
-        "Conversable checkpointing with idempotent state resume"
+        "Try-and-fail strategy registry replaces hardcoded if-cascade",
+        "Bounded context per fragment: Symbol Navigator + Prior Memory (each \u2264 4KB)",
+        "Repair loop iterates until validator converges or plateau stalls",
+        "Conversable checkpointing for crash-safe idempotent resume"
       ]
     }
   ]

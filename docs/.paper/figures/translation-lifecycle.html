@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="generator" content="archify 2.17.0-dev.1">
-  <title>MAgHARCM Translation Lifecycle State Machine Diagram</title>
+  <title>MAgHARCM Translate–Validate–Repair Lifecycle Diagram</title>
   <script>
     // Resolve the theme before first paint so light-preference users don't
     // see a dark flash. The toolbar script below re-applies with UI state.
@@ -4955,9 +4955,9 @@
            data-preset-badge-blueprint="BLUEPRINT / REV 01"
            data-preset-badge-editorial="EDITORIAL / FIELD NOTE">
         <div class="pulse-dot"></div>
-        <h1>MAgHARCM Translation Lifecycle State Machine</h1>
+        <h1>MAgHARCM Translate–Validate–Repair Lifecycle</h1>
       </div>
-      <p class="subtitle">State transitions across analysis, chunked translation, validation gates, checkpoints, and repair cycles.</p>
+      <p class="subtitle">Iterative state machine: Analyze → Plan → Translate → Validate (cascade) → Repair until converge, plateau, weaken, or exhaust.</p>
     </div>
 
     <script id="archify-guided-views-data" type="application/json">[]</script>
@@ -5005,9 +5005,9 @@
     <!-- Main Diagram -->
     <div class="diagram-container" data-detail-level="read"
          data-preset-badge-editorial-plate="ARCHIFY / PLATE 04">
-      <svg viewBox="0 0 980 660" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-preset="classic" data-quality-profile="showcase">
-        <title id="archify-diagram-title">MAgHARCM Translation Lifecycle State Machine</title>
-        <desc id="archify-diagram-description">State transitions across analysis, chunked translation, validation gates, checkpoints, and repair cycles.</desc>
+      <svg viewBox="0 0 1200 720" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-preset="classic" data-quality-profile="standard">
+        <title id="archify-diagram-title">MAgHARCM Translate–Validate–Repair Lifecycle</title>
+        <desc id="archify-diagram-description">Iterative state machine: Analyze → Plan → Translate → Validate (cascade) → Repair until converge, plateau, weaken, or exhaust.</desc>
         <!-- Definitions -->
         <defs>
           <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
@@ -5031,26 +5031,29 @@
         <rect width="100%" height="100%" fill="url(#grid)" />
 
         <!-- Lifecycle bands -->
-        <path d="M 72 112 L 908 112" class="a-default" stroke-width="0.8" stroke-dasharray="3,8"/>
+        <path d="M 72 112 L 1128 112" class="a-default" stroke-width="0.8" stroke-dasharray="3,8"/>
         <text x="72" y="100" class="t-dim" font-size="10" font-weight="600">01 / Pipeline Phases</text>
-        <path d="M 72 264 L 908 264" class="a-default" stroke-width="0.8" stroke-dasharray="3,8"/>
-        <text x="72" y="252" class="t-dim" font-size="10" font-weight="600">02 / Checkpoints &amp; Stalls</text>
-        <path d="M 72 436 L 908 436" class="a-default" stroke-width="0.8" stroke-dasharray="3,8"/>
+        <path d="M 72 264 L 1128 264" class="a-default" stroke-width="0.8" stroke-dasharray="3,8"/>
+        <text x="72" y="252" class="t-dim" font-size="10" font-weight="600">02 / Validation Cascade</text>
+        <path d="M 72 436 L 1128 436" class="a-default" stroke-width="0.8" stroke-dasharray="3,8"/>
         <text x="72" y="424" class="t-dim" font-size="10" font-weight="600">03 / Terminal Exits</text>
 
         <!-- Primary lifecycle rail -->
-        <path d="M 154 157 L 748 157" class="a-emphasis" stroke-width="2.2" marker-end="url(#arrowhead-emphasis)"/>
+        <path d="M 154 157 L 594 157" class="a-emphasis" stroke-width="2.2" marker-end="url(#arrowhead-emphasis)"/>
 
         <!-- Transition paths -->
-        <path data-edge-from="planning" data-edge-to="checkpoint" data-edge-key="0" data-composition-points="402,188;402,278" d="M 402 188 L 402 278" class="a-default" stroke-width="1.1" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="translating" data-edge-to="repairing" data-edge-key="1" data-composition-points="556,188;556,278" d="M 556 188 L 556 278" class="a-default" stroke-width="1.1" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="repairing" data-edge-to="exhausted" data-edge-key="2" data-composition-points="556,336;556,450" d="M 556 336 L 556 450" class="a-security" stroke-width="1.1" marker-end="url(#arrowhead-security)"/>
-        <path data-edge-from="translating" data-edge-to="plateau" data-edge-key="3" data-composition-points="556,188;556,233;710,233;710,278" d="M 556 188 L 556 223 Q 556 233 566 233 L 700 233 Q 710 233 710 243 L 710 278" class="a-default" stroke-width="1.1" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="plateau" data-edge-to="weakened" data-edge-key="4" data-composition-points="710,336;710,450" d="M 710 336 L 710 450" class="a-security" stroke-width="1.1" marker-end="url(#arrowhead-security)"/>
+        <path data-edge-from="intake" data-edge-to="analyzing" data-edge-key="0" data-edge-id="intake-analyzing" data-composition-points="153,157;189,157" d="M 153 157 L 189 157" class="a-default" stroke-width="1.1" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="analyzing" data-edge-to="planning" data-edge-key="1" data-edge-id="analyzing-planning" data-composition-points="307,157;343,157" d="M 307 157 L 343 157" class="a-default" stroke-width="1.1" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="planning" data-edge-to="translating" data-edge-key="2" data-edge-id="planning-translating" data-composition-points="461,157;497,157" d="M 461 157 L 497 157" class="a-default" stroke-width="1.1" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="translating" data-edge-to="validate_cascade" data-edge-key="3" data-edge-id="translating-validate" data-composition-points="556,188;556,233;402,233;402,278" d="M 556 188 L 556 223 Q 556 233 546 233 L 412 233 Q 402 233 402 243 L 402 278" class="a-default" stroke-width="1.1" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="validate_cascade" data-edge-to="converged" data-edge-key="4" data-edge-id="validate-converged" data-composition-points="388,336;388,393;402,393;402,450" d="M 388 336 L 388 386 Q 388 393 395 393 L 395 393 Q 402 393 402 400 L 402 450" class="a-default" stroke-width="1.1" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="validate_cascade" data-edge-to="weakened" data-edge-key="5" data-edge-id="validate-weakened" data-composition-points="416,336;416,393;710,393;710,450" d="M 416 336 L 416 383 Q 416 393 426 393 L 700 393 Q 710 393 710 403 L 710 450" class="a-security" stroke-width="1.1" marker-end="url(#arrowhead-security)"/>
+        <path data-edge-from="validate_cascade" data-edge-to="exhausted" data-edge-key="6" data-edge-id="validate-exhausted" data-composition-points="402,336;402,393;556,393;556,450" d="M 402 336 L 402 383 Q 402 393 412 393 L 546 393 Q 556 393 556 403 L 556 450" class="a-default" stroke-width="1.1" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="validate_cascade" data-edge-to="translating" data-edge-key="7" data-edge-id="validate-repair" data-composition-points="302,307;1150,290;1150,50;497,50;497,157" d="M 302 307 L 1140.0020088396095 290.2004314265644 Q 1150 290 1150 280 L 1150 60 Q 1150 50 1140 50 L 507 50 Q 497 50 497 60 L 497 157" class="a-dashed" stroke-width="1.1" marker-end="url(#arrowhead-dashed)"/>
 
         <!-- States -->
-        <g id="node-intake" data-node-id="intake" data-node-label="Intake" tabindex="0" role="button" aria-label="Focus Intake, Manifest Parsed, Pipeline Phases" aria-pressed="false" data-node-kind="start" data-node-sublabel="Manifest Parsed" data-node-tag="entry" data-node-context="Pipeline Phases">
-          <title>Intake · Manifest Parsed · Pipeline Phases · entry</title>
+        <g id="node-intake" data-node-id="intake" data-node-label="Intake" tabindex="0" role="button" aria-label="Focus Intake, Manifest + AST, Pipeline Phases" aria-pressed="false" data-node-kind="start" data-node-sublabel="Manifest + AST" data-node-tag="entry" data-node-context="Pipeline Phases">
+          <title>Intake · Manifest + AST · Pipeline Phases · entry</title>
           <rect x="35" y="126" width="118" height="62" rx="7" class="c-mask"/>
           <rect x="35" y="126" width="118" height="62" rx="7" class="c-frontend" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="start" class="semantic-sigil s-frontend" transform="translate(136 132) scale(0.6875)">
@@ -5059,115 +5062,89 @@
           </g>
         <text data-detail="fine" x="45" y="140" class="t-frontend" font-size="7" font-weight="700">01</text>
           <text data-node-label="" data-detail-anchor="" x="94" y="147" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Intake</text>
-          <text data-detail="context" x="94" y="163" class="t-muted" font-size="7" text-anchor="middle">Manifest Parsed</text>
+          <text data-detail="context" x="94" y="163" class="t-muted" font-size="7" text-anchor="middle">Manifest + AST</text>
         <text data-detail="fine" x="94" y="177" class="t-frontend" font-size="7" text-anchor="middle">entry</text>
         </g>
 
-        <g id="node-analyzing" data-node-id="analyzing" data-node-label="Analyzing" tabindex="0" role="button" aria-label="Focus Analyzing, Müller Strategy, Pipeline Phases" aria-pressed="false" data-node-kind="active" data-node-sublabel="Müller Strategy" data-node-tag="reasoning" data-node-context="Pipeline Phases">
-          <title>Analyzing · Müller Strategy · Pipeline Phases · reasoning</title>
+        <g id="node-analyzing" data-node-id="analyzing" data-node-label="Analyzer" tabindex="0" role="button" aria-label="Focus Analyzer, Research + Design, Pipeline Phases" aria-pressed="false" data-node-kind="active" data-node-sublabel="Research + Design" data-node-tag="reasoning" data-node-context="Pipeline Phases">
+          <title>Analyzer · Research + Design · Pipeline Phases · reasoning</title>
           <rect x="189" y="126" width="118" height="62" rx="7" class="c-mask"/>
           <rect x="189" y="126" width="118" height="62" rx="7" class="c-backend" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="active" class="semantic-sigil s-backend" transform="translate(290 132) scale(0.6875)">
             <path d="M2 8h3l1.5-3.5L9 12l1.6-4H14"/>
           </g>
         <text data-detail="fine" x="199" y="140" class="t-backend" font-size="7" font-weight="700">02</text>
-          <text data-node-label="" data-detail-anchor="" x="248" y="147" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Analyzing</text>
-          <text data-detail="context" x="248" y="163" class="t-muted" font-size="7" text-anchor="middle">Müller Strategy</text>
+          <text data-node-label="" data-detail-anchor="" x="248" y="147" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Analyzer</text>
+          <text data-detail="context" x="248" y="163" class="t-muted" font-size="7" text-anchor="middle">Research + Design</text>
         <text data-detail="fine" x="248" y="177" class="t-backend" font-size="7" text-anchor="middle">reasoning</text>
         </g>
 
-        <g id="node-planning" data-node-id="planning" data-node-label="Planning" tabindex="0" role="button" aria-label="Focus Planning, Reverse-Topo DAG, Pipeline Phases" aria-pressed="false" data-node-kind="active" data-node-sublabel="Reverse-Topo DAG" data-node-tag="back-edge" data-node-context="Pipeline Phases">
-          <title>Planning · Reverse-Topo DAG · Pipeline Phases · back-edge</title>
+        <g id="node-planning" data-node-id="planning" data-node-label="Planner" tabindex="0" role="button" aria-label="Focus Planner, Reverse-Topo DAG, Pipeline Phases" aria-pressed="false" data-node-kind="active" data-node-sublabel="Reverse-Topo DAG" data-node-tag="skeleton" data-node-context="Pipeline Phases">
+          <title>Planner · Reverse-Topo DAG · Pipeline Phases · skeleton</title>
           <rect x="343" y="126" width="118" height="62" rx="7" class="c-mask"/>
           <rect x="343" y="126" width="118" height="62" rx="7" class="c-backend" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="active" class="semantic-sigil s-backend" transform="translate(444 132) scale(0.6875)">
             <path d="M2 8h3l1.5-3.5L9 12l1.6-4H14"/>
           </g>
         <text data-detail="fine" x="353" y="140" class="t-backend" font-size="7" font-weight="700">03</text>
-          <text data-node-label="" data-detail-anchor="" x="402" y="147" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Planning</text>
+          <text data-node-label="" data-detail-anchor="" x="402" y="147" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Planner</text>
           <text data-detail="context" x="402" y="163" class="t-muted" font-size="7" text-anchor="middle">Reverse-Topo DAG</text>
-        <text data-detail="fine" x="402" y="177" class="t-backend" font-size="7" text-anchor="middle">back-edge</text>
+        <text data-detail="fine" x="402" y="177" class="t-backend" font-size="7" text-anchor="middle">skeleton</text>
         </g>
 
-        <g id="node-translating" data-node-id="translating" data-node-label="Translating" tabindex="0" role="button" aria-label="Focus Translating, Chunked Dispatch, Pipeline Phases" aria-pressed="false" data-node-kind="active" data-node-sublabel="Chunked Dispatch" data-node-tag="coding" data-node-context="Pipeline Phases">
-          <title>Translating · Chunked Dispatch · Pipeline Phases · coding</title>
+        <g id="node-translating" data-node-id="translating" data-node-label="Translator" tabindex="0" role="button" aria-label="Focus Translator, Chunked Emit, Pipeline Phases" aria-pressed="false" data-node-kind="active" data-node-sublabel="Chunked Emit" data-node-tag="coding" data-node-context="Pipeline Phases">
+          <title>Translator · Chunked Emit · Pipeline Phases · coding</title>
           <rect x="497" y="126" width="118" height="62" rx="7" class="c-mask"/>
           <rect x="497" y="126" width="118" height="62" rx="7" class="c-backend" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="active" class="semantic-sigil s-backend" transform="translate(598 132) scale(0.6875)">
             <path d="M2 8h3l1.5-3.5L9 12l1.6-4H14"/>
           </g>
         <text data-detail="fine" x="507" y="140" class="t-backend" font-size="7" font-weight="700">04</text>
-          <text data-node-label="" data-detail-anchor="" x="556" y="147" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Translating</text>
-          <text data-detail="context" x="556" y="163" class="t-muted" font-size="7" text-anchor="middle">Chunked Dispatch</text>
+          <text data-node-label="" data-detail-anchor="" x="556" y="147" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Translator</text>
+          <text data-detail="context" x="556" y="163" class="t-muted" font-size="7" text-anchor="middle">Chunked Emit</text>
         <text data-detail="fine" x="556" y="177" class="t-backend" font-size="7" text-anchor="middle">coding</text>
         </g>
 
-        <g id="node-completed" data-node-id="completed" data-node-label="Converged" tabindex="0" role="button" aria-label="Focus Converged, 100% Tests Pass, Pipeline Phases" aria-pressed="false" data-node-kind="success" data-node-sublabel="100% Tests Pass" data-node-tag="success" data-node-context="Pipeline Phases">
-          <title>Converged · 100% Tests Pass · Pipeline Phases · success</title>
-          <rect x="651" y="126" width="118" height="62" rx="7" class="c-mask"/>
-          <rect x="651" y="126" width="118" height="62" rx="7" class="c-database" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="success" class="semantic-sigil s-database" transform="translate(752 132) scale(0.6875)">
+        <g id="node-validate_cascade" data-node-id="validate_cascade" data-node-label="Validate" tabindex="0" role="button" aria-label="Focus Validate, AST + Build + Tests, Validation Cascade" aria-pressed="false" data-node-kind="active" data-node-sublabel="AST + Build + Tests" data-node-tag="cascade" data-node-context="Validation Cascade">
+          <title>Validate · AST + Build + Tests · Validation Cascade · cascade</title>
+          <rect x="302" y="278" width="200" height="58" rx="7" class="c-mask"/>
+          <rect x="302" y="278" width="200" height="58" rx="7" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="active" class="semantic-sigil s-backend" transform="translate(485 284) scale(0.6875)">
+            <path d="M2 8h3l1.5-3.5L9 12l1.6-4H14"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="402" y="299" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Validate</text>
+          <text data-detail="context" x="402" y="315" class="t-muted" font-size="7" text-anchor="middle">AST + Build + Tests</text>
+        <text data-detail="fine" x="402" y="325" class="t-backend" font-size="7" text-anchor="middle">cascade</text>
+        </g>
+
+        <g id="node-converged" data-node-id="converged" data-node-label="Converged" tabindex="0" role="button" aria-label="Focus Converged, All Tests Pass, Terminal Exits" aria-pressed="false" data-node-kind="success" data-node-sublabel="All Tests Pass" data-node-tag="success" data-node-context="Terminal Exits">
+          <title>Converged · All Tests Pass · Terminal Exits · success</title>
+          <rect x="343" y="450" width="118" height="58" rx="7" class="c-mask"/>
+          <rect x="343" y="450" width="118" height="58" rx="7" class="c-database" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="success" class="semantic-sigil s-database" transform="translate(444 456) scale(0.6875)">
             <circle cx="8" cy="8" r="5.3"/>
             <path d="m5.2 8 1.8 1.8 3.8-4"/>
           </g>
-        <text data-detail="fine" x="661" y="140" class="t-database" font-size="7" font-weight="700">05</text>
-          <text data-node-label="" data-detail-anchor="" x="710" y="147" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Converged</text>
-          <text data-detail="context" x="710" y="163" class="t-muted" font-size="7" text-anchor="middle">100% Tests Pass</text>
-        <text data-detail="fine" x="710" y="177" class="t-database" font-size="7" text-anchor="middle">success</text>
+          <text data-node-label="" data-detail-anchor="" x="402" y="471" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Converged</text>
+          <text data-detail="context" x="402" y="487" class="t-muted" font-size="7" text-anchor="middle">All Tests Pass</text>
+        <text data-detail="fine" x="402" y="497" class="t-database" font-size="7" text-anchor="middle">success</text>
         </g>
 
-        <g id="node-checkpoint" data-node-id="checkpoint" data-node-label="Checkpointed" tabindex="0" role="button" aria-label="Focus Checkpointed, State Snapshot, Checkpoints &amp; Stalls" aria-pressed="false" data-node-kind="waiting" data-node-sublabel="State Snapshot" data-node-tag="resume" data-node-context="Checkpoints &amp; Stalls">
-          <title>Checkpointed · State Snapshot · Checkpoints &amp; Stalls · resume</title>
-          <rect x="339" y="278" width="126" height="58" rx="7" class="c-mask"/>
-          <rect x="339" y="278" width="126" height="58" rx="7" class="c-cloud" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="waiting" class="semantic-sigil s-cloud" transform="translate(448 284) scale(0.6875)">
-            <path d="M4 2.5h8M4 13.5h8M5 3c0 2.8 2 3.2 3 5-1 1.8-3 2.2-3 5M11 3c0 2.8-2 3.2-3 5 1 1.8 3 2.2 3 5"/>
-          </g>
-          <text data-node-label="" data-detail-anchor="" x="402" y="299" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Checkpointed</text>
-          <text data-detail="context" x="402" y="315" class="t-muted" font-size="7" text-anchor="middle">State Snapshot</text>
-        <text data-detail="fine" x="402" y="325" class="t-cloud" font-size="7" text-anchor="middle">resume</text>
-        </g>
-
-        <g id="node-repairing" data-node-id="repairing" data-node-label="Repair Mode" tabindex="0" role="button" aria-label="Focus Repair Mode, Compiler Triage, Checkpoints &amp; Stalls" aria-pressed="false" data-node-kind="failure" data-node-sublabel="Compiler Triage" data-node-tag="iter &lt;= K" data-node-context="Checkpoints &amp; Stalls">
-          <title>Repair Mode · Compiler Triage · Checkpoints &amp; Stalls · iter &lt;= K</title>
-          <rect x="493" y="278" width="126" height="58" rx="7" class="c-mask"/>
-          <rect x="493" y="278" width="126" height="58" rx="7" class="c-security" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="failure" class="semantic-sigil s-security" transform="translate(602 284) scale(0.6875)">
-            <circle cx="8" cy="8" r="5.3"/>
-            <path d="m5.7 5.7 4.6 4.6m0-4.6-4.6 4.6"/>
-          </g>
-          <text data-node-label="" data-detail-anchor="" x="556" y="299" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Repair Mode</text>
-          <text data-detail="context" x="556" y="315" class="t-muted" font-size="7" text-anchor="middle">Compiler Triage</text>
-        <text data-detail="fine" x="556" y="325" class="t-security" font-size="7" text-anchor="middle">iter &lt;= K</text>
-        </g>
-
-        <g id="node-plateau" data-node-id="plateau" data-node-label="Plateau Stalled" tabindex="0" role="button" aria-label="Focus Plateau Stalled, Coverage Stagnant, Checkpoints &amp; Stalls" aria-pressed="false" data-node-kind="waiting" data-node-sublabel="Coverage Stagnant" data-node-tag="stall" data-node-context="Checkpoints &amp; Stalls">
-          <title>Plateau Stalled · Coverage Stagnant · Checkpoints &amp; Stalls · stall</title>
-          <rect x="647" y="278" width="126" height="58" rx="7" class="c-mask"/>
-          <rect x="647" y="278" width="126" height="58" rx="7" class="c-cloud" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="waiting" class="semantic-sigil s-cloud" transform="translate(756 284) scale(0.6875)">
-            <path d="M4 2.5h8M4 13.5h8M5 3c0 2.8 2 3.2 3 5-1 1.8-3 2.2-3 5M11 3c0 2.8-2 3.2-3 5 1 1.8 3 2.2 3 5"/>
-          </g>
-          <text data-node-label="" data-detail-anchor="" x="710" y="299" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Plateau Stalled</text>
-          <text data-detail="context" x="710" y="315" class="t-muted" font-size="7" text-anchor="middle">Coverage Stagnant</text>
-        <text data-detail="fine" x="710" y="325" class="t-cloud" font-size="7" text-anchor="middle">stall</text>
-        </g>
-
-        <g id="node-exhausted" data-node-id="exhausted" data-node-label="Budget Ceiling" tabindex="0" role="button" aria-label="Focus Budget Ceiling, Max Iterations, Terminal Exits" aria-pressed="false" data-node-kind="failure" data-node-sublabel="Max Iterations" data-node-tag="terminal" data-node-context="Terminal Exits">
-          <title>Budget Ceiling · Max Iterations · Terminal Exits · terminal</title>
+        <g id="node-exhausted" data-node-id="exhausted" data-node-label="Budget Exhausted" tabindex="0" role="button" aria-label="Focus Budget Exhausted, Iter == K, Terminal Exits" aria-pressed="false" data-node-kind="failure" data-node-sublabel="Iter == K" data-node-tag="terminal" data-node-context="Terminal Exits">
+          <title>Budget Exhausted · Iter == K · Terminal Exits · terminal</title>
           <rect x="497" y="450" width="118" height="58" rx="7" class="c-mask"/>
           <rect x="497" y="450" width="118" height="58" rx="7" class="c-security" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="failure" class="semantic-sigil s-security" transform="translate(598 456) scale(0.6875)">
             <circle cx="8" cy="8" r="5.3"/>
             <path d="m5.7 5.7 4.6 4.6m0-4.6-4.6 4.6"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="556" y="471" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Budget Ceiling</text>
-          <text data-detail="context" x="556" y="487" class="t-muted" font-size="7" text-anchor="middle">Max Iterations</text>
+          <text data-node-label="" data-detail-anchor="" x="556" y="471" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Budget Exhausted</text>
+          <text data-detail="context" x="556" y="487" class="t-muted" font-size="7" text-anchor="middle">Iter == K</text>
         <text data-detail="fine" x="556" y="497" class="t-security" font-size="7" text-anchor="middle">terminal</text>
         </g>
 
-        <g id="node-weakened" data-node-id="weakened" data-node-label="Test Weakened" tabindex="0" role="button" aria-label="Focus Test Weakened, Assertion Dropped, Terminal Exits" aria-pressed="false" data-node-kind="failure" data-node-sublabel="Assertion Dropped" data-node-tag="terminal" data-node-context="Terminal Exits">
-          <title>Test Weakened · Assertion Dropped · Terminal Exits · terminal</title>
+        <g id="node-weakened" data-node-id="weakened" data-node-label="Test Weakened" tabindex="0" role="button" aria-label="Focus Test Weakened, Assert Dropped, Terminal Exits" aria-pressed="false" data-node-kind="failure" data-node-sublabel="Assert Dropped" data-node-tag="terminal" data-node-context="Terminal Exits">
+          <title>Test Weakened · Assert Dropped · Terminal Exits · terminal</title>
           <rect x="651" y="450" width="118" height="58" rx="7" class="c-mask"/>
           <rect x="651" y="450" width="118" height="58" rx="7" class="c-security" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="failure" class="semantic-sigil s-security" transform="translate(752 456) scale(0.6875)">
@@ -5175,7 +5152,7 @@
             <path d="m5.7 5.7 4.6 4.6m0-4.6-4.6 4.6"/>
           </g>
           <text data-node-label="" data-detail-anchor="" x="710" y="471" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Test Weakened</text>
-          <text data-detail="context" x="710" y="487" class="t-muted" font-size="7" text-anchor="middle">Assertion Dropped</text>
+          <text data-detail="context" x="710" y="487" class="t-muted" font-size="7" text-anchor="middle">Assert Dropped</text>
         <text data-detail="fine" x="710" y="497" class="t-security" font-size="7" text-anchor="middle">terminal</text>
         </g>
 
@@ -5186,28 +5163,27 @@
 
 
 
+
+
+
         <!-- Legend -->
         <g data-legend="" data-legend-bridge="">
-          <text x="40" y="604" class="t-primary" font-size="12" font-weight="650">Legend</text>
-          <g data-legend-semantic-kind="start" data-legend-kind="start" data-legend-label="start" data-legend-x="40" data-legend-baseline="624" data-legend-width="68">
-            <rect x="40" y="616" width="14" height="9" rx="2" class="c-frontend" stroke-width="1"/>
-            <text x="62" y="624" class="t-muted" font-size="10" font-weight="500">start</text>
+          <text x="40" y="664" class="t-primary" font-size="12" font-weight="650">Legend</text>
+          <g data-legend-semantic-kind="start" data-legend-kind="start" data-legend-label="start" data-legend-x="40" data-legend-baseline="684" data-legend-width="68">
+            <rect x="40" y="676" width="14" height="9" rx="2" class="c-frontend" stroke-width="1"/>
+            <text x="62" y="684" class="t-muted" font-size="10" font-weight="500">start</text>
           </g>
-          <g data-legend-semantic-kind="active" data-legend-kind="active" data-legend-label="active state" data-legend-x="130" data-legend-baseline="624" data-legend-width="103">
-            <rect x="130" y="616" width="14" height="9" rx="2" class="c-backend" stroke-width="1"/>
-            <text x="152" y="624" class="t-muted" font-size="10" font-weight="500">active state</text>
+          <g data-legend-semantic-kind="active" data-legend-kind="active" data-legend-label="active state" data-legend-x="130" data-legend-baseline="684" data-legend-width="103">
+            <rect x="130" y="676" width="14" height="9" rx="2" class="c-backend" stroke-width="1"/>
+            <text x="152" y="684" class="t-muted" font-size="10" font-weight="500">active state</text>
           </g>
-          <g data-legend-semantic-kind="waiting" data-legend-kind="waiting" data-legend-label="waiting" data-legend-x="255" data-legend-baseline="624" data-legend-width="78">
-            <rect x="255" y="616" width="14" height="9" rx="2" class="c-cloud" stroke-width="1"/>
-            <text x="277" y="624" class="t-muted" font-size="10" font-weight="500">waiting</text>
+          <g data-legend-semantic-kind="success" data-legend-kind="success" data-legend-label="terminal success" data-legend-x="255" data-legend-baseline="684" data-legend-width="123">
+            <rect x="255" y="676" width="14" height="9" rx="2" class="c-database" stroke-width="1"/>
+            <text x="277" y="684" class="t-muted" font-size="10" font-weight="500">terminal success</text>
           </g>
-          <g data-legend-semantic-kind="success" data-legend-kind="success" data-legend-label="terminal success" data-legend-x="355" data-legend-baseline="624" data-legend-width="123">
-            <rect x="355" y="616" width="14" height="9" rx="2" class="c-database" stroke-width="1"/>
-            <text x="377" y="624" class="t-muted" font-size="10" font-weight="500">terminal success</text>
-          </g>
-          <g data-legend-semantic-kind="failure" data-legend-kind="failure" data-legend-label="failure / exit" data-legend-x="500" data-legend-baseline="624" data-legend-width="113">
-            <rect x="500" y="616" width="14" height="9" rx="2" class="c-security" stroke-width="1"/>
-            <text x="522" y="624" class="t-muted" font-size="10" font-weight="500">failure / exit</text>
+          <g data-legend-semantic-kind="failure" data-legend-kind="failure" data-legend-label="failure / exit" data-legend-x="400" data-legend-baseline="684" data-legend-width="113">
+            <rect x="400" y="676" width="14" height="9" rx="2" class="c-security" stroke-width="1"/>
+            <text x="422" y="684" class="t-muted" font-size="10" font-weight="500">failure / exit</text>
           </g>
         </g>
       </svg>
@@ -5402,33 +5378,34 @@
           <h3>Forward Rail</h3>
         </div>
         <ul>
-          <li>&bull; Ordered progression: Intake -&gt; Analyzing -&gt; Planning -&gt; Translating -&gt; Converged</li>
-          <li>&bull; Deterministic reverse-topological order resolves callee dependencies first</li>
-          <li>&bull; Converged terminal state reached upon 100% test pass rate</li>
+          <li>&bull; Ordered Analyze → Plan → Translate → Validate cascade</li>
+          <li>&bull; Reverse-topological schedule resolves callee dependencies first</li>
+          <li>&bull; Converged terminal state on 100% test pass rate</li>
         </ul>
       </div>
 
       <div class="card">
         <div class="card-header">
           <div class="card-dot amber"></div>
-          <h3>State Checkpoints &amp; Stalls</h3>
+          <h3>Validation Cascade (sub-states)</h3>
         </div>
         <ul>
-          <li>&bull; State serialized under .artifacts/&lt;run-id&gt;/checkpoints/ after each iteration</li>
-          <li>&bull; Coverage plateau detector halts zero-gain repair cycles</li>
-          <li>&bull; Idempotent resume restarts from the latest checkpoint snapshot</li>
+          <li>&bull; AST pre-check via target Tree-sitter before native toolchain</li>
+          <li>&bull; cargo check captures borrow-checker codes E0382/E0502</li>
+          <li>&bull; cargo test then adversarial weakening guard on assertion diff</li>
+          <li>&bull; CodaMOSA plateau detector bounds zero-gain repair cycles</li>
         </ul>
       </div>
 
       <div class="card">
         <div class="card-header">
           <div class="card-dot rose"></div>
-          <h3>Defense &amp; Failure Exits</h3>
+          <h3>Repair Loop &amp; Exits</h3>
         </div>
         <ul>
-          <li>&bull; Repair loop triages compiler diagnostics and borrow-checker errors</li>
-          <li>&bull; Adversarial weakening guard halts execution if test assertions are removed</li>
-          <li>&bull; Budget ceiling enforces bounded local model execution</li>
+          <li>&bull; Translator repairs on diagnostic feedback until convergence or K</li>
+          <li>&bull; Coverage plateau detector (CodaMOSA) terminates zero-gain loops</li>
+          <li>&bull; Checkpoint after every iteration for crash-safe idempotent resume</li>
         </ul>
       </div>
     </div>

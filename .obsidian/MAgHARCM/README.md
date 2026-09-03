@@ -10,17 +10,17 @@ architecture, methodology, primitives, and research notes.
 
 ## Quick links
 
-- [[research/METHODOLOGY]] — the 6-stage pipeline, strategy registry, translator modes, validator loop, state container, checkpointing.
+- [[research/METHODOLOGY]] — the 4-agent pipeline, strategy registry, chunked translator, validator cascade, state container, checkpointing.
 - [[research/Architecture]] — package layout and dependency DAG.
-- [[primitives/INDEX]] — catalog of named capabilities (PRIM-1 through PRIM-27).
+- [[primitives/INDEX]] — catalog of named capabilities.
 
 ## Structure
 
 ```
 .obsidian/MAgHARCM/
 ├── research/
-│   ├── METHODOLOGY.md   — pipeline, strategies, state, checkpointing
-│   └── Architecture.md  — package DAG, why three packages for state
+│   ├── METHODOLOGY.md   — pipeline, strategies, validator cascade, state, checkpointing
+│   └── Architecture.md  — package DAG, 4-agent decomposition
 ├── primitives/
 │   └── INDEX.md         — catalog of PRIM-NN entries
 └── diary/               — session notes (optional)

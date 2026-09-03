@@ -14,8 +14,7 @@ status (active, deprecated, experimental).
 
 | ID | Name | Where | Status |
 | -- | ---- | ----- | ------ |
-| PRIM-1 | Strategy registry | `internal/agents/strategy.go` | active |
-| PRIM-2 | Navigator agent | `internal/agents/navigator.go` | active |
+| PRIM-1 | Strategy registry (try-and-fail) | `internal/agents/strategy.go` | active |
 | PRIM-3 | Chunked translator | `internal/agents/chunked_translator.go` | active |
 | PRIM-4 | Validator repair loop | `internal/agents/validator.go` | active |
 | PRIM-5 | Bubble Tea TUI | `internal/tui/tui.go` | active |
@@ -27,12 +26,21 @@ status (active, deprecated, experimental).
 ## Newly Added (this refactor)
 
 - **PRIM-1 (Strategy registry)** — replaced the 4-branch if-cascade in
-  `SelectMigrationStrategy`. Adding a strategy is one line.
-- **PRIM-2 (Navigator agent)** — the 5th agent. Resolves symbols via the
-  configured LSP provider. No-op without one.
+  `SelectMigrationStrategy`. Adding a strategy is one line; on a strategy
+  failure the registry tries the next entry.
 - **PRIM-5 (Bubble Tea TUI)** — replaces the ad-hoc stdin scanner with a
   Bubble Tea Model. The exported command surface (`Phase1Step`, `HandleSlash`,
   `Phase1Help`, `slashHelp`) is preserved so the test mirror stays in sync.
+- **PRIM-27 (Plateau detector)** — folded into the validator cascade as the
+  final check before the repair back-edge. Halts the repair loop when the
+  coverage delta across the last N iterations is below threshold.
+
+## Removed
+
+- **PRIM-2 (Navigator agent)** — was a 5th parallel graph node. Removed:
+  symbol-name resolution is now a sub-mechanism of the Planner agent
+  invoking the LSP provider directly. The figure `magh-pipeline.workflow.json`
+  reflects this.
 
 ## Package Cohesion
 

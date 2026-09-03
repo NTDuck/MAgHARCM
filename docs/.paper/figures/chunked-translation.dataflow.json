@@ -2,65 +2,69 @@
   "schema_version": 1,
   "diagram_type": "dataflow",
   "meta": {
-    "title": "Chunked Translation & Context Synthesis Data Flow",
-    "subtitle": "Data flow from AST fragments and symbol lookups through prior-modules memory to local coding SLM.",
+    "title": "Chunked Translation & Bounded-Context Synthesis Data Flow",
+    "subtitle": "Translator Agent assembles \u2264 4KB context per fragment from Symbol Navigator and Prior-Modules Memory.",
     "output": "docs/.paper/figures/chunked-translation.html",
-    "viewBox": [1080, 760]
+    "viewBox": [1180, 820]
   },
   "stages": [
     { "label": "Source Codebase" },
-    { "label": "Planning & Slicing" },
-    { "label": "Context Assembly" },
-    { "label": "Model Synthesis" },
-    { "label": "Target Delivery" }
+    { "label": "Plan & Slice" },
+    { "label": "Bounded Context" },
+    { "label": "Translator" },
+    { "label": "Validate & Repair" }
   ],
   "nodes": [
-    { "id": "src_ast", "type": "backend", "label": "Tree-Sitter", "sublabel": "Source AST", "stage": 0, "row": 0, "tag": "Code IR" },
-    { "id": "src_manifest", "type": "backend", "label": "Manifest", "sublabel": "pom / go.mod", "stage": 0, "row": 2, "tag": "Deps" },
-    { "id": "reverse_topo", "type": "backend", "label": "Reverse DAG", "sublabel": "Cycle Removal", "stage": 1, "row": 0, "tag": "Topological" },
-    { "id": "crate_rewriter", "type": "backend", "label": "Rewriter", "sublabel": "Dependency Map", "stage": 1, "row": 2, "tag": "Cargo Specs" },
-    { "id": "nav_symbols", "type": "backend", "label": "Navigator", "sublabel": "Symbol Lookup", "stage": 2, "row": 0, "tag": "<= 4KB Slice" },
-    { "id": "prior_summary", "type": "database", "label": "Prior Cache", "sublabel": "Signatures", "stage": 2, "row": 2, "tag": "<= 4KB Budget" },
-    { "id": "coding_slm", "type": "cloud", "label": "Coding SLM", "sublabel": "Qwen3-4B", "stage": 3, "row": 1, "tag": "Ollama" },
-    { "id": "rust_crate", "type": "database", "label": "Target Crate", "sublabel": "lib.rs & Tests", "stage": 4, "row": 0, "tag": "Cargo Build" },
-    { "id": "validation_report", "type": "backend", "label": "Validator", "sublabel": "Compiler Tests", "stage": 4, "row": 2, "tag": "Diagnostic" }
+    { "id": "src_ast", "type": "backend", "label": "Tree-Sitter", "sublabel": "Source AST", "stage": 0, "row": 0, "tag": "PA tool" },
+    { "id": "src_manifest", "type": "backend", "label": "Manifest", "sublabel": "pom / go.mod", "stage": 0, "row": 1, "tag": "Deps" },
+    { "id": "reverse_topo", "type": "backend", "label": "Reverse-Topo", "sublabel": "Back-Edge Cut", "stage": 1, "row": 0, "tag": "Planner" },
+    { "id": "skeleton", "type": "backend", "label": "Skeleton", "sublabel": "Sigs + Traits", "stage": 1, "row": 1, "tag": "Part A" },
+    { "id": "nav_symbols", "type": "backend", "label": "Symbol Navigator", "sublabel": "Defs + Refs", "stage": 2, "row": 0, "tag": "<= 4KB" },
+    { "id": "prior_summary", "type": "database", "label": "Prior Memory", "sublabel": "Signatures", "stage": 2, "row": 1, "tag": "<= 4KB" },
+    { "id": "coding_slm", "type": "cloud", "label": "Coding SLM", "sublabel": "Qwen3-4B", "stage": 3, "row": 0, "tag": "Ollama" },
+    { "id": "rust_crate", "type": "database", "label": "Target Crate", "sublabel": "lib.rs + Tests", "stage": 4, "row": 0, "tag": "Cargo Build" },
+    { "id": "validation_report", "type": "backend", "label": "Validator", "sublabel": "Cascade", "stage": 4, "row": 1, "tag": "Diagnostics" },
+    { "id": "weakening_guard", "type": "security", "label": "Weakening Guard", "sublabel": "Assertions", "stage": 4, "row": 2, "tag": "Defense" }
   ],
   "flows": [
-    { "from": "src_ast", "to": "reverse_topo", "label": "function fragments", "classification": "AST elements", "variant": "emphasis", "route": "straight" },
-    { "from": "src_manifest", "to": "crate_rewriter", "label": "dep declarations", "classification": "libraries", "variant": "default", "route": "straight" },
-    { "from": "reverse_topo", "to": "nav_symbols", "label": "fragment order", "classification": "topological", "variant": "emphasis", "route": "straight" },
-    { "from": "crate_rewriter", "to": "prior_summary", "label": "crate mappings", "classification": "Cargo specs", "variant": "default", "route": "straight" },
-    { "from": "nav_symbols", "to": "coding_slm", "label": "definition + refs", "classification": "compact context", "variant": "emphasis", "fromSide": "right", "toSide": "left" },
-    { "from": "prior_summary", "to": "coding_slm", "label": "emitted signatures", "classification": "running context", "variant": "emphasis", "fromSide": "right", "toSide": "left" },
-    { "from": "coding_slm", "to": "rust_crate", "label": "translated source", "classification": "Rust AST", "variant": "emphasis", "fromSide": "right", "toSide": "left" },
-    { "from": "rust_crate", "to": "validation_report", "label": "cargo test results", "classification": "test feedback", "variant": "default", "fromSide": "bottom", "toSide": "top", "route": "straight", "labelDy": 24 }
+    { "from": "src_ast", "to": "reverse_topo", "label": "fragments", "variant": "emphasis" },
+    { "from": "src_manifest", "to": "skeleton", "label": "deps", "variant": "default" },
+    { "from": "reverse_topo", "to": "skeleton", "label": "ordering", "variant": "default", "labelDy": 24 },
+    { "from": "skeleton", "to": "nav_symbols", "label": "fragment", "variant": "emphasis" },
+    { "from": "prior_summary", "to": "nav_symbols", "label": "signatures", "variant": "default" },
+    { "from": "nav_symbols", "to": "coding_slm", "label": "context", "variant": "emphasis" },
+    { "from": "coding_slm", "to": "rust_crate", "label": "translated", "variant": "emphasis" },
+    { "from": "coding_slm", "to": "prior_summary", "label": "emit", "variant": "default" },
+    { "from": "rust_crate", "to": "validation_report", "label": "build + test", "variant": "default", "labelDy": 24 },
+    { "from": "validation_report", "to": "weakening_guard", "label": "assert diff", "variant": "security", "labelDy": 24 },
+    { "from": "validation_report", "to": "coding_slm", "label": "repair", "variant": "dashed" }
   ],
   "cards": [
     {
       "dot": "emerald",
       "title": "Topological Slicing",
       "items": [
-        "Tree-sitter extracts granular AST fragments across all source files",
-        "Reverse-topological sort removes cyclic back-edges",
-        "Dependencies and callees are translated before dependent callers"
+        "Tree-sitter extracts granular AST fragments across every source file",
+        "Reverse-topological sort cuts cyclic back-edges into a forward schedule",
+        "Part A (source) and Part B (tests) emitted in dependency order"
       ]
     },
     {
       "dot": "amber",
       "title": "Bounded Context Assembly",
       "items": [
-        "Symbol-Aware Navigator retrieves <= 4KB definition slices",
+        "Symbol Navigator returns \u2264 4KB def/reference slice via LSP provider",
         "Prior-Modules Memory injects compact 4KB emitted signatures",
-        "Small coding SLM operates within its effective context window without saturation"
+        "Small coding SLM operates within effective attention budget"
       ]
     },
     {
       "dot": "rose",
-      "title": "Validation Feedback",
+      "title": "Validation & Repair Cascade",
       "items": [
-        "Incremental target crate updated on disk after each chunk translation",
-        "Multi-stage compiler and test cascade verifies functional equivalence",
-        "Adversarial weakening guard ensures assertion counts are preserved"
+        "AST pre-check before compiler, then cargo test, then guard, then plateau",
+        "Repair loop feeds diagnostics back to the Translator until convergence",
+        "Coverage plateau detector bounds repair spinning on large repositories"
       ]
     }
   ]

@@ -2,61 +2,208 @@
   "schema_version": 1,
   "diagram_type": "lifecycle",
   "meta": {
-    "title": "MAgHARCM Translation Lifecycle State Machine",
-    "subtitle": "State transitions across analysis, chunked translation, validation gates, checkpoints, and repair cycles.",
+    "title": "MAgHARCM Translate–Validate–Repair Lifecycle",
+    "subtitle": "Iterative state machine: Analyze → Plan → Translate → Validate (cascade) → Repair until converge, plateau, weaken, or exhaust.",
     "output": "docs/.paper/figures/translation-lifecycle.html",
-    "viewBox": [980, 660]
+    "viewBox": [
+      1200,
+      720
+    ]
   },
   "lanes": [
-    { "id": "main", "label": "Pipeline Phases" },
-    { "id": "events", "label": "Checkpoints & Stalls" },
-    { "id": "terminal", "label": "Terminal Exits" }
+    {
+      "id": "main",
+      "label": "Pipeline Phases"
+    },
+    {
+      "id": "validate",
+      "label": "Validation Cascade"
+    },
+    {
+      "id": "terminal",
+      "label": "Terminal Exits"
+    }
   ],
   "states": [
-    { "id": "intake", "type": "start", "label": "Intake", "sublabel": "Manifest Parsed", "lane": "main", "col": 0, "step": "01", "tag": "entry" },
-    { "id": "analyzing", "type": "active", "label": "Analyzing", "sublabel": "Müller Strategy", "lane": "main", "col": 1, "step": "02", "tag": "reasoning" },
-    { "id": "planning", "type": "active", "label": "Planning", "sublabel": "Reverse-Topo DAG", "lane": "main", "col": 2, "step": "03", "tag": "back-edge" },
-    { "id": "translating", "type": "active", "label": "Translating", "sublabel": "Chunked Dispatch", "lane": "main", "col": 3, "step": "04", "tag": "coding" },
-    { "id": "completed", "type": "success", "label": "Converged", "sublabel": "100% Tests Pass", "lane": "main", "col": 4, "step": "05", "tag": "success" },
-    { "id": "checkpoint", "type": "waiting", "label": "Checkpointed", "sublabel": "State Snapshot", "lane": "events", "col": 0, "tag": "resume" },
-    { "id": "repairing", "type": "failure", "label": "Repair Mode", "sublabel": "Compiler Triage", "lane": "events", "col": 1, "tag": "iter <= K" },
-    { "id": "plateau", "type": "waiting", "label": "Plateau Stalled", "sublabel": "Coverage Stagnant", "lane": "events", "col": 2, "tag": "stall" },
-    { "id": "exhausted", "type": "failure", "label": "Budget Ceiling", "sublabel": "Max Iterations", "lane": "terminal", "col": 1, "tag": "terminal" },
-    { "id": "weakened", "type": "failure", "label": "Test Weakened", "sublabel": "Assertion Dropped", "lane": "terminal", "col": 2, "tag": "terminal" }
+    {
+      "id": "intake",
+      "type": "start",
+      "label": "Intake",
+      "sublabel": "Manifest + AST",
+      "lane": "main",
+      "col": 0,
+      "step": "01",
+      "tag": "entry"
+    },
+    {
+      "id": "analyzing",
+      "type": "active",
+      "label": "Analyzer",
+      "sublabel": "Research + Design",
+      "lane": "main",
+      "col": 1,
+      "step": "02",
+      "tag": "reasoning"
+    },
+    {
+      "id": "planning",
+      "type": "active",
+      "label": "Planner",
+      "sublabel": "Reverse-Topo DAG",
+      "lane": "main",
+      "col": 2,
+      "step": "03",
+      "tag": "skeleton"
+    },
+    {
+      "id": "translating",
+      "type": "active",
+      "label": "Translator",
+      "sublabel": "Chunked Emit",
+      "lane": "main",
+      "col": 3,
+      "step": "04",
+      "tag": "coding"
+    },
+    {
+      "id": "validate_cascade",
+      "type": "active",
+      "label": "Validate",
+      "sublabel": "AST + Build + Tests",
+      "lane": "validate",
+      "col": 0,
+      "tag": "cascade",
+      "width": 200
+    },
+    {
+      "id": "converged",
+      "type": "success",
+      "label": "Converged",
+      "sublabel": "All Tests Pass",
+      "lane": "terminal",
+      "col": 0,
+      "tag": "success"
+    },
+    {
+      "id": "exhausted",
+      "type": "failure",
+      "label": "Budget Exhausted",
+      "sublabel": "Iter == K",
+      "lane": "terminal",
+      "col": 1,
+      "tag": "terminal"
+    },
+    {
+      "id": "weakened",
+      "type": "failure",
+      "label": "Test Weakened",
+      "sublabel": "Assert Dropped",
+      "lane": "terminal",
+      "col": 2,
+      "tag": "terminal"
+    }
   ],
   "transitions": [
-    { "from": "planning", "to": "checkpoint", "variant": "default", "fromSide": "bottom", "toSide": "top", "route": "straight" },
-    { "from": "translating", "to": "repairing", "variant": "default", "fromSide": "bottom", "toSide": "top", "route": "straight" },
-    { "from": "repairing", "to": "exhausted", "variant": "security", "fromSide": "bottom", "toSide": "top", "route": "straight" },
-    { "from": "translating", "to": "plateau", "variant": "default", "fromSide": "bottom", "toSide": "top", "route": "drop" },
-    { "from": "plateau", "to": "weakened", "variant": "security", "fromSide": "bottom", "toSide": "top", "route": "straight" }
+    {
+      "id": "intake-analyzing",
+      "from": "intake",
+      "to": "analyzing",
+      "variant": "default"
+    },
+    {
+      "id": "analyzing-planning",
+      "from": "analyzing",
+      "to": "planning",
+      "variant": "default"
+    },
+    {
+      "id": "planning-translating",
+      "from": "planning",
+      "to": "translating",
+      "variant": "default"
+    },
+    {
+      "id": "translating-validate",
+      "from": "translating",
+      "to": "validate_cascade",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "validate-converged",
+      "from": "validate_cascade",
+      "to": "converged",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "validate-weakened",
+      "from": "validate_cascade",
+      "to": "weakened",
+      "variant": "security",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "validate-exhausted",
+      "from": "validate_cascade",
+      "to": "exhausted",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "validate-repair",
+      "from": "validate_cascade",
+      "to": "translating",
+      "variant": "dashed",
+      "fromSide": "left",
+      "toSide": "left",
+      "via": [
+        [
+          1150,
+          290
+        ],
+        [
+          1150,
+          50
+        ],
+        [
+          497,
+          50
+        ]
+      ]
+    }
   ],
   "cards": [
     {
       "dot": "emerald",
       "title": "Forward Rail",
       "items": [
-        "Ordered progression: Intake -> Analyzing -> Planning -> Translating -> Converged",
-        "Deterministic reverse-topological order resolves callee dependencies first",
-        "Converged terminal state reached upon 100% test pass rate"
+        "Ordered Analyze → Plan → Translate → Validate cascade",
+        "Reverse-topological schedule resolves callee dependencies first",
+        "Converged terminal state on 100% test pass rate"
       ]
     },
     {
       "dot": "amber",
-      "title": "State Checkpoints & Stalls",
+      "title": "Validation Cascade (sub-states)",
       "items": [
-        "State serialized under .artifacts/<run-id>/checkpoints/ after each iteration",
-        "Coverage plateau detector halts zero-gain repair cycles",
-        "Idempotent resume restarts from the latest checkpoint snapshot"
+        "AST pre-check via target Tree-sitter before native toolchain",
+        "cargo check captures borrow-checker codes E0382/E0502",
+        "cargo test then adversarial weakening guard on assertion diff",
+        "CodaMOSA plateau detector bounds zero-gain repair cycles"
       ]
     },
     {
       "dot": "rose",
-      "title": "Defense & Failure Exits",
+      "title": "Repair Loop & Exits",
       "items": [
-        "Repair loop triages compiler diagnostics and borrow-checker errors",
-        "Adversarial weakening guard halts execution if test assertions are removed",
-        "Budget ceiling enforces bounded local model execution"
+        "Translator repairs on diagnostic feedback until convergence or K",
+        "Coverage plateau detector (CodaMOSA) terminates zero-gain loops",
+        "Checkpoint after every iteration for crash-safe idempotent resume"
       ]
     }
   ]
