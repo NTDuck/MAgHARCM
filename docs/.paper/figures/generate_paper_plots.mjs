@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH || '/run/current-system/sw/bin/chromium';
 
-async function renderHTMLFileToPNG(htmlFilePath, outPngPath, width = 1200, height = 560) {
+async function renderHTMLFileToPNG(htmlFilePath, outPngPath, width = 1280, height = 620) {
   const browser = await puppeteer.launch({
     headless: true,
     executablePath: fs.existsSync(executablePath) ? executablePath : undefined,
@@ -26,7 +26,7 @@ async function renderHTMLFileToPNG(htmlFilePath, outPngPath, width = 1200, heigh
 
   await page.goto(`file://${path.resolve(htmlFilePath)}`, { waitUntil: 'networkidle0' });
 
-  // Hide all viewer chrome, toolbars, buttons, headers, export menus, and force light theme
+  // Remove all viewer chrome, toolbars, buttons, headers, export menus, HUDs, lens, zoom controls
   await page.evaluate(() => {
     document.documentElement.setAttribute('data-theme', 'light');
     document.documentElement.classList.remove('dark');
@@ -37,10 +37,11 @@ async function renderHTMLFileToPNG(htmlFilePath, outPngPath, width = 1200, heigh
     document.body.style.margin = '0';
     document.body.style.padding = '0';
 
-    // Hide any toolbar or viewer chrome
-    const hideSelectors = [
+    // Remove all HUDs, toolbars, lens indicators, zoom controls, and menus
+    const removeSelectors = [
       'header',
       'nav',
+      'footer',
       '.viewer-toolbar',
       '.viewer-chrome',
       '.theme-toggle',
@@ -48,14 +49,27 @@ async function renderHTMLFileToPNG(htmlFilePath, outPngPath, width = 1200, heigh
       '.chapter-rail',
       '.chapter-delta-preview',
       '[data-viewer-toolbar]',
+      '[data-viewer-hud]',
+      '.viewer-hud',
+      '.nav-hud',
+      '.viewport-hud',
+      '.zoom-pill',
+      '.lens-pill',
       '.export-btn',
       '.present-btn',
       '.viewer-header',
       '.toolbar',
-      '.controls-bar'
+      '.controls-bar',
+      '.hud',
+      '[class*="hud"]',
+      '[class*="lens"]',
+      '[class*="pill"]',
+      '[class*="zoom"]',
+      '[class*="toolbar"]'
     ];
-    hideSelectors.forEach(sel => {
-      document.querySelectorAll(sel).forEach(el => el.style.display = 'none');
+    
+    removeSelectors.forEach(sel => {
+      document.querySelectorAll(sel).forEach(el => el.remove());
     });
 
     const svg = document.querySelector('svg');
@@ -65,9 +79,9 @@ async function renderHTMLFileToPNG(htmlFilePath, outPngPath, width = 1200, heigh
   });
 
   // Wait for layout settlement
-  await new Promise(r => setTimeout(r, 200));
+  await new Promise(r => setTimeout(r, 250));
 
-  // Find the primary svg element or diagram canvas
+  // Find the primary svg element and capture its exact bounding box
   const svgEl = await page.$('svg.diagram-svg') || await page.$('svg');
   if (svgEl) {
     await svgEl.screenshot({ path: outPngPath, omitBackground: false });
@@ -76,15 +90,15 @@ async function renderHTMLFileToPNG(htmlFilePath, outPngPath, width = 1200, heigh
   }
   
   await browser.close();
-  console.log(`Generated publication PNG (no menus, pure white): ${outPngPath}`);
+  console.log(`Generated publication PNG (clean, no HUD): ${outPngPath}`);
 }
 
 async function main() {
   const figures = [
-    { html: 'fig1_workflow.html', png: 'fig1_workflow.png', w: 1200, h: 560 },
-    { html: 'fig2_empirical_results.html', png: 'fig2_empirical_results.png', w: 1200, h: 560 },
-    { html: 'fig3_dataflow.html', png: 'fig3_dataflow.png', w: 1200, h: 480 },
-    { html: 'fig4_lifecycle.html', png: 'fig4_lifecycle.png', w: 1200, h: 500 },
+    { html: 'fig1_workflow.html', png: 'fig1_workflow.png', w: 1280, h: 580 },
+    { html: 'fig2_empirical_results.html', png: 'fig2_empirical_results.png', w: 1280, h: 580 },
+    { html: 'fig3_dataflow.html', png: 'fig3_dataflow.png', w: 1280, h: 500 },
+    { html: 'fig4_lifecycle.html', png: 'fig4_lifecycle.png', w: 1280, h: 520 },
   ];
 
   for (const fig of figures) {
@@ -96,7 +110,7 @@ async function main() {
       console.warn(`Missing HTML file: ${htmlPath}`);
     }
   }
-  console.log('All publication figures rendered cleanly with zero viewer menus.');
+  console.log('All publication figures rendered cleanly with zero HUDs/menus.');
 }
 
 main().catch(console.error);

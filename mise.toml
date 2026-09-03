@@ -8,7 +8,7 @@ run = "go run ./cmd/MAgHARCM --config .config/default.yml"
 
 [tasks.dev]
 description = "Alias for start"
-run = "go run ./cmd/MAgHARCM --config .config/default.yml"
+run = "go run ./cmd/MAgHARCM --config .config/gildedrose.yml"
 
 [tasks.ui]
 description = "Launch the interactive MAgHARCM TUI"

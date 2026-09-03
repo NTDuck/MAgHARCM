@@ -15,15 +15,15 @@
     { "label": "Target Delivery" }
   ],
   "nodes": [
-    { "id": "src_ast", "type": "backend", "label": "Tree-Sitter AST", "sublabel": "Source Functions", "stage": 0, "row": 0, "tag": "Code IR" },
-    { "id": "src_manifest", "type": "backend", "label": "Source Manifest", "sublabel": "pom / go.mod", "stage": 0, "row": 2, "tag": "Dependencies" },
-    { "id": "reverse_topo", "type": "backend", "label": "Reverse Topo DAG", "sublabel": "Cycle Elimination", "stage": 1, "row": 0, "tag": "Topological" },
-    { "id": "crate_rewriter", "type": "backend", "label": "Manifest Rewriter", "sublabel": "Dependency Mapping", "stage": 1, "row": 2, "tag": "Cargo Specs" },
-    { "id": "nav_symbols", "type": "backend", "label": "Navigator Symbols", "sublabel": "Symbol Lookup", "stage": 2, "row": 0, "tag": "<= 4KB Slice" },
-    { "id": "prior_summary", "type": "database", "label": "Prior Memory", "sublabel": "Emitted Signatures", "stage": 2, "row": 2, "tag": "<= 4KB Budget" },
-    { "id": "coding_slm", "type": "cloud", "label": "Coding SLM", "sublabel": "Qwen3-4B Instruct", "stage": 3, "row": 1, "tag": "Ollama" },
+    { "id": "src_ast", "type": "backend", "label": "Tree-Sitter", "sublabel": "Source AST", "stage": 0, "row": 0, "tag": "Code IR" },
+    { "id": "src_manifest", "type": "backend", "label": "Manifest", "sublabel": "pom / go.mod", "stage": 0, "row": 2, "tag": "Deps" },
+    { "id": "reverse_topo", "type": "backend", "label": "Reverse DAG", "sublabel": "Cycle Removal", "stage": 1, "row": 0, "tag": "Topological" },
+    { "id": "crate_rewriter", "type": "backend", "label": "Rewriter", "sublabel": "Dependency Map", "stage": 1, "row": 2, "tag": "Cargo Specs" },
+    { "id": "nav_symbols", "type": "backend", "label": "Navigator", "sublabel": "Symbol Lookup", "stage": 2, "row": 0, "tag": "<= 4KB Slice" },
+    { "id": "prior_summary", "type": "database", "label": "Prior Cache", "sublabel": "Signatures", "stage": 2, "row": 2, "tag": "<= 4KB Budget" },
+    { "id": "coding_slm", "type": "cloud", "label": "Coding SLM", "sublabel": "Qwen3-4B", "stage": 3, "row": 1, "tag": "Ollama" },
     { "id": "rust_crate", "type": "database", "label": "Target Crate", "sublabel": "lib.rs & Tests", "stage": 4, "row": 0, "tag": "Cargo Build" },
-    { "id": "validation_report", "type": "backend", "label": "Validation Suite", "sublabel": "Compiler & Tests", "stage": 4, "row": 2, "tag": "Diagnostic Pass" }
+    { "id": "validation_report", "type": "backend", "label": "Validator", "sublabel": "Compiler Tests", "stage": 4, "row": 2, "tag": "Diagnostic" }
   ],
   "flows": [
     { "from": "src_ast", "to": "reverse_topo", "label": "function fragments", "classification": "AST elements", "variant": "emphasis", "route": "straight" },
@@ -41,7 +41,7 @@
       "title": "Topological Slicing",
       "items": [
         "Tree-sitter extracts granular AST fragments across all source files",
-        "AlphaTrans-derived reverse-topological sort removes cyclic back-edges",
+        "Reverse-topological sort removes cyclic back-edges",
         "Dependencies and callees are translated before dependent callers"
       ]
     },

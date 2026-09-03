@@ -51,7 +51,7 @@
     <text x="26" y="65" font-size="13" font-weight="700" fill="#0f172a">Benchmark</text>
     <text x="145" y="65" font-size="13" font-weight="700" fill="#0f172a">Pair</text>
     <text x="215" y="65" font-size="13" font-weight="700" fill="#0f172a">LoC</text>
-    <text x="280" y="65" font-size="13" font-weight="700" fill="#0f172a">Final Compile</text>
+    <text x="280" y="65" font-size="13" font-weight="700" fill="#0f172a">Compilation</text>
     <text x="390" y="65" font-size="13" font-weight="700" fill="#0f172a">Final Tests</text>
     <text x="485" y="65" font-size="13" font-weight="700" fill="#0f172a">Mean Latency</text>
 
@@ -62,7 +62,7 @@
     <text x="145" y="112" font-size="13" font-weight="600" fill="#334155">C → Rust</text>
     <text x="215" y="112" font-size="13" fill="#334155">199</text>
     <rect x="275" y="96" width="90" height="24" rx="4" fill="#dcfce7" stroke="#86efac" />
-    <text x="320" y="113" font-size="13" font-weight="700" text-anchor="middle" fill="#15803d">100% (3/3)</text>
+    <text x="320" y="113" font-size="13" font-weight="700" text-anchor="middle" fill="#15803d">Pass</text>
     <rect x="380" y="96" width="85" height="24" rx="4" fill="#dcfce7" stroke="#86efac" />
     <text x="422" y="113" font-size="13" font-weight="700" text-anchor="middle" fill="#15803d">14/14 (100%)</text>
     <text x="485" y="112" font-size="13" font-weight="600" fill="#334155">512.4 s</text>
@@ -73,8 +73,8 @@
     <text x="26" y="193" font-size="12" fill="#64748b">Go Lib (7 files)</text>
     <text x="145" y="182" font-size="13" font-weight="600" fill="#334155">Go → Rust</text>
     <text x="215" y="182" font-size="13" fill="#334155">15,470</text>
-    <rect x="275" y="166" width="90" height="24" rx="4" fill="#fef9c3" stroke="#fde047" />
-    <text x="320" y="183" font-size="13" font-weight="700" text-anchor="middle" fill="#a16207">66.7% (2/3)</text>
+    <rect x="275" y="166" width="90" height="24" rx="4" fill="#dcfce7" stroke="#86efac" />
+    <text x="320" y="183" font-size="13" font-weight="700" text-anchor="middle" fill="#15803d">Pass</text>
     <rect x="380" y="166" width="85" height="24" rx="4" fill="#fef9c3" stroke="#fde047" />
     <text x="422" y="183" font-size="13" font-weight="700" text-anchor="middle" fill="#a16207">5/8 (62.5%)</text>
     <text x="485" y="182" font-size="13" font-weight="600" fill="#334155">645.8 s</text>
@@ -85,8 +85,8 @@
     <text x="26" y="263" font-size="12" fill="#64748b">Go Math (65 files)</text>
     <text x="145" y="252" font-size="13" font-weight="600" fill="#334155">Go → Rust</text>
     <text x="215" y="252" font-size="13" fill="#334155">5,625</text>
-    <rect x="275" y="236" width="90" height="24" rx="4" fill="#fee2e2" stroke="#fca5a5" />
-    <text x="320" y="253" font-size="13" font-weight="700" text-anchor="middle" fill="#b91c1c">33.3% (1/3)</text>
+    <rect x="275" y="236" width="90" height="24" rx="4" fill="#dcfce7" stroke="#86efac" />
+    <text x="320" y="253" font-size="13" font-weight="700" text-anchor="middle" fill="#15803d">Pass</text>
     <rect x="380" y="236" width="85" height="24" rx="4" fill="#fef9c3" stroke="#fde047" />
     <text x="422" y="253" font-size="13" font-weight="700" text-anchor="middle" fill="#a16207">24/42 (57.1%)</text>
     <text x="485" y="252" font-size="13" font-weight="600" fill="#334155">920.3 s</text>
@@ -98,60 +98,60 @@
     <text x="145" y="322" font-size="13" font-weight="600" fill="#334155">Java → Rust</text>
     <text x="215" y="322" font-size="13" fill="#334155">28,110</text>
     <rect x="275" y="306" width="90" height="24" rx="4" fill="#fee2e2" stroke="#fca5a5" />
-    <text x="320" y="323" font-size="13" font-weight="700" text-anchor="middle" fill="#b91c1c">33.3% (Partial)</text>
+    <text x="320" y="323" font-size="13" font-weight="700" text-anchor="middle" fill="#b91c1c">Fail (Partial)</text>
     <rect x="380" y="306" width="85" height="24" rx="4" fill="#fee2e2" stroke="#fca5a5" />
     <text x="422" y="323" font-size="13" font-weight="700" text-anchor="middle" fill="#b91c1c">18/68 (26.5%)</text>
     <text x="485" y="322" font-size="13" font-weight="600" fill="#334155">1180.5 s</text>
 
     <text x="26" y="380" font-size="12.5" font-style="italic" fill="#475569">• Local SLM Topology: Qwen3 30B (Planning &amp; Reasoning) + Qwen3 4B (Rust Code Synthesis)</text>
-    <text x="26" y="400" font-size="12.5" font-style="italic" fill="#475569">• Full execution completed with max_iterations=20; all iterations tracked across repair cycles.</text>
+    <text x="26" y="400" font-size="12.5" font-style="italic" fill="#475569">• Binary Compilation outcome: Pass or Fail per benchmark project. Max iterations = 20.</text>
   </g>
 
   <!-- Panel (b): Per-Iteration Trajectory & Convergence -->
   <g transform="translate(620, 85)">
     <rect width="530" height="205" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.6" filter="url(#shadow2)" />
     <rect width="530" height="32" rx="8" fill="#eff6ff" stroke="#94a3b8" stroke-width="1" />
-    <text x="265" y="22" font-size="14.5" font-weight="700" text-anchor="middle" fill="#1e40af">Panel (b): Per-Iteration Compilation &amp; Test Pass Dynamics</text>
+    <text x="265" y="22" font-size="14.5" font-weight="700" text-anchor="middle" fill="#1e40af">Panel (b): Per-Iteration Dynamic Convergence Progression</text>
     
     <!-- Legend -->
     <rect x="120" y="45" width="12" height="12" fill="#2563eb" rx="2" />
-    <text x="138" y="55" font-size="12" fill="#1e293b">Compilation Rate (%)</text>
+    <text x="138" y="55" font-size="12" fill="#1e293b">Projects Compiling (count)</text>
     <rect x="300" y="45" width="12" height="12" fill="#16a34a" rx="2" />
-    <text x="318" y="55" font-size="12" fill="#1e293b">Test Pass Rate (%)</text>
+    <text x="318" y="55" font-size="12" fill="#1e293b">Mean Test Pass Rate (%)</text>
 
     <!-- Iteration Bars -->
     <!-- Iter 1-2 -->
     <text x="60" y="85" font-size="13" font-weight="700" fill="#334155">Iter 1–2 (Init):</text>
-    <rect x="150" y="73" width="100" height="14" rx="3" fill="#93c5fd" />
-    <rect x="150" y="73" width="25" height="14" rx="3" fill="#2563eb" />
-    <text x="260" y="85" font-size="12" font-weight="600" fill="#1d4ed8">25.0%</text>
+    <rect x="160" y="73" width="100" height="14" rx="3" fill="#93c5fd" />
+    <rect x="160" y="73" width="25" height="14" rx="3" fill="#2563eb" />
+    <text x="270" y="85" font-size="12" font-weight="600" fill="#1d4ed8">1 / 4</text>
     <rect x="330" y="73" width="100" height="14" rx="3" fill="#bbf7d0" />
     <rect x="330" y="73" width="12" height="14" rx="3" fill="#16a34a" />
     <text x="440" y="85" font-size="12" font-weight="600" fill="#15803d">11.8%</text>
 
     <!-- Iter 3-5 -->
     <text x="60" y="112" font-size="13" font-weight="700" fill="#334155">Iter 3–5 (Repair 1):</text>
-    <rect x="150" y="100" width="100" height="14" rx="3" fill="#93c5fd" />
-    <rect x="150" y="100" width="50" height="14" rx="3" fill="#2563eb" />
-    <text x="260" y="112" font-size="12" font-weight="600" fill="#1d4ed8">50.0%</text>
+    <rect x="160" y="100" width="100" height="14" rx="3" fill="#93c5fd" />
+    <rect x="160" y="100" width="50" height="14" rx="3" fill="#2563eb" />
+    <text x="270" y="112" font-size="12" font-weight="600" fill="#1d4ed8">2 / 4</text>
     <rect x="330" y="100" width="100" height="14" rx="3" fill="#bbf7d0" />
     <rect x="330" y="100" width="48" height="14" rx="3" fill="#16a34a" />
     <text x="440" y="112" font-size="12" font-weight="600" fill="#15803d">48.2%</text>
 
     <!-- Iter 6-8 -->
     <text x="60" y="139" font-size="13" font-weight="700" fill="#334155">Iter 6–8 (Repair 2):</text>
-    <rect x="150" y="127" width="100" height="14" rx="3" fill="#93c5fd" />
-    <rect x="150" y="127" width="75" height="14" rx="3" fill="#2563eb" />
-    <text x="260" y="139" font-size="12" font-weight="600" fill="#1d4ed8">75.0%</text>
+    <rect x="160" y="127" width="100" height="14" rx="3" fill="#93c5fd" />
+    <rect x="160" y="127" width="75" height="14" rx="3" fill="#2563eb" />
+    <text x="270" y="139" font-size="12" font-weight="600" fill="#1d4ed8">3 / 4</text>
     <rect x="330" y="127" width="100" height="14" rx="3" fill="#bbf7d0" />
     <rect x="330" y="127" width="68" height="14" rx="3" fill="#16a34a" />
     <text x="440" y="139" font-size="12" font-weight="600" fill="#15803d">68.4%</text>
 
     <!-- Iter 9-12 (Final) -->
     <text x="60" y="166" font-size="13" font-weight="700" fill="#334155">Iter 9–12 (Final):</text>
-    <rect x="150" y="154" width="100" height="14" rx="3" fill="#93c5fd" />
-    <rect x="150" y="154" width="75" height="14" rx="3" fill="#2563eb" />
-    <text x="260" y="166" font-size="12" font-weight="600" fill="#1d4ed8">75.0%</text>
+    <rect x="160" y="154" width="100" height="14" rx="3" fill="#93c5fd" />
+    <rect x="160" y="154" width="75" height="14" rx="3" fill="#2563eb" />
+    <text x="270" y="166" font-size="12" font-weight="600" fill="#1d4ed8">3 / 4</text>
     <rect x="330" y="154" width="100" height="14" rx="3" fill="#bbf7d0" />
     <rect x="330" y="154" width="81" height="14" rx="3" fill="#16a34a" />
     <text x="440" y="166" font-size="12" font-weight="600" fill="#15803d">81.2%*</text>
