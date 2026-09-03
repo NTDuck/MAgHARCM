@@ -1,5 +1,7 @@
 package agents
 
+// Backlink: [[Primitives]] §NEW-PRIM-28 (Human-in-the-Loop Interrupt & Checkpoint).
+
 import (
 	"encoding/json"
 	"fmt"
@@ -39,7 +41,7 @@ type Checkpoint struct {
 	State     *types.State `json:"state"`
 }
 
-const currentCheckpointVersion = 1
+const CurrentCheckpointVersion = 1
 
 // Save writes a checkpoint for the given state under .artifacts/<runID>/checkpoints/iter-N.json.
 // If runID is empty, returns an error (caller must always provide a run ID — generate one if missing).
@@ -53,7 +55,7 @@ func Save(runID string, state *types.State) (string, error) {
 		return "", fmt.Errorf("checkpoint: mkdir %s: %w", dir, err)
 	}
 	ckpt := Checkpoint{
-		Version:   currentCheckpointVersion,
+		Version:   CurrentCheckpointVersion,
 		CreatedAt: time.Now().UTC(),
 		Iteration: state.Iteration,
 		State:     state,
@@ -115,9 +117,9 @@ func LoadLatest(runID string) (*Checkpoint, error) {
 	if err := json.Unmarshal(data, &ckpt); err != nil {
 		return nil, fmt.Errorf("checkpoint: unmarshal %s: %w", latestPath, err)
 	}
-	if ckpt.Version != currentCheckpointVersion {
+	if ckpt.Version != CurrentCheckpointVersion {
 		return nil, fmt.Errorf("checkpoint: version mismatch in %s: got %d, want %d",
-			latestPath, ckpt.Version, currentCheckpointVersion)
+			latestPath, ckpt.Version, CurrentCheckpointVersion)
 	}
 	return &ckpt, nil
 }

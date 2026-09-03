@@ -1,5 +1,7 @@
 package agents
 
+// Backlink: [[Methodology]] §1 Stage 4 and [[Primitives]] §NEW-PRIM-23.
+
 import (
 	"context"
 	"fmt"

@@ -1,5 +1,7 @@
 package agents
 
+// Backlink: [[Primitives]] §NEW-PRIM-31 (Source-to-Target Manifest Rewriter).
+
 import (
 	"fmt"
 	"strings"
@@ -79,7 +81,7 @@ func (m *ManifestRewriter) Rewrite(pkgName string, sourceLang string, deps []Sou
 			// Optional deps that map to mandatory crates are still included
 			// (the planner can decide whether to actually use them).
 		}
-		line := formatDepLine(mapping.Crate, mapping.Version, mapping.Features)
+		line := FormatDepLine(mapping.Crate, mapping.Version, mapping.Features)
 		if dep.Scope == "test" {
 			devDepsLines = append(devDepsLines, line)
 		} else {
@@ -128,16 +130,16 @@ func seedMappings() map[string]CrateMapping {
 }
 
 // formatDepLine formats a single Cargo.toml dependency line.
-func formatDepLine(crate, version string, features []string) string {
+func FormatDepLine(crate, version string, features []string) string {
 	if len(features) == 0 {
 		return fmt.Sprintf("%s = %q", crate, version)
 	}
-	return fmt.Sprintf("%s = { version = %q, features = [%s] }", crate, version, quoteFeatures(features))
+	return fmt.Sprintf("%s = { version = %q, features = [%s] }", crate, version, QuoteFeatures(features))
 }
 
 // quoteFeatures formats a slice of feature names as a comma-separated list of
 // quoted strings: ["derive", "serde1"].
-func quoteFeatures(features []string) string {
+func QuoteFeatures(features []string) string {
 	quoted := make([]string, len(features))
 	for i, f := range features {
 		quoted[i] = fmt.Sprintf("%q", f)

@@ -1,12 +1,14 @@
 package agents
 
+// Backlink: [[Primitives]] §NEW-PRIM-24 (Role Schemas) and §NEW-PRIM-25 (Role-Flip Gate).
+
 import (
 	"bytes"
 	"fmt"
 	"text/template"
 )
 
-const analyzerPromptTemplate = `You are the Analyzer Agent in the multi-agent repository-level translation workflow.
+const AnalyzerPromptTemplate = `You are the Analyzer Agent in the multi-agent repository-level translation workflow.
 Your goal is to perform analysis of the source project and generate 3 documents:
 1. Source Project Research
 2. Third-Party Library Analysis
@@ -47,7 +49,7 @@ Identify all libraries/headers used and their idiomatic equivalents in {{.Target
 ## Error Handling
 ## Third-Party Libraries`
 
-const planningPromptTemplate = `You are the Planning Agent in the multi-agent repository-level translation workflow.
+const PlanningPromptTemplate = `You are the Planning Agent in the multi-agent repository-level translation workflow.
 Using the Analyzer's Target Project Design and source fragments, you must output:
 1. Name Mapping: A JSON map of source symbol -> target {{.TargetLang}} symbol name.
 2. Skeleton Generation: Complete skeleton files for the target {{.TargetLang}} project containing all build definitions, module declarations, struct/type definitions, and function signatures.
@@ -85,7 +87,7 @@ A1: Translate ...
 ## Part B: Test Code Translation & Validation
 B1: Translate and execute tests ...`
 
-const translatorTranslatePromptTemplate = `You are the Translator Agent in the multi-agent repository-level translation workflow.
+const TranslatorTranslatePromptTemplate = `You are the Translator Agent in the multi-agent repository-level translation workflow.
 Your task is to translate the source codebase ({{.SourceLang}}) into fully working, idiomatic, safe {{.TargetLang}} code.
 Translate ALL source data models, structs, classes, functions, and logic directly from the provided source files preserving exact semantic behavior.
 Translate ALL unit tests and characterization tests into the target test framework.
@@ -130,7 +132,7 @@ FILE: path/to/target/file.ext
 ` + "```{{.TargetLangLower}}\n" + `// Full file implementation
 ` + "```"
 
-const translatorChunkedPromptTemplate = `You are the Translator Agent translating ONE source file into {{.TargetLang}} as part of a larger chunked translation workflow.
+const TranslatorChunkedPromptTemplate = `You are the Translator Agent translating ONE source file into {{.TargetLang}} as part of a larger chunked translation workflow.
 The repository has already been partially translated. Use the "Previously Emitted Modules" block as state: it lists every target file already written and shows the first lines of its content, so you can re-use existing public symbols (types, constructors, helpers) without re-declaring them.
 
 Target Package / Module Name: {{.PackageName}}
@@ -160,7 +162,7 @@ Translate the single source file above into {{.TargetLang}} now. Format the outp
 ` + "```{{.TargetLangLower}}\n" + `// Full file implementation
 ` + "```"
 
-const translatorRepairPromptTemplate = `You are the Translator Agent in repair mode.
+const TranslatorRepairPromptTemplate = `You are the Translator Agent in repair mode.
 The Validator Agent reported compilation or test failures for the translated {{.TargetLang}} codebase.
 
 Target Package / Module Name: {{.PackageName}}
@@ -192,7 +194,7 @@ FILE: path/to/target/file.ext
 ` + "```{{.TargetLangLower}}\n" + `// Full corrected file implementation
 ` + "```"
 
-const validatorCoveragePromptTemplate = `You are the Validator Agent performing Coverage-Guided Test Generation.
+const ValidatorCoveragePromptTemplate = `You are the Validator Agent performing Coverage-Guided Test Generation.
 The following functions or modules are uncovered or need more test assertions in the translated {{.TargetLang}} project:
 {{.UncoveredFunctions}}
 
@@ -211,7 +213,7 @@ FILE: {{.TestFileRelPath}}
 ` + "```"
 
 // renderPromptTemplate parses and executes a prompt template string with data.
-func renderPromptTemplate(name, tmplStr string, data any) (string, error) {
+func RenderPromptTemplate(name, tmplStr string, data any) (string, error) {
 	tmpl, err := template.New(name).Parse(tmplStr)
 	if err != nil {
 		return "", fmt.Errorf("failed to parse prompt template %s: %w", name, err)
@@ -224,3 +226,13 @@ func renderPromptTemplate(name, tmplStr string, data any) (string, error) {
 
 	return buf.String(), nil
 }
+
+
+
+var renderPromptTemplate = RenderPromptTemplate
+var analyzerPromptTemplate = AnalyzerPromptTemplate
+var planningPromptTemplate = PlanningPromptTemplate
+var translatorTranslatePromptTemplate = TranslatorTranslatePromptTemplate
+var translatorChunkedPromptTemplate = TranslatorChunkedPromptTemplate
+var translatorRepairPromptTemplate = TranslatorRepairPromptTemplate
+var validatorCoveragePromptTemplate = ValidatorCoveragePromptTemplate

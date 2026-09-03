@@ -1,5 +1,7 @@
 package agents
 
+// Backlink: [[Methodology]] §1 Stage 4 and [[Primitives]] §NEW-PRIM-23, §NEW-PRIM-24, §NEW-PRIM-25.
+
 import (
 	"context"
 	"fmt"
@@ -134,8 +136,8 @@ func (t *TranslatorAgent) collectCurrentTargetFiles(state *types.State) []string
 	return targetFilesData
 }
 
-// resolvePackageName determines the canonical package/crate name for import statements.
-func (t *TranslatorAgent) resolvePackageName(targetDir, targetLang string) string {
+// resolvePackageName determines the canonical package/crate name for import statements and project metadata.
+func resolvePackageName(targetDir, targetLang string) string {
 	packageName := sanitizeProjectName(filepath.Base(targetDir))
 	if packageName == "" || packageName == "." || strings.EqualFold(packageName, targetLang) {
 		parent := filepath.Base(filepath.Dir(targetDir))
@@ -147,6 +149,10 @@ func (t *TranslatorAgent) resolvePackageName(targetDir, targetLang string) strin
 		packageName = "translated_project"
 	}
 	return packageName
+}
+
+func (t *TranslatorAgent) resolvePackageName(targetDir, targetLang string) string {
+	return resolvePackageName(targetDir, targetLang)
 }
 
 // generateTranslation renders the translation prompt and queries the coding model.
@@ -185,7 +191,7 @@ func (t *TranslatorAgent) generateRepair(ctx context.Context, state *types.State
 		"TargetLang":      state.Task.TargetLang,
 		"TargetLangLower": strings.ToLower(state.Task.TargetLang),
 		"Diagnostics":     state.ValidationReport.Diagnostics,
-		"CrateCanonicalHints": crateCanonicalHints(state.Task.TargetLang),
+		"CrateCanonicalHints": CrateCanonicalHints(state.Task.TargetLang),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to render repair prompt: %w", err)
@@ -224,7 +230,7 @@ func (t *TranslatorAgent) syncFilesToDisk(targetDir string, files map[string]str
 	for relPath, content := range files {
 		clean := tools.CleanCodeContent(content)
 		if relPath == "Cargo.toml" && strings.EqualFold(state.Task.TargetLang, "Rust") {
-			clean = canonicalizeCargoToml(clean)
+			clean = CanonicalizeCargoToml(clean)
 		}
 		fullPath := filepath.Join(targetDir, relPath)
 		if err := os.MkdirAll(filepath.Dir(fullPath), 0755); err != nil {

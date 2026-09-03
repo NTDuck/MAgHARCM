@@ -9,8 +9,8 @@ import (
 )
 
 // YAMLConfig is the on-disk schema; only the nested translation.* form
-// is supported. (The previous flat-yaml shim was unused outside tests and
-// was a duplicate-source-of-truth hazard — kept just the live format.)
+// is supported.
+// Backlink: [[Methodology]] §1 "The 6-Stage Pipeline" and [[Primitives]] §NEW-PRIM-24.
 type YAMLConfig struct {
 	Translation struct {
 		Source struct {
@@ -55,39 +55,65 @@ func ParseYAML(data []byte) (*Config, error) {
 	}
 
 	cfg := Defaults()
-	t := y.Translation
-	if t.Source.Dir != "" {
-		cfg.SourceDir = t.Source.Dir
-	}
-	if t.Source.Language != "" {
-		cfg.SourceLang = t.Source.Language
-	}
-	if t.Target.Dir != "" {
-		cfg.TargetDir = t.Target.Dir
-	}
-	if t.Target.Language != "" {
-		cfg.TargetLang = t.Target.Language
-	}
-	if t.Target.Toolchain != "" {
-		cfg.Toolchain = t.Target.Toolchain
-	}
-	if t.Models.Reasoning != "" {
-		cfg.ReasoningModel = t.Models.Reasoning
-	}
-	if t.Models.Coding != "" {
-		cfg.CodingModel = t.Models.Coding
-	}
-	if t.Models.OllamaURL != "" {
-		cfg.OllamaBaseURL = t.Models.OllamaURL
-	}
-	if t.Execution.MaxIterations > 0 {
-		cfg.MaxIterations = t.Execution.MaxIterations
-	}
-	if t.Execution.TimeoutSeconds > 0 {
-		cfg.Timeout = time.Duration(t.Execution.TimeoutSeconds) * time.Second
-	}
-	if t.LSP.Provider != "" {
-		cfg.LSPProvider = t.LSP.Provider
-	}
+	applyTranslationOverrides(cfg, &y)
 	return cfg, nil
+}
+
+// applyTranslationOverrides applies parsed YAML translation attributes to Config.
+// Backlink: [[Design Space]] §Configuration.
+func applyTranslationOverrides(cfg *Config, y *YAMLConfig) {
+	t := y.Translation
+	applySourceConfig(cfg, t.Source.Dir, t.Source.Language)
+	applyTargetConfig(cfg, t.Target.Dir, t.Target.Language, t.Target.Toolchain)
+	applyModelsConfig(cfg, t.Models.Reasoning, t.Models.Coding, t.Models.OllamaURL)
+	applyExecutionConfig(cfg, t.Execution.MaxIterations, t.Execution.TimeoutSeconds)
+	applyLSPConfig(cfg, t.LSP.Provider)
+}
+
+func applySourceConfig(cfg *Config, dir, lang string) {
+	if dir != "" {
+		cfg.SourceDir = dir
+	}
+	if lang != "" {
+		cfg.SourceLang = lang
+	}
+}
+
+func applyTargetConfig(cfg *Config, dir, lang, toolchain string) {
+	if dir != "" {
+		cfg.TargetDir = dir
+	}
+	if lang != "" {
+		cfg.TargetLang = lang
+	}
+	if toolchain != "" {
+		cfg.Toolchain = toolchain
+	}
+}
+
+func applyModelsConfig(cfg *Config, reasoning, coding, ollamaURL string) {
+	if reasoning != "" {
+		cfg.ReasoningModel = reasoning
+	}
+	if coding != "" {
+		cfg.CodingModel = coding
+	}
+	if ollamaURL != "" {
+		cfg.OllamaBaseURL = ollamaURL
+	}
+}
+
+func applyExecutionConfig(cfg *Config, maxIterations, timeoutSeconds int) {
+	if maxIterations > 0 {
+		cfg.MaxIterations = maxIterations
+	}
+	if timeoutSeconds > 0 {
+		cfg.Timeout = time.Duration(timeoutSeconds) * time.Second
+	}
+}
+
+func applyLSPConfig(cfg *Config, provider string) {
+	if provider != "" {
+		cfg.LSPProvider = provider
+	}
 }

@@ -1,12 +1,21 @@
 package config
 
 import (
-	"os"
-	"strconv"
 	"time"
 )
 
+// Default constant values for MAgHARCM pipeline configuration.
+// See Obsidian vault: [[Methodology]] §2 "The 4+1 Agents" and [[Primitives]] §NEW-PRIM-23.
+const (
+	DefaultOllamaBaseURL  = "http://localhost:11434"
+	DefaultReasoningModel = "qwen3:30b-a3b-thinking-2507-q4_K_M"
+	DefaultCodingModel    = "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4_K_XL"
+	DefaultMaxIterations  = 10
+	DefaultTimeoutSeconds = 5000
+)
+
 // Config holds centralized configuration for the MAgHARCM translation pipeline.
+// Backlink: [[Design Space]] §Configuration and [[Methodology]] §4.
 type Config struct {
 	OllamaBaseURL  string
 	ReasoningModel string
@@ -21,30 +30,15 @@ type Config struct {
 	LSPProvider    string
 }
 
-// Defaults returns a Config with default values populated from the
-// environment, falling back to the documented shipped defaults.
+// Defaults returns a Config populated directly with shipped baseline defaults.
+// Default fallbacks via environment variables are omitted per repository configuration standards.
+// Backlink: [[Methodology]] §4 (Balanced MAgHARCM CAND-08).
 func Defaults() *Config {
 	return &Config{
-		OllamaBaseURL:  envOrDefault("OLLAMA_BASE_URL", "http://localhost:11434"),
-		ReasoningModel: envOrDefault("OLLAMA_REASONING_MODEL", "qwen3:30b-a3b-thinking-2507-q4_K_M"),
-		CodingModel:    envOrDefault("OLLAMA_CODING_MODEL", "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4_K_XL"),
-		MaxIterations:  envIntOrDefault("MAGHARCM_MAX_ITERATIONS", 10),
-		Timeout:        time.Duration(envIntOrDefault("MAGHARCM_TIMEOUT_SECONDS", 5000)) * time.Second,
+		OllamaBaseURL:  DefaultOllamaBaseURL,
+		ReasoningModel: DefaultReasoningModel,
+		CodingModel:    DefaultCodingModel,
+		MaxIterations:  DefaultMaxIterations,
+		Timeout:        time.Duration(DefaultTimeoutSeconds) * time.Second,
 	}
-}
-
-func envOrDefault(key, def string) string {
-	if v := os.Getenv(key); v != "" {
-		return v
-	}
-	return def
-}
-
-func envIntOrDefault(key string, def int) int {
-	if v := os.Getenv(key); v != "" {
-		if i, err := strconv.Atoi(v); err == nil && i > 0 {
-			return i
-		}
-	}
-	return def
 }

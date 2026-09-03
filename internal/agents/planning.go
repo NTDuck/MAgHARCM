@@ -1,5 +1,7 @@
 package agents
 
+// Backlink: [[Methodology]] §1 Stage 3 and [[Primitives]] §NEW-PRIM-01, §NEW-PRIM-02, §NEW-PRIM-03.
+
 import (
 	"context"
 	"encoding/json"
@@ -169,19 +171,10 @@ func (p *PlanningAgent) resolveSkeletonFiles(rawContent string, state *types.Sta
 	skeletonFiles := parseFileBlocks(rawContent, "=== SKELETON_FILES ===")
 	if len(skeletonFiles) == 0 {
 		logger.LogWarning("Planning LLM did not emit explicit skeleton files; generating fallback skeleton for `%s`", state.Task.TargetLang)
-		skeletonFiles = defaultProjectSkeleton(state.Task.TargetDir, state.Task.TargetLang, fragments)
+		skeletonFiles = DefaultProjectSkeleton(state.Task.TargetDir, state.Task.TargetLang, fragments)
 	} else if strings.EqualFold(state.Task.TargetLang, "Rust") {
 		if _, hasCargo := skeletonFiles["Cargo.toml"]; !hasCargo {
-			projectName := sanitizeProjectName(filepath.Base(state.Task.TargetDir))
-			if projectName == "" || projectName == "." || strings.EqualFold(projectName, state.Task.TargetLang) {
-				parent := filepath.Base(filepath.Dir(state.Task.TargetDir))
-				if parent != "" && parent != "." && parent != "/" {
-					projectName = sanitizeProjectName(parent)
-				}
-			}
-			if projectName == "" {
-				projectName = "translated_project"
-			}
+			projectName := resolvePackageName(state.Task.TargetDir, state.Task.TargetLang)
 			skeletonFiles["Cargo.toml"] = fmt.Sprintf("[package]\nname = \"%s\"\nversion = \"0.1.0\"\nedition = \"2021\"\n\n[dependencies]\n", projectName)
 		}
 	}
@@ -278,17 +271,8 @@ func ComputeReverseTopoOrder(items []string, dependencies map[string][]string) [
 }
 
 // defaultProjectSkeleton dynamically generates standard project boilerplate files for the target language.
-func defaultProjectSkeleton(targetDir string, targetLang string, fragments []string) map[string]string {
-	projectName := sanitizeProjectName(filepath.Base(targetDir))
-	if projectName == "" || projectName == "." || strings.EqualFold(projectName, targetLang) {
-		parent := filepath.Base(filepath.Dir(targetDir))
-		if parent != "" && parent != "." && parent != "/" {
-			projectName = sanitizeProjectName(parent)
-		}
-	}
-	if projectName == "" {
-		projectName = "translated_project"
-	}
+func DefaultProjectSkeleton(targetDir string, targetLang string, fragments []string) map[string]string {
+	projectName := resolvePackageName(targetDir, targetLang)
 
 	registry := languages.GetRegistry()
 	spec, found := registry.FindByName(targetLang)

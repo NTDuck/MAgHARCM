@@ -1,5 +1,7 @@
 package agents
 
+// Backlink: [[Primitives]] §NEW-PRIM-27 (Coverage-Guided Plateau Detector).
+
 import (
 	"fmt"
 	"strings"

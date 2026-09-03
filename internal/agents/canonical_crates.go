@@ -38,7 +38,7 @@ var canonicalCrateRenames = map[string]string{
 // renames where the key (with-underscore) actually differs from the
 // value (canonical-hyphenated), so the list is short. The string is
 // empty when the target language isn't Rust (no renames apply).
-func crateCanonicalHints(targetLang string) string {
+func CrateCanonicalHints(targetLang string) string {
 	if !strings.EqualFold(targetLang, "Rust") {
 		return ""
 	}
@@ -58,7 +58,7 @@ func crateCanonicalHints(targetLang string) string {
 // pass, the validator's `cargo` invocation fails with E0432 unresolved
 // import errors. The pass rewrites only the LHS of `key = ...` lines
 // to avoid touching multi-line value contexts.
-func canonicalizeCargoToml(manifest string) string {
+func CanonicalizeCargoToml(manifest string) string {
 	if manifest == "" {
 		return manifest
 	}
@@ -66,7 +66,7 @@ func canonicalizeCargoToml(manifest string) string {
 		if from == to {
 			continue
 		}
-		manifest = renameCrateKey(manifest, from, to)
+		manifest = RenameCrateKey(manifest, from, to)
 	}
 	return manifest
 }
@@ -75,7 +75,7 @@ func canonicalizeCargoToml(manifest string) string {
 // Operates line-by-line and only touches a line when the LHS token
 // (whitespace-stripped) equals `from`. Returns the input unchanged when
 // no rewrite occurs.
-func renameCrateKey(manifest, from, to string) string {
+func RenameCrateKey(manifest, from, to string) string {
 	lines := strings.Split(manifest, "\n")
 	changed := false
 	for i, line := range lines {

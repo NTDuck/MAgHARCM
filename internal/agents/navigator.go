@@ -1,5 +1,7 @@
 package agents
 
+// Backlink: [[Methodology]] §2 The 4+1 Agents and [[Primitives]] §NEW-PRIM-26.
+
 import (
 	"context"
 	"fmt"
@@ -67,7 +69,7 @@ func (n *Navigator) LookupSymbol(ctx context.Context, symbol, filePath string) S
 
 	refs, err := n.Provider.GetReferences(ctx, &tools.ReferencesInput{
 		Symbol:     symbol,
-		ProjectDir: projectDirOrDot(filePath),
+		ProjectDir: ProjectDirOrDot(filePath),
 	})
 	if err != nil {
 		logger.LogTool("navigator", "references lookup failed for %q: %v", symbol, err)
@@ -92,7 +94,7 @@ func (n *Navigator) LookupSymbol(ctx context.Context, symbol, filePath string) S
 	}
 
 	logger.LogTool("navigator", "SymbolResolution(%q): defined=%v refs=%d hover=%v",
-		symbol, res.Definition != nil, refCount(res.References), res.Hover != nil)
+		symbol, res.Definition != nil, RefCount(res.References), res.Hover != nil)
 	return res
 }
 
@@ -108,7 +110,7 @@ func (n *Navigator) LookupSymbols(ctx context.Context, symbols []string, filePat
 }
 
 // refCount returns the number of references in the output, or 0 if nil.
-func refCount(refs *tools.ReferencesOutput) int {
+func RefCount(refs *tools.ReferencesOutput) int {
 	if refs == nil {
 		return 0
 	}
@@ -117,7 +119,7 @@ func refCount(refs *tools.ReferencesOutput) int {
 
 // projectDirOrDot returns the directory containing filePath, or "." if filePath is empty.
 // Used as a default ProjectDir for tools that take a project root rather than a file.
-func projectDirOrDot(filePath string) string {
+func ProjectDirOrDot(filePath string) string {
 	if filePath == "" {
 		return "."
 	}
