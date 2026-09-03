@@ -45,8 +45,8 @@ failure it tries the next one rather than failing the whole run.
 
 ## Why four agents
 
-The agent decomposition mirrors ReCodeAgent's Reasoning-Coding split: a
-30B reasoning model handles analysis and planning where longer context and
+The agent decomposition mirrors ReCodeAgent's Reasoning-Coding split: an
+8B reasoning model handles analysis and planning where longer context and
 tool use pay off, and a small 4B coding model handles the per-fragment
 translation where latency and determinism dominate.
 

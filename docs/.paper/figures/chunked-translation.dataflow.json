@@ -5,7 +5,7 @@
     "title": "Chunked Translation & Bounded-Context Synthesis Data Flow",
     "subtitle": "Translator Agent assembles \u2264 4KB context per fragment from Symbol Navigator and Prior-Modules Memory.",
     "output": "docs/.paper/figures/chunked-translation.html",
-    "viewBox": [1180, 820]
+    "viewBox": [1080, 820]
   },
   "stages": [
     { "label": "Source Codebase" },
@@ -31,9 +31,9 @@
     { "from": "src_manifest", "to": "skeleton", "label": "deps", "variant": "default" },
     { "from": "reverse_topo", "to": "skeleton", "label": "ordering", "variant": "default", "labelDy": 24 },
     { "from": "skeleton", "to": "nav_symbols", "label": "fragment", "variant": "emphasis" },
-    { "from": "prior_summary", "to": "nav_symbols", "label": "signatures", "variant": "default" },
-    { "from": "nav_symbols", "to": "coding_slm", "label": "context", "variant": "emphasis" },
-    { "from": "coding_slm", "to": "rust_crate", "label": "translated", "variant": "emphasis" },
+    { "from": "prior_summary", "to": "nav_symbols", "label": "signatures", "variant": "default", "route": "auto" },
+    { "from": "nav_symbols", "to": "coding_slm", "label": "context", "variant": "emphasis", "route": "auto", "labelDy": 56, "via": [[700, 157], [700, 220], [670, 220], [670, 200], [689, 200]] },
+    { "from": "coding_slm", "to": "rust_crate", "label": "translated", "variant": "emphasis", "route": "auto", "labelDy": 56, "via": [[915, 157], [915, 220], [885, 220], [885, 200], [904, 200]] },
     { "from": "coding_slm", "to": "prior_summary", "label": "emit", "variant": "default" },
     { "from": "rust_crate", "to": "validation_report", "label": "build + test", "variant": "default", "labelDy": 24 },
     { "from": "validation_report", "to": "weakening_guard", "label": "assert diff", "variant": "security", "labelDy": 24 },

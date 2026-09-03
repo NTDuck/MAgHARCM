@@ -5,10 +5,7 @@
     "title": "MAgHARCM Translate–Validate–Repair Lifecycle",
     "subtitle": "Iterative state machine: Analyze → Plan → Translate → Validate (cascade) → Repair until converge, plateau, weaken, or exhaust.",
     "output": "docs/.paper/figures/translation-lifecycle.html",
-    "viewBox": [
-      1200,
-      720
-    ]
+    "viewBox": [980, 720]
   },
   "lanes": [
     {
@@ -29,7 +26,7 @@
       "id": "intake",
       "type": "start",
       "label": "Intake",
-      "sublabel": "Manifest + AST",
+      "sublabel": "Manifest",
       "lane": "main",
       "col": 0,
       "step": "01",
@@ -136,7 +133,8 @@
       "to": "converged",
       "variant": "default",
       "fromSide": "bottom",
-      "toSide": "top"
+      "toSide": "top",
+      "via": [[402, 393], [402, 350]]
     },
     {
       "id": "validate-weakened",
@@ -162,18 +160,11 @@
       "fromSide": "left",
       "toSide": "left",
       "via": [
-        [
-          1150,
-          290
-        ],
-        [
-          1150,
-          50
-        ],
-        [
-          497,
-          50
-        ]
+        [497, 307],
+        [497, 290],
+        [1150, 290],
+        [1150, 50],
+        [497, 50]
       ]
     }
   ],

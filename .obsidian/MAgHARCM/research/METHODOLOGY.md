@@ -20,7 +20,7 @@ START → analyzer → planner → translator → validator → branch
 
 | Stage | Agent    | What it does |
 | ----- | -------- | ------------ |
-| 1     | analyzer   | Walks the source tree, runs the 30B reasoning model, and emits three documents: Source Project Research, Third-Party Library Analysis, Target Project Design. Picks a migration strategy via `internal/agents/strategy.go::Registry.TryInOrder`. |
+| 1     | analyzer   | Walks the source tree, runs the 8B reasoning model, and emits three documents: Source Project Research, Third-Party Library Analysis, Target Project Design. Picks a migration strategy via `internal/agents/strategy.go::Registry.TryInOrder`. |
 | 2     | planner    | Reads analyzer output, fragments the AST into translation units, resolves ambiguous symbol names through the configured LSP provider (Tree-sitter or ABCoder MCP), and emits an `ImplementationPlan` with two ordered lists: source translation steps (Part A) and test generation + validation steps (Part B). Builds a reverse-topological DAG with back-edge cuts. |
 | 3     | translator | Runs the 4B coding model per fragment in topological order. Each fragment sees bounded context (Symbol Navigator + Prior-Modules Memory, each capped at 4KB) and the previously emitted modules as a context prefix. Persists a checkpoint after each fragment. |
 | 4     | validator  | Compiles the target, runs the test suite, and emits a `ValidationReport`. The cascade runs AST pre-check → cargo check → cargo test → adversarial weakening guard → CodaMOSA plateau detector. When the cascade detects failure, the report triggers a repair iteration back on the translator. |

@@ -1,0 +1,35 @@
+paper+figures+obsidian: complete ReCodeAgent-style rewrite
+
+Paper:
+- Re-author intro with 4 numbered challenges framing the research gap
+- Rewrite method section with Problem Definition + Architecture overview
+- Restructure tools subsection ahead of 4 numbered agent subsections
+- Add Algorithm 1 box for the analyze-plan-translate-validate loop
+- Rebuild sec_eval around 4 research questions (effectiveness, test
+  translation quality, ablation, cost)
+- Group sec_related by rule-based / neuro-symbolic / agentic
+- Rewrite sec_conclusion with summary, findings, limitations, future work
+- Add missing bib entries (codemod, leaderboards)
+- Define missing \sem macro
+
+Figures:
+- Validate 3 figures against archify showcase 9-checkpoint standard
+- Fix micro-segments via proper channel routing
+- Shrink viewBox widths to keep text >=6px at 1440x900 desktop
+- Fix validate-repair via diagonal in lifecycle diagram
+- All 3 figures pass archify validate + visual-check
+
+Obsidian:
+- Fix 30B reasoning-model reference to match the actual 8B default
+  in mise.toml and .config/gildedrose.yml
+
+Result: 16-page main.pdf, 982KB, all references resolved, zero
+undefined warnings. Three figures at showcase quality.
+
+Verification:
+- pdflatex + bibtex + pdflatex + pdflatex: clean compile
+- archify validate workflow/dataflow/lifecycle --quality showcase: all pass
+- archify visual-check at 1440x900 light/dark: figures render cleanly
+
+Refs: p01_recodeagent (ReCodeAgent ICLR 2026 paper).
+

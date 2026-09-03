@@ -5005,7 +5005,7 @@
     <!-- Main Diagram -->
     <div class="diagram-container" data-detail-level="read"
          data-preset-badge-editorial-plate="ARCHIFY / PLATE 04">
-      <svg viewBox="0 0 1180 820" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-preset="classic" data-quality-profile="standard">
+      <svg viewBox="0 0 1080 820" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-preset="classic" data-quality-profile="showcase">
         <title id="archify-diagram-title">Chunked Translation &amp; Bounded-Context Synthesis Data Flow</title>
         <desc id="archify-diagram-description">Translator Agent assembles ≤ 4KB context per fragment from Symbol Navigator and Prior-Modules Memory.</desc>
         <!-- Definitions -->
@@ -5052,12 +5052,12 @@
         <path data-edge-from="reverse_topo" data-edge-to="skeleton" data-edge-label="ordering" data-edge-key="2" data-composition-points="315,186;315,242" d="M 315 186 L 315 242" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
         <path data-edge-from="skeleton" data-edge-to="nav_symbols" data-edge-label="fragment" data-edge-key="3" data-composition-points="371,271;422.5,271;422.5,157;474,157" d="M 371 271 L 422.5 271 L 422.5 157 L 474 157" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
         <path data-edge-from="prior_summary" data-edge-to="nav_symbols" data-edge-label="signatures" data-edge-key="4" data-composition-points="530,242;530,186" d="M 530 242 L 530 186" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="nav_symbols" data-edge-to="coding_slm" data-edge-label="context" data-edge-key="5" data-composition-points="586,157;637.5,157;637.5,150;689,150" d="M 586 157 L 637.5 157 L 637.5 150 L 689 150" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="coding_slm" data-edge-to="rust_crate" data-edge-label="translated" data-edge-key="6" data-composition-points="801,150;852.5,150;852.5,157;904,157" d="M 801 150 L 852.5 150 L 852.5 157 L 904 157" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="coding_slm" data-edge-to="prior_summary" data-edge-label="emit" data-edge-key="7" data-composition-points="689,164;637.5,164;637.5,271;586,271" d="M 689 164 L 637.5 164 L 637.5 271 L 586 271" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="nav_symbols" data-edge-to="coding_slm" data-edge-label="context" data-edge-key="5" data-composition-points="586,157;700,157;700,220;670,220;670,200;689,200;689,157" d="M 586 157 L 700 157 L 700 220 L 670 220 L 670 200 L 689 200 L 689 157" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="coding_slm" data-edge-to="rust_crate" data-edge-label="translated" data-edge-key="6" data-composition-points="801,157;915,157;915,220;885,220;885,200;904,200;904,157" d="M 801 157 L 915 157 L 915 220 L 885 220 L 885 200 L 904 200 L 904 157" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="coding_slm" data-edge-to="prior_summary" data-edge-label="emit" data-edge-key="7" data-composition-points="689,157;637.5,157;637.5,271;586,271" d="M 689 157 L 637.5 157 L 637.5 271 L 586 271" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
         <path data-edge-from="rust_crate" data-edge-to="validation_report" data-edge-label="build + test" data-edge-key="8" data-composition-points="960,186;960,242" d="M 960 186 L 960 242" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
         <path data-edge-from="validation_report" data-edge-to="weakening_guard" data-edge-label="assert diff" data-edge-key="9" data-composition-points="960,300;960,356" d="M 960 300 L 960 356" class="a-security" stroke-width="1.4" marker-end="url(#arrowhead-security)"/>
-        <path data-edge-from="validation_report" data-edge-to="coding_slm" data-edge-label="repair" data-edge-key="10" data-composition-points="904,271;852.5,271;852.5,164;801,164" d="M 904 271 L 852.5 271 L 852.5 164 L 801 164" class="a-dashed" stroke-width="1.4" marker-end="url(#arrowhead-dashed)"/>
+        <path data-edge-from="validation_report" data-edge-to="coding_slm" data-edge-label="repair" data-edge-key="10" data-composition-points="904,271;852.5,271;852.5,157;801,157" d="M 904 271 L 852.5 271 L 852.5 157 L 801 157" class="a-dashed" stroke-width="1.4" marker-end="url(#arrowhead-dashed)"/>
 
         <!-- Nodes -->
         <g id="node-src_ast" data-node-id="src_ast" data-node-label="Tree-Sitter" tabindex="0" role="button" aria-label="Focus Tree-Sitter, Source AST, 01 / Source Codebase" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Source AST" data-node-tag="PA tool" data-node-context="01 / Source Codebase">
@@ -5205,16 +5205,16 @@
           <text x="530" y="232" class="t-muted" font-size="8" text-anchor="middle">signatures</text>
         </g>
         <g data-detail="context" data-edge-from="nav_symbols" data-edge-to="coding_slm" data-edge-label="context" data-edge-key="5">
-          <rect x="614.35" y="132.5" width="46.3" height="16" rx="4" class="c-mask"/>
-          <text x="637.5" y="143.5" class="t-backend" font-size="8" text-anchor="middle">context</text>
+          <rect x="676.85" y="223.5" width="46.3" height="16" rx="4" class="c-mask"/>
+          <text x="700" y="234.5" class="t-backend" font-size="8" text-anchor="middle">context</text>
         </g>
         <g data-detail="context" data-edge-from="coding_slm" data-edge-to="rust_crate" data-edge-label="translated" data-edge-key="6">
-          <rect x="822" y="132.5" width="61" height="16" rx="4" class="c-mask"/>
-          <text x="852.5" y="143.5" class="t-backend" font-size="8" text-anchor="middle">translated</text>
+          <rect x="884.5" y="223.5" width="61" height="16" rx="4" class="c-mask"/>
+          <text x="915" y="234.5" class="t-backend" font-size="8" text-anchor="middle">translated</text>
         </g>
         <g data-detail="context" data-edge-from="coding_slm" data-edge-to="prior_summary" data-edge-label="emit" data-edge-key="7">
-          <rect x="620.5" y="196.5" width="34" height="16" rx="4" class="c-mask"/>
-          <text x="637.5" y="207.5" class="t-muted" font-size="8" text-anchor="middle">emit</text>
+          <rect x="620.5" y="193" width="34" height="16" rx="4" class="c-mask"/>
+          <text x="637.5" y="204" class="t-muted" font-size="8" text-anchor="middle">emit</text>
         </g>
         <g data-detail="context" data-edge-from="rust_crate" data-edge-to="validation_report" data-edge-label="build + test" data-edge-key="8">
           <rect x="924.6" y="189" width="70.8" height="16" rx="4" class="c-mask"/>
@@ -5225,8 +5225,8 @@
           <text x="960" y="314" class="t-security" font-size="8" text-anchor="middle">assert diff</text>
         </g>
         <g data-detail="context" data-edge-from="validation_report" data-edge-to="coding_slm" data-edge-label="repair" data-edge-key="10">
-          <rect x="831.8" y="196.5" width="41.4" height="16" rx="4" class="c-mask"/>
-          <text x="852.5" y="207.5" class="t-messagebus" font-size="8" text-anchor="middle">repair</text>
+          <rect x="831.8" y="193" width="41.4" height="16" rx="4" class="c-mask"/>
+          <text x="852.5" y="204" class="t-messagebus" font-size="8" text-anchor="middle">repair</text>
         </g>
 
         <!-- Legend -->

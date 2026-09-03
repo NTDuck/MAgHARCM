@@ -5005,7 +5005,7 @@
     <!-- Main Diagram -->
     <div class="diagram-container" data-detail-level="read"
          data-preset-badge-editorial-plate="ARCHIFY / PLATE 04">
-      <svg viewBox="0 0 1200 720" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-preset="classic" data-quality-profile="standard">
+      <svg viewBox="0 0 980 720" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-preset="classic" data-quality-profile="showcase">
         <title id="archify-diagram-title">MAgHARCM Translate–Validate–Repair Lifecycle</title>
         <desc id="archify-diagram-description">Iterative state machine: Analyze → Plan → Translate → Validate (cascade) → Repair until converge, plateau, weaken, or exhaust.</desc>
         <!-- Definitions -->
@@ -5031,11 +5031,11 @@
         <rect width="100%" height="100%" fill="url(#grid)" />
 
         <!-- Lifecycle bands -->
-        <path d="M 72 112 L 1128 112" class="a-default" stroke-width="0.8" stroke-dasharray="3,8"/>
+        <path d="M 72 112 L 908 112" class="a-default" stroke-width="0.8" stroke-dasharray="3,8"/>
         <text x="72" y="100" class="t-dim" font-size="10" font-weight="600">01 / Pipeline Phases</text>
-        <path d="M 72 264 L 1128 264" class="a-default" stroke-width="0.8" stroke-dasharray="3,8"/>
+        <path d="M 72 264 L 908 264" class="a-default" stroke-width="0.8" stroke-dasharray="3,8"/>
         <text x="72" y="252" class="t-dim" font-size="10" font-weight="600">02 / Validation Cascade</text>
-        <path d="M 72 436 L 1128 436" class="a-default" stroke-width="0.8" stroke-dasharray="3,8"/>
+        <path d="M 72 436 L 908 436" class="a-default" stroke-width="0.8" stroke-dasharray="3,8"/>
         <text x="72" y="424" class="t-dim" font-size="10" font-weight="600">03 / Terminal Exits</text>
 
         <!-- Primary lifecycle rail -->
@@ -5046,14 +5046,14 @@
         <path data-edge-from="analyzing" data-edge-to="planning" data-edge-key="1" data-edge-id="analyzing-planning" data-composition-points="307,157;343,157" d="M 307 157 L 343 157" class="a-default" stroke-width="1.1" marker-end="url(#arrowhead)"/>
         <path data-edge-from="planning" data-edge-to="translating" data-edge-key="2" data-edge-id="planning-translating" data-composition-points="461,157;497,157" d="M 461 157 L 497 157" class="a-default" stroke-width="1.1" marker-end="url(#arrowhead)"/>
         <path data-edge-from="translating" data-edge-to="validate_cascade" data-edge-key="3" data-edge-id="translating-validate" data-composition-points="556,188;556,233;402,233;402,278" d="M 556 188 L 556 223 Q 556 233 546 233 L 412 233 Q 402 233 402 243 L 402 278" class="a-default" stroke-width="1.1" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="validate_cascade" data-edge-to="converged" data-edge-key="4" data-edge-id="validate-converged" data-composition-points="388,336;388,393;402,393;402,450" d="M 388 336 L 388 386 Q 388 393 395 393 L 395 393 Q 402 393 402 400 L 402 450" class="a-default" stroke-width="1.1" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="validate_cascade" data-edge-to="weakened" data-edge-key="5" data-edge-id="validate-weakened" data-composition-points="416,336;416,393;710,393;710,450" d="M 416 336 L 416 383 Q 416 393 426 393 L 700 393 Q 710 393 710 403 L 710 450" class="a-security" stroke-width="1.1" marker-end="url(#arrowhead-security)"/>
-        <path data-edge-from="validate_cascade" data-edge-to="exhausted" data-edge-key="6" data-edge-id="validate-exhausted" data-composition-points="402,336;402,393;556,393;556,450" d="M 402 336 L 402 383 Q 402 393 412 393 L 546 393 Q 556 393 556 403 L 556 450" class="a-default" stroke-width="1.1" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="validate_cascade" data-edge-to="translating" data-edge-key="7" data-edge-id="validate-repair" data-composition-points="302,307;1150,290;1150,50;497,50;497,157" d="M 302 307 L 1140.0020088396095 290.2004314265644 Q 1150 290 1150 280 L 1150 60 Q 1150 50 1140 50 L 507 50 Q 497 50 497 60 L 497 157" class="a-dashed" stroke-width="1.1" marker-end="url(#arrowhead-dashed)"/>
+        <path data-edge-from="validate_cascade" data-edge-to="converged" data-edge-key="4" data-edge-id="validate-converged" data-composition-points="402,336;402,393;402,350;402,450" d="M 402 336 L 402 383 Q 402 393 402 383 L 402 360 Q 402 350 402 360 L 402 450" class="a-default" stroke-width="1.1" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="validate_cascade" data-edge-to="weakened" data-edge-key="5" data-edge-id="validate-weakened" data-composition-points="409,336;409,393;710,393;710,450" d="M 409 336 L 409 383 Q 409 393 419 393 L 700 393 Q 710 393 710 403 L 710 450" class="a-security" stroke-width="1.1" marker-end="url(#arrowhead-security)"/>
+        <path data-edge-from="validate_cascade" data-edge-to="exhausted" data-edge-key="6" data-edge-id="validate-exhausted" data-composition-points="395,336;395,393;556,393;556,450" d="M 395 336 L 395 383 Q 395 393 405 393 L 546 393 Q 556 393 556 403 L 556 450" class="a-default" stroke-width="1.1" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="validate_cascade" data-edge-to="translating" data-edge-key="7" data-edge-id="validate-repair" data-composition-points="302,307;497,307;497,290;1150,290;1150,50;497,50;497,157" d="M 302 307 L 488.5 307 Q 497 307 497 298.5 L 497 298.5 Q 497 290 505.5 290 L 1140 290 Q 1150 290 1150 280 L 1150 60 Q 1150 50 1140 50 L 507 50 Q 497 50 497 60 L 497 157" class="a-dashed" stroke-width="1.1" marker-end="url(#arrowhead-dashed)"/>
 
         <!-- States -->
-        <g id="node-intake" data-node-id="intake" data-node-label="Intake" tabindex="0" role="button" aria-label="Focus Intake, Manifest + AST, Pipeline Phases" aria-pressed="false" data-node-kind="start" data-node-sublabel="Manifest + AST" data-node-tag="entry" data-node-context="Pipeline Phases">
-          <title>Intake · Manifest + AST · Pipeline Phases · entry</title>
+        <g id="node-intake" data-node-id="intake" data-node-label="Intake" tabindex="0" role="button" aria-label="Focus Intake, Manifest, Pipeline Phases" aria-pressed="false" data-node-kind="start" data-node-sublabel="Manifest" data-node-tag="entry" data-node-context="Pipeline Phases">
+          <title>Intake · Manifest · Pipeline Phases · entry</title>
           <rect x="35" y="126" width="118" height="62" rx="7" class="c-mask"/>
           <rect x="35" y="126" width="118" height="62" rx="7" class="c-frontend" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="start" class="semantic-sigil s-frontend" transform="translate(136 132) scale(0.6875)">
@@ -5062,7 +5062,7 @@
           </g>
         <text data-detail="fine" x="45" y="140" class="t-frontend" font-size="7" font-weight="700">01</text>
           <text data-node-label="" data-detail-anchor="" x="94" y="147" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">Intake</text>
-          <text data-detail="context" x="94" y="163" class="t-muted" font-size="7" text-anchor="middle">Manifest + AST</text>
+          <text data-detail="context" x="94" y="163" class="t-muted" font-size="7" text-anchor="middle">Manifest</text>
         <text data-detail="fine" x="94" y="177" class="t-frontend" font-size="7" text-anchor="middle">entry</text>
         </g>
 

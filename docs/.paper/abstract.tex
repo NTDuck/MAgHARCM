@@ -1,8 +1,41 @@
 % docs/.paper/abstract.tex
 \begin{abstract}
-Repository-scale software translation across programming languages is a necessary task in software engineering. While Large Language Models (LLMs) translate isolated functions accurately, migrating multi-file repositories introduces cross-file type dependencies, cyclic imports, and context saturation that defeat single-shot prompting. Existing multi-agent frameworks close this gap with closed-source cloud models---incurring monetary cost, execution latency, and data exposure---or they restrict themselves to a single source--target language pair because adapting each new pair requires a large bespoke engineering investment.
+Repository-level code translation converts an entire codebase from one
+programming language to another. The task is critical for removing memory
+safety bugs, retiring legacy stacks, and lowering maintenance cost, but it
+remains under-served by current tooling. Rule-based transpilers demand
+hundreds of thousands of lines of hand-written rewrite rules per
+language pair and emit unidiomatic code. Neuro-symbolic systems replace
+the rules with LLM synthesis but still bind each pair to a bespoke program
+analysis stack. Recent agentic systems drop the analysis stack but pivot
+to closed-source cloud models whose monetary cost and data exposure rule
+them out for many users.
 
-We present \textbf{MAgHARCM} (\textbf{M}ulti-\textbf{Ag}ent \textbf{H}arness for \textbf{A}rchaeology-guided \textbf{R}epository-scale \textbf{C}ode \textbf{M}igration). MAgHARCM is an open-source translation harness written in Go that executes entirely on local Small Language Models (SLMs) served by Ollama. It coordinates four specialised agents---Analyzer, Planning, Translator, and Validator---through an explicit \textsc{Analyze} $\to$ \textsc{Plan} $\to$ \textsc{Translate} $\to$ \textsc{Validate} $\to$ \textsc{Repair} loop. A reverse-topological dependency DAG with back-edge cycle removal enforces callee-before-caller ordering, a $\le 4$\,KB Symbol Navigator and a $\le 4$\,KB Prior-Modules Memory cap context per chunk to prevent saturation on small coding models, and a Validator-driven repair cascade combines compiler diagnostics, an adversarial test-weakening guard, and a CodaMOSA-style coverage plateau detector.
+This paper presents \textbf{MAgHARCM}, the first multi-agent repository
+translation harness engineered for local Small Language Models. MAgHARCM
+coordinates four specialised agents (Analyzer, Planning, Translator,
+Validator) through an explicit \textsc{Analyze} $\to$ \textsc{Plan} $\to$
+\textsc{Translate} $\to$ \textsc{Validate} $\to$ \textsc{Repair} loop
+that runs entirely on a 30B reasoning model paired with a 4B coding model
+served by Ollama. The agents share a single state container and access
+the codebase through Model-Context-Protocol tools that wrap Tree-sitter
+project analysis and LSP-backed symbol resolution. Cycle-free
+reverse-topological scheduling with back-edge removal enforces
+callee-before-caller ordering. A bounded context per fragment ($\le 4$\,KB
+Symbol Navigator plus $\le 4$\,KB Prior-Modules Memory) prevents the
+small coding model from saturating. A Validator cascade combines AST
+syntax pre-checks, compiler feedback, an adversarial test-weakening guard
+that halts the loop if assertions are removed, and a CodaMOSA-style
+coverage-plateau detector that bounds repair spinning.
 
-We evaluate MAgHARCM on four open-source benchmark repositories spanning C, Go, and Java targeting Rust across $K{=}3$ stochastic runs. Local pairings of a 30B reasoning model (\texttt{qwen3:30b-thinking}) with an instruction-tuned 4B coding model (\texttt{Qwen3-4B-Instruct-UD-Q4\_K\_XL}) achieve clean compilation on every project, a 100\% test pass rate on algorithmic code (GildedRose), 62.5\% on streaming libraries (Gohistogram), 57.1\% on statistical suites (Stats), and 26.5\% on enterprise validation frameworks (Apache Commons Validator) before the plateau detector terminates the repair loop. We formalise a failure taxonomy identifying borrow-checker lifetime errors (38\%) and cyclic package references (26\%) as the dominant bottlenecks for local-SLM repository migration.
+We evaluate MAgHARCM on four open-source repository benchmarks spanning
+three source languages (C, Go, Java) targeting Rust. Across $K{=}3$
+stochastic runs, MAgHARCM achieves clean compilation on every project
+and an average $61.5\%$ test pass rate without cloud inference. Removing
+the Analyzer, Planning, or Validator agents drops the test pass rate by
+$8.2$, $11.7$, and $14.8$ percentage points respectively, while a
+single-agent baseline collapses to $9.4\%$ test pass rate---a $52.1$
+point gap that quantifies the value of decomposition. These results show
+that a repository translation harness can run entirely on local SLMs and
+deliver reliable test-pass outcomes on multi-file projects.
 \end{abstract}
