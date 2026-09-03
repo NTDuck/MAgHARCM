@@ -7,6 +7,18 @@
 \usepackage{graphicx}
 \usepackage{url}
 
+% Permissive Float Placement Parameters (prevents figures from being deferred to end)
+\renewcommand{\topfraction}{0.95}
+\renewcommand{\bottomfraction}{0.95}
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\floatpagefraction}{0.85}
+\setcounter{topnumber}{6}
+\setcounter{bottomnumber}{6}
+\setcounter{totalnumber}{10}
+\setcounter{dbltopnumber}{6}
+\renewcommand{\dbltopfraction}{0.95}
+\renewcommand{\dblfloatpagefraction}{0.85}
+
 % Native Caption Styling (Bold labels: Figure X: / Table X: placed under)
 \makeatletter
 \long\def\@makecaption#1#2{%
@@ -26,20 +38,20 @@
 \newcounter{algorithm}
 \newenvironment{algorithm}[1][t]{%
   \refstepcounter{algorithm}%
-  \vspace{0.8em}%
-  \hrule height 0.8pt\vspace{0.3em}%
-  \noindent\textbf{Algorithm \thealgorithm: #1}\vspace{0.3em}%
-  \hrule height 0.4pt\vspace{0.3em}%
+  \vspace{0.6em}%
+  \hrule height 0.8pt\vspace{0.25em}%
+  \noindent\textbf{Algorithm \thealgorithm: #1}\vspace{0.25em}%
+  \hrule height 0.4pt\vspace{0.25em}%
   \begin{footnotesize}%
 }{%
   \end{footnotesize}%
-  \vspace{0.3em}\hrule height 0.8pt%
-  \vspace{0.8em}%
+  \vspace{0.25em}\hrule height 0.8pt%
+  \vspace{0.6em}%
 }
 \makeatother
 
 \newenvironment{algorithmic}[1][1]{%
-  \begin{list}{\arabic{enumi}.}{\usecounter{enumi}\setlength{\leftmargin}{1.5em}\setlength{\itemsep}{0.12em}\setlength{\topsep}{0em}}%
+  \begin{list}{\arabic{enumi}.}{\usecounter{enumi}\setlength{\leftmargin}{1.5em}\setlength{\itemsep}{0.1em}\setlength{\topsep}{0em}}%
 }{%
   \end{list}%
 }

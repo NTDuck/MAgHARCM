@@ -36,9 +36,10 @@ in target language $L_t$ (such as Rust) satisfying three conditions:
     \end{equation}
 \end{enumerate}
 
-\begin{figure*}[t]
+\begin{figure*}[!t]
     \centering
     \includegraphics[width=\textwidth]{figures/fig1_workflow.png}
+    \vspace{-0.5em}
     \caption{Architecture overview of the MAgHARCM multi-agent translation pipeline. The system coordinates four agents: Analyzer (M\"uller strategy selection), Planning (reverse-topological DAG construction and cycle removal), Translator (chunked translation with Symbol Navigator and Prior Memory), and Validator (AST syntax check, compiler build validation, test suite execution, adversarial weakening guard, and coverage plateau detection).}
     \label{fig:workflow}
 \end{figure*}
@@ -125,9 +126,10 @@ To ensure dependencies resolve before usage, the Planning Agent builds a directe
 
 When circular references occur (node $v$ is on the active recursion stack), the back-edge $(u, v)$ is removed from the planning DAG and recorded in the repair ledger. Furthermore, the Planning Agent uses a \emph{Canonical Manifest Rewriter} that maps source dependencies (such as Java `org.apache.commons.validator` or Go `math/rand`) to standard Rust crates (`validator`, `rand`, `regex`) in the target `Cargo.toml`.
 
-\begin{figure}[t]
+\begin{figure}[!t]
     \centering
-    \includegraphics[width=\columnwidth]{figures/fig3_dataflow.png}
+    \includegraphics[width=\linewidth]{figures/fig3_dataflow.png}
+    \vspace{-0.5em}
     \caption{Data flow architecture for chunked translation and context synthesis. Context bounds are capped at $\le 4$\,KB via the Symbol Navigator and Prior Memory to avoid local SLM context saturation.}
     \label{fig:dataflow}
 \end{figure}
@@ -143,9 +145,10 @@ Context assembly uses two mechanisms:
     \item \textbf{Prior-Modules Memory ($\le 4$\,KB):} The Translator maintains a compact summary of already emitted module paths and exported signatures. This ensures newly generated modules import and reuse existing types consistently.
 \end{enumerate}
 
-\begin{figure}[t]
+\begin{figure}[!t]
     \centering
-    \includegraphics[width=\columnwidth]{figures/fig4_lifecycle.png}
+    \includegraphics[width=\linewidth]{figures/fig4_lifecycle.png}
+    \vspace{-0.5em}
     \caption{State machine lifecycle of MAgHARCM. The system tracks states across intake, analysis, planning, chunked translation, test validation, checkpoints, and multi-stage repair.}
     \label{fig:lifecycle}
 \end{figure}
