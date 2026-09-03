@@ -2,36 +2,36 @@
 \section{Introduction}
 \label{sec:intro}
 
-Software migration across programming languages is a vital task in software engineering. Organizations frequently migrate legacy systems written in C, C++, Java, or Go to modern systems languages like Rust. This migration removes memory safety vulnerabilities such as buffer overflows, use-after-free conditions, and data races~\cite{szekeres2013sok}. It also improves runtime speed and long-term maintainability. However, manual repository migration is expensive and error-prone. It often requires months or years of engineering effort~\cite{khajeh2019automated}.
+Software migration across programming languages is a frequent task in software engineering. Organizations regularly migrate legacy systems written in C, C++, Java, or Go to modern systems languages such as Rust. This migration removes memory safety vulnerabilities such as buffer overflows, use-after-free errors, and data races~\cite{szekeres2013sok}. It also improves runtime performance and maintainability. However, manual repository migration is slow, expensive, and error-prone~\cite{khajeh2019automated}.
 
-\subsection{The Repository-Scale Migration Bottleneck}
+\subsection{The Repository Migration Bottleneck}
 \label{sec:intro_bottleneck}
 
-Large Language Models (LLMs) show high accuracy on isolated function synthesis and unit test generation~\cite{chen2021evaluating,roziere2020transcoder}. But migrating a full multi-file software repository creates different and harder challenges:
+Large Language Models (LLMs) translate isolated functions and synthesize unit tests with high accuracy~\cite{chen2021evaluating,roziere2020transcoder}. But migrating an entire multi-file repository introduces distinct technical challenges:
 \begin{enumerate}
-    \item \textbf{Inter-Module Dependency Structures:} Production codebases contain dozens of interconnected files with shared type definitions and call graphs. Translating individual files in isolation causes incompatible signatures, missing symbol declarations, and build errors.
-    \item \textbf{Cyclic Dependencies and Divergent Idioms:} Source languages like C and Go frequently use circular imports or package-level cycles. Direct translation to Rust violates strict ownership, lifetime, and visibility rules~\cite{siddiq2024oxidizer}.
-    \item \textbf{Context Window Saturation and Attention Decay:} Providing an entire multi-file repository in one prompt exhausts the context window. This causes hallucinations, missing function bodies, and omitted edge cases.
-    \item \textbf{Silent Behavioral Drift and Test Weakening:} Generative models often produce code that compiles but fails tests. Without strict validation, naive repair loops delete failing assertions to falsely report success~\cite{ibrahimzada2026recodeagent}.
+    \item \textbf{Inter-Module Dependency Structures:} Production codebases contain dozens of interconnected files with shared structs, type definitions, and call graphs. Translating files independently causes missing symbols and build failures.
+    \item \textbf{Cyclic Dependencies and Divergent Idioms:} Source languages like C and Go frequently use circular imports. Translating these patterns to strict systems languages like Rust violates ownership, lifetime, and module visibility constraints~\cite{siddiq2024oxidizer}.
+    \item \textbf{Context Window Saturation and Attention Decay:} Supplying an entire repository in one prompt exhausts the context window. This causes hallucinations, missing function bodies, and truncated code.
+    \item \textbf{Silent Behavioral Drift and Test Weakening:} Without strict validation, models produce code that compiles but fails tests. Simple repair loops often remove failing assertions to report false success~\cite{ibrahimzada2026recodeagent}.
 \end{enumerate}
 
 \subsection{Limitations of Existing Approaches}
 \label{sec:intro_limits}
 
-Existing automated migration methods fall into two categories: rule-based transpilers and neural models. Rule-based transpilers like \textsc{C2Rust}~\cite{c2rust} and \textsc{CXGO} use deterministic AST rewrites. They preserve semantics on supported subsets, but they emit unidiomatic code with raw pointers and unsafe blocks.
+Existing automated migration methods fall into two categories: rule-based transpilers and neural models. Rule-based transpilers such as \textsc{C2Rust}~\cite{c2rust} use deterministic AST rewrites. They preserve semantics on supported subsets, but they emit unidiomatic code with raw pointers and unsafe blocks.
 
-Neural translation systems like \textsc{TransCoder}~\cite{roziere2020transcoder} and \textsc{AlphaTrans}~\cite{yang2024alphatrans} operate on single functions or single files without repository orchestration. Multi-agent systems like \textsc{ReCodeAgent}~\cite{ibrahimzada2026recodeagent} showed that specialized agents improve repository translation over monolithic prompts. However, existing multi-agent pipelines depend on large closed-source cloud models (such as Claude 3.5 Sonnet) with high token costs and data privacy risks.
+Neural translation systems such as \textsc{TransCoder}~\cite{roziere2020transcoder} and \textsc{AlphaTrans}~\cite{yang2024alphatrans} operate on single functions without repository orchestration. Multi-agent systems such as \textsc{ReCodeAgent}~\cite{ibrahimzada2026recodeagent} showed that specialized agents improve translation over monolithic prompts. However, existing multi-agent pipelines depend on large closed-source cloud models (such as Claude 3.5 Sonnet) with high token costs and privacy risks.
 
 \subsection{The MAgHARCM Framework}
 \label{sec:intro_magharcm}
 
-To enable reliable repository migration on local hardware, we introduce \textbf{MAgHARCM} (\textbf{M}ulti-\textbf{Ag}ent \textbf{H}arness for \textbf{A}rchaeology-guided \textbf{R}epository-scale \textbf{C}ode \textbf{M}igration). MAgHARCM is an open-source translation engine built in Go on CloudWeGo Eino. It executes entirely on local quantized models through Ollama.
+To enable reliable repository migration on local hardware, we introduce \textbf{MAgHARCM} (\textbf{M}ulti-\textbf{Ag}ent \textbf{H}arness for \textbf{A}rchaeology-guided \textbf{R}epository-scale \textbf{C}ode \textbf{M}igration). MAgHARCM is an open-source translation engine built in Go on CloudWeGo Eino. It executes on local quantized models through Ollama.
 
 MAgHARCM coordinates four specialized agents over an explicit workflow shown in \textbf{Figure~\ref{fig:workflow}}:
 \begin{itemize}
     \item \textbf{Analyzer Agent:} Inspects source AST structures, checks dependency mappings, and uses M\"uller Strategy Selection to select direct, incremental, or pilot migration scope.
     \item \textbf{Planning Agent:} Extracts AST fragments, constructs a cycle-free Reverse-Topological Dependency DAG, rewrites build manifests into canonical target crates, and schedules implementation steps.
-    \item \textbf{Translator Agent:} Emits target code using Chunked Translation, bounded by a $\le 4$\,KB Symbol Navigator and compact Prior Memory to avoid context saturation.
+    \item \textbf{Translator Agent:} Emits target code using Chunked Translation, bounded by a $\le 4$\,KB Symbol Navigator and compact Prior Memory to prevent context saturation.
     \item \textbf{Validator Agent:} Executes a multi-stage validation cascade: AST syntax checks, compiler build validation, test suite execution, an Adversarial Weakening Guard, and a Coverage Plateau Detector.
 \end{itemize}
 
@@ -43,5 +43,5 @@ The primary contributions of this paper are:
     \item \textbf{Modular Multi-Agent Architecture for Local SLMs:} We formulate and implement MAgHARCM, a 4-agent migration harness optimized for local quantized model pairs (a 30B reasoning model paired with an instruction-tuned 4B coding model).
     \item \textbf{Bounded Context Assembly \& Reverse-Topological Scheduling:} We introduce reverse-topological dependency scheduling with back-edge removal, paired with a Symbol Navigator ($\le 4$\,KB) and Prior Memory ($\le 4$\,KB) to prevent context overflow.
     \item \textbf{Multi-Stage Validation \& Adversarial Defense:} We design a validation cascade that combines AST syntax checks, compiler feedback, and an adversarial test-weakening guard that halts execution if test assertions are removed.
-    \item \textbf{Empirical Evaluation \& Failure Taxonomy:} We evaluate MAgHARCM on four benchmark repositories across $K=3$ stability runs without artificial timeouts. We present an empirical failure taxonomy showing borrow-checker lifetime errors (38\%) and cyclic references (26\%) as key bottlenecks.
+    \item \textbf{Empirical Evaluation \& Failure Taxonomy:} We evaluate MAgHARCM on four benchmark repositories across $K=3$ stochastic runs without artificial timeouts. We present an empirical failure taxonomy showing borrow-checker lifetime errors (38\%) and cyclic references (26\%) as key bottlenecks.
 \end{enumerate}

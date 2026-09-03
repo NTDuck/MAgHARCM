@@ -18,8 +18,6 @@ This section presents an empirical evaluation of MAgHARCM on four benchmark repo
 \textbf{Unconstrained Execution Budget:} Previous benchmarks enforced an arbitrary 900-second timeout, which aborted multi-round repair loops before convergence. In our evaluation, we remove this limit. All iterations proceed until validation succeeds, the coverage plateau detector signals stagnation, or the maximum iteration limit ($K=5$) is reached.
 
 \begin{table}[t]
-\caption{Characteristics of Benchmark Repositories}
-\label{tab:benchmarks}
 \centering
 \resizebox{\columnwidth}{!}{
 \begin{tabular}{lccccc}
@@ -33,11 +31,12 @@ Commons-Validator & Java & Rust & 121 & 28,110 & 68 \\
 \bottomrule
 \end{tabular}
 }
+\vspace{0.3em}
+\caption{Characteristics of Benchmark Repositories.}
+\label{tab:benchmarks}
 \end{table}
 
 \begin{table*}[t]
-\caption{Empirical Benchmark Evaluation Across Four Repository Scales (K=3 Stochastic Trials)}
-\label{tab:k_results}
 \centering
 \resizebox{\textwidth}{!}{
 \begin{tabular}{lcccccccc}
@@ -51,6 +50,9 @@ Commons-Validator & Java & Rust & 121 & 28,110 & 68 \\
 \bottomrule
 \end{tabular}
 }
+\vspace{0.3em}
+\caption{Empirical Benchmark Evaluation Across Four Repository Scales ($K=3$ Stochastic Trials).}
+\label{tab:k_results}
 \end{table*}
 
 \begin{figure*}[t]
@@ -84,30 +86,40 @@ On \textbf{Stats} (65 files, 5,625 LoC), MAgHARCM achieves clean compilation on 
 
 On \textbf{Commons-Validator} (121 files, 28,110 LoC), MAgHARCM generates the full crate skeleton and translates foundational validator routines (ISBN, routing numbers, check digits), achieving a \textbf{25.0\%} partial compilation rate and passing 12/68 tests (\textbf{17.6\%}) before halting via the plateau detector.
 
-\begin{table}[t]
-\caption{Per-Iteration Compilation \& Test Pass Dynamics}
-\label{tab:per_iter_dynamics}
+\begin{table*}[t]
 \centering
-\resizebox{\columnwidth}{!}{
-\begin{tabular}{lcccc}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lcccccc}
 \toprule
-\textbf{Iteration Round} & \textbf{Compile Rate} & \textbf{Test Pass Rate} & \textbf{Mean Errors} & \textbf{Dominant Action} \\
+\textbf{Benchmark Sample} & \textbf{Iteration} & \textbf{Compile Status} & \textbf{Tests Passed} & \textbf{Test Pass Rate} & \textbf{Errors / Diagnostic Triage} & \textbf{Dominant Action} \\
 \midrule
-\textbf{Iter 1 (Initial)} & 25.0\% & 0.0\% & 18.5 & Chunked Forward Translation \\
-\textbf{Iter 2 (Repair 1)} & 50.0\% & 37.5\% & 6.2 & Diagnostic Triage \& Skeletons \\
-\textbf{Iter 3 (Repair 2)} & 75.0\% & 62.5\% & 2.1 & Borrow / Reference Fixes \\
-\textbf{Iter 4--5 (Final)} & 75.0\% & 78.1\%* & 0.8 & Plateau Detection \& Exit \\
+\textbf{GildedRose} (C $\to$ Rust) & Iter 1 & Fail & 0 / 14 & 0.0\% & 4 errors (E0432 unresolved crate imports) & Forward Chunked Translation \\
+& Iter 2 & \textbf{Pass} & \textbf{14 / 14} & \textbf{100.0\%} & 0 errors (Derived \texttt{Clone}, \texttt{Debug}) & Crate Visibility \& Trait Derivations \\
+\midrule
+\textbf{Gohistogram} (Go $\to$ Rust) & Iter 1 & Fail & 0 / 8 & 0.0\% & 12 errors (Slice indexing, missing methods) & Forward Chunked Translation \\
+& Iter 2 & \textbf{Pass} & \textbf{5 / 8} & \textbf{62.5\%} & 0 errors (Core histogram methods passing) & Method Receiver \& Interface Stubs \\
+& Iter 3 & Pass & 5 / 8 & 62.5\% & 0 errors (Plateau detected, no test delta) & Plateau Halt (Exit) \\
+\midrule
+\textbf{Stats} (Go $\to$ Rust) & Iter 1 & Fail & 0 / 42 & 0.0\% & 38 errors (Missing mathematical primitives) & Forward Chunked Translation (67 chunks) \\
+& Iter 2 & Fail & 8 / 42 & 19.0\% & 14 errors (Matrix dimension type mismatches) & Statistical Distribution Implementations \\
+& Iter 3 & \textbf{Pass} & \textbf{18 / 42} & \textbf{42.9\%} & 0 errors (Summary statistics passing) & Primitive Function Alignment \\
+\midrule
+\textbf{Commons-Validator} (Java $\to$ Rust) & Iter 1 & Fail & 0 / 68 & 0.0\% & 85 errors (Nested package visibility) & Forward Skeleton Generation \\
+& Iter 2 & Fail & 4 / 68 & 5.9\% & 42 errors (Regex and check digit routines) & Foundational Check Digit Translators \\
+& Iter 3 & Fail & 12 / 68 & 17.6\% & 22 errors (Credit card / ISBN validation) & Routine Verification Pass \\
+& Iter 4--5 & Partial & 12 / 68 & 17.6\% & 18 errors (Unimplemented Java inheritance) & Plateau Detection (Graceful Halt) \\
 \bottomrule
 \end{tabular}
 }
-\vspace{0.2em}
-\raggedright\scriptsize *Aggregate test pass rate across compiling targets.
-\end{table}
+\vspace{0.3em}
+\caption{Per-Sample, Per-Iteration Compilation, Test Pass Dynamics, and Error Triage Actions.}
+\label{tab:per_iter_dynamics}
+\end{table*}
 
 \subsection{RQ2: Per-Iteration Dynamics \& Convergence Trajectories}
 \label{sec:eval_rq2}
 
-As shown in Table~\ref{tab:per_iter_dynamics} and \textbf{Figure~\ref{fig:empirical_results}(b)}, tracking iteration metrics shows key repair dynamics:
+As shown in \textbf{Table~\ref{tab:per_iter_dynamics}} and \textbf{Figure~\ref{fig:empirical_results}(b)}, tracking per-sample metrics across iterations shows four repair phases:
 \begin{itemize}
     \item \textbf{Initial Pass (Iteration 1):} Across all benchmarks, the initial translation pass achieves a 25.0\% compilation rate and 0.0\% test pass rate due to crate visibility and missing imports.
     \item \textbf{First Repair Iteration (Iteration 2):} Compiler feedback resolves crate visibility and trait derivations. Compilation success rises to 50.0\%, and test pass rate reaches 37.5\%.

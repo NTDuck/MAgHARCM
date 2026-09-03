@@ -7,17 +7,17 @@ This section defines the repository translation problem, describes the system ar
 \subsection{Problem Formulation}
 \label{sec:method_formulation}
 
-We define repository-scale translation as a structured mapping between source and target software projects. A source software project is a tuple:
+We define repository-scale translation as a structured mapping between source and target software projects. A source project is defined as:
 \begin{equation}
 P_s = (F_s, T_s, D_s, \mathcal{M}_s)
 \end{equation}
-where $F_s = \{f_1, f_2, \dots, f_n\}$ is the set of source code files in language $L_s$, $T_s = \{t_1, t_2, \dots, t_m\}$ is the test suite, $D_s$ represents external library dependencies from the build manifest, and $\mathcal{M}_s$ defines the module directory structure.
+where $F_s = \{f_1, f_2, \dots, f_n\}$ is the set of source code files in language $L_s$, $T_s = \{t_1, t_2, \dots, t_m\}$ is the test suite, $D_s$ represents library dependencies from the build manifest, and $\mathcal{M}_s$ defines the module directory structure.
 
-The goal of repository translation is to synthesize a corresponding target project:
+The objective is to synthesize a target project:
 \begin{equation}
 P_t = (F_t, T_t, D_t, \mathcal{M}_t)
 \end{equation}
-in target language $L_t$ (such as Rust) satisfying three formal conditions:
+in target language $L_t$ (such as Rust) satisfying three conditions:
 \begin{enumerate}
     \item \textbf{Syntactic and Type Compilation Validity ($\mathcal{C}$):} The target project $P_t$ compiles cleanly under target compiler toolchain $\mathcal{T}_{L_t}$ with zero errors:
     \begin{equation}
@@ -46,32 +46,31 @@ in target language $L_t$ (such as Rust) satisfying three formal conditions:
 \subsection{System Architecture Overview}
 \label{sec:method_arch}
 
-\textbf{Figure~\ref{fig:workflow}} illustrates the six execution stages of MAgHARCM. Algorithm~\ref{alg:magharcm_pipeline} outlines the end-to-end orchestration procedure.
+\textbf{Figure~\ref{fig:workflow}} illustrates the six execution stages of MAgHARCM. Algorithm~\ref{alg:magharcm_pipeline} outlines the end-to-end orchestration procedure with structured inputs, outputs, and validation control branches.
 
 \begin{algorithm}[MAgHARCM Repository Translation Orchestration]
 \label{alg:magharcm_pipeline}
-\small
 \begin{algorithmic}[1]
-\Require Source project $P_s$, Source language $L_s$, Target language $L_t$, Max iterations $K$
-\Ensure Translated target project $P_t$
+\Input Source project $P_s$, Source language $L_s$, Target language $L_t$, Max iterations $K$
+\Output Translated target project $P_t$
 \State $G_{\text{AST}}, \text{Manifest} \gets \Call{ExtractAST}{P_s}$
 \State $\mathcal{S}_{\text{strat}}, \text{Design} \gets \Call{Analyze}{G_{\text{AST}}, \text{Manifest}, L_s, L_t}$
 \State $DAG, \text{Plan}, \text{Skel} \gets \Call{Plan}{G_{\text{AST}}, \text{Design}, L_s, L_t}$
 \State $P_t \gets \Call{InitializeCrate}{\text{Skel}, \text{Plan}}$
 \State $P_t \gets \Call{TranslateChunked}{\text{Translator}, P_t, \text{Plan}}$
-\State $\text{SaveCheckpoint}(P_t, \text{iter}=0)$
+\State $\Call{SaveCheckpoint}{P_t, \text{iter}=0}$
 \State $\text{iter} \gets 0$
 \While{$\text{iter} < K$}
-    \State $\text{Report} \gets \text{ValidatorAgent}.\text{Validate}(P_t, P_s)$
-    \If{$\text{Report}.\text{AllSuccess} = \text{True}$}
-        \State \Return $P_t$ \Comment{Successfully converged}
-    \EndIf
-    \If{$\text{Report}.\text{PlateauDetected} \lor \text{Report}.\text{Weakened}$}
-        \State \textbf{break} \Comment{Plateau or guard triggered}
-    \EndIf
-    \State $P_t \gets \text{TranslatorAgent}.\text{Repair}(P_t, \text{Report})$
-    \State $\text{iter} \gets \text{iter} + 1$
-    \State $\text{SaveCheckpoint}(P_t, \text{iter})$
+    \StateIndent $\text{Report} \gets \text{ValidatorAgent}.\Call{Validate}{P_t, P_s}$
+    \IfIndent{$\text{Report}.\text{AllSuccess} = \text{True}$}
+        \StateDIndent \Return $P_t$ \Comment{Successfully converged}
+    \EndIfIndent
+    \IfIndent{$\text{Report}.\text{PlateauDetected} \lor \text{Report}.\text{Weakened}$}
+        \StateDIndent \textbf{break} \Comment{Coverage plateau or security guard triggered}
+    \EndIfIndent
+    \StateIndent $P_t \gets \text{TranslatorAgent}.\Call{Repair}{P_t, \text{Report}}$
+    \StateIndent $\text{iter} \gets \text{iter} + 1$
+    \StateIndent $\Call{SaveCheckpoint}{P_t, \text{iter}}$
 \EndWhile
 \State \Return $P_t$
 \end{algorithmic}
@@ -80,7 +79,7 @@ in target language $L_t$ (such as Rust) satisfying three formal conditions:
 \subsection{Analyzer Agent \& M\"uller Strategy Selection}
 \label{sec:method_analyzer}
 
-The Analyzer Agent inspects the incoming codebase $P_s$ to construct an architectural specification. Using Tree-Sitter grammars for C, Go, and Java, the agent parses the full directory structure, locating module boundaries, structs, and function signatures.
+The Analyzer Agent inspects the incoming codebase $P_s$ to build an architectural specification. Using Tree-Sitter grammars for C, Go, and Java, the agent parses the full directory structure, locating module boundaries, structs, and function signatures.
 
 To adjust pipeline execution to repository size, the Analyzer uses \emph{M\"uller Migration Strategy Selection}~\cite{muller2022towards}, grouping projects into three scopes:
 \begin{itemize}
@@ -98,28 +97,27 @@ To ensure dependencies resolve before usage, the Planning Agent builds a directe
 
 \begin{algorithm}[Cycle-Free Reverse-Topological Scheduling]
 \label{alg:reverse_topo}
-\small
 \begin{algorithmic}[1]
-\Require Directed dependency graph $G = (V, E)$
-\Ensure Reverse-topological execution sequence $\mathcal{Q}$
+\Input Directed dependency graph $G = (V, E)$
+\Output Reverse-topological execution sequence $\mathcal{Q}$
 \State $\text{Visited} \gets \emptyset, \quad \text{OnStack} \gets \emptyset, \quad \mathcal{Q} \gets []$
 \Function{Visit}{$u$}
-    \State $\text{Visited} \gets \text{Visited} \cup \{u\}$
-    \State $\text{OnStack} \gets \text{OnStack} \cup \{u\}$
-    \For{$(u, v) \in E$}
-        \If{$v \in \text{OnStack}$}
-            \State $E \gets E \setminus \{(u, v)\}$ \Comment{Cut cyclic back-edge}
-        \ElsIf{$v \notin \text{Visited}$}
-            \State \Call{Visit}{$v$}
-        \EndIf
-    \EndFor
-    \State $\text{OnStack} \gets \text{OnStack} \setminus \{u\}$
-    \State $\mathcal{Q}.\text{append}(u)$
+    \StateIndent $\text{Visited} \gets \text{Visited} \cup \{u\}$
+    \StateIndent $\text{OnStack} \gets \text{OnStack} \cup \{u\}$
+    \ForIndent{$(u, v) \in E$}
+        \IfDIndent{$v \in \text{OnStack}$}
+            \StateTIndent $E \gets E \setminus \{(u, v)\}$ \Comment{Cut cyclic back-edge}
+        \ElsIfIndent{$v \notin \text{Visited}$}
+            \StateTIndent \Call{Visit}{$v$}
+        \EndIfIndent
+    \EndForIndent
+    \StateIndent $\text{OnStack} \gets \text{OnStack} \setminus \{u\}$
+    \StateIndent $\mathcal{Q}.\Call{append}{u}$
 \EndFunction
 \For{$u \in V$}
-    \If{$u \notin \text{Visited}$}
-        \State \Call{Visit}{$u$}
-    \EndIf
+    \IfIndent{$u \notin \text{Visited}$}
+        \StateDIndent \Call{Visit}{$u$}
+    \EndIfIndent
 \EndFor
 \State \Return $\mathcal{Q}$
 \end{algorithmic}
@@ -157,7 +155,7 @@ Context assembly uses two mechanisms:
 
 The Validator Agent verifies target code quality and enforces functional correctness. \textbf{Figure~\ref{fig:lifecycle}} depicts the complete state machine lifecycle of the verification and repair process.
 
-The validation cascade includes four checks:
+The validation cascade includes five checks:
 \begin{enumerate}
     \item \textbf{AST Syntax Pre-Check:} Validates target source files using Tree-Sitter before running the compiler toolchain.
     \item \textbf{Native Toolchain Build Validation:} Executes `cargo check` or `cargo test --no-run` to capture compiler diagnostics and borrow-checker errors ($E0382, E0502$).

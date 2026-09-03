@@ -7,7 +7,21 @@
 \usepackage{graphicx}
 \usepackage{url}
 
-% Basic pseudo-code and table support
+% Native Caption Styling (Bold labels: Figure X: / Table X: placed under)
+\makeatletter
+\long\def\@makecaption#1#2{%
+  \vskip\abovecaptionskip
+  \sbox\@tempboxa{\small\textbf{#1:} #2}%
+  \ifdim \wd\@tempboxa >\hsize
+    {\small\textbf{#1:} #2\par}
+  \else
+    \global \@minipagefalse
+    \hb@xt@\hsize{\hfil\box\@tempboxa\hfil}%
+  \fi
+  \vskip\belowcaptionskip}
+\makeatother
+
+% Custom Algorithm Environment with smaller font and structured indentation
 \makeatletter
 \newcounter{algorithm}
 \newenvironment{algorithm}[1][t]{%
@@ -16,31 +30,44 @@
   \hrule height 0.8pt\vspace{0.3em}%
   \noindent\textbf{Algorithm \thealgorithm: #1}\vspace{0.3em}%
   \hrule height 0.4pt\vspace{0.3em}%
-  \begin{small}%
+  \begin{footnotesize}%
 }{%
-  \end{small}%
+  \end{footnotesize}%
   \vspace{0.3em}\hrule height 0.8pt%
   \vspace{0.8em}%
 }
 \makeatother
 
 \newenvironment{algorithmic}[1][1]{%
-  \begin{list}{\arabic{enumi}.}{\usecounter{enumi}\setlength{\leftmargin}{1.5em}\setlength{\itemsep}{0.1em}\setlength{\topsep}{0em}}%
+  \begin{list}{\arabic{enumi}.}{\usecounter{enumi}\setlength{\leftmargin}{1.5em}\setlength{\itemsep}{0.12em}\setlength{\topsep}{0em}}%
 }{%
   \end{list}%
 }
 
+\newcommand{\Input}{\item[\textbf{Input:}]}
+\newcommand{\Output}{\item[\textbf{Output:}]}
 \newcommand{\Require}{\item[\textbf{Input:}]}
 \newcommand{\Ensure}{\item[\textbf{Output:}]}
 \newcommand{\State}{\item}
+\newcommand{\StateIndent}{\item\hspace*{1.2em}}
+\newcommand{\StateDIndent}{\item\hspace*{2.4em}}
+\newcommand{\StateTIndent}{\item\hspace*{3.6em}}
 \newcommand{\If}[1]{\item \textbf{if} #1 \textbf{then}}
+\newcommand{\IfIndent}[1]{\item\hspace*{1.2em}\textbf{if} #1 \textbf{then}}
+\newcommand{\IfDIndent}[1]{\item\hspace*{2.4em}\textbf{if} #1 \textbf{then}}
 \newcommand{\Else}{\item \textbf{else}}
+\newcommand{\ElseIndent}{\item\hspace*{1.2em}\textbf{else}}
 \newcommand{\ElsIf}[1]{\item \textbf{else if} #1 \textbf{then}}
+\newcommand{\ElsIfIndent}[1]{\item\hspace*{1.2em}\textbf{else if} #1 \textbf{then}}
 \newcommand{\EndIf}{\item \textbf{end if}}
+\newcommand{\EndIfIndent}{\item\hspace*{1.2em}\textbf{end if}}
 \newcommand{\While}[1]{\item \textbf{while} #1 \textbf{do}}
+\newcommand{\WhileIndent}[1]{\item\hspace*{1.2em}\textbf{while} #1 \textbf{do}}
 \newcommand{\EndWhile}{\item \textbf{end while}}
 \newcommand{\For}[1]{\item \textbf{for} #1 \textbf{do}}
+\newcommand{\ForIndent}[1]{\item\hspace*{1.2em}\textbf{for} #1 \textbf{do}}
 \newcommand{\EndFor}{\item \textbf{end for}}
+\newcommand{\EndForIndent}{\item\hspace*{1.2em}\textbf{end for}}
 \newcommand{\Function}[2]{\item \textbf{function} \textsc{#1}(#2)}
 \newcommand{\EndFunction}{\item \textbf{end function}}
 \newcommand{\Return}{\textbf{return} }
