@@ -169,6 +169,9 @@ func DefaultOptionalChecks(cfg OptionalChecksConfig) []OptionalCheck {
 			oracleInputs: cfg.OracleInputs,
 		})
 	}
+	if cfg.RoleFlipGate != nil {
+		out = append(out, &roleFlipCheck{gate: cfg.RoleFlipGate})
+	}
 	return out
 }
 
@@ -185,14 +188,61 @@ type OptionalChecksConfig struct {
 	SourceWasmPath       string
 	TargetBinaryPath     string
 	OracleInputs         []string
+	// RoleFlipGate is the PRIM-25 reviewer. When non-nil, the validator
+	// cascade calls it on the latest translator snippet before the
+	// repair loop iterates.
+	RoleFlipGate *RoleFlipGate
 }
-
 func (c OptionalChecksConfig) AnyEnabled() bool {
 	return c.VerdictPanel != nil ||
 		c.MockValidator != nil ||
 		(c.ImplAgnostic != nil && len(c.ImplAgnosticVectors) > 0) ||
-		(c.WasmOracle != nil && c.SourceWasmPath != "" && c.TargetBinaryPath != "")
+		(c.WasmOracle != nil && c.SourceWasmPath != "" && c.TargetBinaryPath != "") ||
+		c.RoleFlipGate != nil
 }
 
 // re-export for callers that prefer artifacts-side imports.
 var _ artifacts.OptionalCheckResult // keep artifacts import live for downstream consumers
+
+// roleFlipCheck adapts the PRIM-25 communicative-de-hallucination
+// RoleFlipGate (ChatDev §2.4) into an OptionalCheck. When the translator's
+// latest emitted code is present on state, the gate's reviewer model is
+// asked to surface a defect. A defect forces a repair iteration; a clean
+// pass leaves the verdict unchanged.
+type roleFlipCheck struct {
+	gate *RoleFlipGate
+}
+
+func (c *roleFlipCheck) Name() string { return "PRIM-25-role-flip-gate" }
+func (c *roleFlipCheck) Run(ctx context.Context, state *types.State) (string, string, error) {
+	if c.gate == nil || state == nil {
+		return "skipped", "no role-flip gate or state", nil
+	}
+	sample := latestEmittedSample(state)
+	if sample == "" {
+		return "skipped", "no translator output to inspect", nil
+	}
+	v, err := c.gate.Inspect(ctx, sample)
+	if err != nil {
+		return "fail", fmt.Sprintf("role-flip reviewer error: %v", err), nil
+	}
+	if !v.DefectFound {
+		return "pass", "reviewer accepted translator output", nil
+	}
+	return "fail", v.Reason, nil
+}
+
+// latestEmittedSample returns the first non-empty translator snippet from
+// TranslatedProject.Files to feed the PRIM-25 role-flip reviewer. Map
+// iteration order is non-deterministic; any sample suffices for the gate.
+func latestEmittedSample(state *types.State) string {
+	if state == nil {
+		return ""
+	}
+	for _, code := range state.TranslatedProject.Files {
+		if code != "" {
+			return code
+		}
+	}
+	return ""
+}

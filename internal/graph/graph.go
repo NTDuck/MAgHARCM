@@ -63,6 +63,15 @@ func NewMAgHARCMGraph(ctx context.Context, models *llm.Models, runID string) (*M
 	validatorAgent.OptionalChecks = agents.DefaultOptionalChecks(agents.OptionalChecksConfig{
 		VerdictPanel: verdictPanel,
 	})
+	// PRIM-25 communicative-de-hallucination RoleFlipGate: feed the
+	// validator cascade a reviewer-model pass on the latest translator
+	// output before the repair loop iterates.
+	roleFlipGate := agents.NewRoleFlipGate(models.Reasoning)
+	validatorAgent.OptionalChecks = agents.DefaultOptionalChecks(agents.OptionalChecksConfig{
+		VerdictPanel: verdictPanel,
+		RoleFlipGate: roleFlipGate,
+	})
+
 
 	// Register agent execution units as graph nodes with VRAM management
 	if err := g.AddLambdaNode("analyzer", compose.InvokableLambda(func(ctx context.Context, state *types.State) (*types.State, error) {
