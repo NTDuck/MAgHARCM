@@ -4,8 +4,8 @@
 
 Repository-scale code translation has been studied along three
 parallel tracks that we group below. Each track addresses part of
-the problem space that MAgHARCM targets; none covers the full
-four-agent, local-SLM configuration.
+problem space that MAgHARCM targets; none covers the full
+eight-agent, local-SLM configuration.
 
 \subsection{Rule-Based Transpilation}
 \label{sec:related_transpilers}
@@ -119,17 +119,16 @@ multi-agent software-engineering frameworks such as
 agents across discrete development roles (product manager, architect,
 developer, QA) but do not embed the program-analysis primitives
 required for repository-scale translation. The agentic track
-demonstrates that decomposition helps, but every published system
 relies on cloud inference. MAgHARCM is the first agentic system to
-deliver a four-agent repository translation pipeline on local SLMs.
-
+deliver an eight-agent repository translation pipeline on local SLMs.
 \subsection{Positioning of MAgHARCM}
 
 MAgHARCM sits at the intersection of the agentic and neuro-symbolic
-tracks. From the agentic track it inherits the four-agent decomposition,
-the MCP tool surface, and the translate--validate--repair loop. From
-the neuro-symbolic track it borrows the bounded context primitives
-(the Symbol Navigator and Prior-Modules Memory are direct analogues
+tracks. From the agentic track it inherits the agentic decomposition,
+the MCP tool surface, and the translate--review--validate--verdict--
+recruit--repair loop. From the neuro-symbolic track it borrows the
+bounded context primitives (the Symbol Navigator and Prior-Modules
+Memory are direct analogues
 of the dependency-graph context slices used by
 \textsc{CodePlan}~\cite{p03_codeplan},
 \textsc{RepoCoder}~\cite{p61_repocoder}, and
@@ -138,7 +137,7 @@ both tracks is its local-SLM orientation: every published agentic
 system runs on a cloud-hosted frontier model, and every
 neuro-symbolic system that runs locally uses static analysis to
 compensate for small-model limitations. MAgHARCM runs entirely on
-local SLMs and uses the four-agent decomposition to compensate
+local SLMs and uses the eight-agent decomposition to compensate
 instead. The bounded context primitives ($\le 4\,\text{KB}$ Symbol
 Navigator + $\le 4\,\text{KB}$ Prior-Modules Memory) keep the
 $4\,\text{B}$ coding model within its effective attention budget, and

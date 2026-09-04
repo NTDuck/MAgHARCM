@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="generator" content="archify 2.17.0-dev.1">
-  <title>MAgHARCM 6-Stage Translation &amp; Repair Pipeline Diagram</title>
+  <title>MAgHARCM Eight-Agent Translation Pipeline Diagram</title>
   <script>
     // Resolve the theme before first paint so light-preference users don't
     // see a dark flash. The toolbar script below re-applies with UI state.
@@ -4955,9 +4955,9 @@
            data-preset-badge-blueprint="BLUEPRINT / REV 01"
            data-preset-badge-editorial="EDITORIAL / FIELD NOTE">
         <div class="pulse-dot"></div>
-        <h1>MAgHARCM 6-Stage Translation &amp; Repair Pipeline</h1>
+        <h1>MAgHARCM Eight-Agent Translation Pipeline</h1>
       </div>
-      <p class="subtitle">Neuro-symbolic multi-agent translation with local Qwen3-30B reasoning and Qwen3-4B coding models via Ollama.</p>
+      <p class="subtitle">Software-archaeology-guided, role-flip-reviewed repository migration running on local Qwen3 SLMs via Ollama.</p>
     </div>
 
     <script id="archify-guided-views-data" type="application/json">[]</script>
@@ -5005,9 +5005,9 @@
     <!-- Main Diagram -->
     <div class="diagram-container" data-detail-level="read"
          data-preset-badge-editorial-plate="ARCHIFY / PLATE 04">
-      <svg viewBox="0 0 1007 928" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-preset="classic" data-quality-profile="showcase">
-        <title id="archify-diagram-title">MAgHARCM 6-Stage Translation &amp; Repair Pipeline</title>
-        <desc id="archify-diagram-description">Neuro-symbolic multi-agent translation with local Qwen3-30B reasoning and Qwen3-4B coding models via Ollama.</desc>
+      <svg viewBox="0 0 1310 608" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-preset="classic" data-quality-profile="showcase">
+        <title id="archify-diagram-title">MAgHARCM Eight-Agent Translation Pipeline</title>
+        <desc id="archify-diagram-description">Software-archaeology-guided, role-flip-reviewed repository migration running on local Qwen3 SLMs via Ollama.</desc>
         <!-- Definitions -->
         <defs>
           <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
@@ -5030,275 +5030,286 @@
         <!-- Background Grid -->
         <rect width="100%" height="100%" fill="url(#grid)" />
 
-        <!-- Swimlanes -->
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-0" x="40" y="52" width="888" height="106" rx="10" class="c-lane" stroke-width="1"/>
-        <text x="54" y="74" class="t-dim" font-size="10" font-weight="600">01 / Inputs &amp; Config</text>
+        <!-- Boundaries (behind everything) -->
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="0" data-composition-frame-label="MAgHARCM Eight-Agent Architecture" x="190" y="60" width="1080" height="480" rx="12" class="c-region" stroke-width="1"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-1" x="40" y="178" width="888" height="106" rx="10" class="c-lane" stroke-width="1"/>
-        <text x="54" y="200" class="t-dim" font-size="10" font-weight="600">02 / Pipeline Lifecycle</text>
+        <!-- Connection paths (before components for correct z-order) -->
+        <path data-edge-from="config" data-edge-to="intake" data-edge-label="load YAML" data-edge-key="0" data-edge-id="cfg-to-intake" data-composition-points="170,295;220,295" d="M 170 295 L 220 295" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="intake" data-edge-to="archaeologist" data-edge-label="manifest + AST" data-edge-key="1" data-edge-id="intake-to-archaeologist" data-composition-points="340,295;360,295;360,125;380,125" d="M 340 295 L 352 295 Q 360 295 360 287 L 360 133 Q 360 125 368 125 L 380 125" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="intake" data-edge-to="analyzer" data-edge-label="raw manifest" data-edge-key="2" data-edge-id="intake-to-analyzer" data-composition-points="340,295;380,295" d="M 340 295 L 380 295" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="archaeologist" data-edge-to="analyzer" data-edge-label="concept map" data-edge-key="3" data-edge-id="archaeologist-to-analyzer" data-composition-points="450,160;450,260" d="M 450 160 L 450 260" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="analyzer" data-edge-to="planner" data-edge-label="3 documents" data-edge-key="4" data-edge-id="analyzer-to-planner" data-composition-points="520,295;560,295" d="M 520 295 L 560 295" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="planner" data-edge-to="translator" data-edge-label="topo steps" data-edge-key="5" data-edge-id="planner-to-translator" data-composition-points="700,295;740,295" d="M 700 295 L 740 295" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="translator" data-edge-to="roleflip" data-edge-label="candidate P_t" data-edge-key="6" data-edge-id="translator-to-roleflip" data-composition-points="880,295;920,295" d="M 880 295 L 920 295" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="roleflip" data-edge-to="validator" data-edge-label="reviewed P_t" data-edge-key="7" data-edge-id="roleflip-to-validator" data-composition-points="1060,295;1100,295" d="M 1060 295 L 1100 295" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="validator" data-edge-to="verdict" data-edge-label="R" data-edge-key="8" data-edge-id="validator-to-verdict" data-composition-points="1170,260;1170,210;990,210;990,160" d="M 1170 260 L 1170 218 Q 1170 210 1162 210 L 998 210 Q 990 210 990 202 L 990 160" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="validator" data-edge-to="translator" data-edge-label="repair loop" data-edge-key="9" data-edge-id="validator-repair" data-composition-points="1170,330;1170,354;810,354;810,330" d="M 1170 330 L 1170 346 Q 1170 354 1162 354 L 818 354 Q 810 354 810 346 L 810 330" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+        <path data-edge-from="translator" data-edge-to="navigator" data-edge-label="symbol context" data-edge-key="10" data-edge-id="translator-nav" data-composition-points="810,260;810,210;630,210;630,160" d="M 810 260 L 810 218 Q 810 210 802 210 L 638 210 Q 630 210 630 202 L 630 160" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="translator" data-edge-to="target" data-edge-label="sync disk" data-edge-key="11" data-edge-id="translator-to-target" data-composition-points="810,330;810,390;995,390;995,450" d="M 810 330 L 810 382 Q 810 390 818 390 L 987 390 Q 995 390 995 398 L 995 450" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="runner" data-edge-to="checkpoint" data-edge-label="save / resume" data-edge-key="12" data-edge-id="runner-checkpoint" data-composition-points="630,485;560,485" d="M 630 485 L 560 485" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-2" x="40" y="304" width="888" height="114" rx="10" class="c-lane" stroke-width="1"/>
-        <text x="54" y="326" class="t-dim" font-size="10" font-weight="600">03 / Multi-Agent Core</text>
-
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-3" x="40" y="438" width="888" height="106" rx="10" class="c-lane" stroke-width="1"/>
-        <text x="54" y="460" class="t-dim" font-size="10" font-weight="600">04 / Context Grounding</text>
-
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-4" x="40" y="564" width="888" height="114" rx="10" class="c-lane" stroke-width="1"/>
-        <text x="54" y="586" class="t-dim" font-size="10" font-weight="600">05 / Validation &amp; Defense</text>
-
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-5" x="40" y="698" width="888" height="106" rx="10" class="c-lane" stroke-width="1"/>
-        <text x="54" y="720" class="t-dim" font-size="10" font-weight="600">06 / Target Artifacts</text>
-
-        <!-- Phase headers -->
-        <line x1="48" y1="35" x2="140" y2="35" class="a-default" stroke-width="1.1"/>
-        <rect x="48" y="27" width="92" height="16" rx="4" class="c-mask"/>
-        <text x="94" y="39" class="t-muted" font-size="8" font-weight="600" text-anchor="middle">Stage 1: Intake</text>
-        <line x1="168" y1="35" x2="408.4" y2="35" class="a-emphasis" stroke-width="1.1"/>
-        <rect x="168" y="27" width="240.39999999999998" height="16" rx="4" class="c-mask"/>
-        <text x="288.2" y="39" class="t-backend" font-size="8" font-weight="600" text-anchor="middle">Stage 2 &amp; 3: Plan</text>
-        <line x1="474.4" y1="35" x2="583.1999999999999" y2="35" class="a-emphasis" stroke-width="1.1"/>
-        <rect x="474.4" y="27" width="108.8" height="16" rx="4" class="c-mask"/>
-        <text x="528.8" y="39" class="t-backend" font-size="8" font-weight="600" text-anchor="middle">Stage 4: Translate</text>
-        <line x1="665.5999999999999" y1="35" x2="915.5999999999999" y2="35" class="a-dashed" stroke-width="1.1"/>
-        <rect x="665.5999999999999" y="27" width="250" height="16" rx="4" class="c-mask"/>
-        <text x="790.5999999999999" y="39" class="t-messagebus" font-size="8" font-weight="600" text-anchor="middle">Stage 5 &amp; 6: Validate</text>
-
-        <!-- Workflow groups -->
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="group" data-composition-frame-id="group-0" x="164" y="342" width="248.39999999999998" height="72" rx="9" class="c-lane" stroke-width="1"/>
-        <text x="174" y="340" class="t-backend" font-size="7" font-weight="600">Reasoning Loop (Qwen3-30B)</text>
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="group" data-composition-frame-id="group-1" x="470.4" y="342" width="171.19999999999993" height="72" rx="9" class="c-lane" stroke-width="1"/>
-        <text x="480.4" y="340" class="t-backend" font-size="7" font-weight="600">Chunked Dispatch (Qwen3-4B)</text>
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="group" data-composition-frame-id="group-2" x="661.5999999999999" y="602" width="258" height="72" rx="9" class="c-security-group" stroke-width="1"/>
-        <text x="671.5999999999999" y="600" class="t-security" font-size="7" font-weight="600">Defense Cascade</text>
-
-        <!-- Edge paths -->
-        <path data-edge-from="analyzer_agent" data-edge-to="planner_agent" data-edge-label="research" data-edge-key="0" data-composition-points="260,379;316.4,379" d="M 260 379 L 316.4 379" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="intake_parser" data-edge-to="analyzer_agent" data-edge-label="manifest" data-edge-key="1" data-composition-points="48,246;32,246;32,434;214,434;214,413" d="M 48 246 L 32 246 L 32 434 L 214 434 L 214 413" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="planner_agent" data-edge-to="manifest_rewriter" data-edge-label="deps" data-edge-key="2" data-composition-points="408.4,379;424.4,379;424.4,560;362.4,560;362.4,540" d="M 408.4 379 L 424.4 379 L 424.4 560 L 362.4 560 L 362.4 540" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="planner_agent" data-edge-to="translator_agent" data-edge-label="topo steps" data-edge-key="3" data-composition-points="362.4,345;362.4,329;418.4,329;418.4,379;474.4,379" d="M 362.4 345 L 362.4 329 L 418.4 329 L 418.4 379 L 474.4 379" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="target_crate" data-edge-to="validator_agent" data-edge-label="compile &amp; test" data-edge-key="4" data-composition-points="711.5999999999999,800;711.5999999999999,820;773.5999999999999,820;773.5999999999999,639;757.5999999999999,639" d="M 711.5999999999999 800 L 711.5999999999999 820 L 773.5999999999999 820 L 773.5999999999999 639 L 757.5999999999999 639" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="translator_agent" data-edge-to="checkpoint_store" data-edge-label="persist" data-edge-key="5" data-composition-points="566.4,379;582.4,379;582.4,558;520.4,558;520.4,732" d="M 566.4 379 L 582.4 379 L 582.4 558 L 520.4 558 L 520.4 732" class="a-dashed" stroke-width="1.4" marker-end="url(#arrowhead-dashed)"/>
-        <path data-edge-from="translator_agent" data-edge-to="navigator" data-edge-label="lookup" data-edge-key="6" data-composition-points="566.4,379;940,379;940,506;566.4,506" d="M 566.4 379 L 940 379 L 940 506 L 566.4 506" class="a-dashed" stroke-width="1.4" marker-end="url(#arrowhead-dashed)"/>
-        <path data-edge-from="translator_agent" data-edge-to="target_crate" data-edge-label="emit files" data-edge-key="7" data-composition-points="566.4,386;582.4,386;582.4,820;649.5999999999999,820;649.5999999999999,766;665.5999999999999,766" d="M 566.4 386 L 582.4 386 L 582.4 820 L 649.5999999999999 820 L 649.5999999999999 766 L 665.5999999999999 766" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="validator_agent" data-edge-to="translator_agent" data-edge-label="repair loop" data-edge-key="8" data-composition-points="704.5999999999999,673;704.5999999999999,689;635.5,689;635.5,372;566.4,372" d="M 704.5999999999999 673 L 704.5999999999999 689 L 635.5 689 L 635.5 372 L 566.4 372" class="a-dashed" stroke-width="1.4" marker-end="url(#arrowhead-dashed)"/>
-        <path data-edge-from="validator_agent" data-edge-to="weakening_guard" data-edge-label="assertions" data-edge-key="9" data-composition-points="757.5999999999999,639;773.5999999999999,639;773.5999999999999,694;869.5999999999999,694;869.5999999999999,673" d="M 757.5999999999999 639 L 773.5999999999999 639 L 773.5999999999999 694 L 869.5999999999999 694 L 869.5999999999999 673" class="a-security" stroke-width="1.4" marker-end="url(#arrowhead-security)"/>
-        <path data-edge-from="weakening_guard" data-edge-to="plateau_detector" data-edge-label="coverage delta" data-edge-key="10" data-composition-points="915.5999999999999,639;988.8,639;988.8,246;915.5999999999999,246" d="M 915.5999999999999 639 L 988.8 639 L 988.8 246 L 915.5999999999999 246" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="yaml_cfg" data-edge-to="intake_parser" data-edge-key="11" data-composition-points="48,120;32,120;32,246;48,246" d="M 48 120 L 32 120 L 32 246 L 48 246" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
-
-        <!-- Nodes -->
-        <g id="node-yaml_cfg" data-node-id="yaml_cfg" data-node-label="YAML Config" tabindex="0" role="button" aria-label="Focus YAML Config, Source/Target, Inputs &amp; Config › Stage 1: Intake" aria-pressed="false" data-node-kind="external" data-node-sublabel="Source/Target" data-node-tag="Ollama local" data-node-context="Inputs &amp; Config › Stage 1: Intake">
-          <title>YAML Config · Source/Target · Inputs &amp; Config › Stage 1: Intake · Ollama local</title>
-          <rect x="48" y="86" width="92" height="68" rx="6" class="c-mask"/>
-          <rect x="48" y="86" width="92" height="68" rx="6" class="c-external" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="external" class="semantic-sigil s-external" transform="translate(54 92) scale(0.6875)">
+        <!-- Components -->
+        <g id="node-config" data-node-id="config" data-node-label="YAML Config" tabindex="0" role="button" aria-label="Focus YAML Config, .config/&lt;sample&gt;.yml, Architecture component" aria-pressed="false" data-node-kind="external" data-node-sublabel=".config/&lt;sample&gt;.yml" data-node-tag="src/tgt + models" data-node-context="Architecture component">
+          <title>YAML Config · .config/&lt;sample&gt;.yml · Architecture component · src/tgt + models</title>
+          <rect x="40" y="260" width="130" height="70" rx="6" class="c-mask"/>
+          <rect x="40" y="260" width="130" height="70" rx="6" class="c-external" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="external" class="semantic-sigil s-external" transform="translate(46 266) scale(0.6875)">
             <rect x="2.5" y="5" width="8.5" height="8" rx="1.5"/>
             <path d="M8 2.5h5.5V8M13.5 2.5 7.5 8.5"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="94" y="107" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">YAML Config</text>
-          <text data-detail="context" x="94" y="124" class="t-muted" font-size="8" text-anchor="middle">Source/Target</text>
-        <text data-detail="fine" x="94" y="142" class="t-external" font-size="7" text-anchor="middle">Ollama local</text>
+          <text data-node-label="" data-detail-anchor="" x="105" y="293" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">YAML Config</text>
+        <text data-detail="context" x="105" y="309" class="t-muted" font-size="9" text-anchor="middle">.config/&lt;sample&gt;.yml</text>
+        <text data-detail="fine" x="105" y="322" class="t-external" font-size="7" text-anchor="middle">src/tgt + models</text>
         </g>
 
-        <g id="node-intake_parser" data-node-id="intake_parser" data-node-label="1. Intake" tabindex="0" role="button" aria-label="Focus 1. Intake, Tree-Sitter, Pipeline Lifecycle › Stage 1: Intake" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Tree-Sitter" data-node-tag="Manifest" data-node-context="Pipeline Lifecycle › Stage 1: Intake">
-          <title>1. Intake · Tree-Sitter · Pipeline Lifecycle › Stage 1: Intake · Manifest</title>
-          <rect x="48" y="212" width="92" height="68" rx="6" class="c-mask"/>
-          <rect x="48" y="212" width="92" height="68" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(54 218) scale(0.6875)">
+        <g id="node-ollama" data-node-id="ollama" data-node-label="Ollama Runtime" tabindex="0" role="button" aria-label="Focus Ollama Runtime, :11434 local, Architecture component" aria-pressed="false" data-node-kind="cloud" data-node-sublabel=":11434 local" data-node-tag="Qwen3-30B + Qwen3-4B" data-node-context="Architecture component">
+          <title>Ollama Runtime · :11434 local · Architecture component · Qwen3-30B + Qwen3-4B</title>
+          <rect x="40" y="90" width="150" height="80" rx="6" class="c-mask"/>
+          <rect x="40" y="90" width="150" height="80" rx="6" class="c-cloud" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="cloud" class="semantic-sigil s-cloud" transform="translate(46 96) scale(0.6875)">
+            <path d="M4.3 12.5h7.3a2.4 2.4 0 0 0 .2-4.8 4 4 0 0 0-7.5-1.3A3.1 3.1 0 0 0 4.3 12.5Z"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="115" y="128" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Ollama Runtime</text>
+        <text data-detail="context" x="115" y="144" class="t-muted" font-size="9" text-anchor="middle">:11434 local</text>
+        <text data-detail="fine" x="115" y="162" class="t-cloud" font-size="7" text-anchor="middle">Qwen3-30B + Qwen3-4B</text>
+        </g>
+
+        <g id="node-intake" data-node-id="intake" data-node-label="1. Intake" tabindex="0" role="button" aria-label="Focus 1. Intake, ABCoderMcp AST, MAgHARCM Eight-Agent Architecture" aria-pressed="false" data-node-kind="backend" data-node-sublabel="ABCoderMcp AST" data-node-tag="manifest + files" data-node-context="MAgHARCM Eight-Agent Architecture">
+          <title>1. Intake · ABCoderMcp AST · MAgHARCM Eight-Agent Architecture · manifest + files</title>
+          <rect x="220" y="260" width="120" height="70" rx="6" class="c-mask"/>
+          <rect x="220" y="260" width="120" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(226 266) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="94" y="233" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">1. Intake</text>
-          <text data-detail="context" x="94" y="250" class="t-muted" font-size="8" text-anchor="middle">Tree-Sitter</text>
-        <text data-detail="fine" x="94" y="268" class="t-backend" font-size="7" text-anchor="middle">Manifest</text>
+          <text data-node-label="" data-detail-anchor="" x="280" y="293" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">1. Intake</text>
+        <text data-detail="context" x="280" y="309" class="t-muted" font-size="9" text-anchor="middle">ABCoderMcp AST</text>
+        <text data-detail="fine" x="280" y="322" class="t-backend" font-size="7" text-anchor="middle">manifest + files</text>
         </g>
 
-        <g id="node-plateau_detector" data-node-id="plateau_detector" data-node-label="Plateau" tabindex="0" role="button" aria-label="Focus Plateau, Stagnation, Pipeline Lifecycle › Stage 5 &amp; 6: Validate" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Stagnation" data-node-tag="Exit" data-node-context="Pipeline Lifecycle › Stage 5 &amp; 6: Validate">
-          <title>Plateau · Stagnation · Pipeline Lifecycle › Stage 5 &amp; 6: Validate · Exit</title>
-          <rect x="823.5999999999999" y="212" width="92" height="68" rx="6" class="c-mask"/>
-          <rect x="823.5999999999999" y="212" width="92" height="68" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(829.5999999999999 218) scale(0.6875)">
+        <g id="node-archaeologist" data-node-id="archaeologist" data-node-label="2. Archaeologist" tabindex="0" role="button" aria-label="Focus 2. Archaeologist, agents.archaeology, MAgHARCM Eight-Agent Architecture" aria-pressed="false" data-node-kind="backend" data-node-sublabel="agents.archaeology" data-node-tag="Time capsule + DRH" data-node-context="MAgHARCM Eight-Agent Architecture">
+          <title>2. Archaeologist · agents.archaeology · MAgHARCM Eight-Agent Architecture · Time capsule + DRH</title>
+          <rect x="380" y="90" width="140" height="70" rx="6" class="c-mask"/>
+          <rect x="380" y="90" width="140" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(386 96) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="869.5999999999999" y="233" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Plateau</text>
-          <text data-detail="context" x="869.5999999999999" y="250" class="t-muted" font-size="8" text-anchor="middle">Stagnation</text>
-        <text data-detail="fine" x="869.5999999999999" y="268" class="t-backend" font-size="7" text-anchor="middle">Exit</text>
+          <text data-node-label="" data-detail-anchor="" x="450" y="123" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">2. Archaeologist</text>
+        <text data-detail="context" x="450" y="139" class="t-muted" font-size="9" text-anchor="middle">agents.archaeology</text>
+        <text data-detail="fine" x="450" y="152" class="t-backend" font-size="7" text-anchor="middle">Time capsule + DRH</text>
         </g>
 
-        <g id="node-analyzer_agent" data-node-id="analyzer_agent" data-node-label="2. Analyzer" tabindex="0" role="button" aria-label="Focus 2. Analyzer, Strategy Scope, Multi-Agent Core › Reasoning Loop (Qwen3-30B) › Stage 2 &amp; 3: Plan" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Strategy Scope" data-node-tag="Müller" data-node-context="Multi-Agent Core › Reasoning Loop (Qwen3-30B) › Stage 2 &amp; 3: Plan">
-          <title>2. Analyzer · Strategy Scope · Multi-Agent Core › Reasoning Loop (Qwen3-30B) › Stage 2 &amp; 3: Plan · Müller</title>
-          <rect x="168" y="345" width="92" height="68" rx="6" class="c-mask"/>
-          <rect x="168" y="345" width="92" height="68" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(174 351) scale(0.6875)">
+        <g id="node-analyzer" data-node-id="analyzer" data-node-label="3. Analyzer" tabindex="0" role="button" aria-label="Focus 3. Analyzer, agents.analyzer, MAgHARCM Eight-Agent Architecture" aria-pressed="false" data-node-kind="backend" data-node-sublabel="agents.analyzer" data-node-tag="Müller strategy" data-node-context="MAgHARCM Eight-Agent Architecture">
+          <title>3. Analyzer · agents.analyzer · MAgHARCM Eight-Agent Architecture · Müller strategy</title>
+          <rect x="380" y="260" width="140" height="70" rx="6" class="c-mask"/>
+          <rect x="380" y="260" width="140" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(386 266) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="214" y="366" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">2. Analyzer</text>
-          <text data-detail="context" x="214" y="383" class="t-muted" font-size="8" text-anchor="middle">Strategy Scope</text>
-        <text data-detail="fine" x="214" y="401" class="t-backend" font-size="7" text-anchor="middle">Müller</text>
+          <text data-node-label="" data-detail-anchor="" x="450" y="293" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">3. Analyzer</text>
+        <text data-detail="context" x="450" y="309" class="t-muted" font-size="9" text-anchor="middle">agents.analyzer</text>
+        <text data-detail="fine" x="450" y="322" class="t-backend" font-size="7" text-anchor="middle">Müller strategy</text>
         </g>
 
-        <g id="node-planner_agent" data-node-id="planner_agent" data-node-label="3. Planner" tabindex="0" role="button" aria-label="Focus 3. Planner, Reverse-Topo, Multi-Agent Core › Reasoning Loop (Qwen3-30B) › Stage 2 &amp; 3: Plan" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Reverse-Topo" data-node-tag="Cycle-Free" data-node-context="Multi-Agent Core › Reasoning Loop (Qwen3-30B) › Stage 2 &amp; 3: Plan">
-          <title>3. Planner · Reverse-Topo · Multi-Agent Core › Reasoning Loop (Qwen3-30B) › Stage 2 &amp; 3: Plan · Cycle-Free</title>
-          <rect x="316.4" y="345" width="92" height="68" rx="6" class="c-mask"/>
-          <rect x="316.4" y="345" width="92" height="68" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(322.4 351) scale(0.6875)">
+        <g id="node-planner" data-node-id="planner" data-node-label="4. Planner" tabindex="0" role="button" aria-label="Focus 4. Planner, agents.planning, MAgHARCM Eight-Agent Architecture" aria-pressed="false" data-node-kind="backend" data-node-sublabel="agents.planning" data-node-tag="Reverse-topo DAG" data-node-context="MAgHARCM Eight-Agent Architecture">
+          <title>4. Planner · agents.planning · MAgHARCM Eight-Agent Architecture · Reverse-topo DAG</title>
+          <rect x="560" y="260" width="140" height="70" rx="6" class="c-mask"/>
+          <rect x="560" y="260" width="140" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(566 266) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="362.4" y="366" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">3. Planner</text>
-          <text data-detail="context" x="362.4" y="383" class="t-muted" font-size="8" text-anchor="middle">Reverse-Topo</text>
-        <text data-detail="fine" x="362.4" y="401" class="t-backend" font-size="7" text-anchor="middle">Cycle-Free</text>
+          <text data-node-label="" data-detail-anchor="" x="630" y="293" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">4. Planner</text>
+        <text data-detail="context" x="630" y="309" class="t-muted" font-size="9" text-anchor="middle">agents.planning</text>
+        <text data-detail="fine" x="630" y="322" class="t-backend" font-size="7" text-anchor="middle">Reverse-topo DAG</text>
         </g>
 
-        <g id="node-translator_agent" data-node-id="translator_agent" data-node-label="4. Translator" tabindex="0" role="button" aria-label="Focus 4. Translator, Chunked Code, Multi-Agent Core › Chunked Dispatch (Qwen3-4B) › Stage 4: Translate" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Chunked Code" data-node-tag="Qwen3-4B" data-node-context="Multi-Agent Core › Chunked Dispatch (Qwen3-4B) › Stage 4: Translate">
-          <title>4. Translator · Chunked Code · Multi-Agent Core › Chunked Dispatch (Qwen3-4B) › Stage 4: Translate · Qwen3-4B</title>
-          <rect x="474.4" y="345" width="92" height="68" rx="6" class="c-mask"/>
-          <rect x="474.4" y="345" width="92" height="68" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(480.4 351) scale(0.6875)">
+        <g id="node-navigator" data-node-id="navigator" data-node-label="Navigator" tabindex="0" role="button" aria-label="Focus Navigator, agents.navigator, MAgHARCM Eight-Agent Architecture" aria-pressed="false" data-node-kind="backend" data-node-sublabel="agents.navigator" data-node-tag="Symbol lookup &lt;=4KB" data-node-context="MAgHARCM Eight-Agent Architecture">
+          <title>Navigator · agents.navigator · MAgHARCM Eight-Agent Architecture · Symbol lookup &lt;=4KB</title>
+          <rect x="560" y="90" width="140" height="70" rx="6" class="c-mask"/>
+          <rect x="560" y="90" width="140" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(566 96) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="520.4" y="366" class="t-primary" font-size="10.7" font-weight="600" text-anchor="middle">4. Translator</text>
-          <text data-detail="context" x="520.4" y="383" class="t-muted" font-size="8" text-anchor="middle">Chunked Code</text>
-        <text data-detail="fine" x="520.4" y="401" class="t-backend" font-size="7" text-anchor="middle">Qwen3-4B</text>
+          <text data-node-label="" data-detail-anchor="" x="630" y="123" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Navigator</text>
+        <text data-detail="context" x="630" y="139" class="t-muted" font-size="9" text-anchor="middle">agents.navigator</text>
+        <text data-detail="fine" x="630" y="152" class="t-backend" font-size="7" text-anchor="middle">Symbol lookup &lt;=4KB</text>
         </g>
 
-        <g id="node-manifest_rewriter" data-node-id="manifest_rewriter" data-node-label="Rewriter" tabindex="0" role="button" aria-label="Focus Rewriter, Manifest Map, Context Grounding › Stage 2 &amp; 3: Plan" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Manifest Map" data-node-tag="Crates" data-node-context="Context Grounding › Stage 2 &amp; 3: Plan">
-          <title>Rewriter · Manifest Map · Context Grounding › Stage 2 &amp; 3: Plan · Crates</title>
-          <rect x="316.4" y="472" width="92" height="68" rx="6" class="c-mask"/>
-          <rect x="316.4" y="472" width="92" height="68" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(322.4 478) scale(0.6875)">
+        <g id="node-translator" data-node-id="translator" data-node-label="5. Translator" tabindex="0" role="button" aria-label="Focus 5. Translator, agents.translator, MAgHARCM Eight-Agent Architecture" aria-pressed="false" data-node-kind="backend" data-node-sublabel="agents.translator" data-node-tag="Chunked dispatch" data-node-context="MAgHARCM Eight-Agent Architecture">
+          <title>5. Translator · agents.translator · MAgHARCM Eight-Agent Architecture · Chunked dispatch</title>
+          <rect x="740" y="260" width="140" height="70" rx="6" class="c-mask"/>
+          <rect x="740" y="260" width="140" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(746 266) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="362.4" y="493" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Rewriter</text>
-          <text data-detail="context" x="362.4" y="510" class="t-muted" font-size="8" text-anchor="middle">Manifest Map</text>
-        <text data-detail="fine" x="362.4" y="528" class="t-backend" font-size="7" text-anchor="middle">Crates</text>
+          <text data-node-label="" data-detail-anchor="" x="810" y="293" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">5. Translator</text>
+        <text data-detail="context" x="810" y="309" class="t-muted" font-size="9" text-anchor="middle">agents.translator</text>
+        <text data-detail="fine" x="810" y="322" class="t-backend" font-size="7" text-anchor="middle">Chunked dispatch</text>
         </g>
 
-        <g id="node-navigator" data-node-id="navigator" data-node-label="Navigator" tabindex="0" role="button" aria-label="Focus Navigator, Symbol Lookup, Context Grounding › Stage 4: Translate" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Symbol Lookup" data-node-tag="&lt;= 4KB" data-node-context="Context Grounding › Stage 4: Translate">
-          <title>Navigator · Symbol Lookup · Context Grounding › Stage 4: Translate · &lt;= 4KB</title>
-          <rect x="474.4" y="472" width="92" height="68" rx="6" class="c-mask"/>
-          <rect x="474.4" y="472" width="92" height="68" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(480.4 478) scale(0.6875)">
+        <g id="node-roleflip" data-node-id="roleflip" data-node-label="6. RoleFlipReviewer" tabindex="0" role="button" aria-label="Focus 6. RoleFlipReviewer, agents.roleflip, MAgHARCM Eight-Agent Architecture" aria-pressed="false" data-node-kind="backend" data-node-sublabel="agents.roleflip" data-node-tag="De-hallucination gate" data-node-context="MAgHARCM Eight-Agent Architecture">
+          <title>6. RoleFlipReviewer · agents.roleflip · MAgHARCM Eight-Agent Architecture · De-hallucination gate</title>
+          <rect x="920" y="260" width="140" height="70" rx="6" class="c-mask"/>
+          <rect x="920" y="260" width="140" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(926 266) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="520.4" y="493" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Navigator</text>
-          <text data-detail="context" x="520.4" y="510" class="t-muted" font-size="8" text-anchor="middle">Symbol Lookup</text>
-        <text data-detail="fine" x="520.4" y="528" class="t-backend" font-size="7" text-anchor="middle">&lt;= 4KB</text>
+          <text data-node-label="" data-detail-anchor="" x="990" y="293" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">6. RoleFlipReviewer</text>
+        <text data-detail="context" x="990" y="309" class="t-muted" font-size="9" text-anchor="middle">agents.roleflip</text>
+        <text data-detail="fine" x="990" y="322" class="t-backend" font-size="7" text-anchor="middle">De-hallucination gate</text>
         </g>
 
-        <g id="node-validator_agent" data-node-id="validator_agent" data-node-label="5. Validator" tabindex="0" role="button" aria-label="Focus 5. Validator, Build Validation, Validation &amp; Defense › Defense Cascade › Stage 5 &amp; 6: Validate" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Build Validation" data-node-tag="Compiler" data-node-context="Validation &amp; Defense › Defense Cascade › Stage 5 &amp; 6: Validate">
-          <title>5. Validator · Build Validation · Validation &amp; Defense › Defense Cascade › Stage 5 &amp; 6: Validate · Compiler</title>
-          <rect x="665.5999999999999" y="605" width="92" height="68" rx="6" class="c-mask"/>
-          <rect x="665.5999999999999" y="605" width="92" height="68" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(671.5999999999999 611) scale(0.6875)">
+        <g id="node-validator" data-node-id="validator" data-node-label="7. Validator" tabindex="0" role="button" aria-label="Focus 7. Validator, agents.validator, MAgHARCM Eight-Agent Architecture" aria-pressed="false" data-node-kind="backend" data-node-sublabel="agents.validator" data-node-tag="Cascade + guard" data-node-context="MAgHARCM Eight-Agent Architecture">
+          <title>7. Validator · agents.validator · MAgHARCM Eight-Agent Architecture · Cascade + guard</title>
+          <rect x="1100" y="260" width="140" height="70" rx="6" class="c-mask"/>
+          <rect x="1100" y="260" width="140" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(1106 266) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="711.5999999999999" y="626" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">5. Validator</text>
-          <text data-detail="context" x="711.5999999999999" y="643" class="t-muted" font-size="8" text-anchor="middle">Build Validation</text>
-        <text data-detail="fine" x="711.5999999999999" y="661" class="t-backend" font-size="7" text-anchor="middle">Compiler</text>
+          <text data-node-label="" data-detail-anchor="" x="1170" y="293" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">7. Validator</text>
+        <text data-detail="context" x="1170" y="309" class="t-muted" font-size="9" text-anchor="middle">agents.validator</text>
+        <text data-detail="fine" x="1170" y="322" class="t-backend" font-size="7" text-anchor="middle">Cascade + guard</text>
         </g>
 
-        <g id="node-weakening_guard" data-node-id="weakening_guard" data-node-label="Guard" tabindex="0" role="button" aria-label="Focus Guard, Weakening, Validation &amp; Defense › Defense Cascade › Stage 5 &amp; 6: Validate" aria-pressed="false" data-node-kind="security" data-node-sublabel="Weakening" data-node-tag="Assertions" data-node-context="Validation &amp; Defense › Defense Cascade › Stage 5 &amp; 6: Validate">
-          <title>Guard · Weakening · Validation &amp; Defense › Defense Cascade › Stage 5 &amp; 6: Validate · Assertions</title>
-          <rect x="823.5999999999999" y="605" width="92" height="68" rx="6" class="c-mask"/>
-          <rect x="823.5999999999999" y="605" width="92" height="68" rx="6" class="c-security" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="security" class="semantic-sigil s-security" transform="translate(829.5999999999999 611) scale(0.6875)">
-            <path d="M8 2.2 13 4v3.5c0 3.1-1.8 5.4-5 6.5-3.2-1.1-5-3.4-5-6.5V4Z"/>
-            <path d="m5.8 8 1.5 1.5 3-3"/>
+        <g id="node-verdict" data-node-id="verdict" data-node-label="VerdictPanel" tabindex="0" role="button" aria-label="Focus VerdictPanel, agents.verdict_panel, MAgHARCM Eight-Agent Architecture" aria-pressed="false" data-node-kind="backend" data-node-sublabel="agents.verdict_panel" data-node-tag="Consensus vote" data-node-context="MAgHARCM Eight-Agent Architecture">
+          <title>VerdictPanel · agents.verdict_panel · MAgHARCM Eight-Agent Architecture · Consensus vote</title>
+          <rect x="920" y="90" width="140" height="70" rx="6" class="c-mask"/>
+          <rect x="920" y="90" width="140" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(926 96) scale(0.6875)">
+            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="869.5999999999999" y="626" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Guard</text>
-          <text data-detail="context" x="869.5999999999999" y="643" class="t-muted" font-size="8" text-anchor="middle">Weakening</text>
-        <text data-detail="fine" x="869.5999999999999" y="661" class="t-security" font-size="7" text-anchor="middle">Assertions</text>
+          <text data-node-label="" data-detail-anchor="" x="990" y="123" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">VerdictPanel</text>
+        <text data-detail="context" x="990" y="139" class="t-muted" font-size="9" text-anchor="middle">agents.verdict_panel</text>
+        <text data-detail="fine" x="990" y="152" class="t-backend" font-size="7" text-anchor="middle">Consensus vote</text>
         </g>
 
-        <g id="node-checkpoint_store" data-node-id="checkpoint_store" data-node-label="Checkpoints" tabindex="0" role="button" aria-label="Focus Checkpoints, State Snapshot, Target Artifacts › Stage 4: Translate" aria-pressed="false" data-node-kind="database" data-node-sublabel="State Snapshot" data-node-tag="Resume" data-node-context="Target Artifacts › Stage 4: Translate">
-          <title>Checkpoints · State Snapshot · Target Artifacts › Stage 4: Translate · Resume</title>
-          <rect x="474.4" y="732" width="92" height="68" rx="6" class="c-mask"/>
-          <rect x="474.4" y="732" width="92" height="68" rx="6" class="c-database" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(480.4 738) scale(0.6875)">
+        <g id="node-recruiter" data-node-id="recruiter" data-node-label="8. Recruiter" tabindex="0" role="button" aria-label="Focus 8. Recruiter, agents.recruit, MAgHARCM Eight-Agent Architecture" aria-pressed="false" data-node-kind="backend" data-node-sublabel="agents.recruit" data-node-tag="Adaptive planning" data-node-context="MAgHARCM Eight-Agent Architecture">
+          <title>8. Recruiter · agents.recruit · MAgHARCM Eight-Agent Architecture · Adaptive planning</title>
+          <rect x="1100" y="90" width="140" height="70" rx="6" class="c-mask"/>
+          <rect x="1100" y="90" width="140" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(1106 96) scale(0.6875)">
+            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="1170" y="123" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">8. Recruiter</text>
+        <text data-detail="context" x="1170" y="139" class="t-muted" font-size="9" text-anchor="middle">agents.recruit</text>
+        <text data-detail="fine" x="1170" y="152" class="t-backend" font-size="7" text-anchor="middle">Adaptive planning</text>
+        </g>
+
+        <g id="node-checkpoint" data-node-id="checkpoint" data-node-label="Checkpoint Store" tabindex="0" role="button" aria-label="Focus Checkpoint Store, .artifacts/&lt;run&gt;/checkpoints/, MAgHARCM Eight-Agent Architecture" aria-pressed="false" data-node-kind="database" data-node-sublabel=".artifacts/&lt;run&gt;/checkpoints/" data-node-tag="State persistence" data-node-context="MAgHARCM Eight-Agent Architecture">
+          <title>Checkpoint Store · .artifacts/&lt;run&gt;/checkpoints/ · MAgHARCM Eight-Agent Architecture · State persistence</title>
+          <rect x="380" y="450" width="180" height="70" rx="6" class="c-mask"/>
+          <rect x="380" y="450" width="180" height="70" rx="6" class="c-database" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(386 456) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="520.4" y="753" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Checkpoints</text>
-          <text data-detail="context" x="520.4" y="770" class="t-muted" font-size="8" text-anchor="middle">State Snapshot</text>
-        <text data-detail="fine" x="520.4" y="788" class="t-database" font-size="7" text-anchor="middle">Resume</text>
+          <text data-node-label="" data-detail-anchor="" x="470" y="483" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Checkpoint Store</text>
+        <text data-detail="context" x="470" y="499" class="t-muted" font-size="9" text-anchor="middle">.artifacts/&lt;run&gt;/checkpoints/</text>
+        <text data-detail="fine" x="470" y="512" class="t-database" font-size="7" text-anchor="middle">State persistence</text>
         </g>
 
-        <g id="node-target_crate" data-node-id="target_crate" data-node-label="Target Crate" tabindex="0" role="button" aria-label="Focus Target Crate, Rust / Cargo, Target Artifacts › Stage 5 &amp; 6: Validate" aria-pressed="false" data-node-kind="database" data-node-sublabel="Rust / Cargo" data-node-tag="Synced" data-node-context="Target Artifacts › Stage 5 &amp; 6: Validate">
-          <title>Target Crate · Rust / Cargo · Target Artifacts › Stage 5 &amp; 6: Validate · Synced</title>
-          <rect x="665.5999999999999" y="732" width="92" height="68" rx="6" class="c-mask"/>
-          <rect x="665.5999999999999" y="732" width="92" height="68" rx="6" class="c-database" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(671.5999999999999 738) scale(0.6875)">
+        <g id="node-runner" data-node-id="runner" data-node-label="Eino Runner" tabindex="0" role="button" aria-label="Focus Eino Runner, internal/runner, MAgHARCM Eight-Agent Architecture" aria-pressed="false" data-node-kind="backend" data-node-sublabel="internal/runner" data-node-tag="Cyclic graph" data-node-context="MAgHARCM Eight-Agent Architecture">
+          <title>Eino Runner · internal/runner · MAgHARCM Eight-Agent Architecture · Cyclic graph</title>
+          <rect x="630" y="450" width="140" height="70" rx="6" class="c-mask"/>
+          <rect x="630" y="450" width="140" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(636 456) scale(0.6875)">
+            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="700" y="483" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Eino Runner</text>
+        <text data-detail="context" x="700" y="499" class="t-muted" font-size="9" text-anchor="middle">internal/runner</text>
+        <text data-detail="fine" x="700" y="512" class="t-backend" font-size="7" text-anchor="middle">Cyclic graph</text>
+        </g>
+
+        <g id="node-target" data-node-id="target" data-node-label="Target Repository" tabindex="0" role="button" aria-label="Focus Target Repository, .artifacts/&lt;run&gt;/rust/, MAgHARCM Eight-Agent Architecture" aria-pressed="false" data-node-kind="database" data-node-sublabel=".artifacts/&lt;run&gt;/rust/" data-node-tag="Validated crate" data-node-context="MAgHARCM Eight-Agent Architecture">
+          <title>Target Repository · .artifacts/&lt;run&gt;/rust/ · MAgHARCM Eight-Agent Architecture · Validated crate</title>
+          <rect x="920" y="450" width="150" height="70" rx="6" class="c-mask"/>
+          <rect x="920" y="450" width="150" height="70" rx="6" class="c-database" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(926 456) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="711.5999999999999" y="753" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Target Crate</text>
-          <text data-detail="context" x="711.5999999999999" y="770" class="t-muted" font-size="8" text-anchor="middle">Rust / Cargo</text>
-        <text data-detail="fine" x="711.5999999999999" y="788" class="t-database" font-size="7" text-anchor="middle">Synced</text>
+          <text data-node-label="" data-detail-anchor="" x="995" y="483" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Target Repository</text>
+        <text data-detail="context" x="995" y="499" class="t-muted" font-size="9" text-anchor="middle">.artifacts/&lt;run&gt;/rust/</text>
+        <text data-detail="fine" x="995" y="512" class="t-database" font-size="7" text-anchor="middle">Validated crate</text>
         </g>
 
-        <!-- Edge labels -->
-        <g data-detail="context" data-edge-from="analyzer_agent" data-edge-to="planner_agent" data-edge-label="research" data-edge-key="0">
-          <rect x="264" y="359" width="48.4" height="14" rx="3" class="c-mask"/>
-          <text x="288.2" y="369" class="t-muted" font-size="8" text-anchor="middle">research</text>
+        <!-- Connection labels -->
+        <g data-detail="context" data-edge-from="config" data-edge-to="intake" data-edge-label="load YAML" data-edge-key="0" data-edge-id="cfg-to-intake">
+          <rect x="168.4" y="255" width="53.199999999999996" height="14" rx="3" class="c-mask"/>
+          <text x="195" y="265" class="t-muted" font-size="8" text-anchor="middle">load YAML</text>
         </g>
-        <g data-detail="context" data-edge-from="intake_parser" data-edge-to="analyzer_agent" data-edge-label="manifest" data-edge-key="1">
-          <rect x="98.8" y="414" width="48.4" height="14" rx="3" class="c-mask"/>
-          <text x="123" y="424" class="t-backend" font-size="8" text-anchor="middle">manifest</text>
+        <g data-detail="context" data-edge-from="intake" data-edge-to="archaeologist" data-edge-label="manifest + AST" data-edge-key="1" data-edge-id="intake-to-archaeologist">
+          <rect x="321.4" y="170" width="77.2" height="14" rx="3" class="c-mask"/>
+          <text x="360" y="180" class="t-muted" font-size="8" text-anchor="middle">manifest + AST</text>
         </g>
-        <g data-detail="context" data-edge-from="planner_agent" data-edge-to="manifest_rewriter" data-edge-label="deps" data-edge-key="2">
-          <rect x="378.4" y="540" width="30" height="14" rx="3" class="c-mask"/>
-          <text x="393.4" y="550" class="t-muted" font-size="8" text-anchor="middle">deps</text>
+        <g data-detail="context" data-edge-from="intake" data-edge-to="analyzer" data-edge-label="raw manifest" data-edge-key="2" data-edge-id="intake-to-analyzer">
+          <rect x="366.2" y="334" width="67.6" height="14" rx="3" class="c-mask"/>
+          <text x="400" y="344" class="t-muted" font-size="8" text-anchor="middle">raw manifest</text>
         </g>
-        <g data-detail="context" data-edge-from="planner_agent" data-edge-to="translator_agent" data-edge-label="topo steps" data-edge-key="3">
-          <rect x="361.4" y="309" width="58" height="14" rx="3" class="c-mask"/>
-          <text x="390.4" y="319" class="t-backend" font-size="8" text-anchor="middle">topo steps</text>
+        <g data-detail="context" data-edge-from="archaeologist" data-edge-to="analyzer" data-edge-label="concept map" data-edge-key="3" data-edge-id="archaeologist-to-analyzer">
+          <rect x="418.6" y="164" width="62.8" height="14" rx="3" class="c-mask"/>
+          <text x="450" y="174" class="t-muted" font-size="8" text-anchor="middle">concept map</text>
         </g>
-        <g data-detail="context" data-edge-from="target_crate" data-edge-to="validator_agent" data-edge-label="compile &amp; test" data-edge-key="4">
-          <rect x="703.9999999999999" y="800" width="77.2" height="14" rx="3" class="c-mask"/>
-          <text x="742.5999999999999" y="810" class="t-muted" font-size="8" text-anchor="middle">compile &amp; test</text>
+        <g data-detail="context" data-edge-from="analyzer" data-edge-to="planner" data-edge-label="3 documents" data-edge-key="4" data-edge-id="analyzer-to-planner">
+          <rect x="508.6" y="334" width="62.8" height="14" rx="3" class="c-mask"/>
+          <text x="540" y="344" class="t-muted" font-size="8" text-anchor="middle">3 documents</text>
         </g>
-        <g data-detail="context" data-edge-from="translator_agent" data-edge-to="checkpoint_store" data-edge-label="persist" data-edge-key="5">
-          <rect x="529.6" y="538" width="43.6" height="14" rx="3" class="c-mask"/>
-          <text x="551.4" y="548" class="t-database" font-size="8" text-anchor="middle">persist</text>
+        <g data-detail="context" data-edge-from="planner" data-edge-to="translator" data-edge-label="topo steps" data-edge-key="5" data-edge-id="planner-to-translator">
+          <rect x="691" y="334" width="58" height="14" rx="3" class="c-mask"/>
+          <text x="720" y="344" class="t-muted" font-size="8" text-anchor="middle">topo steps</text>
         </g>
-        <g data-detail="context" data-edge-from="translator_agent" data-edge-to="navigator" data-edge-label="lookup" data-edge-key="6">
-          <rect x="733.8000000000001" y="359" width="38.8" height="14" rx="3" class="c-mask"/>
-          <text x="753.2" y="369" class="t-database" font-size="8" text-anchor="middle">lookup</text>
+        <g data-detail="context" data-edge-from="translator" data-edge-to="roleflip" data-edge-label="candidate P_t" data-edge-key="6" data-edge-id="translator-to-roleflip">
+          <rect x="863.8" y="334" width="72.4" height="14" rx="3" class="c-mask"/>
+          <text x="900" y="344" class="t-muted" font-size="8" text-anchor="middle">candidate P_t</text>
         </g>
-        <g data-detail="context" data-edge-from="translator_agent" data-edge-to="target_crate" data-edge-label="emit files" data-edge-key="7">
-          <rect x="587" y="800" width="58" height="14" rx="3" class="c-mask"/>
-          <text x="616" y="810" class="t-backend" font-size="8" text-anchor="middle">emit files</text>
+        <g data-detail="context" data-edge-from="roleflip" data-edge-to="validator" data-edge-label="reviewed P_t" data-edge-key="7" data-edge-id="roleflip-to-validator">
+          <rect x="1046.2" y="334" width="67.6" height="14" rx="3" class="c-mask"/>
+          <text x="1080" y="344" class="t-muted" font-size="8" text-anchor="middle">reviewed P_t</text>
         </g>
-        <g data-detail="context" data-edge-from="validator_agent" data-edge-to="translator_agent" data-edge-label="repair loop" data-edge-key="8">
-          <rect x="569.5500000000001" y="352" width="62.8" height="14" rx="3" class="c-mask"/>
-          <text x="600.95" y="362" class="t-database" font-size="8" text-anchor="middle">repair loop</text>
+        <g data-detail="context" data-edge-from="validator" data-edge-to="verdict" data-edge-label="R" data-edge-key="8" data-edge-id="validator-to-verdict">
+          <rect x="1065" y="170" width="30" height="14" rx="3" class="c-mask"/>
+          <text x="1080" y="180" class="t-muted" font-size="8" text-anchor="middle">R</text>
         </g>
-        <g data-detail="context" data-edge-from="validator_agent" data-edge-to="weakening_guard" data-edge-label="assertions" data-edge-key="9">
-          <rect x="792.5999999999999" y="674" width="58" height="14" rx="3" class="c-mask"/>
-          <text x="821.5999999999999" y="684" class="t-security" font-size="8" text-anchor="middle">assertions</text>
+        <g data-detail="context" data-edge-from="validator" data-edge-to="translator" data-edge-label="repair loop" data-edge-key="9" data-edge-id="validator-repair">
+          <rect x="958.6" y="334" width="62.8" height="14" rx="3" class="c-mask"/>
+          <text x="990" y="344" class="t-messagebus" font-size="8" text-anchor="middle">repair loop</text>
         </g>
-        <g data-detail="context" data-edge-from="weakening_guard" data-edge-to="plateau_detector" data-edge-label="coverage delta" data-edge-key="10">
-          <rect x="913.5999999999999" y="619" width="77.2" height="14" rx="3" class="c-mask"/>
-          <text x="952.1999999999999" y="629" class="t-muted" font-size="8" text-anchor="middle">coverage delta</text>
+        <g data-detail="context" data-edge-from="translator" data-edge-to="navigator" data-edge-label="symbol context" data-edge-key="10" data-edge-id="translator-nav">
+          <rect x="681.4" y="190" width="77.2" height="14" rx="3" class="c-mask"/>
+          <text x="720" y="200" class="t-muted" font-size="8" text-anchor="middle">symbol context</text>
+        </g>
+        <g data-detail="context" data-edge-from="translator" data-edge-to="target" data-edge-label="sync disk" data-edge-key="11" data-edge-id="translator-to-target">
+          <rect x="983.4" y="370" width="53.199999999999996" height="14" rx="3" class="c-mask"/>
+          <text x="1010" y="380" class="t-muted" font-size="8" text-anchor="middle">sync disk</text>
+        </g>
+        <g data-detail="context" data-edge-from="runner" data-edge-to="checkpoint" data-edge-label="save / resume" data-edge-key="12" data-edge-id="runner-checkpoint">
+          <rect x="563.8" y="436" width="72.4" height="14" rx="3" class="c-mask"/>
+          <text x="600" y="446" class="t-muted" font-size="8" text-anchor="middle">save / resume</text>
         </g>
 
+        <!-- Boundary labels (foreground masks keep routes out of titles) -->
+        <g data-graph-role="structural-frame-label" data-composition-frame-id="0" data-composition-frame-kind="region" data-composition-frame-label="MAgHARCM Eight-Agent Architecture">
+          <rect data-graph-role="structural-frame-label-mask" x="194" y="70" width="188.2" height="16" rx="3" class="c-mask"/>
+          <text data-boundary-label="" x="198" y="83" class="t-cloud" font-size="9" font-weight="600">MAgHARCM Eight-Agent Architecture</text>
+        </g>
 
         <!-- Legend -->
         <g data-legend="" data-legend-bridge="">
-          <text x="20" y="828" class="t-primary" font-size="12" font-weight="650">Legend</text>
-          <g data-legend-semantic-kind="backend" data-legend-kind="backend" data-legend-label="Agent logic" data-legend-x="20" data-legend-baseline="848" data-legend-width="91">
-            <rect x="20" y="840" width="14" height="9" rx="2" class="c-backend" stroke-width="1"/>
-            <text x="42" y="848" class="t-muted" font-size="7.5" font-weight="500">Agent logic</text>
+          <text x="40" y="572" class="t-primary" font-size="12" font-weight="650">Legend</text>
+          <g data-legend-semantic-kind="backend" data-legend-kind="backend" data-legend-label="Backend" data-legend-x="40" data-legend-baseline="592" data-legend-width="78">
+            <rect x="40" y="583" width="16" height="10" rx="2.5" class="c-backend" stroke-width="1"/>
+            <text x="62" y="592" class="t-muted" font-size="10" font-weight="500">Backend</text>
           </g>
-          <g data-legend-semantic-kind="security" data-legend-kind="security" data-legend-label="Policy" data-legend-x="118" data-legend-baseline="848" data-legend-width="70">
-            <rect x="118" y="840" width="14" height="9" rx="2" class="c-security" stroke-width="1"/>
-            <text x="140" y="848" class="t-muted" font-size="7.5" font-weight="500">Policy</text>
+          <g data-legend-semantic-kind="database" data-legend-kind="database" data-legend-label="Database" data-legend-x="140" data-legend-baseline="592" data-legend-width="83">
+            <rect x="140" y="583" width="16" height="10" rx="2.5" class="c-database" stroke-width="1"/>
+            <text x="162" y="592" class="t-muted" font-size="10" font-weight="500">Database</text>
           </g>
-          <g data-legend-semantic-kind="database" data-legend-kind="database" data-legend-label="Context / trace" data-legend-x="195" data-legend-baseline="848" data-legend-width="109">
-            <rect x="195" y="840" width="14" height="9" rx="2" class="c-database" stroke-width="1"/>
-            <text x="217" y="848" class="t-muted" font-size="7.5" font-weight="500">Context / trace</text>
+          <g data-legend-semantic-kind="cloud" data-legend-kind="cloud" data-legend-label="Cloud" data-legend-x="245" data-legend-baseline="592" data-legend-width="68">
+            <rect x="245" y="583" width="16" height="10" rx="2.5" class="c-cloud" stroke-width="1"/>
+            <text x="267" y="592" class="t-muted" font-size="10" font-weight="500">Cloud</text>
           </g>
-          <g data-legend-semantic-kind="external" data-legend-kind="external" data-legend-label="External system" data-legend-x="311" data-legend-baseline="848" data-legend-width="109">
-            <rect x="311" y="840" width="14" height="9" rx="2" class="c-external" stroke-width="1"/>
-            <text x="333" y="848" class="t-muted" font-size="7.5" font-weight="500">External system</text>
+          <g data-legend-semantic-kind="external" data-legend-kind="external" data-legend-label="External" data-legend-x="335" data-legend-baseline="592" data-legend-width="83">
+            <rect x="335" y="583" width="16" height="10" rx="2.5" class="c-external" stroke-width="1"/>
+            <text x="357" y="592" class="t-muted" font-size="10" font-weight="500">External</text>
           </g>
         </g>
       </svg>
@@ -5490,38 +5501,37 @@
       <div class="card">
         <div class="card-header">
           <div class="card-dot cyan"></div>
-          <h3>Local SLM Pipeline</h3>
+          <h3>Inputs &amp; Models</h3>
         </div>
         <ul>
-          <li>&bull; 6 stages: Intake -&gt; Analyze -&gt; Plan -&gt; Translate -&gt; Validate -&gt; Repair Loop</li>
-          <li>&bull; Qwen3-30B Thinking reasoning model paired with Qwen3-4B Instruct coding model</li>
-          <li>&bull; 100% self-hosted via Ollama with zero external cloud dependencies</li>
+          <li>&bull; YAML config specifies source/target paths and toolchain</li>
+          <li>&bull; Reasoning slot (Qwen3-30B Thinking) + coding slot (Qwen3-4B) via Ollama</li>
+          <li>&bull; ABCoderMcpProvider (default) replaces Tree-sitter for AST extraction</li>
         </ul>
       </div>
 
       <div class="card">
         <div class="card-header">
           <div class="card-dot emerald"></div>
-          <h3>Methodology Primitives</h3>
+          <h3>Eight-Agent Pipeline</h3>
         </div>
         <ul>
-          <li>&bull; Chunked translation with prior-modules context summary</li>
-          <li>&bull; Symbol-Aware Navigator with &lt;= 4KB context windows</li>
-          <li>&bull; Reverse-topological DAG scheduling with back-edge cycle removal</li>
-          <li>&bull; Automated source-to-target manifest rewriter</li>
+          <li>&bull; Archaeology -&gt; Analyze -&gt; Plan -&gt; Translate -&gt; Review -&gt; Validate -&gt; Verdict -&gt; Recruit</li>
+          <li>&bull; Software archaeology produces a concept map before planning</li>
+          <li>&bull; RoleFlipReviewer runs communicative de-hallucination checks before validation</li>
+          <li>&bull; VerdictPanel consensus + Recruiter adaptive planning bound repair spinning</li>
         </ul>
       </div>
 
       <div class="card">
         <div class="card-header">
           <div class="card-dot amber"></div>
-          <h3>Multi-Stage Defense &amp; Recovery</h3>
+          <h3>Persistence &amp; Resilience</h3>
         </div>
         <ul>
-          <li>&bull; Pre-compilation AST syntax validation before native toolchain invocation</li>
-          <li>&bull; Adversarial test-weakening guard against relaxed assertions</li>
-          <li>&bull; Coverage plateau detector prevents unproductive repair spinning</li>
-          <li>&bull; Conversable checkpointing with idempotent state resume</li>
+          <li>&bull; Per-iteration checkpointing under .artifacts/&lt;run-id&gt;/checkpoints/</li>
+          <li>&bull; CodaMOSA-derived coverage plateau detector prevents stalling</li>
+          <li>&bull; Fully local execution with zero external cloud dependencies</li>
         </ul>
       </div>
     </div>

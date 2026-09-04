@@ -10,10 +10,12 @@ $F_s = \{f_s^1, \dots, f_s^n\}$, tests $T_s$, and dependencies $D_s$,
     \includegraphics[width=\textwidth]{figures/fig1_workflow.png}
     \vspace{-0.5em}
     \caption{Architecture overview of the MAgHARCM multi-agent
-    translation pipeline. The system coordinates four specialised
-    agents (Analyzer, Planning, Translator, Validator) through an
-    explicit \textsc{Analyze} $\to$ \textsc{Plan} $\to$ \textsc{Translate}
-    $\to$ \textsc{Validate} $\to$ \textsc{Repair} loop with
+    translation pipeline. The system coordinates eight specialised
+    agents (Analyzer, Archaeologist, Planning, Translator, Validator,
+    VerdictPanel, Recruiter, RoleFlipReviewer) through an explicit
+    \textsc{Archaeology} $\to$ \textsc{Analyze} $\to$ \textsc{Plan} $\to$
+    \textsc{Translate} $\to$ \textsc{Review} $\to$ \textsc{Validate}
+    $\to$ \textsc{Verdict} $\to$ \textsc{Recruit} loop with
     reverse-topological scheduling and bounded context assembly.}
     \label{fig:workflow}
 \end{figure*}
@@ -32,13 +34,20 @@ Given the practical limits of testing and verification, we consider a
 subset of all inputs to each $f_s^i$ and $f_t^i$.
 
 Figure~\ref{fig:workflow} presents an overview of MAgHARCM, which takes
-$P_s$ and $L_t$ as input and produces $P_t$. MAgHARCM consists of four
-components: the \emph{Analyzer Agent} (§\ref{sec:method_analyzer}),
-\emph{Planning Agent} (§\ref{sec:method_planning}), \emph{Translator
-Agent} (§\ref{sec:method_translator}), and \emph{Validator Agent}
-(§\ref{sec:method_validator}). The first two analyse $P_s$ and generate
-a dependency-aware implementation plan; the last two execute an
-iterative translate--validate--repair loop to produce $P_t$.
+$P_s$ and $L_t$ as input and produces $P_t$. MAgHARCM consists of eight
+components: the \emph{Archaeologist Agent}
+(§\ref{sec:method_archaeologist}), \emph{Analyzer Agent}
+(§\ref{sec:method_analyzer}), \emph{Planning Agent}
+(§\ref{sec:method_planning}), \emph{Translator Agent}
+(§\ref{sec:method_translator}), \emph{RoleFlipReviewer Agent}
+(§\ref{sec:method_roleflip}), \emph{Validator Agent}
+(§\ref{sec:method_validator}), \emph{VerdictPanel Agent}
+(§\ref{sec:method_verdict}), and \emph{Recruiter Agent}
+(§\ref{sec:method_recruiter}). The Archaeologist, Analyzer, and Planning
+agents analyse $P_s$ and generate a dependency-aware implementation
+plan; the Translator, RoleFlipReviewer, Validator, VerdictPanel, and
+Recruiter agents execute an iterative translate--review--validate--
+verdict--recruit--repair loop to produce $P_t$.
 
 The \emph{Analyzer Agent} performs extensive analysis of $P_s$. It walks
 the source tree through MCP tools and produces a report that
@@ -64,28 +73,31 @@ grammars for C, Go, Java, JavaScript, Python, and Rust). The plan
 guides subsequent agents with concrete steps and avoids the unnecessary
 exploration that causes hallucinations---challenge 2.
 
-The \emph{Translator Agent} and \emph{Validator Agent} execute the
-implementation plan. The Translator translates $F_s$ and $T_s$ into
-$F_t$ and $T_t$, incrementally filling in the skeleton files; if
-validation fails, it uses the Validator's report to repair translation
-bugs. The Validator independently validates $P_t$ by executing $T_t$
-and performing coverage-gap analysis; when functions in $F_t$ are
-uncovered, it triggers additional test generation and reports results
-back to the Translator for repair. Separating the dynamic validation
-workflow from the Validator while the Translator co-translates code and
-tests addresses challenge 3. Translating tests is essential for the
-pipeline's generalisability beyond command-line tools, compared with
-existing agentic systems that rely on language interoperability or
-PL-specific differential fuzzing~\cite{ibrahimzada2026recodeagent}.
+The \emph{Translator Agent}, \emph{RoleFlipReviewer Agent},
+\emph{Validator Agent}, \emph{VerdictPanel Agent}, and \emph{Recruiter
+Agent} execute the implementation plan. The Translator translates $F_s$
+and $T_s$ into $F_t$ and $T_t$, incrementally filling in the skeleton
+files; if validation fails, it uses the Validator's report to repair
+translation bugs. The Validator independently validates $P_t$ by
+executing $T_t$ and performing coverage-gap analysis; when functions
+in $F_t$ are uncovered, it triggers additional test generation and
+reports results back to the Translator for repair. Separating the
+dynamic validation workflow from the Validator while the Translator
+co-translates code and tests addresses challenge 3. Translating tests
+is essential for the pipeline's generalisability beyond command-line
+tools, compared with existing agentic systems that rely on language
+interoperability or PL-specific differential fuzzing~\cite{ibrahimzada2026recodeagent}.
 
 The end-to-end orchestration procedure is given in
-Algorithm~\ref{alg:magharcm_pipeline}. The harness runs Analyze and
-Plan once with a shared timeout, then alternates between Translate
-(which produces a translated project fragment-by-fragment) and
-Validate (which compiles, executes tests, and emits a structured
-report) until validation succeeds, a coverage plateau is detected, the
-adversarial weakening guard fires, or the iteration budget $K$ is
-exhausted.
+Algorithm~\ref{alg:magharcm_pipeline}. The harness runs Archaeologist,
+Analyzer, and Plan once with a shared timeout, then iterates through
+Translate (which produces a translated project fragment-by-fragment),
+RoleFlipReview (which performs communicative de-hallucination
+checks), Validate (which compiles, executes tests, and emits a
+structured report), EvaluateConsensus on the VerdictPanel, and
+Recruit (which adaptively replans the loop) until validation
+succeeds, a coverage plateau is detected, the adversarial weakening
+guard fires, or the iteration budget $K$ is exhausted.
 
 \begin{algorithm}[MAgHARCM Repository Translation Orchestration]
 \label{alg:magharcm_pipeline}
@@ -187,7 +199,7 @@ include:
 The native LSP provider wraps the language servers bundled with the
 development toolchain (\texttt{gopls}, \texttt{rust-analyzer},
 \texttt{clangd}, Eclipse JDT, TypeScript Language Server, Python
-Language Server). An optional ABCoder MCP provider delegates the same
+Language Server). An optional ABCoderMcp provider delegates the same
 operations to a Model-Context-Protocol server that exposes structural
 queries across the same six language servers used by
 \textsc{ReCodeAgent}~\cite{ibrahimzada2026recodeagent}. When no
@@ -212,7 +224,7 @@ exploring the codebase and files. Functionalities included are:
     variables.
 \end{enumerate}
 
-The ABCoder MCP provider (\texttt{lsp.provider: abcoder-mcp}) is the
+The ABCoderMcpProvider (\texttt{lsp.provider: abcoder-mcp}) is the
 default across configurations. It delegates structural queries to a
 Model-Context-Protocol server exposing UniAST semantic anchors across
 heterogeneous language targets. The native Tree-sitter backend is

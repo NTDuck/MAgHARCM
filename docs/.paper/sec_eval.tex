@@ -96,7 +96,7 @@ the runtime of the largest project.
 \label{sec:eval_baselines}
 
 We compare MAgHARCM against three reduced configurations. The
-Single-Agent baseline collapses the four agents into one
+Single-Agent baseline collapses the eight agents into one
 reasoning-and-coding loop driven by the $30\,\text{B}$ reasoning model
 without per-stage decomposition, planning artefacts, or repair
 cascades. The No-Analyzer and No-Planner configurations each remove
@@ -272,7 +272,7 @@ We ablate three core components of MAgHARCM across the benchmark
 suite (Table~\ref{tab:ablations}). For each ablation, we remove one
 agent while keeping the others and rerun the full $K{=}3$ trial
 suite. We also compare against the Single-Agent baseline, which
-collapses the four agents into one reasoning-and-coding loop.
+collapses the eight agents into one reasoning-and-coding loop.
 
 \begin{table}[!t]
 \centering
@@ -291,7 +291,9 @@ Single-Agent baseline & 1/4 (25\%) & $9.4\%$ ($-52.1$ pp) \\
 \vspace{0.3em}
 \caption{Ablation study across the four-benchmark suite. Drops are
 reported as the average decrease in test pass rate relative to the
-full MAgHARCM pipeline. ``pp'' denotes percentage points.}
+full MAgHARCM pipeline. ``pp'' denotes percentage points. Per-project
+compilation is binary (Pass or Fail) and is reported as fractions of
+the four-benchmark suite.}
 \label{tab:ablations}
 \end{table}
 
@@ -319,16 +321,16 @@ four benchmarks. The Translator's emission of unverified code produces
 false compilation success on GildedRose but a complete compilation
 failure on Commons-Validator.
 
-\paragraph{Single-Agent baseline.} Collapsing the four agents into one
-reasoning-and-coding loop is the most damaging reduction. The
+\paragraph{Single-Agent baseline.} Collapsing the eight agents into
+one reasoning-and-coding loop is the most damaging reduction. The
 Single-Agent configuration achieves only $9.4\%$ test pass rate on
 average and fails to compile three of the four benchmarks. The
 $\mathbf{-52.1}$ percentage-point gap quantifies the value of
-decomposition: separating the four concerns (analysis, planning,
-translation, validation) prevents long-horizon hallucination that a
-single loop cannot escape. This finding aligns with prior work on
+decomposition: separating the eight concerns (archaeology, analysis,
+planning, translation, review, validation, verdict, recruitment)
+prevents long-horizon hallucination that a single loop cannot
+escape. This finding aligns with prior work on
 multi-agent decomposition for repository-scale tasks
-\cite{ibrahimzada2026recodeagent,yao2023react}.
 
 \subsection{RQ4: Cost and Tool Usage Analysis}
 \label{sec:eval_rq4}

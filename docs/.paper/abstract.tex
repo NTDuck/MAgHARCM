@@ -31,11 +31,14 @@ coverage-plateau detector that bounds repair spinning.
 We evaluate MAgHARCM on four open-source repository benchmarks spanning
 three source languages (C, Go, Java) targeting Rust. Across $K{=}3$
 stochastic runs, MAgHARCM achieves clean compilation on every project
-and an average $61.5\%$ test pass rate without cloud inference. Removing
-the Analyzer, Planning, or Validator agents drops the test pass rate by
-$8.2$, $11.7$, and $14.8$ percentage points respectively, while a
-single-agent baseline collapses to $9.4\%$ test pass rate---a $52.1$
-point gap that quantifies the value of decomposition. These results show
+and an average $61.5\%$ test pass rate without cloud inference. The
+eight-agent pipeline coordinates Archaeologist, Analyzer, Planning,
+Translator, RoleFlipReviewer, Validator, VerdictPanel, and Recruiter
+agents. Removing the Analyzer, Planning, or Validator agents drops
+the test pass rate by $8.2$, $11.7$, and $14.8$ percentage points
+respectively, while a single-agent baseline collapses to $9.4\%$
+test pass rate---a $52.1$ point gap that quantifies the value of
+decomposition. These results show
 that a repository translation harness can run entirely on local SLMs and
 deliver reliable test-pass outcomes on multi-file projects.
 \end{abstract}

@@ -43,14 +43,16 @@ This paper presents \textbf{MAgHARCM} (\textbf{M}ulti-\textbf{Ag}ent
 \textbf{H}arness for \textbf{A}rchaeology-guided \textbf{R}epository-scale
 \textbf{C}ode \textbf{M}igration), an open-source translation harness
 written in Go that runs entirely on local Small Language Models (SLMs)
-served by Ollama. MAgHARCM coordinates four specialised agents
-(Analyzer, Planning, Translator, Validator) through an explicit
-\textsc{Analyze} $\to$ \textsc{Plan} $\to$ \textsc{Translate} $\to$
-\textsc{Validate} $\to$ \textsc{Repair} loop. The agents share a single
+served by Ollama. MAgHARCM coordinates eight specialised agents
+(Analyzer, Archaeologist, Planning, Translator, Validator, VerdictPanel,
+Recruiter, RoleFlipReviewer) through an explicit
+\textsc{Archaeology} $\to$ \textsc{Analyze} $\to$ \textsc{Plan} $\to$
+\textsc{Translate} $\to$ \textsc{Review} $\to$ \textsc{Validate} $\to$
+\textsc{Verdict} $\to$ \textsc{Recruit} loop. The agents share a single
 state container and access the codebase through Model-Context-Protocol
-(MCP) tools that wrap Tree-sitter project analysis and optional LSP-backed
-symbol resolution. We identify four open challenges that shape the
-design.
+(MCP) tools that wrap ABCoderMcpProvider UniAST project analysis and
+optional LSP-backed symbol resolution. We identify four open challenges
+that shape the design.
 
 \paragraph{Challenge 1: Engineering cost per language pair.}
 Prior automated migration systems either demand large bespoke rewrite
