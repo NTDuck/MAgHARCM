@@ -21,12 +21,7 @@ import (
 
 // PlanningAgent extracts translation units, maps symbols to target conventions, generates project skeletons, and devises execution plans.
 type PlanningAgent struct {
-	Model        model.BaseChatModel
-	// Archaeologist is the PRIM-14 software-archaeology pre-planning hook.
-	// When non-nil, planner.Run invokes Archaeologist.Investigate on the
-	// source directory before fragment extraction and stashes the report
-	// on state.ArchaeologyReport. Failures log and continue (non-fatal).
-	Archaeologist *Archaeologist
+	Model model.BaseChatModel
 }
 
 // NewPlanningAgent creates a PlanningAgent instance.
@@ -72,20 +67,6 @@ func (p *PlanningAgent) Run(ctx context.Context, state *State) (*State, error) {
 	logger.LogAgent("Planning", "Decomposing translation into granular translation units and constructing plan")
 	state.PlanningOutput.ArtifactSchemaVersion = CurrentSchemaVersion
 
-	// PRIM-14 software-archaeology pre-pass: when the archaeologist is
-	// registered, investigate the source for boundaries, churn hotspots,
-	// and legacy naming findings before fragment extraction. Failures are
-	// logged and the planner continues without an archaeology report.
-	if p.Archaeologist != nil && state.Task.SourceDir != "" {
-		report, err := p.Archaeologist.Investigate(ctx, state.Task.SourceDir)
-		if err != nil {
-			logger.LogWarning("PRIM-14 Archaeologist pre-planning failed: %v", err)
-		} else {
-			state.ArchaeologyReport = report
-			logger.LogStep("PRIM-14 Archaeologist recovered %d boundaries, %d churn hotspots, %d naming findings",
-				len(report.BoundaryMap), len(report.ChurnHotspots), len(report.NamingForensics))
-		}
-	}
 
 	fragments, sourceSummaries, err := p.extractFragments(state.Task.SourceDir)
 	if err != nil {

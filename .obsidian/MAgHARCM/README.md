@@ -1,47 +1,44 @@
 ---
 title: MAgHARCM Vault
-tags: [vault, index, [[v0.2.0]]]
+backlink: [[2.0.0 MAgHARCM Vault]]
+tags: [vault, index, [[2.0.0 MAgHARCM]]]
 ---
 
-# MAgHARCM Vault
+# [[2.0.0 MAgHARCM Vault]]
 
-This is the Obsidian vault for the MAgHARCM project. It documents the
-architecture, methodology, primitives, and research notes.
+This is the canonical Obsidian vault for the MAgHARCM project. It documents the
+architecture, methodology, primitives, and software-archaeology research notes.
 
-[[v0.2.0]] is the current vault versioning (was [[v0.1.0]] before this
-sprint). The [[Sprint-Recon-2026-09-04]] entry is the parity audit that
-drove this sprint's edits.
+`[[2.0.0 MAgHARCM]]` is the current vault versioning.
+The `[[2.0.0 Sprint Modernization & Architectural Convergence]]` entry captures the
+full parity convergence where all 31 primitives are active implementations in the codebase.
 
-## Quick links
+## Quick Links
 
-- [[research/METHODOLOGY]] — the 4-agent pipeline, strategy registry
-  ([[PRIM-21]]), chunked translator ([[PRIM-23]]), validator cascade
-  ([[PRIM-6]] [[PRIM-13]] [[PRIM-27]]), state container ([[PRIM-24]]),
-  checkpointing ([[PRIM-28]]).
-- [[research/Architecture]] — package layout and dependency DAG.
-- [[primitives/INDEX]] — catalog of named capabilities [[PRIM-1]]..[[PRIM-30]].
+- `[[2.0.0 Methodology]]` — the 8-agent pipeline, dynamic try-and-fail strategy registry
+  (`[[1.0.0 PRIM-21]]`), chunked translator (`[[1.0.0 PRIM-23]]`), validator cascade
+  (`[[1.0.0 PRIM-6]]`, `[[1.0.0 PRIM-13]]`, `[[1.0.0 PRIM-27]]`), state container (`[[1.0.0 PRIM-24]]`),
+  and durable checkpointing (`[[1.0.0 PRIM-28]]`).
+- `[[2.0.0 Architecture]]` — package layout, dependency DAG, and Locality of Behaviour.
+- `[[2.0.0 Primitives Index]]` — complete catalog of all 31 primitives `[[1.0.0 PRIM-1]]` through `[[1.0.0 PRIM-31]]`.
+- `[[2.0.0 Software-Archaeology-Lineage]]` — 2-hop foundational literature synthesis (Parnas, Lehman, Chikofsky, Rajlich, Müller, Baldwin & Clark, Feathers, Kazman, Foltz).
 
 ## Structure
 
 ```
 .obsidian/MAgHARCM/
 ├── research/
-│   ├── METHODOLOGY.md            — pipeline, strategies, validator cascade,
-│   │                              state, checkpointing
-│   ├── Architecture.md           — package DAG, 4-agent decomposition
-│   └── papers/                   — bibliography research (recursive)
+│   ├── METHODOLOGY.md            — pipeline, strategies, validator cascade, state
+│   ├── Architecture.md           — package DAG, 8-agent decomposition, Locality of Behaviour
+│   ├── Software-Archaeology-Lineage.md — 2-hop literature lineage & synthesis
+│   └── papers/                   — bibliography research P-01 through P-30
 ├── primitives/
-│   └── INDEX.md                  — catalog of [[PRIM-1]]..[[PRIM-30]] entries
-└── diary/                        — session notes (sprint recon, etc.)
+│   └── INDEX.md                  — complete catalog of all 31 primitives
+└── diary/                        — session and sprint tracking notes
 ```
-
-## Editing
-
-Use Obsidian's link syntax `[[note name]]` to connect related pages. The
-vault is stored in the project root so it stays versioned with the code.
 
 ## Versioning Convention
 
-Use `[[x.y.z ...]]` for every ID/version marker. Spontaneous parentheses
-(`(CodaMOSA)`, `(Syzygy)`, `(ReCodeAgent)`) are NOT allowed; replace with
-`[[Author-YEAR]]` or `[[P-NN]]` style backlinks.
+All version markers use the `[[x.y.z ...]]` convention. Spontaneous parentheses
+are forbidden; replace them with `[[Author-YEAR]]` or `[[P-NN]]` style backlinks.
+Every primitive is implemented in the codebase, establishing a single source of truth.

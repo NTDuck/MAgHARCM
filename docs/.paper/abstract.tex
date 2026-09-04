@@ -13,13 +13,13 @@ them out for many users.
 
 This paper presents \textbf{MAgHARCM}, the first multi-agent repository
 translation harness engineered for local Small Language Models. MAgHARCM
-coordinates four specialised agents (Analyzer, Planning, Translator,
-Validator) through an explicit \textsc{Analyze} $\to$ \textsc{Plan} $\to$
-\textsc{Translate} $\to$ \textsc{Validate} $\to$ \textsc{Repair} loop
-that runs entirely on a 30B reasoning model paired with a 4B coding model
-served by Ollama. The agents share a single state container and access
-the codebase through Model-Context-Protocol tools that wrap Tree-sitter
-project analysis and LSP-backed symbol resolution. Cycle-free
+coordinates eight specialised agents (Archaeologist, Analyzer, Planning,
+Translator, Reviewer, Validator, Verdict Panel, Recruiter) through an
+explicit multi-stage pipeline that runs entirely on a 30B reasoning model
+paired with a 4B coding model served by Ollama. The agents coordinate
+through a shared state container and access the codebase through
+Model-Context-Protocol tools that wrap ABCoder UniAST structural analysis
+and LSP-backed symbol resolution. Cycle-free
 reverse-topological scheduling with back-edge removal enforces
 callee-before-caller ordering. A bounded context per fragment ($\le 4$\,KB
 Symbol Navigator plus $\le 4$\,KB Prior-Modules Memory) prevents the

@@ -12,14 +12,15 @@ import (
 
 func main() {
 	var configFile string
-	flag.StringVar(&configFile, "config", ".config/gildedrose.yml", "Path to YAML configuration file")
+	flag.StringVar(&configFile, "config", "", "Path to YAML configuration file (required)")
 	flag.Parse()
 
-	cfg, err := config.LoadYAML(configFile)
-	if err != nil {
-		logger.LogError("config load failed: %v", err)
-		os.Exit(1)
+	if configFile == "" {
+		// If omitted, check for default request file or prompt user
+		configFile = ".config/gildedrose.yml"
 	}
+
+	cfg := config.MustLoadYAML(configFile)
 
 	finalState, err := runner.Run(context.Background(), cfg)
 	if err != nil {
