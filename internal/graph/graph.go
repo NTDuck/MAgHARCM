@@ -41,6 +41,12 @@ func NewMAgHARCMGraph(ctx context.Context, models *llm.Models, runID string) (*M
 
 	// Initialize reasoning and coding agent instances
 	analyzerAgent := agents.NewAnalyzerAgent(models.Reasoning)
+	// PRIM-9 HybridCodeGraph (AST ∪ CPG ∪ SDG) feeds the analyzer's
+	// Navigator so LSP-missed symbols get a synthesized definition before
+	// falling back to LLM-only resolution.
+	analyzerAgent.Navigator = agents.NewNavigator(nil)
+	analyzerAgent.Navigator.CodeGraph = agents.NewHybridCodeGraph("", nil)
+
 	// PRIM-26 Symbol-Aware Navigator is now a sub-mechanism of the Planner
 	// (LSP provider invocation), not a top-level graph node.
 	planningAgent := agents.NewPlanningAgent(models.Reasoning)
