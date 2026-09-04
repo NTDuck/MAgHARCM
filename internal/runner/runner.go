@@ -97,8 +97,20 @@ func Run(ctx context.Context, cfg *config.Config) (*types.State, error) {
 		logger.LogStep("Target project ready in `%s`", filepath.Clean(cfg.TargetDir))
 	} else {
 		logger.LogWarning("Execution finished: %s", finalState.ValidationReport.String())
+		// PRIM-29 Recruitment-Adaptive Planning (AgentVerse style):
+		// Evaluate validation metrics through Recruiter to derive next-iteration plan.
+		recruiter := agents.NewRecruiter()
+		summary := agents.ValidationSummary{
+			CompilationSuccess:           finalState.ValidationReport.CompilationSuccess,
+			PassRate:                     finalState.ValidationReport.TestPassRate,
+			PlateauDetected:              finalState.ValidationReport.PlateauDetected,
+			AdversarialWeakeningDetected: false,
+		}
+		if plan, err := recruiter.Recruit(ctx, agents.Profile{}, summary); err == nil {
+			logger.LogAgent("Recruiter", "Adaptive plan for follow-up iteration: %s (tools: %v, agents: %v)",
+				plan.Rationale, plan.Tools, plan.Agents)
+		}
 	}
-
 	return finalState, nil
 }
 
