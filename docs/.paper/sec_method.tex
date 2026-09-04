@@ -237,7 +237,7 @@ The Archaeologist Agent (§\ref{sec:method_archaeologist}) executes an
 initial pre-planning software archaeology pass over $P_s$, combining
 foundational techniques from Rajlich~\cite{p28_weiser},
 M\"uller~\cite{p06_codes_bench}, Foltz~\cite{p30_lfm25}, and
-Kazman~\cite{p20_p51_kazman_drspaces}. It produces an
+Kazman~\cite{p51_kazman_drspaces}. It produces an
 \texttt{ArchaeologyReport} with five components:
 \begin{enumerate}
     \item \emph{Boundary Extraction}: identifies module and file boundaries.
@@ -507,16 +507,28 @@ reached.
 
 The Reviewer Agent (§\ref{sec:method_reviewer}) executes a communicative
 de-hallucination pass over generated code using a role-flipped prompt
-(PRIM-25~\cite{p46_chatdev}). Rather than accepting the Translator's
+(PRIM-25~\cite{p46_chatdev_deepread}). Rather than accepting the Translator's
 sycophantic assertions that generated code is bug-free, the Reviewer
 is explicitly primed to find defects and surface potential discrepancies
 before the code reaches the compiler.
 
+\subsection{Role-Flip Reviewer Agent}
+\label{sec:method_roleflip}
+
+The Role-Flip Reviewer Agent (PRIM-25~\cite{p46_chatdev_deepread,p71_anthropic_sycophancy_2025}) inspects the Translator's
+output with an adversary-prompted second pass: the role-flipped system message
+forces the model to find at least one defect rather than to confirm correctness.
+The reviewer emits a binary accepted/defect verdict and, on defect, a targeted
+repair hint that the Translator consumes on the next iteration. The role-flip
+pattern is the empirically grounded mitigation for the sycophancy baseline
+(47\% flip rate per the Anthropic 2025 evaluation suite).
+
 \subsection{Verdict Panel Agent}
-\label{sec:method_verdict_panel}
+\label{sec:method_verdict}
+
 
 When validation fails during iterative repair, the Verdict Panel Agent
-(§\ref{sec:method_verdict_panel}) queries independent reasoning models
+(§\ref{sec:method_verdict}) queries independent reasoning models
 to evaluate functional equivalence between source and target fragments
 (PRIM-7~\cite{p08_matchfixagent}). The consensus decision (agreement
 status and structured disagreements) guides subsequent repair iterations.
