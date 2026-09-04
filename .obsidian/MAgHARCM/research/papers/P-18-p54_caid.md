@@ -33,3 +33,9 @@ tags: [paper, multi-agent, asynchronous, isolated-workspaces, git-worktree, [[PR
 - [[Baldwin-Clark-2000-DesignRules]] — CAID's *isolated workspaces + merge integration test* is a load-bearing design rule (the merge contract is the L1 interface; each worktree is a substitutable L3 leaf); the architecture explicitly maximises the option value of "swapping one agent's work for another without breaking the integration rule".
 - [[Rajlich-1997-ICSE]] — the central delegation manager needs Rajlich's concept-locator analysis to assign each subtask to the agent whose concept ownership matches; without the concept map, the manager degenerates into blind round-robin.
 - [[Kazman-Cai-2024-ArchitecturalRecovery]] — the dependency graph the CAID manager builds is a recovered architectural artefact; for legacy targets it must be reconstructed by [[PRIM-9]]'s tri-representation code graph before delegation can be safe.
+
+## Hop-2 Deep Archaeology & Upstream Lineage
+
+- **Software Modernization Archaeology (Rajlich & Müller)**: Connects modern LLM decompilation/migration back to early software reverse engineering (program slicing, concept assignment, redocumentation).
+- **Cognitive Traversal (Foltz & Landauer / Latent Semantic Analysis)**: How human engineers comprehend legacy systems across semantic hops versus how LLM context windows navigate fragmented symbols.
+- **Architectural Coupling & Decomposition (Baldwin & Clark / Kazman)**: Modularity theory and Design Structure Matrices (DSM) underpinning why reverse-topological scheduling ([[PRIM-1]]) avoids cyclic cascade failures.

@@ -33,3 +33,9 @@ AlphaTrans supplies the algorithmic underpinnings of [[PRIM-1]] and [[PRIM-2]] �
 - [[Baldwin-Clark-2000]] — design-rule decomposition mirrors AlphaTrans's stable-type skeleton as the L1 interface layer; method bodies are L3 substitutable leaves.
 - [[Rajlich-1997]] — concept-locator analysis gives an offline mechanism for verifying that AlphaTrans's `testCheck` oracle actually covers the source's conceptual surface.
 - [[Foltz-2023]] — DR.JONES cognitive model motivates the fragment-by-fragment dispatch: small linear traversals empirically beat deep ones, which is why AlphaTrans schedules leaves first.
+
+## Hop-2 Deep Archaeology & Upstream Lineage
+
+- **Software Modernization Archaeology (Rajlich & Müller)**: Connects modern LLM decompilation/migration back to early software reverse engineering (program slicing, concept assignment, redocumentation).
+- **Cognitive Traversal (Foltz & Landauer / Latent Semantic Analysis)**: How human engineers comprehend legacy systems across semantic hops versus how LLM context windows navigate fragmented symbols.
+- **Architectural Coupling & Decomposition (Baldwin & Clark / Kazman)**: Modularity theory and Design Structure Matrices (DSM) underpinning why reverse-topological scheduling ([[PRIM-1]]) avoids cyclic cascade failures.

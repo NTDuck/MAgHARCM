@@ -34,3 +34,9 @@ MatchFixAgent is the direct citation for [[PRIM-7]] (Multi-Agent Verdict Validat
 - [[Rajlich-1997]] — concept-locator analysis motivates MatchFixAgent's semantic-analysis agent: semantic equivalence is judged on whether the target preserves the source's concept set, not its surface behaviour.
 - [[Müller-2000]] — legacy integration strategy: MatchFixAgent's adversarial structure maps to Chicken Little (gradual validation) rather than Cold Turkey (full migration), matching MAgHARCM's strategy selector.
 - [[Foltz-2023]] — DR.JONES explains why multi-agent disagreement beats single-agent self-consistency: independent linear traversals empirically outperform a single deep one for software comprehension tasks.
+
+## Hop-2 Deep Archaeology & Upstream Lineage
+
+- **Software Modernization Archaeology (Rajlich & Müller)**: Connects modern LLM decompilation/migration back to early software reverse engineering (program slicing, concept assignment, redocumentation).
+- **Cognitive Traversal (Foltz & Landauer / Latent Semantic Analysis)**: How human engineers comprehend legacy systems across semantic hops versus how LLM context windows navigate fragmented symbols.
+- **Architectural Coupling & Decomposition (Baldwin & Clark / Kazman)**: Modularity theory and Design Structure Matrices (DSM) underpinning why reverse-topological scheduling ([[PRIM-1]]) avoids cyclic cascade failures.

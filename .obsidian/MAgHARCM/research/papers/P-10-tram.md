@@ -35,3 +35,9 @@ TRAM is the direct citation for [[PRIM-8]] (State-Grounded Mock-Based In-Isolati
 - [[Kazman-Cai-2024]] — architectural recovery underwrites TRAM's mock construction: knowing which dependencies a method actually touches (vs. which ones it imports) requires call-graph + data-flow recovery.
 - [[Müller-2000]] — TRAM's "isolate-then-assemble" pattern is the Integrate-in-Place migration strategy applied at the method granularity; [[PRIM-21]]'s strategy selector should consider this option for large repositories.
 - [[Foltz-2023]] — DR.JONES explains why per-method isolation improves validation accuracy: linear traversal of a small mock beats whole-program execution in terms of cognitive traceability.
+
+## Hop-2 Deep Archaeology & Upstream Lineage
+
+- **Software Modernization Archaeology (Rajlich & Müller)**: Connects modern LLM decompilation/migration back to early software reverse engineering (program slicing, concept assignment, redocumentation).
+- **Cognitive Traversal (Foltz & Landauer / Latent Semantic Analysis)**: How human engineers comprehend legacy systems across semantic hops versus how LLM context windows navigate fragmented symbols.
+- **Architectural Coupling & Decomposition (Baldwin & Clark / Kazman)**: Modularity theory and Design Structure Matrices (DSM) underpinning why reverse-topological scheduling ([[PRIM-1]]) avoids cyclic cascade failures.

@@ -32,3 +32,9 @@ ReCodeAgent is the closest prior work and the spine of [[PRIM-1]], [[PRIM-3]], [
 - [[Rajlich-1997]] — concept-locator analysis is the offline complement to ReCodeAgent's Analyzer agent; together they map concepts→locations and locations→translations.
 - [[Baldwin-Clark-2000]] — design-rule decomposition underlies ReCodeAgent's skeleton-first decision: identify stable interfaces (L1), then treat modules as substitutable leaves (L3).
 - [[Kazman-Cai-2024]] — architectural recovery techniques motivate ReCodeAgent's pre-Planning call-graph construction; an archaeological pass can recover the call graph when static analysis overapproximates cycles.
+
+## Hop-2 Deep Archaeology & Upstream Lineage
+
+- **Software Modernization Archaeology (Rajlich & Müller)**: Connects modern LLM decompilation/migration back to early software reverse engineering (program slicing, concept assignment, redocumentation).
+- **Cognitive Traversal (Foltz & Landauer / Latent Semantic Analysis)**: How human engineers comprehend legacy systems across semantic hops versus how LLM context windows navigate fragmented symbols.
+- **Architectural Coupling & Decomposition (Baldwin & Clark / Kazman)**: Modularity theory and Design Structure Matrices (DSM) underpinning why reverse-topological scheduling ([[PRIM-1]]) avoids cyclic cascade failures.
