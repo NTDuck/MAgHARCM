@@ -84,3 +84,42 @@ The `.obsidian/MAgHARCM/research/papers/` catalog now encompasses:
   - `069f3fa`: refactor(agents,paper,vault) decoupled agent boundaries, Must pattern in CLI, paper sync.
   - `21eeb12`: refactor(core) deleted shims (`consts`, `types`, `artifacts`), migrated callers, binary status in k-summary.
   - `9d87030`: docs(research,scripts) P-31..P-37 research expansion, header normalization, script updates.
+  - `72dab98`: docs(diary) record sprint closure and open workflow-geometry item.
+  - `ec5709f`: fix(paper) rewrite methodology narrative to eight-agent set, rename ABCoder MCP -> ABCoderMcp, regenerate fig1_workflow PNG.
+  - `027a0ed`: fix(paper,code,vault) resolve audit findings, adopt stdlib slices/strings, update PRIM-24 mappings, clean paper syntax.
+
+## 5. Sprint 2026-09-05 — Research & Ponytail Refactor (Follow-up)
+
+Continuation of the modernization track. Read this handoff first; current state continues from §1–§4.
+
+### 5.1 Research Expansion (P-38..P-41)
+
+Four new papers persisted under `.obsidian/MAgHARCM/research/papers/`, each anchoring one of the four hop-1 lineage gaps surfaced by the prior audit:
+
+- `[[1.0.0 P-38]]` — Anthropic 2025 sycophancy paper (Raman et al.); hop-1 anchor for [[1.0.0 PRIM-25]] Communicative-De-hallucination Role-Flip Gate. Empirical baseline: 47% flip rate → 12% with counterfactual mitigation.
+- `[[1.0.0 P-39]]` — HuggingGPT / Jarvis (Shen et al. 2023); controller-expert hop-1 anchor for [[1.0.0 PRIM-29]] Recruitment-Adaptive Planning. Establishes the task-graph + capability-tag recruitment pattern.
+- `[[1.0.0 P-40]]` — DR.JONES cognitive model (Foltz 2023, ICPC); canonical hop-1 anchor for [[1.0.0 PRIM-22]] Four Phases of Comprehension. Hop-1 references to Soloway-Adelson, Pennington, Brooks, Détienne, Letovsky, Koenemann-Robertson.
+- `[[1.0.0 P-41]]` — Baldwin & Clark design-rules 2006 follow-up + 2024 retrospective; deep-dive hop-1 anchor for [[1.0.0 PRIM-19]] Design Rule Hierarchy Partitioning. Hop-1 references to Simon, Langlois-Robertson, Schilling, Garud-Kumaraswamy, Colfer-Baldwin, Fleming-Baldwin.
+
+`[[Software-Archaeology-Lineage]]` diagram now includes the modern LLM-era hop row, and the matrix wires P-38/P-39/P-40/P-41 into PRIM-19/22/25/29 rows.
+
+### 5.2 Ponytail Audit & Centralization Refactor
+
+Read-only `ponytail-audit` pass surfaced ~70 findings across `internal/agents/*.go` and `internal/compiletime`. Major cluster: hardcoded literals (strategy thresholds, log scopes, role labels, verdict vocabulary, roleflip prompts, checkpoint modes) and silent-fallback constructors (New* that accept nil). Applied refactor:
+
+- `internal/compiletime/compiletime.go` grew by 284 lines (logger scopes, strategy thresholds, verdict enums, roleflip prompts, checkpoint modes, concept-assignment vocabulary, design-rule layer labels, comprehension recognition labels, recruiter tool/agent names).
+- 5 agent files refactored to consume the centralized constants: `strategy.go`, `roleflip.go`, `iter_retrieval.go`, `navigator.go`, `optional_checks.go`.
+- All Must-pattern sites still enforced (`MustState`, `MustRunID`, `MustTask`).
+- fmt.Print*/log.Print* residue: confirmed absent.
+- Verification: `go test -count=1 ./...` passes across all 9 packages; `go build ./...` clean.
+
+### 5.3 Paper Sync (methodology)
+
+`docs/.paper/sec_method.tex` adds two new subsections anchored by the cross-references called for by `[[1.0.0 PRIM-25]]` and `[[1.0.0 PRIM-7]]`:
+
+- §Role-Flip Reviewer Agent (`sec:method_roleflip`).
+- §Verdict Panel Agent (`sec:method_verdict`).
+
+`docs/.paper/refs.bib` extended with `p71_anthropic_sycophancy_2025` (Anthropic 2025 sycophancy); cite keys realigned (`p20_p51_kazman_drspaces` → `p51_kazman_drspaces`, `p46_chatdev` → `p46_chatdev_deepread`).
+
+`pdflatex main.tex` three-pass cycle: 0 undefined refs, 0 multiply-defined labels, 17 pages compiled clean.
