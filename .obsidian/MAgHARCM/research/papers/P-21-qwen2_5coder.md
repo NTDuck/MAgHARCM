@@ -4,7 +4,7 @@ bibkey: p21_qwen2_5coder
 tags: [paper, code-llm, [[PRIM-23]], [[PRIM-25]], [[PRIM-26]], hop-1]
 ---
 
-# Qwen2.5-Coder Technical Report
+# [[1.0.0 P-21]] Qwen2.5-Coder Technical Report
 
 **Authors**: Qwen Team (An Yang, Baosong Yang, Beichen Zhang, Binyuan Hui, Bo Zheng, Bowen Yu, Chengpeng Li, Chengen Huang, Dayiheng Liu, Fei Huang, Haoran Wei, Huan Lin, Jian Yang, Jianhong Tu, Jianwei Zhang, Jianxin Yang, Jiaxi Yang, Jing Zhou, Junyang Lin, Kai Dang, Keming Lu, Keqin Bao, Kexin Yang, Lei Yu, Lianghao Deng, Mei Li, Mingfeng Xue, Mingze Li, Pei Zhang, Peng Wang, Qin Zhu, Rui Men, Ruize Gao, Shixuan Liu, Shuang Luo, Tianhao Li, Tianyi Tang, Wenbiao Yin, Xingzhang Ren, Xinyu Wang, Xinyu Zhang, Xuancheng Ren, Yang Fan, Yang Su, Yichang Zhang, Yu Qiao, Yuxuan Cai, Zhenyu Gu, Zhiyuan Liu, Zonghong Dai — Alibaba Qwen Team)
 **Year**: 2024

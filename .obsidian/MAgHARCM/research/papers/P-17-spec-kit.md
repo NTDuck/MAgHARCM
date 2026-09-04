@@ -4,7 +4,7 @@ bibkey: p17_spec_kit
 tags: [paper, spec-driven-development, lifecycle, scaffolding, [[PRIM-16]], hop-2]
 ---
 
-# GitHub Spec Kit — Spec-Driven Development Lifecycle Toolkit
+# [[1.0.0 P-17]] GitHub Spec Kit — Spec-Driven Development Lifecycle Toolkit
 
 **Authors**: Den Delimarsky, Aaron Blakely, GitHub engineering + community contributors
 **Year**: 2025 (initial open-source release; reached 1.0.0 maturity in 2025)

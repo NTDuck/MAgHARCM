@@ -4,7 +4,7 @@ bibkey: p09_migrationbench
 tags: [paper, repository-migration, benchmark, java, [[PRIM-3]], [[PRIM-5]], hop-1]
 ---
 
-# MigrationBench — Repository-Level Code Migration Benchmark from Java 8
+# [[1.0.0 P-09]] MigrationBench — Repository-Level Code Migration Benchmark from Java 8
 
 **Authors**: Manish Sharma (Amazon Science), et al. (full author list: Manish Sharma, Suchismita Roy, Breno H. G. de Aguiar, Gustavo A. O. Vizcaino, Martin-tests-only-helper-citation; confirmed lead author per Amazon Science publications page)
 **Year**: 2024 (Amazon Science blog post); arXiv v1 May 2025; subsequent revisions through v3

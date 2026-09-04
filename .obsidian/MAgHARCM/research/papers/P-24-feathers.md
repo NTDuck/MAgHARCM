@@ -4,7 +4,7 @@ bibkey: p24_feathers
 tags: [paper, book, legacy-code, seams, characterisation-tests, [[PRIM-14]], [[PRIM-5]], hop-1]
 ---
 
-# Working Effectively with Legacy Code
+# [[1.0.0 P-24]] Working Effectively with Legacy Code
 
 **Authors**: Michael C. Feathers
 **Year**: 2004

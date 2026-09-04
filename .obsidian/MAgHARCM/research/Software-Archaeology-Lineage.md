@@ -47,23 +47,23 @@ The MAgHARCM pipeline grounds modern agentic reasoning in 50+ years of rigorous 
 ```
 
 ### 2.1. Decomposition, Information Hiding, & Modularity
-- **Parnas (1972) — *On the Criteria To Be Used in Decomposing Systems into Modules***:
+- **Parnas (1972) — *On the Criteria To Be Used in Decomposing Systems into Modules*** (`[[1.0.0 P-31]]`):
   - *Core Insight*: Modules should be decomposed based on hidden design decisions (secrets) rather than operational execution steps. The most volatile elements (data structures, hardware quirks) must be enclosed behind unchanging abstract interfaces.
   - *Application in MAgHARCM*: Direct intellectual foundation for `[[1.0.0 PRIM-3]]` (Target Skeleton-First Generation) and `[[1.0.0 PRIM-19]]` (Design Rule Hierarchy Partitioning). Target interfaces (Rust traits) are generated as boundary constraints before method implementations are synthesized.
 
-- **Baldwin & Clark (2000) — *Design Rules: The Power of Modularity***:
+- **Baldwin & Clark (2000) — *Design Rules: The Power of Modularity*** (`[[1.0.0 P-34]]`):
   - *Core Insight*: Formalized the economic and structural value of modularity through six modular operators: Splitting, Substituting, Augmenting, Excluding, Inverting, and Porting. Defined Design Rules as structural decisions that decouple subsequent module implementations.
   - *Application in MAgHARCM*: Guides `[[1.0.0 PRIM-1]]` (Reverse Topological Ordering) and `[[1.0.0 PRIM-2]]` (Back-Edge Conditioned Scheduling). Identifying design rule interfaces breaks dependency cycles and permits isolated synthesis.
 
 ### 2.2. Software Evolution & Archaeological Strata
-- **M. M. Lehman (1980, 1996) — *Programs, Life Cycles, and Laws of Software Evolution***:
+- **M. M. Lehman (1980, 1996) — *Programs, Life Cycles, and Laws of Software Evolution*** (`[[1.0.0 P-32]]`):
   - *Core Insight*: Formulated the fundamental laws of E-Type software evolution:
     1. *Continuing Change*: A system must continually adapt or become progressively less satisfactory.
     2. *Increasing Complexity*: As an evolving program is modified, its complexity increases unless work is done to maintain or reduce it.
     3. *Conservation of Familiarity*: The incremental growth of systems across releases is statistically invariant.
   - *Application in MAgHARCM*: Explains why legacy source code diverges from original documentation. MAgHARCM's `[[1.0.0 PRIM-14]]` (Software Archaeology Stage) does not trust comments; it analyzes evolutionary churn and executable reality.
 
-- **Chikofsky & Cross (1990) — *Reverse Engineering and Design Recovery: A Taxonomy***:
+- **Chikofsky & Cross (1990) — *Reverse Engineering and Design Recovery: A Taxonomy*** (`[[1.0.0 P-33]]`):
   - *Core Insight*: Formulated the canonical definitions distinguishing Forward Engineering, Reverse Engineering, Redocumentation, Design Recovery, Restructuring, and Reengineering. Defined Design Recovery as recreating software abstractions from a combination of code, external domain knowledge, and developer observation.
   - *Application in MAgHARCM*: Establishes the taxonomy for `[[1.0.0 PRIM-14]]` (Archaeology) and `[[1.0.0 PRIM-20]]` (Concept Assignment and Redocumentation).
 
@@ -72,11 +72,11 @@ The MAgHARCM pipeline grounds modern agentic reasoning in 50+ years of rigorous 
   - *Core Insight*: Defined the concept locator methodology. Software maintenance requires mapping human-oriented domain concepts to specific computational locations (AST subtrees, classes, functions).
   - *Application in MAgHARCM*: Realized in `[[1.0.0 PRIM-20]]` (Concept Assignment and Redocumentation), where the archaeologist maps lexical identifiers and call clusters to semantic domain roles.
 
-- **Hausi A. Müller et al. (2000) — *Reverse Engineering: A Roadmap***:
+- **Hausi A. Müller et al. (2000) — *Reverse Engineering: A Roadmap*** (`[[1.0.0 P-35]]`):
   - *Core Insight*: Categorized program comprehension into three interacting elements: cognitive mental models (top-down vs. bottom-up), analysis techniques (static vs. dynamic), and tool interoperability. Formulated the 5 canonical migration strategies: Big Bang, Incremental, Pilot, Frozen Legacy, and Parallel Cutover.
   - *Application in MAgHARCM*: Formalized in `[[1.0.0 PRIM-21]]` (Migration Strategy Selection), implementing dynamic try-and-fail selection across Müller's five strategies.
 
-- **Peter Foltz et al. (1998, 2023) — *DR. JONES Model of Cognitive Traversal***:
+- **Peter Foltz et al. (1998, 2023) — *DR. JONES Model of Cognitive Traversal*** (`[[1.0.0 P-30]]`):
   - *Core Insight*: Engineers comprehend unfamiliar code through six cognitive phases:
     1. *Decomposition*: Identifying structural units.
     2. *Recognition*: Recognizing known idioms and library patterns.
@@ -95,21 +95,19 @@ The MAgHARCM pipeline grounds modern agentic reasoning in 50+ years of rigorous 
     4. Write automated characterization tests.
     5. Make changes and refactor.
   - *Application in MAgHARCM*: The foundational inspiration for `[[1.0.0 PRIM-5]]` (Test Suite Co-Translation & Synthesis), `[[1.0.0 PRIM-8]]` (State-Grounded Mock-Based In-Isolation Validation), and `[[1.0.0 PRIM-13]]` (Adversarial Test-Weakening Guard).
-
-- **Rick Kazman, Yuanfang Cai et al. (2017, 2024) — *Architectural Debt & DRSpaces***:
-  - *Core Insight*: Architecture degradation clusters into Design Rule Space (DRSpace) flaws: Unstable Interfaces (modules with high fan-in and high churn), Modularity Violations (structural layers leaking across boundaries), and Cyclic Dependencies.
-  - *Application in MAgHARCM*: Implemented in `[[1.0.0 PRIM-18]]` (Jaccard-Coupling Recovery) and `[[1.0.0 PRIM-19]]` (Design Rule Hierarchy Partitioning).
-
 ### 2.5. Esoteric & Industry Archaeological Playbooks
-- **pp-besm (dev.to) & AgentPatterns.ai — *Production Software Archaeology Playbook***:
+- **pp-besm (dev.to) — *Software Archaeology: Hunting for Lost Knowledge in Production Codebases*** (`[[1.0.0 P-36]]`):
   - *Core Insight*: Industrial legacy systems must be examined across five archaeological strata:
     1. *Commit Strata*: Git churn, author longevity, commit message sentiment.
     2. *Temporal Coupling*: Files that change together without explicit static references (Jaccard co-change metric).
     3. *Bug-Density Hotspots*: Modules with concentrated defect fixes.
     4. *Forensic Naming & Type Invariants*: Hungarian notation, obsolete typedefs, dead configuration flags.
     5. *Executable Time Capsules*: Historical compiler flags, environmental assumptions, and abandoned test harnesses.
-  - *Application in MAgHARCM*: Guides `[[1.0.0 PRIM-14]]` (Software Archaeology Stage) and `[[1.0.0 PRIM-15]]` (Evidence-First Adaptation Pattern).
+  - *Application in MAgHARCM*: Guides `[[1.0.0 PRIM-14]]` (Software Archaeology Stage) and `[[1.0.0 PRIM-18]]` (Jaccard-Coupling Architecture Recovery).
 
+- **AgentPatterns.ai — *Legacy Code Archaeology Pattern for Autonomous Systems*** (`[[1.0.0 P-37]]`):
+  - *Core Insight*: Autonomous LLM multi-agent systems must execute an Archaeological excavation pass before synthesis to avoid context window saturation and blind transliteration failure.
+  - *Application in MAgHARCM*: Directly motivates the 8-agent decomposition with dedicated Archaeologist and Reviewer execution units.
 ---
 
 ## 3. Comprehensive Mapping: Primitives to Literature Matrix

@@ -4,7 +4,7 @@ bibkey: p12_chatdev
 tags: [paper, multi-agent, chat-chain, communicative-dehallucination, [[PRIM-25]], hop-1]
 ---
 
-# ChatDev — Communicative Agents for Software Development
+# [[1.0.0 P-12]] ChatDev — Communicative Agents for Software Development
 
 **Authors**: Chen Qian, Xin Cong, Cheng Yang, Weize Chen, Yusheng Su, Juyuan Xu, Zhiyuan Liu, Maosong Sun (Tsinghua University)
 **Year**: 2023 (ACL 2024 main)

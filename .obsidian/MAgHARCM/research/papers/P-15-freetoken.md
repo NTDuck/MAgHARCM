@@ -4,7 +4,7 @@ bibkey: p15_freetoken
 tags: [paper, moe-serving, edge, bandwidth-adaptive, locality, hop-1]
 ---
 
-# FreeToken — Efficient Edge-Native MoE Serving with Bandwidth-Adaptive Execution
+# [[1.0.0 P-15]] FreeToken — Efficient Edge-Native MoE Serving with Bandwidth-Adaptive Execution
 
 **Authors**: Shuo Yang (UC Berkeley, corresponding), Xiaoze Fan, Melissa Pan, Haocheng Xi, Zhe Wang, Shanlin Sun, Kurt Keutzer, Song Han, Matei Zaharia, Chenfeng Xu (UT Austin, co-advise), Ion Stoica (co-advise)
 **Year**: 2026

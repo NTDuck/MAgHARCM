@@ -4,7 +4,7 @@ bibkey: p22_starcoder2
 tags: [paper, code-llm, pretraining-data, [[PRIM-23]], [[PRIM-25]], hop-1]
 ---
 
-# StarCoder 2 and The Stack v2 — The Next Generation
+# [[1.0.0 P-22]] StarCoder 2 and The Stack v2 — The Next Generation
 
 **Authors**: Anton Lozhkov, Raymond Li, Loubna Ben Allal, Federico Cassano, Joel Lamy-Poirier, Nouamane Tazi, Ao Tang, Leandro von Werra, Harm de Vries (plus 53 co-authors from 32 institutions including Hugging Face, ServiceNow Research, Northeastern, Nvidia)
 **Year**: 2024

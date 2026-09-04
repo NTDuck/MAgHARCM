@@ -4,7 +4,7 @@ bibkey: p23_pynguin
 tags: [paper, test-generation, [[PRIM-5]], [[PRIM-23]], [[PRIM-27]], hop-1]
 ---
 
-# Pynguin — Automated Unit Test Generation for Python
+# [[1.0.0 P-23]] Pynguin — Automated Unit Test Generation for Python
 
 **Authors**: Stephan Lukasczyk, Florian Kroiß, Gordon Fraser (Passau University)
 **Year**: 2022

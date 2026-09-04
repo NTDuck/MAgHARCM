@@ -4,7 +4,7 @@ bibkey: p26_agentverse
 tags: [paper, multi-agent, recruitment, [[PRIM-29]], hop-1]
 ---
 
-# AgentVerse — Facilitating Multi-Agent Collaboration and Exploring Emergent Behaviors
+# [[1.0.0 P-26]] AgentVerse — Facilitating Multi-Agent Collaboration and Exploring Emergent Behaviors
 
 **Authors**: Weize Chen, Yusheng Su, Jingwei Zuo, Cheng Yang, Chenfei Yuan, Chi-Min Chan, Heyang Yu, Yaxi Lu, Yi-Hsin Hung, Chen Qian, Yujia Qin, Xin Cong, Ruobing Xie, Zhiyuan Liu, Maosong Sun, Jie Zhou (Tsinghua University, BUPT, WeChat AI Tencent)
 **Year**: 2023 (arXiv preprint), accepted ICLR 2024

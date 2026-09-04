@@ -4,7 +4,7 @@ bibkey: p51_kazman_drspaces
 tags: [paper, design-rules, architectural-recovery, technical-debt, load-bearing, [[PRIM-19]], hop-1]
 ---
 
-# Kazman et al. — A Case Study in Locating the Architectural Roots of Technical Debt
+# [[1.0.0 P-20]] Kazman et al. — A Case Study in Locating the Architectural Roots of Technical Debt
 
 **Authors**: Rick Kazman, Yuanfang Cai, Ran Mo (and collaborators, including SoftServe engineering)
 **Year**: 2015

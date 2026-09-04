@@ -4,7 +4,7 @@ bibkey: p02_alphatrans
 tags: [paper, repository-translation, neuro-symbolic, [[PRIM-1]], [[PRIM-2]], [[PRIM-3]], [[PRIM-5]], [[PRIM-6]], hop-1]
 ---
 
-# AlphaTrans — A Neuro-Symbolic Compositional Approach for Repository-Level Code Translation and Validation
+# [[1.0.0 P-02]] AlphaTrans — A Neuro-Symbolic Compositional Approach for Repository-Level Code Translation and Validation
 
 **Authors**: Ali Reza Ibrahimzada, Kaiyao Ke, Mrigank Pawagi, Muhammad Salman Abid, Rangeet Pan, Saurabh Sinha, Reyhaneh Jabbarvand
 **Year**: 2025

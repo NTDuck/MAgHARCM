@@ -4,7 +4,7 @@ bibkey: p29_metamorphic
 tags: [paper, testing, metamorphic, oracle, [[PRIM-11]], [[PRIM-12]], hop-1]
 ---
 
-# Metamorphic Testing — A Review of Challenges and Opportunities
+# [[1.0.0 P-29]] Metamorphic Testing — A Review of Challenges and Opportunities
 
 **Authors**: Tsong Yueh Chen, Fei-Ching Kuo, Huai Liu, Pak-Lok Poon, Dave Towey, T. H. Tse, Zhi Quan Zhou (Swinburne University of Technology; Victoria University; RMIT University; University of Hong Kong)
 **Year**: 2018

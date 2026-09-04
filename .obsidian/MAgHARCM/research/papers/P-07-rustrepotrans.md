@@ -4,7 +4,7 @@ bibkey: p07_rustrepotrans
 tags: [paper, repository-translation, benchmark, rust, [[PRIM-10]], [[PRIM-3]], hop-1]
 ---
 
-# RustRepoTrans — Repository-Level Code Translation Benchmark Targeting Rust
+# [[1.0.0 P-07]] RustRepoTrans — Repository-Level Code Translation Benchmark Targeting Rust
 
 **Authors**: Mengyang Ou, Yang Liu, Mingyue Jiang, Qingyang Zhang, Yanjun Zhang, Dechuang Zhao, Zhe Hou, Yafei Wu, Shikun Zhang
 **Year**: 2024

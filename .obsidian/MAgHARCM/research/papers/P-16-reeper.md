@@ -4,7 +4,7 @@ bibkey: p16_reeper
 tags: [paper, evidence-first, adaptation, external-integration, [[PRIM-15]], hop-2]
 ---
 
-# Reeper — Evidence-First Adaptation Pattern for External Repository Integration
+# [[1.0.0 P-16]] Reeper — Evidence-First Adaptation Pattern for External Repository Integration
 
 **Authors**: leadgenjay (single-maintainer / community project; no formal paper venue)
 **Year**: 2025–2026 (active development on `main` as of late 2025)

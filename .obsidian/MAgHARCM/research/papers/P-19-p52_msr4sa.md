@@ -4,7 +4,7 @@ bibkey: p52_msr4sa
 tags: [paper, systematic-mapping, mining-software-repositories, architecture-recovery, jaccard-coupling, [[PRIM-18]], hop-1]
 ---
 
-# MSR4SA — Mining Software Repositories for Software Architecture: A Systematic Mapping Study
+# [[1.0.0 P-19]] MSR4SA — Mining Software Repositories for Software Architecture: A Systematic Mapping Study
 
 **Authors**: Mohamed Soliman, Michel Albonico, Ivano Malavolta (and collaborators)
 **Year**: 2025

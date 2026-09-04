@@ -4,7 +4,7 @@ bibkey: p11_metagpt
 tags: [paper, multi-agent, sop, role-artifact, [[PRIM-24]], hop-1]
 ---
 
-# MetaGPT — Meta Programming for A Multi-Agent Collaborative Framework
+# [[1.0.0 P-11]] MetaGPT — Meta Programming for A Multi-Agent Collaborative Framework
 
 **Authors**: Sirui Hong, Xiawu Zheng, Jonathan Chen, Yuheng Cheng, Jinlin Wang, Ceyao Zhang, Zili Wang, Steven Ka Shing Yau, Zijuan Lin, Liyang Zhou, Chenyu Ran, Lingfeng Xiao, Chenglin Wu, Jürgen Schmidhuber (DeepWisdom, Xiamen University, CUHK Shenzhen, Nanjing University, University of Pennsylvania, UC Berkeley, KAIST)
 **Year**: 2023 (ICLR 2024 Oral)

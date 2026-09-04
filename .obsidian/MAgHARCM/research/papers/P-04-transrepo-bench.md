@@ -4,7 +4,7 @@ bibkey: p04_transrepo_bench
 tags: [paper, repository-translation, benchmark, [[PRIM-3]], [[PRIM-5]], [[PRIM-23]], hop-1]
 ---
 
-# TransRepo-Bench — Skeleton-Guided Translation: A Benchmarking Framework for Code Repository Translation with Fine-Grained Quality Evaluation
+# [[1.0.0 P-04]] TransRepo-Bench — Skeleton-Guided Translation: A Benchmarking Framework for Code Repository Translation with Fine-Grained Quality Evaluation
 
 **Authors**: Xing Zhang, Jiaheng Wen, Fangkai Yang, Pu Zhao, Yu Kang, Junhao Wang, Maoquan Wang, Yufan Huang, Shengyu Fu, Elsie Nallipogu, Qingwei Lin, Yingnong Dang, Saravan Rajmohan, Dongmei Zhang
 **Year**: 2025 (ACL 2024 per methodology ledger; ACL Anthology Findings of EMNLP 2025)

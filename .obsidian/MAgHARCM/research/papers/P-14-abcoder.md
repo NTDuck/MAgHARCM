@@ -4,7 +4,7 @@ bibkey: p14_abcoder
 tags: [paper, ast, code-rag, mcp, navigator, [[PRIM-26]], hop-1]
 ---
 
-# ABCoder — Universal AST (UniAST) Framework for Repo-Level Coding Context
+# [[1.0.0 P-14]] ABCoder — Universal AST (UniAST) Framework for Repo-Level Coding Context
 
 **Authors**: CloudWeGo engineering team (ByteDance)
 **Year**: 2025 (open-source release; no formal peer-reviewed venue)

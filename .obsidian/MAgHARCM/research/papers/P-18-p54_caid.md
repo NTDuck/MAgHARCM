@@ -4,7 +4,7 @@ bibkey: p54_caid
 tags: [paper, multi-agent, asynchronous, isolated-workspaces, git-worktree, [[PRIM-17]], hop-1]
 ---
 
-# CAID — Effective Strategies for Asynchronous Software Engineering Agents
+# [[1.0.0 P-18]] CAID — Effective Strategies for Asynchronous Software Engineering Agents
 
 **Authors**: Jiayi Geng, Graham Neubig (Carnegie Mellon University)
 **Year**: 2026 (arXiv v1: 2026-03)

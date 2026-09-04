@@ -4,7 +4,7 @@ bibkey: p28_weiser
 tags: [paper, program-analysis, slicing, dependency, [[PRIM-2]], [[PRIM-9]], hop-1]
 ---
 
-# Program Slicing
+# [[1.0.0 P-28]] Program Slicing
 
 **Authors**: Mark Weiser (Xerox PARC; later University of Maryland)
 **Year**: 1984

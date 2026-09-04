@@ -4,7 +4,7 @@ bibkey: p01_recodeagent
 tags: [paper, repository-translation, multi-agent, [[PRIM-1]], [[PRIM-3]], [[PRIM-5]], [[PRIM-6]], hop-1]
 ---
 
-# ReCodeAgent — A Multi-Agent Workflow for Language-agnostic Translation and Validation of Large-scale Repositories
+# [[1.0.0 P-01]] ReCodeAgent — A Multi-Agent Workflow for Language-agnostic Translation and Validation of Large-scale Repositories
 
 **Authors**: Ali Reza Ibrahimzada, Brandon Paulsen, Daniel Kroening, Reyhaneh Jabbarvand
 **Year**: 2026

@@ -4,7 +4,7 @@ bibkey: p10_tram
 tags: [paper, repository-translation, mock-validation, in-isolation, [[PRIM-8]], [[PRIM-10]], hop-1]
 ---
 
-# TRAM — Advancing Automated In-Isolation Validation in Repository-Level Code Translation
+# [[1.0.0 P-10]] TRAM — Advancing Automated In-Isolation Validation in Repository-Level Code Translation
 
 **Authors**: Kaiyao Ke, Ali Reza Ibrahimzada, Rangeet Pan, Saurabh Sinha, Reyhaneh Jabbarvand
 **Year**: 2025 (arXiv preprint 2025-11; no conference acceptance surfaced as of 2026-08-30)

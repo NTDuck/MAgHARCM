@@ -4,7 +4,7 @@ bibkey: p03_codeplan
 tags: [paper, repository-coding, planning, [[PRIM-1]], [[PRIM-23]], [[PRIM-29]], hop-1]
 ---
 
-# CodePlan — Repository-level Coding using LLMs and Planning
+# [[1.0.0 P-03]] CodePlan — Repository-level Coding using LLMs and Planning
 
 **Authors**: Ramakrishna Bairi, Atharv Sonwane, Aditya Kanade, Vageesh D C, Arun Iyer, Suresh Parthasarathy, Sriram Rajamani, B. Ashok, Shashank Shet
 **Year**: 2024 (arXiv 2023-09-21; PACMSE FSE 2024)

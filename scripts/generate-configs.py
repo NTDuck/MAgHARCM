@@ -81,7 +81,7 @@ def build_cfg(cat: str, proj: str, src_lang: str, src_subdir: str, file_count: i
         f"    max_iterations: {iters}\n"
         f"    timeout_seconds: {timeout}\n"
         "  lsp:\n"
-        '    provider: "native"\n'
+        '    provider: "abcoder-mcp"\n'
     )
 
 

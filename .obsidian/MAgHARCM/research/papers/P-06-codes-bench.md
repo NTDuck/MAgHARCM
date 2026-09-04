@@ -4,7 +4,7 @@ bibkey: p06_codes_bench
 tags: [paper, repository-translation, benchmark, [[PRIM-6]], [[PRIM-13]], hop-1, phantom-bibkey]
 ---
 
-# CodeS-bench (placeholder) — Repository-Scale Code Translation Benchmark
+# [[1.0.0 P-06]] CodeS-bench (placeholder) — Repository-Scale Code Translation Benchmark
 
 **Authors**: Tang et al. (cited in methodology ledger; no confirmed peer-reviewed publication located)
 **Year**: 2024 (per ledger)

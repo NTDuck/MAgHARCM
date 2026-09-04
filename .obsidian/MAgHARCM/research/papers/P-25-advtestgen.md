@@ -4,7 +4,7 @@ bibkey: p25_advtestgen
 tags: [paper, adversarial-testing, translation-validation, [[PRIM-5]], [[PRIM-13]], hop-1]
 ---
 
-# Adversarial Test Generation for LLM-Based Code Translation Validation
+# [[1.0.0 P-25]] Adversarial Test Generation for LLM-Based Code Translation Validation
 
 **Authors**: [[AdvTestGen-Team-2024]]
 **Year**: 2024

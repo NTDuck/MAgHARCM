@@ -4,7 +4,7 @@ bibkey: p13_hyperagent
 tags: [paper, software-engineering-agent, generalist, navigator, [[PRIM-26]], hop-1]
 ---
 
-# HyperAgent — Generalist Software Engineering Agents to Solve Coding Tasks at Scale
+# [[1.0.0 P-13]] HyperAgent — Generalist Software Engineering Agents to Solve Coding Tasks at Scale
 
 **Authors**: Huy Nhat Phan, Phong X. Nguyen, Nghi D. Q. Bui, Tien N. Nguyen (FPT Software AI Center; University of Texas at Dallas)
 **Year**: 2024

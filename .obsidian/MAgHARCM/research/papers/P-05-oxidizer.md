@@ -4,7 +4,7 @@ bibkey: p05_oxidizer
 tags: [paper, repository-translation, go-to-rust, type-mapping, [[PRIM-10]], hop-1]
 ---
 
-# Oxidizer — Scalable, Validated Code Translation of Entire Projects using Large Language Models
+# [[1.0.0 P-05]] Oxidizer — Scalable, Validated Code Translation of Entire Projects using Large Language Models
 
 **Authors**: Hanliang Zhang, Cristina David, Meng Wang, Brandon Paulsen, Daniel Kroening
 **Year**: 2024

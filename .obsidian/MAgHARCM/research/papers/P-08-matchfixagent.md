@@ -4,7 +4,7 @@ bibkey: p08_matchfixagent
 tags: [paper, repository-translation, multi-agent, validation, repair, [[PRIM-7]], [[PRIM-13]], hop-1]
 ---
 
-# MatchFixAgent — Language-Agnostic Autonomous Repository-Level Code Translation Validation and Repair
+# [[1.0.0 P-08]] MatchFixAgent — Language-Agnostic Autonomous Repository-Level Code Translation Validation and Repair
 
 **Authors**: Ali Reza Ibrahimzada, Brandon Paulsen, Reyhaneh Jabbarvand, Joey Dodds, Daniel Kroening
 **Year**: 2025 (arXiv preprint); 2026 (ICML acceptance announced 2026-04-30)
