@@ -15,20 +15,22 @@ type PlanStep struct {
 
 // ImplementationPlan organizes code translation and test verification steps into ordered phases.
 type ImplementationPlan struct {
-	Overview string     `json:"overview"`
-	PartA    []PlanStep `json:"part_a"` // Source code translation
-	PartB    []PlanStep `json:"part_b"` // Test code translation & validation
-	RawPlan  string     `json:"raw_plan"`
+	ArtifactSchemaVersion string     `json:"schema_version"`
+	Overview              string     `json:"overview"`
+	PartA                 []PlanStep `json:"part_a"` // Source code translation
+	PartB                 []PlanStep `json:"part_b"` // Test code translation & validation
+	RawPlan               string     `json:"raw_plan"`
 }
 
 // PlanningOutput captures AST fragments, symbol mappings, generated skeletons, and translation steps.
 type PlanningOutput struct {
 	ArtifactSchemaVersion string            `json:"schema_version"`
-	Fragments     []string          `json:"fragments"`      // file_name:fragment_name
-	NameMapping   map[string]string `json:"name_mapping"`   // source_name -> target_name
-	SkeletonFiles map[string]string `json:"skeleton_files"` // relative_path -> skeleton_content
-	Plan          ImplementationPlan `json:"plan"`
+	Fragments             []string          `json:"fragments"`      // file_name:fragment_name
+	NameMapping           map[string]string `json:"name_mapping"`   // source_name -> target_name
+	SkeletonFiles         map[string]string `json:"skeleton_files"` // relative_path -> skeleton_content
+	Plan                  ImplementationPlan `json:"plan"`
 }
+
 
 // SchemaVersion returns the schema version stamped on the planning output.
 func (p PlanningOutput) SchemaVersion() string { return p.ArtifactSchemaVersion }

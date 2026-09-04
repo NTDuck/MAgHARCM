@@ -62,7 +62,8 @@ func Run(ctx context.Context, cfg *config.Config) (*types.State, error) {
 			Task:          task,
 			MaxIterations: cfg.MaxIterations,
 			TranslatedProject: artifacts.TranslatedProject{
-				Files: make(map[string]string),
+				ArtifactSchemaVersion: artifacts.CurrentSchemaVersion,
+				Files:                 make(map[string]string),
 			},
 		}
 	}

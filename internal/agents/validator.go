@@ -35,6 +35,27 @@ type ValidatorAgent struct {
 	// loop terminates instead of burning the LLM budget. Initialized lazily
 	// by NewValidatorAgent; tests that don't care about plateau may leave it nil.
 	Plateau *PlateauDetector
+	// OptionalChecks are auxiliary validation primitives executed after the
+	// core cascade (AST → compile → test → weakening guard → plateau) finishes
+	// successfully. Each check receives the current state, returns a label and
+	// a verdict, and contributes to the validation report. Wired here so that
+	// adding a new optional check (PRIM-7 verdict, PRIM-8 mock, PRIM-11 IO,
+	// PRIM-12 wasm) does NOT require touching the core cascade. nil-safe.
+	OptionalChecks []OptionalCheck
+}
+
+// OptionalCheck is the contract implemented by auxiliary validation primitives.
+// A check is invoked only after the core cascade succeeds; its verdict is
+// attached to ValidationReport.OptionalCheckResults for downstream inspection.
+// Implementations MUST be idempotent — the validator may call them on every
+// repair iteration until the cascade converges.
+type OptionalCheck interface {
+	// Name returns the primitive id (e.g. "PRIM-7-verdict-panel"). Stable across runs.
+	Name() string
+	// Run inspects the current state and returns a short verdict ("pass", "fail", "skipped")
+	// and a human-readable detail string. Returned error indicates a transport-level
+	// failure and aborts the optional-check phase (the core cascade is unaffected).
+	Run(ctx context.Context, state *types.State) (verdict, detail string, err error)
 }
 
 // MaxRemedyIterations caps the bounded coverage-remediation loop driven by
@@ -58,7 +79,8 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.St
 	logger.LogAgent("Validator", "Validating target project `%s` (Iteration %d/%d)",
 		state.Task.TargetDir, state.Iteration, state.MaxIterations)
 	report := artifacts.ValidationReport{
-		IterationStart: iterStart,
+		ArtifactSchemaVersion: artifacts.CurrentSchemaVersion,
+		IterationStart:        iterStart,
 	}
 
 	// Step 1: Pre-compilation AST syntax check (NEW-PRIM-6 / GAP-08)
@@ -129,6 +151,9 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.St
 	state.PriorTestSnapshots = currentTests
 
 	v.finalizeReport(&report, state, testRes.Output)
+	if len(v.OptionalChecks) > 0 && report.IsAllSuccess() {
+		report.OptionalCheckResults = v.runOptionalChecks(ctx, state)
+	}
 	report.IterationWallMs = time.Since(iterStart).Milliseconds()
 	state.ValidationReport = report
 	logger.LogStep("ITER[%d] comp=%v tests=%d/%d (%.1f%%) wall=%dms per-file=%d",
@@ -472,4 +497,41 @@ func (v *ValidatorAgent) collectCurrentTestFiles(state *types.State) map[string]
 		}
 	}
 	return tests
+}
+
+// runOptionalChecks executes each registered OptionalCheck against the
+// current state. Errors are recorded as "fail" with the error message as
+// detail; the core cascade result is unchanged. Used to wire PRIM-7 verdict
+// panel, PRIM-8 mock validator, PRIM-11 implementation-agnostic I/O tests,
+// and PRIM-12 wasm oracle into the repair loop without touching the core
+// cascade. Order follows v.OptionalChecks (callers register in the order
+// they want results recorded).
+func (v *ValidatorAgent) runOptionalChecks(ctx context.Context, state *types.State) []artifacts.OptionalCheckResult {
+	results := make([]artifacts.OptionalCheckResult, 0, len(v.OptionalChecks))
+	for _, check := range v.OptionalChecks {
+		if check == nil {
+			continue
+		}
+		verdict, detail, err := check.Run(ctx, state)
+		if err != nil {
+			verdict = "fail"
+			detail = "check error: " + err.Error()
+			logger.LogWarning("OptionalCheck %s failed: %v", check.Name(), err)
+		}
+		results = append(results, artifacts.OptionalCheckResult{
+			Name:    check.Name(),
+			Verdict: verdict,
+			Detail:  detail,
+		})
+		logger.LogStep("OptionalCheck %s -> %s (%s)", check.Name(), verdict, truncateForLog(detail, 120))
+	}
+	return results
+}
+
+// truncateForLog keeps optional-check detail lines short for the log stream.
+func truncateForLog(s string, n int) string {
+	if len(s) <= n {
+		return s
+	}
+	return s[:n] + "..."
 }

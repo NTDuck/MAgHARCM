@@ -48,6 +48,21 @@ type ValidationReport struct {
 	WeakeningReasons             []string `json:"weakening_reasons,omitempty"`
 	// ASTSyntaxErrors contains parse/syntax errors found before compilation (NEW-PRIM-6 / GAP-08).
 	ASTSyntaxErrors []string `json:"ast_syntax_errors,omitempty"`
+	// OptionalCheckResults records verdicts of auxiliary validation primitives
+	// executed after the core cascade. Each entry maps a primitive id
+	// ("PRIM-7-verdict-panel") to a (verdict, detail) pair. Verdict is one of
+	// "pass", "fail", or "skipped". Wired by internal/agents/validator.go
+	// OptionalCheck iteration; absent when no optional checks were registered.
+	OptionalCheckResults []OptionalCheckResult `json:"optional_check_results,omitempty"`
+}
+
+// OptionalCheckResult is the persisted shape of a single auxiliary validator
+// primitive outcome. Stable across schema versions because the JSON tags
+// are explicitly versioned.
+type OptionalCheckResult struct {
+	Name    string `json:"name"`    // primitive id, e.g. "PRIM-7-verdict-panel"
+	Verdict string `json:"verdict"` // "pass" | "fail" | "skipped"
+	Detail  string `json:"detail"`  // free-form human-readable summary
 }
 
 // SchemaVersion returns the schema version stamped on the validation report.

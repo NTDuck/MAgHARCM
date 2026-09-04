@@ -40,4 +40,9 @@ type State struct {
 	MaxIterations      int                         `json:"max_iterations"`
 	IsComplete         bool                        `json:"is_complete"`
 	PriorTestSnapshots map[string]string           `json:"prior_test_snapshots,omitempty"`
+	// SpecMinerInvariants is the PRIM-4 dynamic-invariant recovery side-channel
+	// populated by the analyzer when SpecMiner is enabled. Independent of the
+	// versioned artifact schema because invariants evolve alongside the
+	// primitive rather than the role contract.
+	SpecMinerInvariants artifacts.SpecMinerInvariants `json:"spec_miner_invariants,omitempty"`
 }

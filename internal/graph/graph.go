@@ -46,6 +46,13 @@ func NewMAgHARCMGraph(ctx context.Context, models *llm.Models, runID string) (*M
 	planningAgent := agents.NewPlanningAgent(models.Reasoning)
 	translatorAgent := agents.NewTranslatorAgent(models.Coding, runID)
 	validatorAgent := agents.NewValidatorAgent(models.Reasoning, runID)
+	// PRIM-7 verdict panel is the cheapest auxiliary check (no extra LLM
+	// calls beyond the validator's reasoning tier); enable by default so
+	// the cascade surfaces disagreement before the repair loop iterates.
+	verdictPanel := agents.NewVerdictPanel(models.Reasoning)
+	validatorAgent.OptionalChecks = agents.DefaultOptionalChecks(agents.OptionalChecksConfig{
+		VerdictPanel: verdictPanel,
+	})
 
 	// Register agent execution units as graph nodes with VRAM management
 	if err := g.AddLambdaNode("analyzer", compose.InvokableLambda(func(ctx context.Context, state *types.State) (*types.State, error) {

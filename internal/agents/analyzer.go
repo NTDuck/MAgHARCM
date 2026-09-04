@@ -21,8 +21,24 @@ import (
 type AnalyzerAgent struct {
 	Model     model.BaseChatModel
 	Navigator *Navigator // optional symbol-aware lookup helper (NEW-PRIM-26)
+	// SpecMiner is the PRIM-4 dynamic-invariant recovery hook. When set and
+	// the source project produces a runnable binary, the analyzer invokes
+	// SpecMiner.Recover before synthesizeAnalysis so allocation sizes,
+	// pointer nullability, aliasing, lifetime ranges, and branch coverage
+	// feed the LLM's migration-strategy rationale. Source-Binary path is
+	// taken from AnalyzerSpecMinerConfig.SourceBinary; nil disables.
+	SpecMiner            *SpecMiner
+	AnalyzerSpecMinerConfig AnalyzerSpecMinerConfig
 }
 
+// AnalyzerSpecMinerConfig captures the inputs SpecMiner needs at analyzer
+// time. SourceBinary is the compiled source artifact path; Inputs are the
+// representative inputs the analyzer passes to SpecMiner.Recover to
+// exercise the runtime. Zero value disables SpecMiner entirely.
+type AnalyzerSpecMinerConfig struct {
+	SourceBinary string
+	Inputs       []string
+}
 // NewAnalyzerAgent creates an AnalyzerAgent instance without a Navigator.
 // Use NewAnalyzerAgentWithNavigator to attach a Symbol-Aware Navigator.
 func NewAnalyzerAgent(m model.BaseChatModel) *AnalyzerAgent {
@@ -47,6 +63,26 @@ func (a *AnalyzerAgent) Run(ctx context.Context, state *types.State) (*types.Sta
 	}
 
 	fileStructures, fileContents := a.extractFileStructures(files)
+	// PRIM-4 SpecMiner pre-analysis pass: when a runnable source binary is
+	// available, recover dynamic invariants and stash them into the analyzer
+	// output so downstream agents see allocation/nullability/lifetime
+	// evidence alongside the static AST. Failures are logged but non-fatal —
+	// a failed SpecMiner run must not abort the pipeline.
+	if a.SpecMiner != nil && a.AnalyzerSpecMinerConfig.SourceBinary != "" {
+		invars, err := a.SpecMiner.Recover(ctx, a.AnalyzerSpecMinerConfig.SourceBinary, a.AnalyzerSpecMinerConfig.Inputs)
+		if err != nil {
+			logger.LogWarning("PRIM-4 SpecMiner pre-analysis failed: %v", err)
+		} else {
+			logger.LogStep("PRIM-4 SpecMiner recovered %d allocation sizes across %d inputs", len(invars.AllocSizes), len(a.AnalyzerSpecMinerConfig.Inputs))
+			state.SpecMinerInvariants = artifacts.SpecMinerInvariants{
+				AllocSizes:         invars.AllocSizes,
+				PointerNullability: invars.PointerNullability,
+				AliasingPairs:      invars.AliasingPairs,
+				LifetimeRanges:     invars.LifetimeRanges,
+				BranchCoverage:     invars.BranchCoverage,
+			}
+		}
+	}
 	rawDoc, err := a.synthesizeAnalysis(ctx, state, treeStr, strings.Join(fileStructures, "\n"), strings.Join(fileContents, "\n"))
 	if err != nil {
 		return nil, err
@@ -138,6 +174,7 @@ func (a *AnalyzerAgent) synthesizeAnalysis(ctx context.Context, state *types.Sta
 // populateAnalyzerOutput unpacks markdown sections into structured documents on state.
 func (a *AnalyzerAgent) populateAnalyzerOutput(state *types.State, rawDoc, strategy, rationale string) {
 	state.AnalyzerOutput.Research = artifacts.DocumentWrapper[artifacts.SourceProjectResearch]{
+		ArtifactSchemaVersion: artifacts.CurrentSchemaVersion,
 		Data: artifacts.SourceProjectResearch{
 			Overview:           extractSection(rawDoc, "## 1. Overview", "## 2. Directory Structure"),
 			DirectoryStructure: extractSection(rawDoc, "## 2. Directory Structure", "## 3. Data Structures"),
@@ -147,6 +184,7 @@ func (a *AnalyzerAgent) populateAnalyzerOutput(state *types.State, rawDoc, strat
 		RawMarkdown: rawDoc,
 	}
 	state.AnalyzerOutput.Library = artifacts.DocumentWrapper[artifacts.ThirdPartyLibraryAnalysis]{
+		ArtifactSchemaVersion: artifacts.CurrentSchemaVersion,
 		Data: artifacts.ThirdPartyLibraryAnalysis{
 			Libraries: []artifacts.LibraryMapping{},
 		},
@@ -154,6 +192,7 @@ func (a *AnalyzerAgent) populateAnalyzerOutput(state *types.State, rawDoc, strat
 	}
 
 	state.AnalyzerOutput.Design = artifacts.DocumentWrapper[artifacts.TargetProjectDesign]{
+		ArtifactSchemaVersion: artifacts.CurrentSchemaVersion,
 		Data: artifacts.TargetProjectDesign{
 			Overview: extractSection(rawDoc, "## Target Architecture", "## Module Decomposition"),
 		},

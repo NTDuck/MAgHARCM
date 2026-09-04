@@ -34,6 +34,7 @@ func NewPlanningAgent(m model.BaseChatModel) *PlanningAgent {
 // Run executes the planning phase and populates PlanningOutput in state.
 func (p *PlanningAgent) Run(ctx context.Context, state *types.State) (*types.State, error) {
 	logger.LogAgent("Planning", "Decomposing translation into granular translation units and constructing plan")
+	state.PlanningOutput.ArtifactSchemaVersion = artifacts.CurrentSchemaVersion
 
 	fragments, sourceSummaries, err := p.extractFragments(state.Task.SourceDir)
 	if err != nil {
@@ -224,8 +225,9 @@ func (p *PlanningAgent) parseImplementationPlan(rawContent string, fragments []s
 	}
 
 	return artifacts.ImplementationPlan{
-		Overview: extractSection(planStr, "## Overview", "## Part A"),
-		PartA:    partASteps,
+		ArtifactSchemaVersion: artifacts.CurrentSchemaVersion,
+		Overview:              extractSection(planStr, "## Overview", "## Part A"),
+		PartA:                 partASteps,
 		PartB: []artifacts.PlanStep{
 			{ID: "B1", Description: "Translate and execute test suite", Type: "test", ReverseTopoRank: len(partASteps) + 1},
 		},
