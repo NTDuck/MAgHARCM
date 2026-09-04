@@ -42,7 +42,7 @@ it; not a codebase primitive).
 | [[PRIM-28]] | Conversable State Checkpoints & Interrupts | `internal/agents/checkpoint.go` | present |
 | [[PRIM-29]] | Recruitment-Adaptive Planning | `internal/agents/recruit.go` | present |
 | [[PRIM-30]] | Source-to-Target Manifest Rewriter | `internal/agents/manifest_rewriter.go` | present |
-| [[PRIM-31]] | Iterative Retrieval Refinement | `internal/agents/iter_retrieval.go` | present |
+| [[PRIM-31]] | Iterative Retrieval Refinement | `internal/agents/iter_retrieval.go` | partial (runtime ready; translator is single-pass — reindex wraps a Navigator but no per-fragment loop exists yet to consume the index) |
 
 ## Partial — extend in next sprint
 
