@@ -22,34 +22,33 @@ it; not a codebase primitive).
 | [[PRIM-1]] | Reverse Topological Translation Ordering | `internal/agents/planning.go::ComputeReverseTopoOrder` | present |
 | [[PRIM-2]] | Back-Edge-Conditioned Reverse-Topological Scheduling | `internal/agents/planning.go` | present |
 | [[PRIM-3]] | Target Skeleton-First Generation | `internal/agents/planning.go::DefaultProjectSkeleton` | present |
-| [[PRIM-4]] | SpecMiner-Style Dynamic Invariant Recovery | `internal/agents/specminer.go` | absent-implemented |
+| [[PRIM-4]] | SpecMiner-Style Dynamic Invariant Recovery | `internal/agents/specminer.go` | present |
 | [[PRIM-5]] | Test Suite Co-Translation & Synthesis | `internal/agents/validator.go::generateAdditionalTests` | present |
 | [[PRIM-6]] | Multi-Stage Build/Test Feedback Repair | `internal/agents/validator.go` | present |
-| [[PRIM-7]] | Multi-Agent Verdict Validation | `internal/agents/verdict_panel.go` | absent-implemented |
-| [[PRIM-8]] | State-Grounded Mock-Based In-Isolation Validation | `internal/agents/mock_validator.go` | absent-implemented |
-| [[PRIM-9]] | Tri-Representation Hybrid Code Graph | `internal/agents/cpg.go` | absent-implemented |
-| [[PRIM-10]] | Feature-Mapping & Type-Compatibility Validation | `internal/agents/feature_mapping.go` | absent-implemented |
-| [[PRIM-11]] | Implementation-Agnostic Testing | `internal/agents/impl_agnostic.go` | absent-implemented |
-| [[PRIM-12]] | Wasm-Based Reference Execution Oracle | `internal/agents/wasm_oracle.go` | absent-implemented |
+| [[PRIM-7]] | Multi-Agent Verdict Validation | `internal/agents/verdict_panel.go` | present |
+| [[PRIM-8]] | State-Grounded Mock-Based In-Isolation Validation | `internal/agents/mock_validator.go` | present |
+| [[PRIM-9]] | Tri-Representation Hybrid Code Graph | `internal/agents/cpg.go` | present |
+| [[PRIM-10]] | Feature-Mapping & Type-Compatibility Validation | `internal/agents/feature_mapping.go` | present |
+| [[PRIM-11]] | Implementation-Agnostic Testing | `internal/agents/impl_agnostic.go` | present |
+| [[PRIM-12]] | Wasm-Based Reference Execution Oracle | `internal/agents/wasm_oracle.go` | present |
 | [[PRIM-13]] | Adversarial Test-Weakening Guard | `internal/agents/validator.go` | present |
-| [[PRIM-14]] | Software-Archaeology Stage | `internal/agents/archaeology.go` | absent-implemented |
-| [[PRIM-17]] | Asynchronous SE Agent Blackboard (CAID) | `internal/agents/blackboard.go` | absent-implemented (spec) |
+| [[PRIM-14]] | Software-Archaeology Stage | `internal/agents/archaeology.go` | present |
+| [[PRIM-17]] | Asynchronous SE Agent Blackboard (CAID) | `internal/agents/blackboard.go` | present |
+| [[PRIM-21]] | Migration Strategy Selection | `internal/agents/strategy.go` | present (5 Mueller strategies: BIG_BANG, INCREMENTAL, PILOT, FROZEN_LEGACY, PARALLEL_CUTOVER) |
 | [[PRIM-23]] | Chunked Translation | `internal/agents/chunked_translator.go` | present |
-| [[PRIM-25]] | Communicative-De-hallucination Role-Flip Gate | `internal/agents/roleflip.go` | absent-implemented |
+| [[PRIM-25]] | Communicative-De-hallucination Role-Flip Gate | `internal/agents/roleflip.go` | present |
 | [[PRIM-26]] | Symbol-Aware Navigator | `internal/agents/navigator.go` | present |
 | [[PRIM-27]] | Coverage-Guided Plateau Detection | `internal/agents/plateau.go` | present |
 | [[PRIM-28]] | Conversable State Checkpoints & Interrupts | `internal/agents/checkpoint.go` | present |
-| [[PRIM-29]] | Recruitment-Adaptive Planning | `internal/agents/recruit.go` | absent-implemented |
+| [[PRIM-29]] | Recruitment-Adaptive Planning | `internal/agents/recruit.go` | present |
 | [[PRIM-30]] | Source-to-Target Manifest Rewriter | `internal/agents/manifest_rewriter.go` | present |
-| [[PRIM-31]] | Iterative Retrieval Refinement | `internal/agents/iter_retrieval.go` | absent-implemented |
+| [[PRIM-31]] | Iterative Retrieval Refinement | `internal/agents/iter_retrieval.go` | present |
 
 ## Partial — extend in next sprint
 
 | ID | Title | Where | Status |
 | -- | ----- | ----- | ------ |
-| [[PRIM-21]] | Migration Strategy Selection | `internal/agents/strategy.go` | present (5 strategies; matches Mueller 5-strategy LIS) |
-| [[PRIM-24]] | SOP-Anchored Role-Artifact Schema | `internal/artifacts/versioning.go` | partial (SchemaVersion field added this sprint) |
-
+| [[PRIM-24]] | SOP-Anchored Role-Artifact Schema | `internal/artifacts/versioning.go` | partial (SchemaVersion field stamped; role-gated emission enforcement pending) |
 ## Referenced — paper cites but no codebase primitive
 
 These primitives appear in the paper appendix but are derived from cited
