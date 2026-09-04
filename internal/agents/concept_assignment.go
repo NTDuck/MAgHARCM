@@ -2,9 +2,11 @@ package agents
 
 import (
 	"context"
-	"sort"
+	"slices"
 	"strings"
 	"unicode"
+
+	"MAgHARCM/internal/compiletime"
 )
 
 // Backlink: [[1.0.0 PRIM-20]] Concept Assignment and Redocumentation (Rajlich-1997).
@@ -45,27 +47,20 @@ func (c *ConceptAssigner) AssignConcepts(ctx context.Context, fileContents map[s
 	for file, content := range fileContents {
 		tokens := tokenizeSource(content)
 		for _, token := range tokens {
-			if len(token) < 4 {
+			if len(token) < compiletime.ConceptTokenMinLength {
 				continue
 			}
 			lower := strings.ToLower(token)
-			// Cluster common domain concepts
-			if strings.Contains(lower, "validat") || strings.Contains(lower, "check") {
-				conceptLocations["Validation & Verification"] = append(conceptLocations["Validation & Verification"], ConceptLocation{FilePath: file, Symbol: token})
-			} else if strings.Contains(lower, "parse") || strings.Contains(lower, "lex") || strings.Contains(lower, "token") {
-				conceptLocations["Parsing & Lexical Analysis"] = append(conceptLocations["Parsing & Lexical Analysis"], ConceptLocation{FilePath: file, Symbol: token})
-			} else if strings.Contains(lower, "stat") || strings.Contains(lower, "math") || strings.Contains(lower, "calc") {
-				conceptLocations["Mathematical & Statistical Computation"] = append(conceptLocations["Mathematical & Statistical Computation"], ConceptLocation{FilePath: file, Symbol: token})
-			} else if strings.Contains(lower, "item") || strings.Contains(lower, "store") || strings.Contains(lower, "repo") {
-				conceptLocations["Entity & Storage Domain"] = append(conceptLocations["Entity & Storage Domain"], ConceptLocation{FilePath: file, Symbol: token})
+			for _, cluster := range compiletime.DefaultConceptClusters {
+				for _, kw := range cluster.Keywords {
+					if strings.Contains(lower, kw) {
+						conceptLocations[cluster.Label] = append(conceptLocations[cluster.Label], ConceptLocation{FilePath: file, Symbol: token})
+						break
+					}
+				}
 			}
 		}
 	}
-
-	report := &ConceptAssignmentReport{
-		Concepts: make([]ConceptBinding, 0, len(conceptLocations)),
-	}
-
 	for concept, locs := range conceptLocations {
 		// Deduplicate locations by FilePath
 		seen := make(map[string]bool)

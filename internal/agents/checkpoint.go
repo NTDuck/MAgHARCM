@@ -3,15 +3,25 @@ package agents
 // Backlink: [[Primitives]] §NEW-PRIM-28 (Human-in-the-Loop Interrupt & Checkpoint).
 
 import (
+	"strings"
 	"encoding/json"
 	"fmt"
 	"os"
+	"strconv"
 	"path/filepath"
-	"strings"
+	"regexp"
 	"time"
 
 	"MAgHARCM/internal/compiletime"
 )
+
+// pathSepReplacer replaces path separators with '-' when deriving a Run ID
+// from the task source directory. Hoisted to package-level for clarity.
+var pathSepReplacer = strings.NewReplacer(string(filepath.Separator), "-")
+
+// checkpointIterRe matches the per-iteration checkpoint filename pattern.
+// Compiled once at package init to avoid recompiling per LoadLatest call.
+var checkpointIterRe = regexp.MustCompile(`iter-(\d{4})` + regexp.QuoteMeta(compiletime.CheckpointExt))
 
 // CheckpointDir returns the per-run checkpoint directory under .artifacts/<run-id>/checkpoints/.
 func CheckpointDir(runID string) string {
@@ -22,14 +32,13 @@ func CheckpointDir(runID string) string {
 // translation task's source directory. The run ID is the cleaned source-dir
 // path with path separators replaced by '-', so re-running against the same
 // source directory always lands on the same checkpoint directory under
-// .artifacts/. Two source dirs that canonicalize to the same path share a
 // run ID.
 func RunIDForTask(task compiletime.Task) string {
 	src := filepath.Clean(task.SourceDir)
-	if src == "" || src == "." {
-		return "default"
+	if src == "" || src == compiletime.DefaultProjectDir {
+		return compiletime.DefaultRunID
 	}
-	return strings.NewReplacer(string(filepath.Separator), "-").Replace(src)
+	return pathSepReplacer.Replace(src)
 }
 
 // Checkpoint is a snapshot of *State plus a version + timestamp.
@@ -51,7 +60,7 @@ func Save(runID string, state *State) (string, error) {
 		return "", fmt.Errorf("checkpoint: runID must not be empty")
 	}
 	dir := CheckpointDir(runID)
-	if err := os.MkdirAll(dir, 0o755); err != nil {
+	if err := os.MkdirAll(dir, compiletime.CheckpointDirMode); err != nil {
 		return "", fmt.Errorf("checkpoint: mkdir %s: %w", dir, err)
 	}
 	ckpt := Checkpoint{
@@ -60,7 +69,7 @@ func Save(runID string, state *State) (string, error) {
 		Iteration: state.Iteration,
 		State:     state,
 	}
-	name := fmt.Sprintf("iter-%04d.json", state.Iteration)
+	name := fmt.Sprintf(compiletime.CheckpointFilePattern, state.Iteration)
 	path := filepath.Join(dir, name)
 	data, err := json.MarshalIndent(ckpt, "", "  ")
 	if err != nil {
@@ -68,7 +77,7 @@ func Save(runID string, state *State) (string, error) {
 	}
 	// Write to temp file then rename for atomicity
 	tmp := path + ".tmp"
-	if err := os.WriteFile(tmp, data, 0o644); err != nil {
+	if err := os.WriteFile(tmp, data, compiletime.CheckpointFileMode); err != nil {
 		return "", fmt.Errorf("checkpoint: write %s: %w", tmp, err)
 	}
 	if err := os.Rename(tmp, path); err != nil {
@@ -94,11 +103,15 @@ func LoadLatest(runID string) (*Checkpoint, error) {
 	var latestPath string
 	var latestIter int = -1
 	for _, e := range entries {
-		if e.IsDir() || filepath.Ext(e.Name()) != ".json" {
+		if e.IsDir() || filepath.Ext(e.Name()) != compiletime.CheckpointExt {
 			continue
 		}
-		var iter int
-		if _, err := fmt.Sscanf(e.Name(), "iter-%04d.json", &iter); err != nil {
+		match := checkpointIterRe.FindStringSubmatch(e.Name())
+		if match == nil {
+			continue
+		}
+		iter, err := strconv.Atoi(match[1])
+		if err != nil {
 			continue
 		}
 		if iter > latestIter {
