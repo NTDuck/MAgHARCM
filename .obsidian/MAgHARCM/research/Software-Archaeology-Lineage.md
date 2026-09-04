@@ -43,6 +43,16 @@ The MAgHARCM pipeline grounds modern agentic reasoning in 50+ years of rigorous 
         [pp-besm / Esoteric Production Archaeology]
                           │
                           ▼
+                          │  ← modern LLM-era hops →
+                          │
+   ┌──────────────────────┼───────────────────────────┐
+   ▼                      ▼                           ▼
+[Shen 2023] HuggingGPT   [Raman 2025] Anthropic     [Fleming & Baldwin
+  Controller-Expert        Sycophancy (PRIM-25)    2024] Pace of Modular
+  (PRIM-29 hop-1)           RoleFlip anchor         Innovation
+                                                     (PRIM-19 retrospective)
+                          │
+                          ▼
       [[2.0.0 MAgHARCM]] Multi-Agent Architecture
 ```
 
@@ -132,19 +142,20 @@ The MAgHARCM pipeline grounds modern agentic reasoning in 50+ years of rigorous 
 | `[[1.0.0 PRIM-16]]` | Spec-Driven Dev Lifecycle | spec-kit [[P-17]] | Design-by-Contract (Meyer 1988) | `internal/agents/spec_lifecycle.go` |
 | `[[1.0.0 PRIM-17]]` | Asynchronous SE Blackboard | CAID [[P-18]] | Blackboard Architecture (Nii 1986) | `internal/agents/blackboard.go` |
 | `[[1.0.0 PRIM-18]]` | Jaccard-Coupling Recovery | MSR4SA [[P-19]] | Mining Software Repositories (Hassan) | `internal/agents/jaccard_coupling.go` |
-| `[[1.0.0 PRIM-19]]` | Design Rule Hierarchy Part | Kazman et al. [[P-20]] | Baldwin & Clark (2000) Modularity | `internal/agents/design_rule_hierarchy.go`|
+| `[[1.0.0 PRIM-19]]` | Design Rule Hierarchy Part | Kazman et al. [[P-20]], Baldwin-Clark | Baldwin & Clark (2000) Modularity, [[P-41]] 2024 retrospective | `internal/agents/design_rule_hierarchy.go`|
 | `[[1.0.0 PRIM-20]]` | Concept Assignment & Redoc | Rajlich (1997) [[P-28]] | Concept Assignment (Biggerstaff 1993) | `internal/agents/concept_assignment.go` |
 | `[[1.0.0 PRIM-21]]` | Migration Strategy Selection | Müller et al. [[P-06]] | Legacy Migration Frameworks (Müller) | `internal/agents/strategy.go` |
-| `[[1.0.0 PRIM-22]]` | Four Phases Comprehension | Foltz (2023) [[P-30]] | Cognitive Program Comprehension | `internal/agents/comprehension.go` |
+| `[[1.0.0 PRIM-22]]` | Four Phases Comprehension | Foltz (2023) [[P-30]]; canonical hop-1 [[P-40]] | Cognitive Program Comprehension (Soloway-Adelson, Pennington, Brooks, Détienne) | `internal/agents/comprehension.go` |
 | `[[1.0.0 PRIM-23]]` | Chunked Translation | ChatDev [[P-12]], MetaGPT [[P-11]]| Bounded-Context Translation | `internal/agents/chunked_translator.go` |
 | `[[1.0.0 PRIM-24]]` | SOP-Anchored Role Artifact | MetaGPT [[P-11]] | Standard Operating Procedures (SOP) | `internal/compiletime/compiletime.go`, `internal/agents/state.go` |
-| `[[1.0.0 PRIM-25]]` | Role-Flip De-Hallucination | ChatDev [[P-12]] | Adversarial Verification (Sycophancy Gate) | `internal/agents/roleflip.go` |
+| `[[1.0.0 PRIM-25]]` | Role-Flip De-Hallucination | ChatDev [[P-12]]; sycophancy anchor [[P-38]] (Raman 2025) | Adversarial Verification (Sycophancy Gate) | `internal/agents/roleflip.go` |
 | `[[1.0.0 PRIM-26]]` | Symbol-Aware Navigator | HyperAgent [[P-13]], ABCoder | Targeted Context Retrieval | `internal/agents/navigator.go` |
 | `[[1.0.0 PRIM-27]]` | Coverage-Guided Plateau Det | CodaMOSA [[P-23]] | Search-Based Software Testing (Harman) | `internal/agents/plateau.go` |
 | `[[1.0.0 PRIM-28]]` | Conversable Checkpoints | AutoGen [[P-26]] | State-Snapshotting & Resumption | `internal/agents/checkpoint.go` |
-| `[[1.0.0 PRIM-29]]` | Recruitment-Adaptive Plan | AgentVerse [[P-26]] | Dynamic Team Organization | `internal/agents/recruit.go` |
+| `[[1.0.0 PRIM-29]]` | Recruitment-Adaptive Plan | AgentVerse [[P-26]]; controller-expert [[P-39]] (HuggingGPT / Jarvis) | Dynamic Team Organization | `internal/agents/recruit.go` |
 | `[[1.0.0 PRIM-30]]` | Source-to-Target Manifest | Syzygy [[P-14]], JavaC2Rust | Dependency Graph Transpilation | `internal/agents/manifest_rewriter.go` |
 | `[[1.0.0 PRIM-31]]` | Iterative Retrieval Refine | RepoCoder [[P-13]] | Dynamic Feedback Retrieval-Augmented Gen | `internal/agents/iter_retrieval.go` |
+
 
 ---
 
