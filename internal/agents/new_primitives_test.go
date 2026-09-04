@@ -3,6 +3,8 @@ package agents
 import (
 	"context"
 	"testing"
+
+	"MAgHARCM/internal/compiletime"
 )
 
 func TestEvidenceFirstAdaptor(t *testing.T) {
@@ -120,11 +122,11 @@ func TestIncrementalStrategySwitch(t *testing.T) {
 	reg := NewDefaultRegistry()
 	// Start with BigBang
 	p := Profile{FileCount: 2, LoC: 200, HasTests: true, HasBuild: true}
-	next, err := reg.NextStrategy(context.Background(), StrategyBigBang, p)
+	next, err := reg.NextStrategy(context.Background(), compiletime.StrategyBigBang, p)
 	if err != nil {
 		t.Fatalf("NextStrategy failed: %v", err)
 	}
-	if next != StrategyIncremental {
+	if next != compiletime.StrategyIncremental {
 		t.Errorf("expected next strategy Incremental, got %s", next)
 	}
 
@@ -133,7 +135,7 @@ func TestIncrementalStrategySwitch(t *testing.T) {
 		AnalyzerOutput: AnalyzerOutput{
 			Research: DocumentWrapper[SourceProjectResearch]{
 				Data: SourceProjectResearch{
-					MigrationStrategy: string(StrategyBigBang),
+					MigrationStrategy: string(compiletime.StrategyBigBang),
 				},
 			},
 		},
@@ -142,7 +144,7 @@ func TestIncrementalStrategySwitch(t *testing.T) {
 	if !switched {
 		t.Fatalf("expected strategy switch to succeed")
 	}
-	if newStrat != StrategyFrozenLegacy {
+	if newStrat != compiletime.StrategyFrozenLegacy {
 		t.Errorf("expected FROZEN_LEGACY when HasTests is false, got %s", newStrat)
 	}
 }

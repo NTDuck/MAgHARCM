@@ -22,7 +22,6 @@ import (
 	"time"
 
 	"MAgHARCM/internal/compiletime"
-	"MAgHARCM/internal/consts"
 )
 
 // BlackboardEvent is one entry in the blackboard's append-only event log.
@@ -90,7 +89,7 @@ func (b *Blackboard) Register(id string) {
 	if _, ok := b.WorkUnits[id]; ok {
 		return
 	}
-	b.WorkUnits[id] = &WorkUnit{ID: id, Status: consts.WorkUnitPending}
+	b.WorkUnits[id] = &WorkUnit{ID: id, Status: compiletime.WorkUnitPending}
 	b.publishLocked(BlackboardEvent{Kind: "work.registered", Payload: map[string]any{"id": id}, Timestamp: time.Now()})
 }
 
@@ -101,11 +100,11 @@ func (b *Blackboard) Claim(id, agent string) (*WorkUnit, bool) {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	wu, ok := b.WorkUnits[id]
-	if !ok || wu.Status != consts.WorkUnitPending {
+	if !ok || wu.Status != compiletime.WorkUnitPending {
 		return nil, false
 	}
 	wu.ClaimedBy = agent
-	wu.Status = consts.WorkUnitClaimed
+	wu.Status = compiletime.WorkUnitClaimed
 	b.publishLocked(BlackboardEvent{Kind: "work.claimed", Payload: map[string]any{"id": id, "agent": agent}, Timestamp: time.Now()})
 	return wu, true
 }
@@ -117,11 +116,11 @@ func (b *Blackboard) Complete(id string, result any) bool {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	wu, ok := b.WorkUnits[id]
-	if !ok || wu.Status != consts.WorkUnitClaimed {
+	if !ok || wu.Status != compiletime.WorkUnitClaimed {
 		return false
 	}
 	wu.Result = result
-	wu.Status = consts.WorkUnitCompleted
+	wu.Status = compiletime.WorkUnitCompleted
 	b.publishLocked(BlackboardEvent{Kind: "work.completed", Payload: map[string]any{"id": id, "result": result}, Timestamp: time.Now()})
 	b.reapLocked(id)
 	return true
@@ -133,11 +132,11 @@ func (b *Blackboard) Fail(id string, reason any) bool {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	wu, ok := b.WorkUnits[id]
-	if !ok || wu.Status != consts.WorkUnitClaimed {
+	if !ok || wu.Status != compiletime.WorkUnitClaimed {
 		return false
 	}
 	wu.Result = reason
-	wu.Status = consts.WorkUnitFailed
+	wu.Status = compiletime.WorkUnitFailed
 	b.publishLocked(BlackboardEvent{Kind: "work.failed", Payload: map[string]any{"id": id, "reason": reason}, Timestamp: time.Now()})
 	b.reapLocked(id)
 	return true

@@ -13,7 +13,7 @@ import (
 	"strings"
 	"time"
 
-	"MAgHARCM/internal/consts"
+	"MAgHARCM/internal/compiletime"
 	"MAgHARCM/internal/logger"
 )
 
@@ -74,7 +74,7 @@ func (s *SpecMiner) Recover(ctx context.Context, sourceBinary string, inputs []s
 		BranchCoverage:     map[string]float64{},
 	}
 	if sourceBinary == "" {
-		logger.LogWarning("%s recover called with empty source binary", consts.SpecMinerToolName)
+		logger.LogWarning("%s recover called with empty source binary", compiletime.SpecMinerToolName)
 		return out, nil
 	}
 	for i, in := range inputs {
@@ -85,7 +85,7 @@ func (s *SpecMiner) Recover(ctx context.Context, sourceBinary string, inputs []s
 		outBytes, err := cmd.CombinedOutput()
 		cancel()
 		if err != nil && tCtx.Err() != nil {
-			logger.LogWarning("%s input %d failed: %v", consts.SpecMinerToolName, i, err)
+			logger.LogWarning("%s input %d failed: %v", compiletime.SpecMinerToolName, i, err)
 			continue
 		}
 		// Allocation sizes: input length + observed output length.
@@ -134,7 +134,7 @@ func (s *SpecMiner) Recover(ctx context.Context, sourceBinary string, inputs []s
 			out.BranchCoverage[fn]++
 		}
 	}
-	logger.LogTool(consts.SpecMinerToolName,
+	logger.LogTool(compiletime.SpecMinerToolName,
 		"recovered %d alloc sizes, %d nullability entries, %d aliasing pairs, %d lifetime ranges, %d branch coverage entries",
 		len(out.AllocSizes), len(out.PointerNullability), len(out.AliasingPairs),
 		len(out.LifetimeRanges), len(out.BranchCoverage))

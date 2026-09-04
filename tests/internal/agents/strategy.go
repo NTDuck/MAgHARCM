@@ -1,9 +1,11 @@
 package agents_test
 
 import (
-	"MAgHARCM/internal/agents"
 	"context"
 	"testing"
+
+	"MAgHARCM/internal/agents"
+	"MAgHARCM/internal/compiletime"
 )
 
 // TestTryInOrderEmptyProfile exercises the catch-all default path: a
@@ -20,7 +22,7 @@ func TestTryInOrderEmptyProfile(t *testing.T) {
 	if err != nil {
 		t.Fatalf("TryInOrder returned error: %v", err)
 	}
-	if kind != agents.StrategyIncremental {
+	if kind != compiletime.StrategyIncremental {
 		t.Errorf("expected INCREMENTAL as the first match for default profile, got %s", kind)
 	}
 }
@@ -38,7 +40,7 @@ func TestTryInOrderPilotProfile(t *testing.T) {
 	if err != nil {
 		t.Fatalf("TryInOrder returned error: %v", err)
 	}
-	if kind != agents.StrategyPilot {
+	if kind != compiletime.StrategyPilot {
 		t.Errorf("expected PILOT for large repo, got %s", kind)
 	}
 }
@@ -56,7 +58,7 @@ func TestTryInOrderFrozenLegacyProfile(t *testing.T) {
 	if err != nil {
 		t.Fatalf("TryInOrder returned error: %v", err)
 	}
-	if kind != agents.StrategyFrozenLegacy {
+	if kind != compiletime.StrategyFrozenLegacy {
 		t.Errorf("expected FROZEN_LEGACY for HasTests=false repo, got %s", kind)
 	}
 }
@@ -74,7 +76,7 @@ func TestTryInOrderBigBangProfile(t *testing.T) {
 	if err != nil {
 		t.Fatalf("TryInOrder returned error: %v", err)
 	}
-	if kind != agents.StrategyBigBang {
+	if kind != compiletime.StrategyBigBang {
 		t.Errorf("expected BIG_BANG for small repo, got %s", kind)
 	}
 }
@@ -92,7 +94,7 @@ func TestTryInOrderParallelCutoverProfile(t *testing.T) {
 	if err != nil {
 		t.Fatalf("TryInOrder returned error: %v", err)
 	}
-	if kind != agents.StrategyParallelCutover {
+	if kind != compiletime.StrategyParallelCutover {
 		t.Errorf("expected PARALLEL_CUTOVER for modular repo with tests, got %s", kind)
 	}
 }
@@ -110,7 +112,7 @@ func TestSelectAndTryStrategies(t *testing.T) {
 	if err != nil {
 		t.Fatalf("SelectAndTryStrategies returned error: %v", err)
 	}
-	if kind != agents.StrategyBigBang {
+	if kind != compiletime.StrategyBigBang {
 		t.Errorf("expected BIG_BANG, got %s", kind)
 	}
 	if rationale == "" {

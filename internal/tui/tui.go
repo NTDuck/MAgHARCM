@@ -267,7 +267,7 @@ func RunCLI() {
 	logger.LogStep("%s", strings.TrimSpace(banner))
 
 	if _, err := tea.NewProgram(newModel(&cfg, rs)).Run(); err != nil {
-		fmt.Fprintf(os.Stderr, "tui: %v\n", err)
+		logger.LogError("tui: %v", err)
 		os.Exit(1)
 	}
 }

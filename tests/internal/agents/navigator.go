@@ -7,9 +7,7 @@ import (
 	"testing"
 
 	"MAgHARCM/internal/agents"
-	"MAgHARCM/internal/artifacts"
 	"MAgHARCM/internal/tools"
-	"MAgHARCM/internal/types"
 )
 
 // mockLSPProvider is a programmable LSPProvider used to drive the agents.Navigator
@@ -250,7 +248,7 @@ func TestNewNavigatorAgentDisabled(t *testing.T) {
 	if agent == nil {
 		t.Fatal("NewNavigatorAgent(nil, nil) returned nil")
 	}
-	state := &types.State{}
+	state := &agents.State{}
 	out, err := agent.Run(context.Background(), state)
 	if err != nil {
 		t.Fatalf("Run with nil provider returned error: %v", err)
@@ -284,8 +282,8 @@ func TestNavigatorAgentResolvesSymbols(t *testing.T) {
 	}
 	agent := agents.NewNavigatorAgent(nil, provider)
 
-	state := &types.State{
-		PlanningOutput: artifacts.PlanningOutput{
+	state := &agents.State{
+		PlanningOutput: agents.PlanningOutput{
 			NameMapping: map[string]string{
 				"alpha": "ALPHA",
 				"beta":  "BETA",
@@ -313,7 +311,7 @@ func TestNavigatorAgentEmptyMapping(t *testing.T) {
 	provider := &mockLSPProvider{}
 	agent := agents.NewNavigatorAgent(nil, provider)
 
-	state := &types.State{}
+	state := &agents.State{}
 	out, err := agent.Run(context.Background(), state)
 	if err != nil {
 		t.Fatalf("Run returned error: %v", err)

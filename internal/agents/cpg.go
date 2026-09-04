@@ -11,7 +11,7 @@ import (
 	"context"
 	"fmt"
 
-	"MAgHARCM/internal/consts"
+	"MAgHARCM/internal/compiletime"
 	"MAgHARCM/internal/logger"
 )
 
@@ -89,7 +89,7 @@ type HybridCodeGraph struct {
 // NewHybridCodeGraph constructs a graph anchored on lang. lsp may be nil.
 func NewHybridCodeGraph(lang string, lsp LSPResolver) *HybridCodeGraph {
 	if lang == "" {
-		lang = consts.ErrorUnknown
+		lang = compiletime.ErrorUnknown
 	}
 	g := &HybridCodeGraph{lang: lang, lsp: lsp}
 	logger.LogStep("hybrid code graph created lang=%s lsp=%v", lang, lsp != nil)

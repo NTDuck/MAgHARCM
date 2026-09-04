@@ -7,8 +7,6 @@ import (
 	"strings"
 	"testing"
 
-	"MAgHARCM/internal/artifacts"
-	"MAgHARCM/internal/types"
 )
 
 // TestCheckpointSaveLoadRoundTrip verifies that a saved checkpoint can be loaded
@@ -17,11 +15,11 @@ func TestCheckpointSaveLoadRoundTrip(t *testing.T) {
 	runID := "test-roundtrip"
 	t.Cleanup(func() { _ = agents.Cleanup(runID) })
 
-	state := &types.State{
+	state := &agents.State{
 		Iteration:     3,
 		MaxIterations: 50,
 		IsComplete:    false,
-		TranslatedProject: artifacts.TranslatedProject{
+		TranslatedProject: agents.TranslatedProject{
 			Files: map[string]string{"src/lib.rs": "fn hi() {}"},
 		},
 	}
@@ -84,7 +82,7 @@ func TestCheckpointLoadLatestPicksHighestIteration(t *testing.T) {
 
 	// agents.Save in non-monotonic order to make sure sorting is on disk content, not save order.
 	for _, iter := range []int{1, 7, 3} {
-		if _, err := agents.Save(runID, &types.State{Iteration: iter}); err != nil {
+		if _, err := agents.Save(runID, &agents.State{Iteration: iter}); err != nil {
 			t.Fatalf("agents.Save iter=%d: %v", iter, err)
 		}
 	}
@@ -103,7 +101,7 @@ func TestCheckpointLoadLatestPicksHighestIteration(t *testing.T) {
 
 // TestCheckpointSaveEmptyRunIDReturnsError verifies that agents.Save rejects an empty runID.
 func TestCheckpointSaveEmptyRunIDReturnsError(t *testing.T) {
-	if _, err := agents.Save("", &types.State{Iteration: 1}); err == nil {
+	if _, err := agents.Save("", &agents.State{Iteration: 1}); err == nil {
 		t.Fatal("agents.Save with empty runID: expected error, got nil")
 	}
 }
@@ -113,7 +111,7 @@ func TestCheckpointSaveEmptyRunIDReturnsError(t *testing.T) {
 func TestCheckpointCleanupRemovesDirectory(t *testing.T) {
 	runID := "test-cleanup"
 
-	if _, err := agents.Save(runID, &types.State{Iteration: 2}); err != nil {
+	if _, err := agents.Save(runID, &agents.State{Iteration: 2}); err != nil {
 		t.Fatalf("agents.Save: %v", err)
 	}
 	dir := agents.CheckpointDir(runID)

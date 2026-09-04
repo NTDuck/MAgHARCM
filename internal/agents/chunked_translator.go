@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	"github.com/cloudwego/eino/schema"
-
+	"MAgHARCM/internal/compiletime"
 	"MAgHARCM/internal/logger"
 )
 
@@ -239,7 +239,7 @@ func (t *TranslatorAgent) RunChunked(ctx context.Context, state *State) (*Transl
 // skeleton wrote no build manifest (the chunked translator only emits
 // per-source-file outputs, never the workspace manifest).
 func (t *TranslatorAgent) ensureRustCargoManifest(state *State) {
-	if state == nil || state.Task.TargetLang != "Rust" {
+	if state == nil || state.Task.TargetLang != compiletime.LangRustCanonical {
 		return
 	}
 	if _, ok := state.TranslatedProject.Files["Cargo.toml"]; ok {

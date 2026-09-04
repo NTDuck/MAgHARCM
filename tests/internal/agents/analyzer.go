@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"MAgHARCM/internal/agents"
+	"MAgHARCM/internal/compiletime"
 )
 
 // TestAnalyzerStrategySelection mirrors the production selection logic via
@@ -17,32 +18,32 @@ func TestAnalyzerStrategySelection(t *testing.T) {
 	cases := []struct {
 		name string
 		p    agents.Profile
-		want agents.StrategyKind
+		want compiletime.StrategyKind
 	}{
 		{
 			name: "small project -> BIG_BANG",
 			p:    agents.Profile{FileCount: 2, LoC: 200, HasTests: true, HasBuild: true},
-			want: agents.StrategyBigBang,
+			want: compiletime.StrategyBigBang,
 		},
 		{
 			name: "large project -> PILOT",
 			p:    agents.Profile{FileCount: 60, LoC: 15000, HasTests: true, HasBuild: true},
-			want: agents.StrategyPilot,
+			want: compiletime.StrategyPilot,
 		},
 		{
 			name: "untested project -> FROZEN_LEGACY",
 			p:    agents.Profile{FileCount: 10, LoC: 2000, HasTests: false, HasBuild: true},
-			want: agents.StrategyFrozenLegacy,
+			want: compiletime.StrategyFrozenLegacy,
 		},
 		{
 			name: "modular project with tests -> PARALLEL_CUTOVER",
 			p:    agents.Profile{FileCount: 15, LoC: 3000, HasTests: true, HasBuild: true},
-			want: agents.StrategyParallelCutover,
+			want: compiletime.StrategyParallelCutover,
 		},
 		{
 			name: "standard modular with tests -> INCREMENTAL",
 			p:    agents.Profile{FileCount: 5, LoC: 800, HasTests: true, HasBuild: true},
-			want: agents.StrategyIncremental,
+			want: compiletime.StrategyIncremental,
 		},
 	}
 	for _, tc := range cases {
@@ -62,12 +63,12 @@ func TestAnalyzerStrategySelection(t *testing.T) {
 // non-empty rationale string for each chosen strategy so the prompt
 // assembly downstream keeps working.
 func TestAnalyzerRationaleStringFor(t *testing.T) {
-	cases := []agents.StrategyKind{
-		agents.StrategyBigBang,
-		agents.StrategyIncremental,
-		agents.StrategyPilot,
-		agents.StrategyFrozenLegacy,
-		agents.StrategyParallelCutover,
+	cases := []compiletime.StrategyKind{
+		compiletime.StrategyBigBang,
+		compiletime.StrategyIncremental,
+		compiletime.StrategyPilot,
+		compiletime.StrategyFrozenLegacy,
+		compiletime.StrategyParallelCutover,
 	}
 	for _, k := range cases {
 		_, rationale, err := agents.SelectAndTryStrategies(context.Background(), agents.Profile{

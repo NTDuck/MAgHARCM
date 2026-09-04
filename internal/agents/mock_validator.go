@@ -16,7 +16,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"MAgHARCM/internal/consts"
+	"MAgHARCM/internal/compiletime"
 	"MAgHARCM/internal/logger"
 	"MAgHARCM/internal/tools"
 )
@@ -124,11 +124,11 @@ func (mv *MockValidator) ValidateInIsolation(ctx context.Context, module string,
 
 	lang := mv.Language
 	if lang == "" {
-		lang = consts.LangRust
+		lang = compiletime.LangRust
 	}
 	toolchain := mv.Toolchain
 	if toolchain == "" {
-		toolchain = consts.ToolchainCargo
+		toolchain = compiletime.ToolchainCargo
 	}
 
 	testOut, runErr := tools.RunProjectTests(ctx, projectDir, lang, toolchain, module)

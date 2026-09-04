@@ -12,12 +12,11 @@ import (
 	"path/filepath"
 
 	"MAgHARCM/internal/agents"
-	"MAgHARCM/internal/artifacts"
+	"MAgHARCM/internal/compiletime"
 	"MAgHARCM/internal/config"
 	"MAgHARCM/internal/graph"
 	"MAgHARCM/internal/llm"
 	"MAgHARCM/internal/logger"
-	"MAgHARCM/internal/types"
 )
 
 // ErrMissingFields is returned when cfg is nil.
@@ -26,7 +25,7 @@ var ErrMissingFields = errors.New("cfg is required")
 // Run executes the full analyzer -> planning -> translator -> validator
 // pipeline and returns the final state. cfg MUST have every required field
 // populated; missing fields produce a structured error from config.Require.
-func Run(ctx context.Context, cfg *config.Config) (*types.State, error) {
+func Run(ctx context.Context, cfg *config.Config) (*agents.State, error) {
 	if cfg == nil {
 		return nil, ErrMissingFields
 	}
@@ -34,7 +33,7 @@ func Run(ctx context.Context, cfg *config.Config) (*types.State, error) {
 		return nil, err
 	}
 
-	task := types.TranslationTask{
+	task := compiletime.Task{
 		SourceDir:   cfg.SourceDir,
 		TargetDir:   cfg.TargetDir,
 		SourceLang:  cfg.SourceLang,
@@ -53,16 +52,16 @@ func Run(ctx context.Context, cfg *config.Config) (*types.State, error) {
 	if err != nil {
 		return nil, fmt.Errorf("load checkpoint for %s: %w", runID, err)
 	}
-	var initialState *types.State
+	var initialState *agents.State
 	if resumed != nil {
 		logger.LogStep("Resume from checkpoint iter-%d", resumed.Iteration)
 		initialState = resumed.State
 	} else {
-		initialState = &types.State{
+		initialState = &agents.State{
 			Task:          task,
 			MaxIterations: cfg.MaxIterations,
-			TranslatedProject: artifacts.TranslatedProject{
-				ArtifactSchemaVersion: artifacts.CurrentSchemaVersion,
+			TranslatedProject: agents.TranslatedProject{
+				ArtifactSchemaVersion: compiletime.CurrentSchemaVersion,
 				Files:                 make(map[string]string),
 			},
 		}
@@ -115,6 +114,6 @@ func Run(ctx context.Context, cfg *config.Config) (*types.State, error) {
 }
 
 // Success reports whether the final state cleared validation.
-func Success(s *types.State) bool {
+func Success(s *agents.State) bool {
 	return s != nil && s.ValidationReport.IsAllSuccess()
 }

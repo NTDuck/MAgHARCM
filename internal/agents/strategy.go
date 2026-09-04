@@ -11,13 +11,6 @@ import (
 // StrategyKind aliases compiletime.StrategyKind for centralized enums.
 type StrategyKind = compiletime.StrategyKind
 
-const (
-	StrategyBigBang         = compiletime.StrategyBigBang
-	StrategyIncremental     = compiletime.StrategyIncremental
-	StrategyPilot           = compiletime.StrategyPilot
-	StrategyFrozenLegacy    = compiletime.StrategyFrozenLegacy
-	StrategyParallelCutover = compiletime.StrategyParallelCutover
-)
 // Profile is the static repository signal set used by each MigrationStrategy
 // to decide whether its gating conditions apply. The fields are populated
 // once at analyzer start and then handed to Registry.TryInOrder.
@@ -131,7 +124,7 @@ func SwitchToNextStrategy(ctx context.Context, state *State) (StrategyKind, bool
 // translation, no staged rollout.
 type bigBangStrategy struct{}
 
-func (bigBangStrategy) Kind() StrategyKind { return StrategyBigBang }
+func (bigBangStrategy) Kind() StrategyKind { return compiletime.StrategyBigBang }
 func (bigBangStrategy) Matches(p Profile) bool {
 	return p.FileCount <= 3 && p.LoC < 500
 }
@@ -148,7 +141,7 @@ func (bigBangStrategy) Attempt(ctx context.Context, p Profile) error {
 // sweeping migration.
 type pilotStrategy struct{}
 
-func (pilotStrategy) Kind() StrategyKind { return StrategyPilot }
+func (pilotStrategy) Kind() StrategyKind { return compiletime.StrategyPilot }
 func (pilotStrategy) Matches(p Profile) bool {
 	return p.FileCount > 50 || p.LoC > 10000
 }
@@ -164,7 +157,7 @@ func (pilotStrategy) Attempt(ctx context.Context, p Profile) error {
 // legacy boundary before touching production code.
 type frozenLegacyStrategy struct{}
 
-func (frozenLegacyStrategy) Kind() StrategyKind { return StrategyFrozenLegacy }
+func (frozenLegacyStrategy) Kind() StrategyKind { return compiletime.StrategyFrozenLegacy }
 func (frozenLegacyStrategy) Matches(p Profile) bool {
 	return !p.HasTests
 }
@@ -180,7 +173,7 @@ func (frozenLegacyStrategy) Attempt(ctx context.Context, p Profile) error {
 // multi-stage parallel module cutover with side-by-side validation.
 type parallelCutoverStrategy struct{}
 
-func (parallelCutoverStrategy) Kind() StrategyKind { return StrategyParallelCutover }
+func (parallelCutoverStrategy) Kind() StrategyKind { return compiletime.StrategyParallelCutover }
 func (parallelCutoverStrategy) Matches(p Profile) bool {
 	return p.HasTests && p.FileCount > 10
 }
@@ -197,7 +190,7 @@ func (parallelCutoverStrategy) Attempt(ctx context.Context, p Profile) error {
 // last strategy in the registry.
 type incrementalStrategy struct{}
 
-func (incrementalStrategy) Kind() StrategyKind { return StrategyIncremental }
+func (incrementalStrategy) Kind() StrategyKind { return compiletime.StrategyIncremental }
 func (incrementalStrategy) Matches(p Profile) bool {
 	_ = p
 	return true
@@ -215,15 +208,15 @@ func (incrementalStrategy) Attempt(ctx context.Context, p Profile) error {
 // strategy itself preserves the strategy's focus on gating.
 func rationaleFor(kind StrategyKind) string {
 	switch kind {
-	case StrategyBigBang:
+	case compiletime.StrategyBigBang:
 		return "Small self-contained project (<500 LoC, <=3 files): single-pass direct translation."
-	case StrategyPilot:
+	case compiletime.StrategyPilot:
 		return "Large-scale codebase (>50 files or >10k LoC): chunked subsystem pilot translation."
-	case StrategyFrozenLegacy:
+	case compiletime.StrategyFrozenLegacy:
 		return "Legacy codebase without test harness: requires test synthesis and boundary freezing."
-	case StrategyParallelCutover:
+	case compiletime.StrategyParallelCutover:
 		return "Modular project with comprehensive test suite: multi-stage parallel module cutover."
-	case StrategyIncremental:
+	case compiletime.StrategyIncremental:
 		return "Standard multi-module project: reverse-topological incremental translation."
 	default:
 		return "No matching strategy selected."

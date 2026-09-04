@@ -12,7 +12,7 @@ import (
 	"strings"
 	"sync"
 
-	"MAgHARCM/internal/consts"
+	"MAgHARCM/internal/compiletime"
 	"MAgHARCM/internal/logger"
 )
 
@@ -104,11 +104,11 @@ func (in *IterativeNavigator) Lookup(ctx context.Context, symbol string) (Iterat
 			Symbol:    symbol,
 			Body:      body,
 			SizeBytes: len(body),
-			Source:    consts.SourceReindexed,
+			Source:    compiletime.SourceReindexed,
 		}, nil
 	}
 
-	res := IterativeResolution{Symbol: symbol, Source: consts.SourceFresh}
+	res := IterativeResolution{Symbol: symbol, Source: compiletime.SourceFresh}
 	if in.Navigator != nil {
 		sr := in.LookupSymbol(ctx, symbol, "")
 		if sr.Definition != nil && len(sr.Definition.Definitions) > 0 {
