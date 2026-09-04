@@ -14,39 +14,27 @@ import (
 	"github.com/cloudwego/eino/components/model"
 	"github.com/cloudwego/eino/schema"
 
+	"MAgHARCM/internal/compiletime"
 	"MAgHARCM/internal/logger"
 )
 
-// VerdictKindEquivalent and VerdictKindNotEquivalent are the two token labels a
-// judge is expected to emit on its first non-empty line. Parsing is tolerant
-// (case-insensitive, ignores surrounding punctuation) but the canonical
-// spelling matches these constants so logs and downstream code share a single
-// vocabulary.
+// VerdictKindEquivalent / VerdictKindNotEquivalent are the back-compat
+// aliases for compiletime.VerdictEquivalent / compiletime.VerdictNotEquivalent.
+// New code should reference the compiletime constants directly.
 const (
-	VerdictKindEquivalent    = "EQUIVALENT"
-	VerdictKindNotEquivalent = "NOT_EQUIVALENT"
+	VerdictKindEquivalent    = compiletime.VerdictEquivalent
+	VerdictKindNotEquivalent = compiletime.VerdictNotEquivalent
 )
 
-// DefaultPanelSize is the default number of judges consulted per Judge call.
-// Five matches the small-model majority-vote sweet spot used by the
-// Multi-Agent Verdict Validation primitive — odd, large enough to absorb one
-// hallucinated vote, small enough to stay within a single Ollama session's
-// latency budget. Callers may override via the n parameter of Judge.
+// DefaultPanelSize is the canonical PRIM-7 panel size (5 judges — odd,
+// absorbs one hallucinated vote, fits one Ollama session latency budget).
 const DefaultPanelSize = 5
 
 // Verdict is the aggregated panel decision.
 type Verdict struct {
-	// Agree reports the panel majority outcome. It is true only when at least
-	// half of the judges (rounded up) reported EQUIVALENT; otherwise the panel
-	// treats the source/target pair as not equivalent.
-	Agree bool
-	// Disagreements enumerates the JudgeIDs that voted against the majority,
-	// paired with a short rationale excerpt. Empty when the panel was
-	// unanimous.
+	Agree         bool
 	Disagreements []string
-	// PerJudge preserves every individual JudgeOpinion in JudgeID order so
-	// downstream reporters can audit the panel without re-running inference.
-	PerJudge []JudgeOpinion
+	PerJudge      []JudgeOpinion
 }
 
 // JudgeOpinion records a single panel member's vote and reasoning.
@@ -71,6 +59,41 @@ func NewVerdictPanel(m model.BaseChatModel) *VerdictPanel {
 	return &VerdictPanel{Model: m}
 }
 
+// MustVerdictPanel constructs a VerdictPanel and panics if the chat model
+// is nil. Use this at startup where a missing reasoning model is a fatal
+// configuration error.
+func MustVerdictPanel(m model.BaseChatModel) *VerdictPanel {
+	if m == nil {
+		panic("compiletime.MustVerdictPanel: Model must not be nil")
+	}
+	return NewVerdictPanel(m)
+}
+
+// MustPanelSize returns n when positive; otherwise it returns DefaultPanelSize.
+// Centralises the "fall back to the canonical size" logic so callers no longer
+// have to inline `if n <= 0 { n = DefaultPanelSize }`.
+func MustPanelSize(n int) int {
+	if n <= 0 {
+		return DefaultPanelSize
+	}
+	return n
+}
+
+// verdictEquivalentSet / verdictNotEquivalentSet memoise the alias lists
+// from compiletime for O(1) lookup in normalizeVerdictToken.
+var (
+	verdictEquivalentSet    = stringSet(append([]string{compiletime.VerdictEquivalent}, compiletime.VerdictAliasEquivalent...))
+	verdictNotEquivalentSet = stringSet(append([]string{compiletime.VerdictNotEquivalent, "NOT-EQUIVALENT"}, compiletime.VerdictAliasNotEquivalent...))
+)
+
+func stringSet(items []string) map[string]struct{} {
+	m := make(map[string]struct{}, len(items))
+	for _, s := range items {
+		m[s] = struct{}{}
+	}
+	return m
+}
+
 // Judge prompts N independent judges to decide whether `source` and `target`
 // are functionally equivalent. Each judge sees the same prompt but receives a
 // distinct JudgeID ("J1".."Jn") so traces and disagreements are attributable.
@@ -87,13 +110,11 @@ func (vp *VerdictPanel) Judge(ctx context.Context, source, target string, n int)
 	if vp == nil || vp.Model == nil {
 		return Verdict{}, fmt.Errorf("verdict panel: nil model")
 	}
-	if n <= 0 {
-		n = DefaultPanelSize
-	}
+	n = MustPanelSize(n)
 
 	opinions := make([]JudgeOpinion, 0, n)
 	for i := 1; i <= n; i++ {
-		judgeID := fmt.Sprintf("J%d", i)
+		judgeID := fmt.Sprintf("%s%d", compiletime.VerdictJudgeIDPrefix, i)
 		opinion, err := vp.singleJudge(ctx, judgeID, source, target)
 		if err != nil {
 			// Record the failure as a NOT_EQUIVALENT vote with the error
@@ -187,14 +208,13 @@ func majorityThreshold(k int) int {
 func normalizeVerdictToken(raw string) string {
 	cleaned := strings.ToUpper(strings.TrimSpace(raw))
 	cleaned = strings.Trim(cleaned, ".:;,-`'\"")
-	switch cleaned {
-	case VerdictKindEquivalent, "EQUIV", "YES", "TRUE", "AGREE", "MATCH", "EQUAL":
+	if _, ok := verdictEquivalentSet[cleaned]; ok {
 		return VerdictKindEquivalent
-	case VerdictKindNotEquivalent, "NOT EQUIVALENT", "NOT-EQUIVALENT", "NO", "FALSE", "DISAGREE", "MISMATCH", "DIFFERENT":
-		return VerdictKindNotEquivalent
-	default:
-		return cleaned
 	}
+	if _, ok := verdictNotEquivalentSet[cleaned]; ok {
+		return VerdictKindNotEquivalent
+	}
+	return cleaned
 }
 
 // parseJudgeVerdict reads the first non-empty line of the model response,
