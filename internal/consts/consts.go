@@ -31,9 +31,20 @@ const (
 	StrategyFrozenLegacy    = "FROZEN_LEGACY"
 	StrategyParallelCutover = "PARALLEL_CUTOVER"
 )
+// SpecMinerToolName is the tool key used by the dynamic invariant recovery agent.
+// Backlink: [[P04]] SpecMiner-Style Dynamic Invariant Recovery ([[Syzygy-2024]]).
+const SpecMinerToolName = "specminer"
 
 // DefaultArtifactDir is the default artifact/checkpoint directory.
 const DefaultArtifactDir = ".artifacts"
+
+// SourceReindexed marks a Lookup result that was served from the iterative
+// navigator's already-emitted-fragment index (P30, RepoCoder-style).
+const SourceReindexed = "reindexed"
+
+// SourceFresh marks a Lookup result that required a fresh Navigator call
+// because the symbol was not present in the emitted-fragment index.
+const SourceFresh = "fresh"
 
 // DefaultRequestFile is the default YAML request file name.
 const DefaultRequestFile = "magharcm-request.yml"
