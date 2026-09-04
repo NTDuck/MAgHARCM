@@ -1,5 +1,7 @@
 package artifacts
 
+import "fmt"
+
 // CurrentSchemaVersion is the schema version stamped on every artifact produced
 // by the MAgHARCM pipeline. It is a string-semver value (e.g. "1.0.0") so it
 // can travel safely through JSON without numeric coercion. Consumers should
@@ -30,4 +32,21 @@ type SchemaVersioned interface {
 // Passing nil returns nil.
 func Annotate(v any) any {
 	return v
+}
+
+// ValidateRoleArtifact checks that artifact conforms to the SOP role contract
+// and stamps the expected schema version (PRIM-24).
+func ValidateRoleArtifact(expectedRole string, artifact any) error {
+	if artifact == nil {
+		return fmt.Errorf("role %q produced nil artifact", expectedRole)
+	}
+	versioned, ok := artifact.(SchemaVersioned)
+	if !ok {
+		return fmt.Errorf("role %q artifact does not implement SchemaVersioned", expectedRole)
+	}
+	if versioned.SchemaVersion() != CurrentSchemaVersion {
+		return fmt.Errorf("role %q schema version mismatch: expected %s, got %s",
+			expectedRole, CurrentSchemaVersion, versioned.SchemaVersion())
+	}
+	return nil
 }

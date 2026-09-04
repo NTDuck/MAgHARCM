@@ -215,6 +215,17 @@ func (t *TranslatorAgent) RunChunked(ctx context.Context, state *types.State) (*
 			if err := t.syncFilesToDisk(state.Task.TargetDir, emitted, state); err != nil {
 				return nil, fmt.Errorf("failed to persist chunked output for source file %q sub-chunk %d: %w", base, scIdx, err)
 			}
+			if t.IterativeNavigator != nil {
+				var reindexFrags []TranslatedFragment
+				for p, body := range emitted {
+					reindexFrags = append(reindexFrags, TranslatedFragment{
+						Path:    p,
+						Symbols: extractSymbolsFromText(body),
+						Body:    body,
+					})
+				}
+				_ = t.IterativeNavigator.Reindex(ctx, reindexFrags)
+			}
 		}
 	}
 
@@ -332,4 +343,20 @@ func splitIntoSubChunks(frags []string, threshold, size int) [][]string {
 		out = append(out, frags[i:end])
 	}
 	return out
+}
+
+func extractSymbolsFromText(content string) []string {
+	words := strings.FieldsFunc(content, func(r rune) bool {
+		return r == ' ' || r == '\n' || r == '\t' || r == '(' || r == ')' || r == '{' || r == '}' || r == ';' || r == ':' || r == ','
+	})
+	seen := make(map[string]bool)
+	var symbols []string
+	for _, w := range words {
+		w = strings.TrimSpace(w)
+		if len(w) >= 3 && !seen[w] {
+			seen[w] = true
+			symbols = append(symbols, w)
+		}
+	}
+	return symbols
 }

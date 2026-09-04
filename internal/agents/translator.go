@@ -25,6 +25,8 @@ type TranslatorAgent struct {
 	// end of every Run (both success and error paths). Empty RunID disables
 	// checkpointing — used by callers that don't want disk persistence.
 	RunID string
+	// IterativeNavigator is the PRIM-31 dynamic fragment index.
+	IterativeNavigator *IterativeNavigator
 }
 
 // NewTranslatorAgent creates a TranslatorAgent instance. runID enables

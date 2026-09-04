@@ -1,24 +1,199 @@
 ---
 title: Software Archaeology & Legacy System Modernization Lineage
-tags: [research, software-archaeology, modernization, lineage, synthesis]
+backlink: [[2.0.0 Software-Archaeology-Lineage]]
+tags: [research, software-archaeology, modernization, lineage, synthesis, [[2.0.0 MAgHARCM]]]
 ---
 
-# Software Archaeology & Legacy System Modernization Lineage
+# [[2.0.0 Software Archaeology & Legacy System Modernization Lineage]]
 
-## Overview
+## 1. Executive Summary & Epistemological Stance
 
-Software modernization via Large Language Models (LLMs) and Small Language Models (SLMs) does not emerge from a vacuum. Modern multi-agent pipelines like MAgHARCM, ReCodeAgent, AlphaTrans, and CAID re-discover, formalize, and automate fundamental software modernization principles established across 30+ years of software engineering research.
+Software modernization using multi-agent language model architectures does not operate in a historical vacuum. When large language models (LLMs) or small specialized language models (SLMs) encounter legacy enterprise codebases, naive code translation fails because legacy software embodies decades of accumulated invariants, implicit domain assumptions, tacit developer conventions, and emergent coupling.
 
-## Core Intellectual Lineages
+The MAgHARCM pipeline grounds modern agentic reasoning in 50+ years of rigorous software engineering literature. By treating legacy code not merely as static syntax to be transliterated, but as an archaeological excavation site, MAgHARCM establishes a deterministic synthesis between **Software Archaeology** and **Autonomous Multi-Agent Program Synthesis**.
 
-### 1. Program Comprehension & Concept Assignment
-- **Rajlich (1997) & Müller (2000)**: Defined concept assignment and redocumentation. Before code can be safely migrated, legacy code concepts must be mapped to target domain concepts. In MAgHARCM, this maps directly to [[PRIM-14]] (Software-Archaeology Stage) and [[PRIM-20]].
-- **Foltz et al. (1998, 2023)**: Explored mental models and cognitive traversal of source text using semantic spaces (LSA/embeddings). In LLM pipelines, this manifests as bounded context retrieval ([[PRIM-26]], [[PRIM-31]]).
+---
 
-### 2. Modularity Theory & Architectural Decoupling
-- **Baldwin & Clark (2000) *Design Rules***: Established modularity theory and the economic/structural value of decoupling. Breaking dependencies via interfaces is the theoretical basis for skeleton-first code generation ([[PRIM-3]]).
-- **Kazman et al. (2000, 2017) DRSpaces**: Formalized architectural degradation analysis and design structure matrices (DSM). In MAgHARCM, DAG linearization and cycle elimination ([[PRIM-1]], [[PRIM-2]]) ensure that translation leaves are translated prior to dependent callers, preserving architectural boundaries.
+## 2. Foundational Lineages & 2-Hop Citations
 
-### 3. Verification & Dynamic Recovery
-- **Syzygy (2024)** / SpecMiner lineage: Runtime tracing to discover hidden invariants (nullability, allocation ranges) so target language types (e.g. Rust Option/Result) can accurately reflect runtime reality rather than raw pointer syntax ([[PRIM-4]]).
-- **MSR & Legacy Mining (pp-besm, dev.to)**: Treats code repositories as geological strata. Git churn hotspots, author co-commit metrics, and temporal coupling indicate structural risk areas for translation agents.
+```
+[Parnas 1972] Information Hiding & Modular Decomposition
+       │
+       ▼
+[Lehman 1980] Laws of Software Evolution (E-Type Systems)
+       │
+       ▼
+[Chikofsky & Cross 1990] Reverse Engineering & Design Recovery Taxonomy
+       │
+       ▼
+[Rajlich & Bennett 2000] Staged Life Cycle & Concept Assignment (1997)
+       │
+       ├──────────────────────────────────────────┐
+       ▼                                          ▼
+[Müller et al. 2000] Roadmap               [Baldwin & Clark 2000] Design Rules
+       │                                          │
+       ▼                                          ▼
+[Feathers 2004] Working with Legacy Code   [Kazman & Cai 2017] DRSpaces
+       │                                          │
+       └──────────────────┬───────────────────────┘
+                          ▼
+            [Foltz 2023] DR. JONES Cognition
+                          │
+                          ▼
+        [pp-besm / Esoteric Production Archaeology]
+                          │
+                          ▼
+      [[2.0.0 MAgHARCM]] Multi-Agent Architecture
+```
+
+### 2.1. Decomposition, Information Hiding, & Modularity
+- **Parnas (1972) — *On the Criteria To Be Used in Decomposing Systems into Modules***:
+  - *Core Insight*: Modules should be decomposed based on hidden design decisions (secrets) rather than operational execution steps. The most volatile elements (data structures, hardware quirks) must be enclosed behind unchanging abstract interfaces.
+  - *Application in MAgHARCM*: Direct intellectual foundation for `[[1.0.0 PRIM-3]]` (Target Skeleton-First Generation) and `[[1.0.0 PRIM-19]]` (Design Rule Hierarchy Partitioning). Target interfaces (Rust traits) are generated as boundary constraints before method implementations are synthesized.
+
+- **Baldwin & Clark (2000) — *Design Rules: The Power of Modularity***:
+  - *Core Insight*: Formalized the economic and structural value of modularity through six modular operators: Splitting, Substituting, Augmenting, Excluding, Inverting, and Porting. Defined Design Rules as structural decisions that decouple subsequent module implementations.
+  - *Application in MAgHARCM*: Guides `[[1.0.0 PRIM-1]]` (Reverse Topological Ordering) and `[[1.0.0 PRIM-2]]` (Back-Edge Conditioned Scheduling). Identifying design rule interfaces breaks dependency cycles and permits isolated synthesis.
+
+### 2.2. Software Evolution & Archaeological Strata
+- **M. M. Lehman (1980, 1996) — *Programs, Life Cycles, and Laws of Software Evolution***:
+  - *Core Insight*: Formulated the fundamental laws of E-Type software evolution:
+    1. *Continuing Change*: A system must continually adapt or become progressively less satisfactory.
+    2. *Increasing Complexity*: As an evolving program is modified, its complexity increases unless work is done to maintain or reduce it.
+    3. *Conservation of Familiarity*: The incremental growth of systems across releases is statistically invariant.
+  - *Application in MAgHARCM*: Explains why legacy source code diverges from original documentation. MAgHARCM's `[[1.0.0 PRIM-14]]` (Software Archaeology Stage) does not trust comments; it analyzes evolutionary churn and executable reality.
+
+- **Chikofsky & Cross (1990) — *Reverse Engineering and Design Recovery: A Taxonomy***:
+  - *Core Insight*: Formulated the canonical definitions distinguishing Forward Engineering, Reverse Engineering, Redocumentation, Design Recovery, Restructuring, and Reengineering. Defined Design Recovery as recreating software abstractions from a combination of code, external domain knowledge, and developer observation.
+  - *Application in MAgHARCM*: Establishes the taxonomy for `[[1.0.0 PRIM-14]]` (Archaeology) and `[[1.0.0 PRIM-20]]` (Concept Assignment and Redocumentation).
+
+### 2.3. Program Comprehension & Concept Assignment
+- **Vaclav Rajlich (1997) & Keith Bennett (2000) — *Concept Assignment & Staged Lifecycle***:
+  - *Core Insight*: Defined the concept locator methodology. Software maintenance requires mapping human-oriented domain concepts to specific computational locations (AST subtrees, classes, functions).
+  - *Application in MAgHARCM*: Realized in `[[1.0.0 PRIM-20]]` (Concept Assignment and Redocumentation), where the archaeologist maps lexical identifiers and call clusters to semantic domain roles.
+
+- **Hausi A. Müller et al. (2000) — *Reverse Engineering: A Roadmap***:
+  - *Core Insight*: Categorized program comprehension into three interacting elements: cognitive mental models (top-down vs. bottom-up), analysis techniques (static vs. dynamic), and tool interoperability. Formulated the 5 canonical migration strategies: Big Bang, Incremental, Pilot, Frozen Legacy, and Parallel Cutover.
+  - *Application in MAgHARCM*: Formalized in `[[1.0.0 PRIM-21]]` (Migration Strategy Selection), implementing dynamic try-and-fail selection across Müller's five strategies.
+
+- **Peter Foltz et al. (1998, 2023) — *DR. JONES Model of Cognitive Traversal***:
+  - *Core Insight*: Engineers comprehend unfamiliar code through six cognitive phases:
+    1. *Decomposition*: Identifying structural units.
+    2. *Recognition*: Recognizing known idioms and library patterns.
+    3. *Organization*: Constructing hierarchical mental models.
+    4. *Navigation*: Linear and associative traversal of call paths.
+    5. *Explanation*: Synthesizing operational rationales.
+    6. *Search*: Querying localized definitions.
+  - *Application in MAgHARCM*: Directly implemented in `[[1.0.0 PRIM-22]]` (Four Phases of Comprehension) and `[[1.0.0 PRIM-26]]` (Symbol-Aware Navigator).
+
+### 2.4. Legacy Modification & Safe Refactoring
+- **Michael Feathers (2004) — *Working Effectively with Legacy Code***:
+  - *Core Insight*: Defined legacy code rigorously: *"Legacy code is simply code without tests."* Established the Legacy Code Change Algorithm:
+    1. Identify change points.
+    2. Find test points.
+    3. Break dependencies (using sensing and separation pins).
+    4. Write automated characterization tests.
+    5. Make changes and refactor.
+  - *Application in MAgHARCM*: The foundational inspiration for `[[1.0.0 PRIM-5]]` (Test Suite Co-Translation & Synthesis), `[[1.0.0 PRIM-8]]` (State-Grounded Mock-Based In-Isolation Validation), and `[[1.0.0 PRIM-13]]` (Adversarial Test-Weakening Guard).
+
+- **Rick Kazman, Yuanfang Cai et al. (2017, 2024) — *Architectural Debt & DRSpaces***:
+  - *Core Insight*: Architecture degradation clusters into Design Rule Space (DRSpace) flaws: Unstable Interfaces (modules with high fan-in and high churn), Modularity Violations (structural layers leaking across boundaries), and Cyclic Dependencies.
+  - *Application in MAgHARCM*: Implemented in `[[1.0.0 PRIM-18]]` (Jaccard-Coupling Recovery) and `[[1.0.0 PRIM-19]]` (Design Rule Hierarchy Partitioning).
+
+### 2.5. Esoteric & Industry Archaeological Playbooks
+- **pp-besm (dev.to) & AgentPatterns.ai — *Production Software Archaeology Playbook***:
+  - *Core Insight*: Industrial legacy systems must be examined across five archaeological strata:
+    1. *Commit Strata*: Git churn, author longevity, commit message sentiment.
+    2. *Temporal Coupling*: Files that change together without explicit static references (Jaccard co-change metric).
+    3. *Bug-Density Hotspots*: Modules with concentrated defect fixes.
+    4. *Forensic Naming & Type Invariants*: Hungarian notation, obsolete typedefs, dead configuration flags.
+    5. *Executable Time Capsules*: Historical compiler flags, environmental assumptions, and abandoned test harnesses.
+  - *Application in MAgHARCM*: Guides `[[1.0.0 PRIM-14]]` (Software Archaeology Stage) and `[[1.0.0 PRIM-15]]` (Evidence-First Adaptation Pattern).
+
+---
+
+## 3. Comprehensive Mapping: Primitives to Literature Matrix
+
+| Primitive | Title | Primary Source | Theoretical Lineage | Code Implementation |
+| :--- | :--- | :--- | :--- | :--- |
+| `[[1.0.0 PRIM-1]]` | Reverse Topological Ordering | ReCodeAgent [[P-01]] | Parnas (1972) Information Hiding | `internal/agents/planning.go` |
+| `[[1.0.0 PRIM-2]]` | Back-Edge Cycle Linearization | AlphaTrans [[P-02]] | Tarjan DAG decomposition | `internal/agents/planning.go` |
+| `[[1.0.0 PRIM-3]]` | Target Skeleton-First Gen | Skel [[P-03]], ReCodeAgent | Baldwin & Clark (2000) Design Rules | `internal/agents/planning.go` |
+| `[[1.0.0 PRIM-4]]` | SpecMiner Dynamic Invariants | Syzygy [[P-14]], Daikon | Dynamic Invariant Detection (Ernst) | `internal/agents/specminer.go` |
+| `[[1.0.0 PRIM-5]]` | Test Co-Translation & Synth | Pynguin [[P-23]], ReCodeAgent | Feathers (2004) Characterization Tests | `internal/agents/validator.go` |
+| `[[1.0.0 PRIM-6]]` | Multi-Stage Build/Test Repair | AlphaTrans [[P-02]], ReCodeAgent | Automated Program Repair (Le Goues) | `internal/agents/validator.go` |
+| `[[1.0.0 PRIM-7]]` | Multi-Agent Verdict Validation | MatchFixAgent [[P-08]] | N-Version Programming (Avizienis) | `internal/agents/verdict_panel.go` |
+| `[[1.0.0 PRIM-8]]` | State-Grounded Mock Validation | TRAM [[P-10]] | Feathers (2004) Sensing Pins | `internal/agents/mock_validator.go` |
+| `[[1.0.0 PRIM-9]]` | Tri-Representation Code Graph | RepoGraph [[P-14]], Yamaguchi | Code Property Graphs (Yamaguchi 2014) | `internal/agents/cpg.go` |
+| `[[1.0.0 PRIM-10]]` | Feature-Mapping Validation | Oxidizer [[P-05]], RustRepoTrans | Language Idiom Mapping (Czarnecki) | `internal/agents/feature_mapping.go` |
+| `[[1.0.0 PRIM-11]]` | Implementation-Agnostic Test | RepoMod-Bench [[P-11]] | Black-Box Specification Testing | `internal/agents/impl_agnostic.go` |
+| `[[1.0.0 PRIM-12]]` | Wasm Reference Oracle | VERT [[P-12]] | Differential Execution Oracles (McKeeman) | `internal/agents/wasm_oracle.go` |
+| `[[1.0.0 PRIM-13]]` | Adversarial Test Guard | AdvTestGen [[P-25]] | Mutation Testing & Assertion Invariants | `internal/agents/validator.go` |
+| `[[1.0.0 PRIM-14]]` | Software-Archaeology Stage | pp-besm, AgentPatterns.ai | Chikofsky & Cross (1990) Reverse Eng | `internal/agents/archaeology.go` |
+| `[[1.0.0 PRIM-15]]` | Evidence-First Adaptation | Reeper [[P-16]] | Cleanroom Software Engineering (Mills) | `internal/agents/evidence_adaptation.go` |
+| `[[1.0.0 PRIM-16]]` | Spec-Driven Dev Lifecycle | spec-kit [[P-17]] | Design-by-Contract (Meyer 1988) | `internal/agents/spec_lifecycle.go` |
+| `[[1.0.0 PRIM-17]]` | Asynchronous SE Blackboard | CAID [[P-18]] | Blackboard Architecture (Nii 1986) | `internal/agents/blackboard.go` |
+| `[[1.0.0 PRIM-18]]` | Jaccard-Coupling Recovery | MSR4SA [[P-19]] | Mining Software Repositories (Hassan) | `internal/agents/jaccard_coupling.go` |
+| `[[1.0.0 PRIM-19]]` | Design Rule Hierarchy Part | Kazman et al. [[P-20]] | Baldwin & Clark (2000) Modularity | `internal/agents/design_rule_hierarchy.go`|
+| `[[1.0.0 PRIM-20]]` | Concept Assignment & Redoc | Rajlich (1997) [[P-28]] | Concept Assignment (Biggerstaff 1993) | `internal/agents/concept_assignment.go` |
+| `[[1.0.0 PRIM-21]]` | Migration Strategy Selection | Müller et al. [[P-06]] | Legacy Migration Frameworks (Müller) | `internal/agents/strategy.go` |
+| `[[1.0.0 PRIM-22]]` | Four Phases Comprehension | Foltz (2023) [[P-30]] | Cognitive Program Comprehension | `internal/agents/comprehension.go` |
+| `[[1.0.0 PRIM-23]]` | Chunked Translation | ChatDev [[P-12]], MetaGPT [[P-11]]| Bounded-Context Translation | `internal/agents/chunked_translator.go` |
+| `[[1.0.0 PRIM-24]]` | SOP-Anchored Role Artifact | MetaGPT [[P-11]] | Standard Operating Procedures (SOP) | `internal/artifacts/versioning.go` |
+| `[[1.0.0 PRIM-25]]` | Role-Flip De-Hallucination | ChatDev [[P-12]] | Adversarial Verification (Sycophancy Gate) | `internal/agents/roleflip.go` |
+| `[[1.0.0 PRIM-26]]` | Symbol-Aware Navigator | HyperAgent [[P-13]], ABCoder | Targeted Context Retrieval | `internal/agents/navigator.go` |
+| `[[1.0.0 PRIM-27]]` | Coverage-Guided Plateau Det | CodaMOSA [[P-23]] | Search-Based Software Testing (Harman) | `internal/agents/plateau.go` |
+| `[[1.0.0 PRIM-28]]` | Conversable Checkpoints | AutoGen [[P-26]] | State-Snapshotting & Resumption | `internal/agents/checkpoint.go` |
+| `[[1.0.0 PRIM-29]]` | Recruitment-Adaptive Plan | AgentVerse [[P-26]] | Dynamic Team Organization | `internal/agents/recruit.go` |
+| `[[1.0.0 PRIM-30]]` | Source-to-Target Manifest | Syzygy [[P-14]], JavaC2Rust | Dependency Graph Transpilation | `internal/agents/manifest_rewriter.go` |
+| `[[1.0.0 PRIM-31]]` | Iterative Retrieval Refine | RepoCoder [[P-13]] | Dynamic Feedback Retrieval-Augmented Gen | `internal/agents/iter_retrieval.go` |
+
+---
+
+## 4. Synthesis: The Archaeological Translation Cycle
+
+```
+[Legacy Codebase]
+       │
+       ▼
+[Stage 1: Archaeological Excavation]
+   ├── PRIM-14: Structural Boundary & Time Capsule Extraction
+   ├── PRIM-18: Jaccard-Coupling Temporal Churn Detection
+   ├── PRIM-19: Design Rule Hierarchy Layering (L1/L2/L3)
+   ├── PRIM-20: Concept Assignment & Redocumentation
+   └── PRIM-22: DR. JONES Cognitive Navigation
+       │
+       ▼
+[Stage 2: Specification & Strategy Induction]
+   ├── PRIM-15: Evidence-First Adaptation Spec
+   ├── PRIM-16: Spec-Driven Lifecycle Gating
+   ├── PRIM-21: Incremental Try-and-Fail Strategy Selection
+   └── PRIM-4: SpecMiner Dynamic Invariant Recovery
+       │
+       ▼
+[Stage 3: Architectural Planning]
+   ├── PRIM-1 & PRIM-2: Reverse-Topological DAG Linearization
+   ├── PRIM-3: Target Skeleton Generation
+   ├── PRIM-29: Dynamic Agent/Tool Recruitment
+   └── PRIM-30: Manifest & Dependency Transpilation
+       │
+       ▼
+[Stage 4: Chunked Translation & Review]
+   ├── PRIM-23: Bounded Fragment Dispatch
+   ├── PRIM-26 & PRIM-31: Symbol-Aware Iterative Navigator
+   └── PRIM-25: Communicative Role-Flip Review Gate
+       │
+       ▼
+[Stage 5: Multi-Tier Validation Cascade]
+   ├── PRIM-6: Multi-Stage Build/Test Feedback Repair
+   ├── PRIM-5: Test Suite Co-Translation & Synthesis
+   ├── PRIM-13: Adversarial Test-Weakening Guard
+   ├── PRIM-27: Coverage Plateau Detection
+   └── Optional Oracles: PRIM-7 (Verdict), PRIM-8 (Mocks), PRIM-11 (Agnostic), PRIM-12 (Wasm)
+       │
+       ▼
+[Stage 6: Durable Snapshotting]
+   └── PRIM-28: Conversable Checkpointing & Idempotent Resumption
+```
+
+Every stage produces strictly typed, schema-versioned artifacts (`[[1.0.0 PRIM-24]]`), ensuring zero information loss and enabling automated backtracking across iterations.
