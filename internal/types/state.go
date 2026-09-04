@@ -45,4 +45,9 @@ type State struct {
 	// versioned artifact schema because invariants evolve alongside the
 	// primitive rather than the role contract.
 	SpecMinerInvariants artifacts.SpecMinerInvariants `json:"spec_miner_invariants,omitempty"`
+	// ArchaeologyReport is the PRIM-14 software-archaeology pre-planning
+	// report (boundaries, churn hotspots, time-capsule commands, legacy
+	// naming findings). Side-channel: not part of the versioned artifact
+	// schema because the archaeology primitive evolves independently.
+	ArchaeologyReport artifacts.ArchaeologyReport `json:"archaeology_report,omitempty"`
 }

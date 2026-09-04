@@ -23,7 +23,12 @@ import (
 
 // PlanningAgent extracts translation units, maps symbols to target conventions, generates project skeletons, and devises execution plans.
 type PlanningAgent struct {
-	Model model.BaseChatModel
+	Model        model.BaseChatModel
+	// Archaeologist is the PRIM-14 software-archaeology pre-planning hook.
+	// When non-nil, planner.Run invokes Archaeologist.Investigate on the
+	// source directory before fragment extraction and stashes the report
+	// on state.ArchaeologyReport. Failures log and continue (non-fatal).
+	Archaeologist *Archaeologist
 }
 
 // NewPlanningAgent creates a PlanningAgent instance.
@@ -35,6 +40,36 @@ func NewPlanningAgent(m model.BaseChatModel) *PlanningAgent {
 func (p *PlanningAgent) Run(ctx context.Context, state *types.State) (*types.State, error) {
 	logger.LogAgent("Planning", "Decomposing translation into granular translation units and constructing plan")
 	state.PlanningOutput.ArtifactSchemaVersion = artifacts.CurrentSchemaVersion
+
+	// PRIM-14 software-archaeology pre-pass: when the archaeologist is
+	// registered, investigate the source for boundaries, churn hotspots,
+	// and legacy naming findings before fragment extraction. Failures are
+	// logged and the planner continues without an archaeology report.
+	if p.Archaeologist != nil && state.Task.SourceDir != "" {
+		report, err := p.Archaeologist.Investigate(ctx, state.Task.SourceDir)
+		if err != nil {
+			logger.LogWarning("PRIM-14 Archaeologist pre-planning failed: %v", err)
+		} else {
+			forensics := make([]artifacts.NamingFinding, len(report.NamingForensics))
+			for i, nf := range report.NamingForensics {
+				forensics[i] = artifacts.NamingFinding{
+					OldName:   nf.Style + ":" + nf.Token,
+					NewName:   nf.Suggestion,
+					Location:  fmt.Sprintf("%s:%d", nf.File, nf.Line),
+					Rationale: "",
+				}
+			}
+			state.ArchaeologyReport = artifacts.ArchaeologyReport{
+				BoundaryMap:         report.BoundaryMap,
+				TimeCapsuleCommands: report.TimeCapsuleCommands,
+				ChurnHotspots:       report.ChurnHotspots,
+				NamingForensics:     forensics,
+				ConceptMap:          report.ConceptMap,
+			}
+			logger.LogStep("PRIM-14 Archaeologist recovered %d boundaries, %d churn hotspots, %d naming findings",
+				len(report.BoundaryMap), len(report.ChurnHotspots), len(report.NamingForensics))
+		}
+	}
 
 	fragments, sourceSummaries, err := p.extractFragments(state.Task.SourceDir)
 	if err != nil {
