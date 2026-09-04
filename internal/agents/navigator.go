@@ -4,11 +4,11 @@ package agents
 
 import (
 	"context"
-	"fmt"
 	"path/filepath"
 
 	"github.com/cloudwego/eino/components/model"
 
+	"MAgHARCM/internal/compiletime"
 	"MAgHARCM/internal/logger"
 	"MAgHARCM/internal/tools"
 )
@@ -36,18 +36,28 @@ type Navigator struct {
 	// when LSP returns no definition. Optional; nil disables the fallback.
 	CodeGraph *HybridCodeGraph
 }
+
 // NewNavigator returns a Navigator bound to the given LSPProvider.
 // Pass `nil` to disable LSP-backed lookups; LookupSymbol will return
 // Error=ErrNoLSPProvider in that case. Callers should fall back to
-// LLM-only symbol resolution in that scenario.
+// LLM-only symbol resolution in this scenario.
 func NewNavigator(provider tools.LSPProvider) *Navigator {
 	return &Navigator{Provider: provider}
 }
 
-// ErrNoLSPProvider is returned by LookupSymbol when the Navigator has no
-// LSP provider configured. Callers should fall back to LLM-only symbol
-// resolution in this case (the translator can still ask the LLM directly).
-var ErrNoLSPProvider = fmt.Errorf("navigator: no LSP provider configured")
+// MustNavigator returns a Navigator bound to the given LSPProvider and panics
+// if the provider is nil. Use this at startup where a missing LSP provider is
+// a fatal configuration error.
+func MustNavigator(provider tools.LSPProvider) *Navigator {
+	if provider == nil {
+		panic("compiletime.MustNavigator: LSPProvider must not be nil")
+	}
+	return NewNavigator(provider)
+}
+
+// ErrNoLSPProvider is the back-compat alias for compiletime.ErrNavigatorNoProvider.
+// New code should reference compiletime.ErrNavigatorNoProvider directly.
+var ErrNoLSPProvider = compiletime.ErrNavigatorNoProvider
 
 // LookupSymbol performs a single combined symbol-resolution call.
 // Returns a SymbolResolution with whatever fields could be resolved;
@@ -135,14 +145,13 @@ func RefCount(refs *tools.ReferencesOutput) int {
 }
 
 // projectDirOrDot returns the directory containing filePath, or "." if filePath is empty.
-// Used as a default ProjectDir for tools that take a project root rather than a file.
 func ProjectDirOrDot(filePath string) string {
 	if filePath == "" {
-		return "."
+		return compiletime.DefaultProjectDir
 	}
 	dir := filepath.Dir(filePath)
 	if dir == "" {
-		return "."
+		return compiletime.DefaultProjectDir
 	}
 	return dir
 }

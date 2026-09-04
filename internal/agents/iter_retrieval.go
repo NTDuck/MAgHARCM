@@ -26,19 +26,14 @@ type TranslatedFragment struct {
 }
 
 // IterativeResolution is the planner-callable result of IterativeNavigator.Lookup.
-// Source is one of consts.SourceReindexed (served from the local fragment
-// index) or consts.SourceFresh (served by a fresh Navigator round-trip).
+// Source is one of compiletime.SourceReindexed (served from the local fragment
+// index) or compiletime.SourceFresh (served by a fresh Navigator round-trip).
 type IterativeResolution struct {
 	Symbol    string
 	Body      string
 	SizeBytes int
 	Source    string
 }
-
-// contextBudgetBytes is the maximum body size returned by Lookup. RepoCoder
-// found 4 KiB is enough to anchor a symbol without dragging in the rest of the
-// file. Symbols whose Body exceeds this are truncated before being returned.
-const contextBudgetBytes = 4 * 1024
 
 // IterativeNavigator wraps a Navigator with a per-symbol index of the
 // fragments already emitted by the translation pipeline. Lookups first try
@@ -48,8 +43,8 @@ const contextBudgetBytes = 4 * 1024
 // fallback path.
 type IterativeNavigator struct {
 	*Navigator
-	mu      sync.RWMutex
-	index   map[string][]TranslatedFragment
+	mu    sync.RWMutex
+	index map[string][]TranslatedFragment
 }
 
 // NewIterativeNavigator returns an IterativeNavigator wrapping the given
@@ -61,6 +56,15 @@ func NewIterativeNavigator(n *Navigator) *IterativeNavigator {
 		Navigator: n,
 		index:     make(map[string][]TranslatedFragment),
 	}
+}
+
+// MustIterativeNavigator wraps the given Navigator and panics if it is nil.
+// Use this at startup where a missing Navigator is a fatal configuration error.
+func MustIterativeNavigator(n *Navigator) *IterativeNavigator {
+	if n == nil {
+		panic("compiletime.MustIterativeNavigator: Navigator must not be nil")
+	}
+	return NewIterativeNavigator(n)
 }
 
 // Reindex records the fragments produced by an upstream translation pass so
@@ -88,9 +92,9 @@ func (in *IterativeNavigator) Reindex(_ context.Context, previouslyTranslated []
 
 // Lookup resolves a symbol. If at least one indexed fragment mentions the
 // symbol and its Body fits the 4 KiB budget, the trimmed Body is returned
-// with Source=consts.SourceReindexed. Otherwise the wrapped Navigator is
+// with Source=compiletime.SourceReindexed. Otherwise the wrapped Navigator is
 // consulted; its SymbolResolution's Definition content (or an empty string
-// if no provider is configured) is returned with Source=consts.SourceFresh.
+// if no provider is configured) is returned with Source=compiletime.SourceFresh.
 // Stale fragments whose Body exceeds the budget are dropped from the
 // returned Body but stay in the index for callers that want the full text.
 func (in *IterativeNavigator) Lookup(ctx context.Context, symbol string) (IterativeResolution, error) {
@@ -115,8 +119,8 @@ func (in *IterativeNavigator) Lookup(ctx context.Context, symbol string) (Iterat
 			res.Body = sr.Definition.Definitions[0].Snippet
 		}
 	}
-	if len(res.Body) > contextBudgetBytes {
-		res.Body = res.Body[:contextBudgetBytes]
+	if len(res.Body) > compiletime.IterativeContextBudgetBytes {
+		res.Body = res.Body[:compiletime.IterativeContextBudgetBytes]
 	}
 	res.SizeBytes = len(res.Body)
 	logger.LogStep("iter_retrieval: miss %q; fresh=%d bytes", symbol, res.SizeBytes)
@@ -135,7 +139,7 @@ func (in *IterativeNavigator) indexedBody(symbol string) (string, bool) {
 		return "", false
 	}
 	for _, frag := range frags {
-		if len(frag.Body) <= contextBudgetBytes {
+		if len(frag.Body) <= compiletime.IterativeContextBudgetBytes {
 			return frag.Body, true
 		}
 	}

@@ -14,6 +14,7 @@ import (
 	"context"
 	"fmt"
 
+	"MAgHARCM/internal/compiletime"
 )
 
 // verdictPanelCheck adapts the multi-agent verdict panel
@@ -24,13 +25,13 @@ type verdictPanelCheck struct {
 	panel *VerdictPanel
 }
 
-func (c *verdictPanelCheck) Name() string { return "PRIM-7-verdict-panel" }
+func (c *verdictPanelCheck) Name() string { return compiletime.OptionalCheckVerdictPanel }
 func (c *verdictPanelCheck) Run(ctx context.Context, state *State) (string, string, error) {
 	if c.panel == nil {
-		return "skipped", "no verdict panel configured", nil
+		return string(compiletime.VerdictSkipped), "no verdict panel configured", nil
 	}
 	if len(state.TranslatedProject.Files) == 0 {
-		return "skipped", "no translated files to judge", nil
+		return string(compiletime.VerdictSkipped), "no translated files to judge", nil
 	}
 	// Sample the first translated file as the panel target. In a fuller
 	// wiring the panel would judge all files; for now this exercises the
@@ -43,12 +44,13 @@ func (c *verdictPanelCheck) Run(ctx context.Context, state *State) (string, stri
 	}
 	v, err := c.panel.Judge(ctx, src, tgt, 3)
 	if err != nil {
-		return "fail", fmt.Sprintf("judge panel error: %v", err), nil
+		return string(compiletime.VerdictFail), fmt.Sprintf("judge panel error: %v", err), nil
 	}
+	agreed := len(v.PerJudge) - len(v.Disagreements)
 	if v.Agree {
-		return "pass", fmt.Sprintf("%d judges agreed; %d disagreements", len(v.Disagreements)+0, len(v.Disagreements)), nil
+		return string(compiletime.VerdictPass), fmt.Sprintf("%d judges agreed; %d disagreements", agreed, len(v.Disagreements)), nil
 	}
-	return "fail", fmt.Sprintf("%d judge disagreements; majority reject", len(v.Disagreements)), nil
+	return string(compiletime.VerdictFail), fmt.Sprintf("%d judge disagreements; majority reject", len(v.Disagreements)), nil
 }
 
 // mockValidatorCheck adapts the state-grounded mock validator
@@ -60,13 +62,13 @@ type mockValidatorCheck struct {
 	validator *MockValidator
 }
 
-func (c *mockValidatorCheck) Name() string { return "PRIM-8-mock-validator" }
+func (c *mockValidatorCheck) Name() string { return compiletime.OptionalCheckMockValidator }
 func (c *mockValidatorCheck) Run(ctx context.Context, state *State) (string, string, error) {
 	if c.validator == nil {
-		return "skipped", "no mock validator configured", nil
+		return string(compiletime.VerdictSkipped), "no mock validator configured", nil
 	}
 	if len(state.TranslatedProject.Files) == 0 {
-		return "skipped", "no translated files to mock-validate", nil
+		return string(compiletime.VerdictSkipped), "no translated files to mock-validate", nil
 	}
 	var module string
 	for path := range state.TranslatedProject.Files {
@@ -75,12 +77,12 @@ func (c *mockValidatorCheck) Run(ctx context.Context, state *State) (string, str
 	}
 	rep, err := c.validator.ValidateInIsolation(ctx, module, nil)
 	if err != nil {
-		return "fail", fmt.Sprintf("mock validator error: %v", err), nil
+		return string(compiletime.VerdictFail), fmt.Sprintf("mock validator error: %v", err), nil
 	}
 	if rep.Passed {
-		return "pass", fmt.Sprintf("module %s mocked in isolation: %d mocks generated", module, len(rep.MocksGenerated)), nil
+		return string(compiletime.VerdictPass), fmt.Sprintf("module %s mocked in isolation: %d mocks generated", module, len(rep.MocksGenerated)), nil
 	}
-	return "fail", fmt.Sprintf("module %s failed in-isolation check: %v", module, rep.Errors), nil
+	return string(compiletime.VerdictFail), fmt.Sprintf("module %s failed in-isolation check: %v", module, rep.Errors), nil
 }
 
 // implAgnosticCheck adapts the implementation-agnostic I/O tester
@@ -93,24 +95,23 @@ type implAgnosticCheck struct {
 	vectors []IOTestVector
 }
 
-func (c *implAgnosticCheck) Name() string { return "PRIM-11-impl-agnostic" }
+func (c *implAgnosticCheck) Name() string { return compiletime.OptionalCheckImplAgnostic }
 func (c *implAgnosticCheck) Run(ctx context.Context, state *State) (string, string, error) {
 	if c.tester == nil || len(c.vectors) == 0 {
-		return "skipped", "no IO test vectors registered", nil
+		return string(compiletime.VerdictSkipped), "no IO test vectors registered", nil
 	}
 	if state.Task.TargetDir == "" {
-		return "skipped", "no target directory", nil
+		return string(compiletime.VerdictSkipped), "no target directory", nil
 	}
 	res, err := c.tester.RunIOTests(ctx, state.Task.TargetDir, c.vectors)
 	if err != nil {
-		return "fail", fmt.Sprintf("impl-agnostic error: %v", err), nil
+		return string(compiletime.VerdictFail), fmt.Sprintf("impl-agnostic error: %v", err), nil
 	}
 	if res.FailCount == 0 {
-		return "pass", fmt.Sprintf("%d/%d IO vectors passed", res.PassCount, len(c.vectors)), nil
+		return string(compiletime.VerdictPass), fmt.Sprintf("%d/%d IO vectors passed", res.PassCount, len(c.vectors)), nil
 	}
-	return "fail", fmt.Sprintf("%d/%d IO vectors failed", res.FailCount, len(c.vectors)), nil
+	return string(compiletime.VerdictFail), fmt.Sprintf("%d/%d IO vectors failed", res.FailCount, len(c.vectors)), nil
 }
-
 // wasmOracleCheck adapts the wasm-based reference execution oracle
 // (PRIM-12, Syzygy/sandboxing-style) into an OptionalCheck. It compares
 // the target binary's output against the source-wasm reference for the
@@ -122,22 +123,23 @@ type wasmOracleCheck struct {
 	oracleInputs  []string
 }
 
-func (c *wasmOracleCheck) Name() string { return "PRIM-12-wasm-oracle" }
+func (c *wasmOracleCheck) Name() string { return compiletime.OptionalCheckWasmOracle }
+
 func (c *wasmOracleCheck) Run(ctx context.Context, state *State) (string, string, error) {
 	if c.oracle == nil {
-		return "skipped", "no wasm oracle configured", nil
+		return string(compiletime.VerdictSkipped), "no wasm oracle configured", nil
 	}
 	if c.sourceWasm == "" || c.targetBinary == "" {
-		return "skipped", "no source-wasm or target-binary path registered", nil
+		return string(compiletime.VerdictSkipped), "no source-wasm or target-binary path registered", nil
 	}
 	res, err := c.oracle.Compare(ctx, c.sourceWasm, c.targetBinary, c.oracleInputs)
 	if err != nil {
-		return "fail", fmt.Sprintf("wasm oracle error: %v", err), nil
+		return string(compiletime.VerdictFail), fmt.Sprintf("wasm oracle error: %v", err), nil
 	}
 	if len(res.Mismatches) == 0 && res.Agree {
-		return "pass", fmt.Sprintf("%d inputs matched between source-wasm and target-binary", len(c.oracleInputs)), nil
+		return string(compiletime.VerdictPass), fmt.Sprintf("%d inputs matched between source-wasm and target-binary", len(c.oracleInputs)), nil
 	}
-	return "fail", fmt.Sprintf("%d/%d inputs diverged between source-wasm and target-binary", len(res.MismatchedInputs), len(c.oracleInputs)), nil
+	return string(compiletime.VerdictFail), fmt.Sprintf("%d/%d inputs diverged between source-wasm and target-binary", len(res.MismatchedInputs), len(c.oracleInputs)), nil
 }
 
 // DefaultOptionalChecks returns the standard set of optional validator
@@ -210,27 +212,24 @@ type roleFlipCheck struct {
 	gate *RoleFlipGate
 }
 
-func (c *roleFlipCheck) Name() string { return "PRIM-25-role-flip-gate" }
+func (c *roleFlipCheck) Name() string { return compiletime.OptionalCheckRoleFlipGate }
 func (c *roleFlipCheck) Run(ctx context.Context, state *State) (string, string, error) {
 	if c.gate == nil || state == nil {
-		return "skipped", "no role-flip gate or state", nil
+		return string(compiletime.VerdictSkipped), "no role-flip gate or state", nil
 	}
 	sample := latestEmittedSample(state)
 	if sample == "" {
-		return "skipped", "no translator output to inspect", nil
+		return string(compiletime.VerdictSkipped), "no translator output to inspect", nil
 	}
 	v, err := c.gate.Inspect(ctx, sample)
 	if err != nil {
-		return "fail", fmt.Sprintf("role-flip reviewer error: %v", err), nil
+		return string(compiletime.VerdictFail), fmt.Sprintf("role-flip reviewer error: %v", err), nil
 	}
 	if !v.DefectFound {
-		return "pass", "reviewer accepted translator output", nil
+		return string(compiletime.VerdictPass), "reviewer accepted translator output", nil
 	}
-	return "fail", v.Reason, nil
+	return string(compiletime.VerdictFail), v.Reason, nil
 }
-
-// latestEmittedSample returns the first non-empty translator snippet from
-// TranslatedProject.Files to feed the PRIM-25 role-flip reviewer. Map
 // iteration order is non-deterministic; any sample suffices for the gate.
 func latestEmittedSample(state *State) string {
 	if state == nil {

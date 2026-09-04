@@ -63,7 +63,7 @@ func (r *Registry) TryInOrder(ctx context.Context, p Profile) (StrategyKind, err
 			continue
 		}
 		if err := s.Attempt(ctx, p); err != nil {
-			logger.LogAgent("Analyzer", "Strategy %s declined for profile (files=%d, loc=%d, tests=%v): %v",
+			logger.LogAgent(compiletime.LogScopeAnalyzer, "Strategy %s declined for profile (files=%d, loc=%d, tests=%v): %v",
 				s.Kind(), p.FileCount, p.LoC, p.HasTests, err)
 			continue
 		}
@@ -87,8 +87,7 @@ func (r *Registry) NextStrategy(ctx context.Context, current StrategyKind, p Pro
 			continue
 		}
 		if err := s.Attempt(ctx, p); err != nil {
-			logger.LogAgent("StrategyRegistry", "Strategy %s declined during fallback: %v", s.Kind(), err)
-			continue
+			logger.LogAgent(compiletime.LogScopeStrategyRegistry, "Strategy %s declined during fallback: %v", s.Kind(), err)
 		}
 		return s.Kind(), nil
 	}
@@ -112,8 +111,7 @@ func SwitchToNextStrategy(ctx context.Context, state *State) (StrategyKind, bool
 		logger.LogWarning("No further migration strategies available after %s: %v", current, err)
 		return current, false
 	}
-	logger.LogAgent("StrategyRegistry", "Incremental failover: switching strategy from %s to %s", current, next)
-	state.AnalyzerOutput.Research.Data.MigrationStrategy = string(next)
+	logger.LogAgent(compiletime.LogScopeStrategyRegistry, "Incremental failover: switching strategy from %s to %s", current, next)
 	state.AnalyzerOutput.Research.Data.StrategyRationale = rationaleFor(next)
 	return next, true
 }
@@ -126,7 +124,7 @@ type bigBangStrategy struct{}
 
 func (bigBangStrategy) Kind() StrategyKind { return compiletime.StrategyBigBang }
 func (bigBangStrategy) Matches(p Profile) bool {
-	return p.FileCount <= 3 && p.LoC < 500
+	return p.FileCount <= compiletime.BigBangFileMax && p.LoC < compiletime.BigBangLoCMax
 }
 func (bigBangStrategy) Attempt(ctx context.Context, p Profile) error {
 	// Runtime gate: when wired, would abort translation if any module
@@ -143,7 +141,7 @@ type pilotStrategy struct{}
 
 func (pilotStrategy) Kind() StrategyKind { return compiletime.StrategyPilot }
 func (pilotStrategy) Matches(p Profile) bool {
-	return p.FileCount > 50 || p.LoC > 10000
+	return p.FileCount > compiletime.PilotFileMin || p.LoC > compiletime.PilotLoCMin
 }
 func (pilotStrategy) Attempt(ctx context.Context, p Profile) error {
 	// Runtime gate: would refuse to start unless a pilot chunk is
@@ -175,7 +173,7 @@ type parallelCutoverStrategy struct{}
 
 func (parallelCutoverStrategy) Kind() StrategyKind { return compiletime.StrategyParallelCutover }
 func (parallelCutoverStrategy) Matches(p Profile) bool {
-	return p.HasTests && p.FileCount > 10
+	return p.HasTests && p.FileCount > compiletime.ParallelCutoverFileMin
 }
 func (parallelCutoverStrategy) Attempt(ctx context.Context, p Profile) error {
 	// Runtime gate: would require parallel harness bootstrapped and
@@ -203,24 +201,22 @@ func (incrementalStrategy) Attempt(ctx context.Context, p Profile) error {
 	return nil
 }
 
-// rationaleFor maps a strategy kind to its short rationale text, used by
-// the analyzer when populating state. Keeping the rationale outside the
-// strategy itself preserves the strategy's focus on gating.
+// strategyRationalates is the rationale lookup used by the analyzer when
+// populating state. Keeping the table outside the strategy itself preserves
+// each strategy's focus on gating.
+var strategyRationalates = map[StrategyKind]string{
+	compiletime.StrategyBigBang:         compiletime.StrategyRationaleBigBang,
+	compiletime.StrategyPilot:           compiletime.StrategyRationalePilot,
+	compiletime.StrategyFrozenLegacy:    compiletime.StrategyRationaleFrozenLegacy,
+	compiletime.StrategyParallelCutover: compiletime.StrategyRationaleParallelCutover,
+	compiletime.StrategyIncremental:     compiletime.StrategyRationaleIncremental,
+}
+
 func rationaleFor(kind StrategyKind) string {
-	switch kind {
-	case compiletime.StrategyBigBang:
-		return "Small self-contained project (<500 LoC, <=3 files): single-pass direct translation."
-	case compiletime.StrategyPilot:
-		return "Large-scale codebase (>50 files or >10k LoC): chunked subsystem pilot translation."
-	case compiletime.StrategyFrozenLegacy:
-		return "Legacy codebase without test harness: requires test synthesis and boundary freezing."
-	case compiletime.StrategyParallelCutover:
-		return "Modular project with comprehensive test suite: multi-stage parallel module cutover."
-	case compiletime.StrategyIncremental:
-		return "Standard multi-module project: reverse-topological incremental translation."
-	default:
-		return "No matching strategy selected."
+	if r, ok := strategyRationalates[kind]; ok {
+		return r
 	}
+	return compiletime.StrategyRationaleUnknown
 }
 
 // SelectAndTryStrategies is the convenience runner used by AnalyzerAgent.Run:

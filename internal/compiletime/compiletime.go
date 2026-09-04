@@ -1,6 +1,7 @@
 package compiletime
 
 import (
+	"errors"
 	"fmt"
 )
 
@@ -12,7 +13,6 @@ import (
 // -------------------------------------------------------------------------
 // Compile-time Sentinels & Constants
 // -------------------------------------------------------------------------
-
 
 // CurrentSchemaVersion is the canonical schema version string for role artifacts.
 const CurrentSchemaVersion = "1.0.0"
@@ -37,10 +37,10 @@ const LangGo = "go"
 // LangC is the C language key.
 const LangC = "c"
 
-// LangJava is the Java language key.
+// LangJava is the Java language name.
 const LangJava = "java"
 
-// LangPython is the Python language key.
+// LangPython is the Python language name.
 const LangPython = "python"
 
 // LSPProviderNative is the tree-sitter based LSP provider.
@@ -63,6 +63,265 @@ const SourceFresh = "fresh"
 
 // DefaultRequestFile is the canonical YAML request file name.
 const DefaultRequestFile = "magharcm-request.yml"
+
+// -------------------------------------------------------------------------
+// Logger Scopes (PRIM-Pipeline logging)
+// -------------------------------------------------------------------------
+
+// LogScope* constants identify the structured-log namespace each agent emits
+// under. Centralising them keeps logger.New(scope) callsites consistent and
+// makes log filters / dashboards addressable by symbol rather than free text.
+const (
+	LogScopeAnalyzer          = "Analyzer"
+	LogScopeStrategyRegistry  = "StrategyRegistry"
+	LogScopeRecruiter         = "Recruiter"
+	LogScopeIterRetrieval     = "IterRetrieval"
+	LogScopeNavigator         = "Navigator"
+	LogScopeVerdictPanel      = "VerdictPanel"
+	LogScopeRoleFlip          = "RoleFlip"
+)
+
+// -------------------------------------------------------------------------
+// Strategy Thresholds (PRIM-21)
+// -------------------------------------------------------------------------
+
+// Mueller migration-strategy gating thresholds. Tuned to match the
+// PRIM-21 evaluator described in internal/agents/strategy.go.
+const (
+	BigBangFileMax          = 3
+	BigBangLoCMax           = 500
+	PilotFileMin            = 50
+	PilotLoCMin             = 10000
+	ParallelCutoverFileMin  = 10
+)
+
+// StrategyRationale* are the human-readable rationales surfaced by the
+// analyzer after strategy selection. Kept here so a single edit propagates
+// to prompts, audit logs, and downstream consumers.
+const (
+	StrategyRationaleBigBang         = "Small self-contained project (<500 LoC, <=3 files): single-pass direct translation."
+	StrategyRationalePilot           = "Large-scale codebase (>50 files or >10k LoC): chunked subsystem pilot translation."
+	StrategyRationaleFrozenLegacy    = "Legacy codebase without test harness: requires test synthesis and boundary freezing."
+	StrategyRationaleParallelCutover = "Modular project with comprehensive test suite: multi-stage parallel module cutover."
+	StrategyRationaleIncremental     = "Standard multi-module project: reverse-topological incremental translation."
+	StrategyRationaleUnknown         = "No matching strategy selected."
+)
+
+// -------------------------------------------------------------------------
+// Verdict Vocabulary (PRIM-7 / Optional Checks)
+// -------------------------------------------------------------------------
+
+// VerdictEquivalent is the canonical token a judge emits when the source
+// and target fragments are functionally equivalent.
+const VerdictEquivalent = "EQUIVALENT"
+
+// VerdictNotEquivalent is the canonical token a judge emits when the source
+// and target fragments diverge.
+const VerdictNotEquivalent = "NOT_EQUIVALENT"
+
+// VerdictJudgeIDPrefix is the prefix used when synthesising per-judge IDs
+// ("J1", "J2", …) for trace attribution.
+const VerdictJudgeIDPrefix = "J"
+
+// VerdictAliasEquivalent is the set of free-text judge responses that
+// classify as EQUIVALENT after case-insensitive normalisation.
+var VerdictAliasEquivalent = []string{"EQUIV", "YES", "TRUE", "AGREE", "MATCH", "EQUAL"}
+
+// VerdictAliasNotEquivalent is the set of free-text judge responses that
+// classify as NOT_EQUIVALENT after case-insensitive normalisation.
+var VerdictAliasNotEquivalent = []string{"NOT EQUIVALENT", "NO", "FALSE", "DISAGREE", "MISMATCH", "DIFFERENT"}
+
+// Verdict is the typed result of an optional check (pass/fail/skipped).
+type Verdict string
+
+const (
+	VerdictPass    Verdict = "pass"
+	VerdictFail    Verdict = "fail"
+	VerdictSkipped Verdict = "skipped"
+)
+
+// OptionalCheckName constants are the stable identifiers returned by
+// OptionalCheck.Name() — referenced by dashboards and regression tests.
+const (
+	OptionalCheckVerdictPanel   = "PRIM-7-verdict-panel"
+	OptionalCheckMockValidator  = "PRIM-8-mock-validator"
+	OptionalCheckImplAgnostic   = "PRIM-11-impl-agnostic"
+	OptionalCheckWasmOracle     = "PRIM-12-wasm-oracle"
+	OptionalCheckRoleFlipGate   = "PRIM-25-role-flip-gate"
+)
+
+// -------------------------------------------------------------------------
+// RoleFlip Gate (PRIM-25)
+// -------------------------------------------------------------------------
+
+// RoleFlip prompt / hint strings consumed by the communicative
+// de-hallucination role-flip gate (ChatDev §2.4).
+const (
+	RoleFlipSystemPrompt    = "you are a critical reviewer who must find at least one bug in the code below"
+	RoleFlipAcceptedReason  = "reviewer accepted"
+	RoleFlipRetryHint       = "re-check for common bug classes"
+	RoleFlipNoDefectToken   = "NO_DEFECT"
+)
+
+// ErrRoleFlipGateNotConfigured is the sentinel returned when the role-flip
+// gate is invoked without a backing chat model. Surfaces a clear panic-able
+// diagnostic at startup rather than a nil-deref at runtime.
+var ErrRoleFlipGateNotConfigured = errors.New("roleflip: Model is nil")
+
+// -------------------------------------------------------------------------
+// Navigator / Iterative Retrieval (PRIM-26 / PRIM-31)
+// -------------------------------------------------------------------------
+
+// DefaultProjectDir is the fallback project root used when an empty path is
+// supplied to a Navigator lookup.
+const DefaultProjectDir = "."
+
+// ErrNavigatorNoProvider is the sentinel returned when the Navigator is
+// invoked without a configured LSPProvider.
+var ErrNavigatorNoProvider = errors.New("navigator: no LSP provider configured")
+
+// IterativeContextBudgetBytes is the per-symbol body budget used by the
+// IterativeNavigator. Symbols whose stored body exceeds this are trimmed
+// before being returned (RepoCoder-style 4 KiB local context window).
+const IterativeContextBudgetBytes = 4 * 1024
+
+// -------------------------------------------------------------------------
+// Checkpoint Persistence (PRIM-28)
+// -------------------------------------------------------------------------
+
+// CheckpointDirMode / CheckpointFileMode are the filesystem modes used
+// when creating checkpoint directories and files.
+const (
+	CheckpointDirMode  = 0o755
+	CheckpointFileMode = 0o644
+)
+
+// CheckpointFilePattern is the canonical per-iteration checkpoint name
+// pattern. sprintf it as fmt.Sprintf(compiletime.CheckpointFilePattern, n).
+const CheckpointFilePattern = "iter-%04d.json"
+
+// CheckpointExt is the canonical checkpoint file extension.
+const CheckpointExt = ".json"
+
+// DefaultRunID is the run identifier used when no source directory is
+// available (e.g. tests, ad-hoc invocations).
+const DefaultRunID = "default"
+
+// -------------------------------------------------------------------------
+// Spec Lifecycle (PRIM-16)
+// -------------------------------------------------------------------------
+
+// SpecLifecyclePhase identifies the active stage in the spec-driven lifecycle.
+type SpecLifecyclePhase string
+
+const (
+	PhaseConstitution SpecLifecyclePhase = "CONSTITUTION"
+	PhaseSpecify      SpecLifecyclePhase = "SPECIFY"
+	PhaseDraft        SpecLifecyclePhase = "DRAFT"
+	PhasePlan         SpecLifecyclePhase = "PLAN"
+	PhaseTasks        SpecLifecyclePhase = "TASKS"
+	PhaseReview       SpecLifecyclePhase = "REVIEW"
+	PhaseImplement    SpecLifecyclePhase = "IMPLEMENT"
+	PhaseApproved     SpecLifecyclePhase = "APPROVED"
+	PhaseConverged    SpecLifecyclePhase = "CONVERGED"
+)
+
+// -------------------------------------------------------------------------
+// Concept Assignment (PRIM-20)
+// -------------------------------------------------------------------------
+
+// ConceptLabel* are the human-readable concept names surfaced by the
+// ConceptAssigner when clustering source identifiers.
+const (
+	ConceptLabelValidation    = "Validation & Verification"
+	ConceptLabelParsing       = "Parsing & Lexical Analysis"
+	ConceptLabelMathStats     = "Mathematical & Statistical Computation"
+	ConceptLabelEntityStorage = "Entity & Storage Domain"
+)
+
+// ConceptTokenMinLength is the minimum token length considered when
+// clustering identifiers into concepts. Shorter tokens are skipped.
+const ConceptTokenMinLength = 4
+
+// ConceptDescriptionDefault is the fallback description used when a
+// concept binding has no caller-provided description.
+const ConceptDescriptionDefault = "(no description)"
+
+// ConceptKeywordCluster binds a human-readable concept label to the list of
+// substring keywords that, when found in an identifier (case-insensitive),
+// route the identifier into that concept.
+type ConceptKeywordCluster struct {
+	Label    string
+	Keywords []string
+}
+
+// DefaultConceptClusters is the canonical keyword → concept table used by
+// the PRIM-20 ConceptAssigner.
+var DefaultConceptClusters = []ConceptKeywordCluster{
+	{Label: ConceptLabelValidation, Keywords: []string{"validat", "check"}},
+	{Label: ConceptLabelParsing, Keywords: []string{"parse", "lex", "token"}},
+	{Label: ConceptLabelMathStats, Keywords: []string{"stat", "math", "calc"}},
+	{Label: ConceptLabelEntityStorage, Keywords: []string{"item", "store", "repo"}},
+}
+
+// -------------------------------------------------------------------------
+// Design-Rule Hierarchy (PRIM-19)
+// -------------------------------------------------------------------------
+
+// ArchitectureStabilityLayerL1/L2/L3 are the human-readable labels of the
+// design-rule hierarchy partitions.
+const (
+	ArchitectureStabilityLayerL1 = "L1 Interface"
+	ArchitectureStabilityLayerL2 = "L2 Subsystem"
+	ArchitectureStabilityLayerL3 = "L3 Leaf"
+)
+
+// ArchitectureStabilityDescriptionL1/L2/L3 are short descriptions paired
+// with each layer for report rendering.
+const (
+	ArchitectureStabilityDescriptionL1 = "High-stability design rule contract"
+	ArchitectureStabilityDescriptionL2 = "Intermediate subsystem coordinator"
+	ArchitectureStabilityDescriptionL3 = "Volatile concrete leaf implementation"
+)
+
+// -------------------------------------------------------------------------
+// Comprehension Recognition (PRIM-22)
+// -------------------------------------------------------------------------
+
+// ComprehensionRecognition* are the labels the Comprehension pipeline
+// surfaces when it recognises a library / framework fingerprint.
+const (
+	ComprehensionRecognitionMath    = "Math/Numerics Library"
+	ComprehensionRecognitionTesting = "Testing Framework"
+)
+
+// ComprehensionExplanationDefault is the placeholder explanation rendered
+// when the Comprehension pipeline has nothing specific to report.
+const ComprehensionExplanationDefault = "Decomposed into structural units with breadth-first linear traversal ordering."
+
+// -------------------------------------------------------------------------
+// Recruiter Tool / Agent Names (PRIM-29)
+// -------------------------------------------------------------------------
+
+// Tool* are the canonical tool names the Recruiter surfaces in a
+// RecruitmentPlan. Centralised so log filters and dashboards reference
+// the same vocabulary as the producer.
+const (
+	ToolValidator            = "validator"
+	ToolDiagnostics          = "diagnostics"
+	ToolChunkedTranslator    = "chunked_translator"
+)
+
+// Agent* are the canonical downstream-agent names the Recruiter surfaces
+// in a RecruitmentPlan.
+const (
+	AgentValidator         = "validator"
+	AgentVerdictPanel      = "verdict_panel"
+	AgentRoleFlip          = "roleflip"
+	AgentAdversarialSuite  = "adversarial_suite"
+	AgentPlateauBreaker    = "plateau_breaker"
+	AgentRecruitTranslatorV2 = "recruit_translator_v2"
+)
 
 // -------------------------------------------------------------------------
 // Strict Enums
@@ -107,7 +366,7 @@ const (
 // Used for compile-time and startup initializations where failure is fatal.
 func Must[T any](v T, err error) T {
 	if err != nil {
-		panic(fmt.Sprintf("compiletime initialization failed: %v", err))
+		panic(fmt.Sprintf("compiletime.Must: %v", err))
 	}
 	return v
 }
@@ -115,7 +374,7 @@ func Must[T any](v T, err error) T {
 // MustNotNil panics if ptr is nil.
 func MustNotNil[T any](ptr *T, fieldName string) *T {
 	if ptr == nil {
-		panic(fmt.Sprintf("compiletime invariant violated: %s must not be nil", fieldName))
+		panic(fmt.Sprintf("compiletime.MustNotNil: %s must not be nil", fieldName))
 	}
 	return ptr
 }
@@ -123,7 +382,7 @@ func MustNotNil[T any](ptr *T, fieldName string) *T {
 // MustNotEmpty panics if s is empty.
 func MustNotEmpty(s string, fieldName string) string {
 	if s == "" {
-		panic(fmt.Sprintf("compiletime invariant violated: %s must not be empty", fieldName))
+		panic(fmt.Sprintf("compiletime.MustNotEmpty: %s must not be empty", fieldName))
 	}
 	return s
 }
@@ -134,12 +393,13 @@ func MustNotEmpty(s string, fieldName string) string {
 
 // Task defines the specification for a translation task.
 type Task struct {
-	SourceDir   string `json:"source_dir"`
-	TargetDir   string `json:"target_dir"`
-	SourceLang  string `json:"source_lang"`
-	TargetLang  string `json:"target_lang"`
-	Toolchain   string `json:"toolchain,omitempty"`
-	LSPProvider string `json:"lsp_provider,omitempty"`
+	SourceDir   string
+	TargetDir   string
+	SourceLang  string
+	TargetLang  string
+	Toolchain   string
+	LSPProvider string
+	RequestFile string
 }
 
 // Validate verifies that all required fields of Task are populated.
