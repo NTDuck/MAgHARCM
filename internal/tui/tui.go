@@ -27,6 +27,7 @@ import (
 	"time"
 
 	"github.com/charmbracelet/bubbles/spinner"
+	"github.com/charmbracelet/bubbles/table"
 	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
@@ -432,7 +433,7 @@ func HandleSlash(line string, cfg *config.Config, current Phase, state *ReplStat
 		return PhaseCollect, true, nil
 
 	case "/show":
-		logger.LogStep("%s", dumpYAML(cfg))
+		logger.LogStep("%s\n%s", dumpYAML(cfg), RenderConfigTable(cfg))
 		return current, true, nil
 
 	case "/save":
@@ -539,6 +540,43 @@ func dumpYAML(cfg *config.Config) string {
 	fmt.Fprintf(&b, "timeout_seconds   %d\n", int(cfg.Timeout.Seconds()))
 	fmt.Fprintf(&b, "lsp_provider      %s\n", cfg.LSPProvider)
 	return b.String()
+}
+
+// RenderConfigTable formats the in-memory configuration as an idiomatic Charm table.
+func RenderConfigTable(cfg *config.Config) string {
+	columns := []table.Column{
+		{Title: "Configuration Field", Width: 24},
+		{Title: "Assigned Value", Width: 46},
+	}
+	rows := []table.Row{
+		{"source_dir", cfg.SourceDir},
+		{"source_language", cfg.SourceLang},
+		{"target_dir", cfg.TargetDir},
+		{"target_language", cfg.TargetLang},
+		{"toolchain", cfg.Toolchain},
+		{"reasoning_model", cfg.ReasoningModel},
+		{"coding_model", cfg.CodingModel},
+		{"ollama_url", cfg.OllamaBaseURL},
+		{"max_iterations", fmt.Sprintf("%d", cfg.MaxIterations)},
+		{"timeout_seconds", fmt.Sprintf("%d", int(cfg.Timeout.Seconds()))},
+		{"lsp_provider", cfg.LSPProvider},
+	}
+	t := table.New(
+		table.WithColumns(columns),
+		table.WithRows(rows),
+		table.WithFocused(false),
+		table.WithHeight(13),
+	)
+	s := table.DefaultStyles()
+	s.Header = s.Header.
+		BorderStyle(lipgloss.NormalBorder()).
+		BorderForeground(lipgloss.Color("#7FB3D5")).
+		BorderBottom(true).
+		Bold(true)
+	s.Selected = s.Selected.
+		Foreground(lipgloss.Color("#F7DC6F"))
+	t.SetStyles(s)
+	return t.View()
 }
 
 // globSamples wraps filepath.Glob so samplesList stays declarative.

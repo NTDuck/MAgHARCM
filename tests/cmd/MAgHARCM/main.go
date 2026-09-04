@@ -24,7 +24,7 @@ translation:
     max_iterations: 5
     timeout_seconds: 1800
   lsp:
-    provider: "native"
+    provider: "abcoder-mcp"
 `
 	cfg, err := config.ParseYAML([]byte(yamlContent))
 	if err != nil {
@@ -48,5 +48,8 @@ translation:
 	}
 	if cfg.MaxIterations != 5 {
 		t.Errorf("expected max_iterations 5, got %d", cfg.MaxIterations)
+	}
+	if cfg.LSPProvider != "abcoder-mcp" {
+		t.Errorf("expected lsp provider abcoder-mcp, got %s", cfg.LSPProvider)
 	}
 }
