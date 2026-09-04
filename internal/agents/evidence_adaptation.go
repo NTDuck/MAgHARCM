@@ -69,8 +69,8 @@ func (e *EvidenceFirstAdaptor) Adapt(ctx context.Context, unitName, sourceConten
 		Spec: TargetPreservingSpec{
 			SourceUnit: unitName,
 			RequiredBehaviors: []string{
-				fmt.Sprintf("Preserve deterministic I/O of %s", unitName),
-				"Ensure nullability safety and proper resource disposal",
+				fmt.Sprintf("Keep deterministic I/O of %s", unitName),
+				"Make sure nullability safety and proper resource disposal hold",
 			},
 			DisallowedSideEffects: []string{
 				"Do not panic on invalid user input",
@@ -96,7 +96,7 @@ func (e *EvidenceFirstAdaptor) Adapt(ctx context.Context, unitName, sourceConten
 			PotentialMemoryLeaks: strings.Contains(sourceContent, "malloc") || strings.Contains(sourceContent, "free"),
 			SanitizationGates: []string{
 				"Wrap raw pointer dereferences in safe bounds-checked abstractions",
-				"Enforce static borrow-checking invariants",
+				"Make sure static borrow-checking invariants hold",
 			},
 		},
 	}

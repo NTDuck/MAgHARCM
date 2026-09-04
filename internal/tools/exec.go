@@ -12,7 +12,7 @@ import (
 
 	"github.com/cloudwego/eino/components/tool"
 	"github.com/cloudwego/eino/components/tool/utils"
-
+	"MAgHARCM/internal/compiletime"
 	"MAgHARCM/internal/languages"
 )
 
@@ -60,7 +60,7 @@ func ValidateProjectBuild(ctx context.Context, projectDir, lang, toolchain strin
 	cleanDir := filepath.Clean(projectDir)
 	reg := languages.GetRegistry()
 	var cmd *exec.Cmd
-	compiler := "unknown"
+	compiler := compiletime.ErrorUnknown
 
 	// 1. Language-specified toolchain lookup
 	if lang != "" {
@@ -170,7 +170,7 @@ func RunProjectTests(ctx context.Context, projectDir, lang, toolchain, filter st
 	cleanDir := filepath.Clean(projectDir)
 	reg := languages.GetRegistry()
 	var cmd *exec.Cmd
-	tcName := "unknown"
+	tcName := compiletime.ErrorUnknown
 
 	// 1. Language-specified test toolchain lookup
 	if lang != "" {

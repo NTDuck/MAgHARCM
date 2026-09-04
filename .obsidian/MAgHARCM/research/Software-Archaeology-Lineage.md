@@ -137,7 +137,7 @@ The MAgHARCM pipeline grounds modern agentic reasoning in 50+ years of rigorous 
 | `[[1.0.0 PRIM-21]]` | Migration Strategy Selection | Müller et al. [[P-06]] | Legacy Migration Frameworks (Müller) | `internal/agents/strategy.go` |
 | `[[1.0.0 PRIM-22]]` | Four Phases Comprehension | Foltz (2023) [[P-30]] | Cognitive Program Comprehension | `internal/agents/comprehension.go` |
 | `[[1.0.0 PRIM-23]]` | Chunked Translation | ChatDev [[P-12]], MetaGPT [[P-11]]| Bounded-Context Translation | `internal/agents/chunked_translator.go` |
-| `[[1.0.0 PRIM-24]]` | SOP-Anchored Role Artifact | MetaGPT [[P-11]] | Standard Operating Procedures (SOP) | `internal/artifacts/versioning.go` |
+| `[[1.0.0 PRIM-24]]` | SOP-Anchored Role Artifact | MetaGPT [[P-11]] | Standard Operating Procedures (SOP) | `internal/compiletime/compiletime.go`, `internal/agents/state.go` |
 | `[[1.0.0 PRIM-25]]` | Role-Flip De-Hallucination | ChatDev [[P-12]] | Adversarial Verification (Sycophancy Gate) | `internal/agents/roleflip.go` |
 | `[[1.0.0 PRIM-26]]` | Symbol-Aware Navigator | HyperAgent [[P-13]], ABCoder | Targeted Context Retrieval | `internal/agents/navigator.go` |
 | `[[1.0.0 PRIM-27]]` | Coverage-Guided Plateau Det | CodaMOSA [[P-23]] | Search-Based Software Testing (Harman) | `internal/agents/plateau.go` |

@@ -85,10 +85,12 @@ Translator Agent rather than treating tests as a separate concern.
 ReCodeAgent is engineered to run on Anthropic Claude Sonnet through
 Claude Code, is evaluated on $118$ projects spanning four language
 pairs and six languages, and reports a $99.4\%$ compilation success
-rate and an $86.5\%$ test pass rate. MAgHARCM adopts ReCodeAgent's
-four-agent decomposition and MCP tool surface but replaces the cloud
-LLM with a local $30\,\text{B}$ reasoning + $4\,\text{B}$ coding
-topology. \textsc{Crust-Bench} / \textsc{SWE-agent}~\cite{p30_crust_bench,yang2024sweagent}
+rate and an $86.5\%$ test pass rate. MAgHARCM builds upon ReCodeAgent's
+agentic decomposition and MCP tool surface, extending it into an
+eight-agent pipeline (incorporating pre-planning software archaeology,
+communicative review, verdict consensus, and adaptive recruitment)
+while replacing cloud LLM dependencies with a local $30\,\text{B}$ reasoning +
+$4\,\text{B}$ coding topology. \textsc{Crust-Bench} / \textsc{SWE-agent}~\cite{p30_crust_bench,yang2024sweagent}
 adapts the SWE-agent harness to C-to-Rust translation. The agent
 relies on basic file-navigation and build/test commands and is
 compared against a generate-then-repair loop; on the Crust benchmark

@@ -43,7 +43,7 @@ Status legend:
 | `[[1.0.0 PRIM-21]]` | Migration Strategy Selection | `internal/agents/strategy.go::Registry.TryInOrder` | [[Müller-2000]] (5 Strategies) | implemented |
 | `[[1.0.0 PRIM-22]]` | Four Phases of Comprehension | `internal/agents/comprehension.go` | [[Foltz-2023]] DR. JONES Model | implemented |
 | `[[1.0.0 PRIM-23]]` | Chunked Translation | `internal/agents/chunked_translator.go` | [[ChatDev-2023]], MetaGPT | implemented |
-| `[[1.0.0 PRIM-24]]` | SOP-Anchored Role-Artifact Schema | `internal/artifacts/versioning.go` | [[MetaGPT-2023]] SOP Contracts | implemented |
+| `[[1.0.0 PRIM-24]]` | SOP-Anchored Role-Artifact Schema | `internal/compiletime/compiletime.go`, `internal/agents/state.go` | [[MetaGPT-2023]] SOP Contracts | implemented |
 | `[[1.0.0 PRIM-25]]` | Communicative-De-hallucination Role-Flip Gate | `internal/agents/roleflip.go` | [[ChatDev-2023]] Sycophancy Gate | implemented |
 | `[[1.0.0 PRIM-26]]` | Symbol-Aware Navigator | `internal/agents/navigator.go` | [[HyperAgent-2024]], ABCoder | implemented |
 | `[[1.0.0 PRIM-27]]` | Coverage-Guided Plateau Detection | `internal/agents/plateau.go` | [[CodaMOSA-2023]], Harman SBST | implemented |

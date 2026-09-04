@@ -10,6 +10,7 @@ package agents
 import (
 	"context"
 	"os/exec"
+	"slices"
 	"strings"
 	"time"
 
@@ -89,10 +90,10 @@ func (s *SpecMiner) Recover(ctx context.Context, sourceBinary string, inputs []s
 			continue
 		}
 		// Allocation sizes: input length + observed output length.
-		if !containsInt(out.AllocSizes, len(in)) {
+		if !slices.Contains(out.AllocSizes, len(in)) {
 			out.AllocSizes = append(out.AllocSizes, len(in))
 		}
-		if !containsInt(out.AllocSizes, len(outBytes)) {
+		if !slices.Contains(out.AllocSizes, len(outBytes)) {
 			out.AllocSizes = append(out.AllocSizes, len(outBytes))
 		}
 		// Pointer nullability / lifetime ranges: inputs prefixed "nil"
@@ -123,7 +124,7 @@ func (s *SpecMiner) Recover(ctx context.Context, sourceBinary string, inputs []s
 					continue
 				}
 				pair := [2]string{"main", fn}
-				if !containsPair(out.AliasingPairs, pair) {
+				if !slices.Contains(out.AliasingPairs, pair) {
 					out.AliasingPairs = append(out.AliasingPairs, pair)
 				}
 			}
@@ -141,20 +142,3 @@ func (s *SpecMiner) Recover(ctx context.Context, sourceBinary string, inputs []s
 	return out, nil
 }
 
-func containsInt(xs []int, x int) bool {
-	for _, v := range xs {
-		if v == x {
-			return true
-		}
-	}
-	return false
-}
-
-func containsPair(xs [][2]string, p [2]string) bool {
-	for _, v := range xs {
-		if v == p {
-			return true
-		}
-	}
-	return false
-}

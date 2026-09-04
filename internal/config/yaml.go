@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"gopkg.in/yaml.v3"
@@ -132,18 +133,8 @@ func Require(cfg *Config) error {
 		missing = append(missing, "lsp.provider")
 	}
 	if len(missing) > 0 {
-		return fmt.Errorf("config: missing required fields: %s", joinFields(missing))
+		return fmt.Errorf("config: missing required fields: %s", strings.Join(missing, ", "))
 	}
 	return nil
 }
 
-func joinFields(fields []string) string {
-	out := ""
-	for i, f := range fields {
-		if i > 0 {
-			out += ", "
-		}
-		out += f
-	}
-	return out
-}

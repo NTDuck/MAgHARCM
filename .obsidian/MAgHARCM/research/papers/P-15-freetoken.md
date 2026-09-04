@@ -23,9 +23,9 @@ FreeToken is the methodological justification for the "local-first" constraint t
 ## Hop-1 References
 
 - [[Frantar-2023-GPTQ]] — post-training quantisation; the dense-weight compression substrate FreeToken inherits for its expert pages.
-- [[Shazeer-2017-Outrageously-Large-Networks] — Sparsely-Gated Mixture-of-Experts] — the original MoE router design FreeToken's bandwidth-adaptive execution refines for the edge-memory regime.
-- [[Pope-2023-Efficiently-Scaling-Transformer-Inference] — MoE inference optimisation at data-centre scale; the bandwidth-allocation pattern FreeToken rewrites for edge hardware.
-- [[Han-2022-Efficient-Inf-Design-Space] — survey of efficient on-device inference; positions FreeToken within the wider edge-LLM design space.
+- [[Shazeer-2017-Outrageously-Large-Networks]] — Sparsely-Gated Mixture-of-Experts; the original MoE router design FreeToken's bandwidth-adaptive execution refines for the edge-memory regime.
+- [[Pope-2023-Efficiently-Scaling-Transformer-Inference]] — MoE inference optimisation at data-centre scale; the bandwidth-allocation pattern FreeToken rewrites for edge hardware.
+- [[Han-2022-Efficient-Inf-Design-Space]] — survey of efficient on-device inference; positions FreeToken within the wider edge-LLM design space.
 
 ## Hop-2 Anchors (software-archaeology lean)
 

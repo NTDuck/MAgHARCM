@@ -15,7 +15,7 @@ import (
 
 // CheckpointDir returns the per-run checkpoint directory under .artifacts/<run-id>/checkpoints/.
 func CheckpointDir(runID string) string {
-	return filepath.Join(".artifacts", runID, "checkpoints")
+	return filepath.Join(compiletime.DefaultArtifactDir, runID, "checkpoints")
 }
 
 // RunIDForTask derives a stable, human-readable run identifier from the

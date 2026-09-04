@@ -4,12 +4,11 @@
 
 This paper presented \textbf{MAgHARCM}, a multi-agent harness for
 repository-scale code translation that runs entirely on local Small
-Language Models. MAgHARCM coordinates four specialised agents
-(Analyzer, Planning, Translator, Validator) through an explicit
-\textsc{Analyze} $\to$ \textsc{Plan} $\to$ \textsc{Translate} $\to$
-\textsc{Validate} $\to$ \textsc{Repair} loop, accessed through an MCP
-tool surface that wraps Tree-sitter project analysis and optional
-LSP-backed symbol resolution. Cycle-free reverse-topological
+Language Models. MAgHARCM coordinates eight specialised agents
+(Archaeologist, Analyzer, Planning, Translator, Reviewer, Validator,
+Verdict Panel, Recruiter) through an explicit multi-stage pipeline,
+accessed through an MCP tool surface that wraps ABCoder UniAST project
+analysis and LSP-backed symbol resolution. Cycle-free reverse-topological
 scheduling with back-edge removal enforces callee-before-caller
 ordering. A bounded context per fragment ($\le 4\,\text{KB}$ Symbol
 Navigator plus $\le 4\,\text{KB}$ Prior-Modules Memory) prevents the
@@ -47,11 +46,10 @@ preserve assertion count while changing meaning. Fourth, dense
 single-file functions ($> 800$ LoC) saturate even the bounded
 context window and require manual pre-fragmentation by the operator.
 
-Future work will extend the target language beyond Rust, integrate
-the optional ABCoder MCP provider for richer cross-language
-structural queries, evaluate the four-agent decomposition on
-multi-PL pairs (Go-to-Rust \emph{and} Java-to-Python) using a single
-harness configuration, and replace the threshold-based plateau
+Future work will extend the target language beyond Rust, evaluate the
+eight-agent decomposition on multi-PL pairs (Go-to-Rust \emph{and}
+Java-to-Python) using a single harness configuration, and replace the
+threshold-based plateau
 detector with a learned coverage model trained on prior run logs.
 MAgHARCM is open-source and reproducible; the artifacts (harness,
 benchmark configurations, agent logs, and per-iteration checkpoints)
