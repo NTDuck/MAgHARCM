@@ -33,8 +33,10 @@ type SymbolResolution struct {
 // re-establishing the LSP connection.
 type Navigator struct {
 	Provider tools.LSPProvider
+	// CodeGraph is the PRIM-9 HybridCodeGraph (AST ∪ CPG ∪ SDG) consulted
+	// when LSP returns no definition. Optional; nil disables the fallback.
+	CodeGraph *HybridCodeGraph
 }
-
 // NewNavigator returns a Navigator bound to the given LSPProvider.
 // Pass `nil` to disable LSP-backed lookups; LookupSymbol will return
 // Error=ErrNoLSPProvider in that case. Callers should fall back to
@@ -70,6 +72,19 @@ func (n *Navigator) LookupSymbol(ctx context.Context, symbol, filePath string) S
 		res.Definition = def
 	}
 
+	// PRIM-9 HybridCodeGraph fallback: when LSP has no definition, consult
+	// the AST ∪ CPG ∪ SDG graph and synthesize one. Useful in multi-language
+	// projects where the LSP only covers the host language.
+	if res.Definition == nil && n.CodeGraph != nil {
+		if gr, err := n.CodeGraph.ResolveSymbol(ctx, symbol); err == nil && gr.Found {
+			res.Definition = &tools.DefinitionOutput{
+				Symbol: symbol,
+				Definitions: []tools.DefinitionLocation{
+					{FilePath: firstLocation(gr.Locations), Snippet: gr.Snippet},
+				},
+			}
+		}
+	}
 	refs, err := n.Provider.GetReferences(ctx, &tools.ReferencesInput{
 		Symbol:     symbol,
 		ProjectDir: ProjectDirOrDot(filePath),
@@ -205,4 +220,14 @@ func (n *NavigatorAgent) Run(ctx context.Context, state *types.State) (*types.St
 			sym, res.Definition != nil, RefCount(res.References), res.Hover != nil)
 	}
 	return state, nil
+}
+
+// firstLocation returns the first entry of locations, or "" when empty.
+// Used by the PRIM-9 HybridCodeGraph fallback to extract a FilePath for the
+// synthesized DefinitionLocation.
+func firstLocation(locations []string) string {
+	if len(locations) == 0 {
+		return ""
+	}
+	return locations[0]
 }
