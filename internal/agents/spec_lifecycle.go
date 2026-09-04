@@ -3,24 +3,25 @@ package agents
 import (
 	"fmt"
 	"time"
+
+	"MAgHARCM/internal/compiletime"
 )
 
 // Backlink: [[1.0.0 PRIM-16]] Spec-Driven Development Lifecycle (spec-kit-2024).
 // Strict sequence: Constitution -> Specify -> Plan -> Tasks -> Implement -> Converge.
-// Each phase produces a reviewable artifact and transitions are gated.
+// SpecLifecyclePhase aliases compiletime.SpecLifecyclePhase for centralized enums.
+type SpecLifecyclePhase = compiletime.SpecLifecyclePhase
 
-// SpecLifecyclePhase identifies the active stage in the spec-driven lifecycle.
-type SpecLifecyclePhase string
-
+// Phase* are the back-compat aliases for compiletime.Phase*. New code should
+// reference compiletime.Phase* directly.
 const (
-	PhaseConstitution SpecLifecyclePhase = "CONSTITUTION"
-	PhaseSpecify      SpecLifecyclePhase = "SPECIFY"
-	PhasePlan         SpecLifecyclePhase = "PLAN"
-	PhaseTasks        SpecLifecyclePhase = "TASKS"
-	PhaseImplement    SpecLifecyclePhase = "IMPLEMENT"
-	PhaseConverge     SpecLifecyclePhase = "CONVERGE"
+	PhaseConstitution = compiletime.PhaseConstitution
+	PhaseSpecify      = compiletime.PhaseSpecify
+	PhasePlan         = compiletime.PhasePlan
+	PhaseTasks        = compiletime.PhaseTasks
+	PhaseImplement    = compiletime.PhaseImplement
+	PhaseConverge     = compiletime.PhaseConverged
 )
-
 // LifecycleTransition records a gated step between phases.
 type LifecycleTransition struct {
 	FromPhase SpecLifecyclePhase `json:"from_phase"`
@@ -65,6 +66,14 @@ func (s *SpecLifecycleManager) NextPhase() (SpecLifecyclePhase, error) {
 }
 
 // Advance gates and executes the transition to the next phase.
+
+// MustAdvance is the panic-on-error variant of Advance. Use at startup where
+// a malformed lifecycle is a fatal configuration error.
+func (s *SpecLifecycleManager) MustAdvance(artifactName, artifactContent string) SpecLifecyclePhase {
+	phase, err := s.Advance(artifactName, artifactContent)
+	compiletime.Must(phase, err)
+	return phase
+}
 func (s *SpecLifecycleManager) Advance(artifactName string, artifactContent string) (SpecLifecyclePhase, error) {
 	if artifactContent == "" {
 		return s.CurrentPhase, fmt.Errorf("transition from %s rejected: artifact content is empty", s.CurrentPhase)
