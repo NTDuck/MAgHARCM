@@ -9,33 +9,26 @@
 // interested subscribers, and reaping terminal events into the audit log.
 //
 // Paper appendix primitive P17 (CAID [P54]) — Asynchronous SE Agent Blackboard.
-// Spec-only this sprint: types and constructor only. No scheduler, claim, or
-// subscription logic yet; runtime semantics land in a follow-up sprint once the
-// central scheduler primitive is specified.
-//
-// Field notes (to be honoured by the future scheduler implementation):
-//   - Mu is declared as `any` so the file is compile-safe across Go versions
-//     and so the lock policy can be swapped (sync.RWMutex vs. channel-based
-//     serialiser) without churning callers. Concrete locking will land in
-//     the scheduler iteration that adopts this type.
-//   - Events is an append-only log; consumers must not mutate entries in
-//     place. The constructor seeds it as a non-nil empty slice so callers
-//     can append directly.
-//   - WorkUnits is keyed by stable string ID; ClaimedBy is the agent name
-//     holding the lease, Status is one of the lifecycle constants defined in
-//     internal/consts/consts.go (added when the scheduler lands).
-//   - Result carries the agent's opaque output; the scheduler never
-//     inspects it, only re-publishes it as an event payload.
+// Runtime this sprint: concrete sync.RWMutex, claim/complete/fail semantics,
+// subscription table, audit log reaper. The goroutine-driver model is left
+// to the caller: callers subscribe via Subscribe and drain the channel they
+// receive. Subscribers are expected to be lightweight; heavy lifting stays
+// on a dedicated worker pool managed by the caller.
 
 package agents
 
-import "time"
+import (
+	"sync"
+	"time"
+
+	"MAgHARCM/internal/consts"
+)
 
 // BlackboardEvent is one entry in the blackboard's append-only event log.
-// Kind is a stable event-type identifier (added to internal/consts/consts.go
-// when the scheduler is wired up). Payload is the opaque, agent-defined
-// payload. Timestamp records when the event was published, not when the
-// underlying work was performed.
+// Kind is a stable event-type identifier. Payload is the opaque, agent-defined
+// payload, published as map[string]any so subscribers can access fields by
+// name without type assertions. Timestamp records when the event was
+// published, not when the underlying work was performed.
 type BlackboardEvent struct {
 	Kind      string
 	Payload   any
@@ -45,9 +38,10 @@ type BlackboardEvent struct {
 // WorkUnit is one schedulable unit of work claimed and completed by an
 // agent. ID is the stable identifier (also used as the map key in
 // Blackboard.WorkUnits). ClaimedBy is the agent name currently holding the
-// lease, or empty when the unit is unclaimed. Status is the lifecycle state
-// (sentinel constants land in internal/consts/consts.go). Result is the
-// agent's opaque output once Status reaches a terminal state.
+// lease, or empty when the unit is unclaimed. Status is one of the lifecycle
+// constants in internal/consts/consts.go (WorkUnitPending / WorkUnitClaimed /
+// WorkUnitCompleted / WorkUnitFailed). Result is the agent's opaque output
+// once Status reaches a terminal state.
 type WorkUnit struct {
 	ID        string
 	ClaimedBy string
@@ -55,28 +49,176 @@ type WorkUnit struct {
 	Result    any
 }
 
-// Blackboard is the shared memory substrate that agents read from and
-// publish to. Events is the append-only event log; WorkUnits is the set of
-// in-flight and completed work units keyed by ID. Mu is reserved for the
-// concurrency primitive the central scheduler will use to serialise claims
-// and event publishes — kept as `any` here to keep this sprint compile-safe
-// and to defer the concrete lock-policy decision.
-type Blackboard struct {
-	Events    []BlackboardEvent
-	WorkUnits map[string]*WorkUnit
-	// Mu will be a sync.RWMutex (or equivalent) in the scheduler iteration
-	// that adopts this type. Declared as `any` for now so this spec-only
-	// file carries no runtime locking and no sync import.
-	Mu any
+// subscriber couples a subscription kind with the buffered channel that
+// receives matching events. The scheduler closes the channel to signal
+// teardown.
+type subscriber struct {
+	kind string
+	ch   chan BlackboardEvent
 }
 
-// NewBlackboard returns a fresh Blackboard with Events initialised to a
-// non-nil empty slice and WorkUnits initialised to a non-nil empty map, so
-// callers can append events and register work units without nil checks.
-// Mu is left as its zero value; the scheduler iteration will populate it.
+// Blackboard is the shared memory substrate that agents read from and
+// publish to. Events is the append-only event log; WorkUnits is the set of
+// in-flight and completed work units keyed by ID. mu guards all mutable
+// state. subscribers is the fan-out table for live event delivery.
+type Blackboard struct {
+	Events     []BlackboardEvent
+	WorkUnits  map[string]*WorkUnit
+	AuditLog   []BlackboardEvent
+
+	mu          sync.RWMutex
+	subscribers []*subscriber
+}
+
+// NewBlackboard returns a fresh Blackboard with Events and AuditLog
+// initialised to non-nil empty slices and WorkUnits initialised to a non-nil
+// empty map, so callers can append events and register work units without
+// nil checks.
 func NewBlackboard() *Blackboard {
 	return &Blackboard{
 		Events:    []BlackboardEvent{},
 		WorkUnits: map[string]*WorkUnit{},
+		AuditLog:  []BlackboardEvent{},
+	}
+}
+
+// Register adds a pending work unit. No-op when the ID already exists.
+func (b *Blackboard) Register(id string) {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	if _, ok := b.WorkUnits[id]; ok {
+		return
+	}
+	b.WorkUnits[id] = &WorkUnit{ID: id, Status: consts.WorkUnitPending}
+	b.publishLocked(BlackboardEvent{Kind: "work.registered", Payload: map[string]any{"id": id}, Timestamp: time.Now()})
+}
+
+// Claim atomically transitions a PENDING unit to CLAIMED and records the
+// holding agent. Returns the unit or false if the unit is missing or not
+// pending (already claimed, completed, or failed).
+func (b *Blackboard) Claim(id, agent string) (*WorkUnit, bool) {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	wu, ok := b.WorkUnits[id]
+	if !ok || wu.Status != consts.WorkUnitPending {
+		return nil, false
+	}
+	wu.ClaimedBy = agent
+	wu.Status = consts.WorkUnitClaimed
+	b.publishLocked(BlackboardEvent{Kind: "work.claimed", Payload: map[string]any{"id": id, "agent": agent}, Timestamp: time.Now()})
+	return wu, true
+}
+
+// Complete transitions a CLAIMED unit to COMPLETED, records the agent's
+// result, and reaps the terminal event into the audit log so future Claim
+// calls return false.
+func (b *Blackboard) Complete(id string, result any) bool {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	wu, ok := b.WorkUnits[id]
+	if !ok || wu.Status != consts.WorkUnitClaimed {
+		return false
+	}
+	wu.Result = result
+	wu.Status = consts.WorkUnitCompleted
+	b.publishLocked(BlackboardEvent{Kind: "work.completed", Payload: map[string]any{"id": id, "result": result}, Timestamp: time.Now()})
+	b.reapLocked(id)
+	return true
+}
+
+// Fail transitions a CLAIMED unit to FAILED and reaps the terminal event.
+// Subscribers can react to "work.failed" before the unit is reaped.
+func (b *Blackboard) Fail(id string, reason any) bool {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	wu, ok := b.WorkUnits[id]
+	if !ok || wu.Status != consts.WorkUnitClaimed {
+		return false
+	}
+	wu.Result = reason
+	wu.Status = consts.WorkUnitFailed
+	b.publishLocked(BlackboardEvent{Kind: "work.failed", Payload: map[string]any{"id": id, "reason": reason}, Timestamp: time.Now()})
+	b.reapLocked(id)
+	return true
+}
+
+// Snapshot returns a shallow copy of the current event log and work-unit map
+// for read-only inspection (e.g. tests, status endpoints). Safe to call
+// concurrently with publishers.
+func (b *Blackboard) Snapshot() ([]BlackboardEvent, map[string]*WorkUnit) {
+	b.mu.RLock()
+	defer b.mu.RUnlock()
+	events := make([]BlackboardEvent, len(b.Events))
+	copy(events, b.Events)
+	units := make(map[string]*WorkUnit, len(b.WorkUnits))
+	for k, v := range b.WorkUnits {
+		copied := *v
+		units[k] = &copied
+	}
+	return events, units
+}
+
+// Subscribe returns a buffered channel that receives events whose Kind
+// exactly matches kind. The subscription lives until the returned cancel
+// function is called. Buffer size matches the typical burst (16); slow
+// consumers will skip live delivery (the audit log still captures the
+// event so nothing is lost).
+func (b *Blackboard) Subscribe(kind string) (<-chan BlackboardEvent, func()) {
+	ch := make(chan BlackboardEvent, 16)
+	sub := &subscriber{kind: kind, ch: ch}
+	b.mu.Lock()
+	b.subscribers = append(b.subscribers, sub)
+	b.mu.Unlock()
+	return ch, func() { b.unsubscribe(sub) }
+}
+
+func (b *Blackboard) unsubscribe(sub *subscriber) {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	for i, s := range b.subscribers {
+		if s == sub {
+			b.subscribers = append(b.subscribers[:i], b.subscribers[i+1:]...)
+			break
+		}
+	}
+	close(sub.ch)
+}
+
+// Publish appends an event under the given kind and fans it out to every
+// matching subscriber. Subscribers whose buffer is full are skipped (the
+// event is still in Events so the audit log captures it).
+func (b *Blackboard) Publish(kind string, payload any) {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	b.publishLocked(BlackboardEvent{Kind: kind, Payload: payload, Timestamp: time.Now()})
+}
+
+// publishLocked is the inner publish path; the caller must hold b.mu.
+func (b *Blackboard) publishLocked(ev BlackboardEvent) {
+	b.Events = append(b.Events, ev)
+	for _, sub := range b.subscribers {
+		if sub.kind != ev.Kind {
+			continue
+		}
+		select {
+		case sub.ch <- ev:
+		default:
+			// Drop live delivery; the event is still in Events/AuditLog.
+		}
+	}
+}
+
+// reapLocked moves the most recent terminal event for a work unit into the
+// AuditLog. Called by Complete and Fail with b.mu held. Payload shapes vary
+// by event kind; we accept any map[string]any with an "id" key.
+func (b *Blackboard) reapLocked(id string) {
+	for i := len(b.Events) - 1; i >= 0; i-- {
+		ev := b.Events[i]
+		if m, ok := ev.Payload.(map[string]any); ok {
+			if s, _ := m["id"].(string); s == id {
+				b.AuditLog = append(b.AuditLog, ev)
+				return
+			}
+		}
 	}
 }

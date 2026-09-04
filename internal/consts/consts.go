@@ -31,7 +31,16 @@ const (
 	StrategyFrozenLegacy    = "FROZEN_LEGACY"
 	StrategyParallelCutover = "PARALLEL_CUTOVER"
 )
-// SpecMinerToolName is the tool key used by the dynamic invariant recovery agent.
+// P17 Blackboard scheduler lifecycle states (CAID [P54] §Asynchronous SE
+// Agent Blackboard). Sentinel values referenced by agents.WorkUnit.Status
+// and emitted into the append-only event log.
+const (
+	WorkUnitPending    = "PENDING"
+	WorkUnitClaimed    = "CLAIMED"
+	WorkUnitCompleted  = "COMPLETED"
+	WorkUnitFailed     = "FAILED"
+	WorkUnitTerminal   = "TERMINAL"
+)
 // Backlink: [[P04]] SpecMiner-Style Dynamic Invariant Recovery ([[Syzygy-2024]]).
 const SpecMinerToolName = "specminer"
 
