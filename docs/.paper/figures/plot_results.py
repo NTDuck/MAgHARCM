@@ -422,7 +422,7 @@ def figure2_session_metrics() -> Path:
         color="#22c55e",
         edgecolor="black",
         linewidth=0.4,
-        label="compile %",
+        label="Compilation Status (Pass/Fail)",
     )
     t_bars = ax.bar(
         [xi + width / 2 for xi in x],
@@ -431,14 +431,14 @@ def figure2_session_metrics() -> Path:
         color="#0ea5e9",
         edgecolor="black",
         linewidth=0.4,
-        label="test %",
+        label="Test Pass Rate (%)",
     )
     ax.set_xticks(x)
     ax.set_xticklabels([s["name"] for s in samples], fontsize=9)
-    ax.set_ylabel("Percentage")
+    ax.set_ylabel("Test Pass Rate (%) / Compilation Status (Pass=100%, Fail=0%)")
     ax.set_ylim(-32, 115)
     ax.set_title(
-        "Cross-sample compile and test percentages\n"
+        "Cross-sample compilation status (Pass/Fail) and test pass rate (%)\n"
         "(fixed-{1,2,3,4} post-heuristic-fix logs; "
         "Sample 1 = real data, Samples 2/3/4 = chunked-translator outcomes)"
     )

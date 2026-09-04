@@ -12,9 +12,7 @@ import (
 
 	"github.com/cloudwego/eino/schema"
 
-	"MAgHARCM/internal/artifacts"
 	"MAgHARCM/internal/logger"
-	"MAgHARCM/internal/types"
 )
 
 // chunkedLoCThreshold and chunkedFragmentsThreshold together gate when the
@@ -45,7 +43,7 @@ const (
 // count (the actual unit of work for the chunked translator) instead of with
 // AST-element density, which is what downstream consumers (validator
 // MinRealTests, the per-file emit loop) really care about.
-func shouldUseChunkedTranslation(state *types.State) bool {
+func shouldUseChunkedTranslation(state *State) bool {
 	if state == nil {
 		return false
 	}
@@ -146,7 +144,7 @@ func GroupFragmentsBySourceFile(fragments []string) map[string][]string {
 // It populates state.TranslatedProject.Files (merged with the existing skeleton
 // entries), persists everything to disk via syncFilesToDisk, and returns the
 // merged TranslatedProject.
-func (t *TranslatorAgent) RunChunked(ctx context.Context, state *types.State) (*artifacts.TranslatedProject, error) {
+func (t *TranslatorAgent) RunChunked(ctx context.Context, state *State) (*TranslatedProject, error) {
 	if state == nil {
 		return nil, fmt.Errorf("nil state passed to RunChunked")
 	}
@@ -240,7 +238,7 @@ func (t *TranslatorAgent) RunChunked(ctx context.Context, state *types.State) (*
 // chunked loop. This unblocks the validator when the initial Translator
 // skeleton wrote no build manifest (the chunked translator only emits
 // per-source-file outputs, never the workspace manifest).
-func (t *TranslatorAgent) ensureRustCargoManifest(state *types.State) {
+func (t *TranslatorAgent) ensureRustCargoManifest(state *State) {
 	if state == nil || state.Task.TargetLang != "Rust" {
 		return
 	}
@@ -266,7 +264,7 @@ func (t *TranslatorAgent) ensureRustCargoManifest(state *types.State) {
 // files extracted from the model's response.
 func (t *TranslatorAgent) translateFragment(
 	ctx context.Context,
-	state *types.State,
+	state *State,
 	packageName, sourceBlock, priorSummary string,
 ) (map[string]string, error) {
 	prompt, err := renderPromptTemplate("translator_chunked", translatorChunkedPromptTemplate, map[string]any{

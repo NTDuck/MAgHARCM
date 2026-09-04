@@ -4,23 +4,20 @@ import (
 	"context"
 	"fmt"
 
+	"MAgHARCM/internal/compiletime"
 	"MAgHARCM/internal/logger"
 )
 
-// StrategyKind names one of Mueller's five migration strategies. Values are
-// kept stable (UPPERCASE form) so the analyzer prompt and downstream log
-// scrapers (run-samples-k.sh) continue to recognise them. The string values
-// mirror consts.Strategy* in internal/config/consts.go.
-type StrategyKind string
+// StrategyKind aliases compiletime.StrategyKind for centralized enums.
+type StrategyKind = compiletime.StrategyKind
 
 const (
-	StrategyBigBang         StrategyKind = "BIG_BANG"
-	StrategyIncremental     StrategyKind = "INCREMENTAL"
-	StrategyPilot           StrategyKind = "PILOT"
-	StrategyFrozenLegacy    StrategyKind = "FROZEN_LEGACY"
-	StrategyParallelCutover StrategyKind = "PARALLEL_CUTOVER"
+	StrategyBigBang         = compiletime.StrategyBigBang
+	StrategyIncremental     = compiletime.StrategyIncremental
+	StrategyPilot           = compiletime.StrategyPilot
+	StrategyFrozenLegacy    = compiletime.StrategyFrozenLegacy
+	StrategyParallelCutover = compiletime.StrategyParallelCutover
 )
-
 // Profile is the static repository signal set used by each MigrationStrategy
 // to decide whether its gating conditions apply. The fields are populated
 // once at analyzer start and then handed to Registry.TryInOrder.
@@ -81,6 +78,51 @@ func (r *Registry) TryInOrder(ctx context.Context, p Profile) (StrategyKind, err
 	}
 	return "", fmt.Errorf("no migration strategy matched profile (files=%d, loc=%d, tests=%v)",
 		p.FileCount, p.LoC, p.HasTests)
+}
+
+// NextStrategy finds the next viable strategy in the registry after the current one failed.
+func (r *Registry) NextStrategy(ctx context.Context, current StrategyKind, p Profile) (StrategyKind, error) {
+	foundCurrent := false
+	for _, s := range r.all {
+		if !foundCurrent {
+			if s.Kind() == current {
+				foundCurrent = true
+			}
+			continue
+		}
+		if !s.Matches(p) {
+			continue
+		}
+		if err := s.Attempt(ctx, p); err != nil {
+			logger.LogAgent("StrategyRegistry", "Strategy %s declined during fallback: %v", s.Kind(), err)
+			continue
+		}
+		return s.Kind(), nil
+	}
+	return "", fmt.Errorf("no subsequent fallback strategy available after %s", current)
+}
+
+// SwitchToNextStrategy advances state to the next viable strategy when current strategy fails or plateaus.
+func SwitchToNextStrategy(ctx context.Context, state *State) (StrategyKind, bool) {
+	if state == nil {
+		return "", false
+	}
+	current := StrategyKind(state.AnalyzerOutput.Research.Data.MigrationStrategy)
+	p := Profile{
+		FileCount: len(state.PlanningOutput.Fragments),
+		HasTests:  state.ValidationReport.TotalTests > 0,
+		HasBuild:  state.ValidationReport.CompilationSuccess,
+	}
+	reg := NewDefaultRegistry()
+	next, err := reg.NextStrategy(ctx, current, p)
+	if err != nil {
+		logger.LogWarning("No further migration strategies available after %s: %v", current, err)
+		return current, false
+	}
+	logger.LogAgent("StrategyRegistry", "Incremental failover: switching strategy from %s to %s", current, next)
+	state.AnalyzerOutput.Research.Data.MigrationStrategy = string(next)
+	state.AnalyzerOutput.Research.Data.StrategyRationale = rationaleFor(next)
+	return next, true
 }
 
 // ----- concrete strategies -----

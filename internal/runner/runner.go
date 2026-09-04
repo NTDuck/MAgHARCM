@@ -55,7 +55,7 @@ func Run(ctx context.Context, cfg *config.Config) (*types.State, error) {
 	}
 	var initialState *types.State
 	if resumed != nil {
-		logger.LogStep("Resuming from checkpoint iter-%d", resumed.Iteration)
+		logger.LogStep("Resume from checkpoint iter-%d", resumed.Iteration)
 		initialState = resumed.State
 	} else {
 		initialState = &types.State{
@@ -68,7 +68,7 @@ func Run(ctx context.Context, cfg *config.Config) (*types.State, error) {
 		}
 	}
 
-	logger.LogStep("Connecting to Ollama models at `%s`", cfg.OllamaBaseURL)
+	logger.LogStep("Connect to Ollama models at `%s`", cfg.OllamaBaseURL)
 	logger.LogStep("Reasoning Model: `%s`", cfg.ReasoningModel)
 	logger.LogStep("Coding Model:    `%s`", cfg.CodingModel)
 
@@ -77,13 +77,13 @@ func Run(ctx context.Context, cfg *config.Config) (*types.State, error) {
 		return nil, fmt.Errorf("initialize Ollama models: %w", err)
 	}
 
-	logger.LogStep("Constructing 4-agent Eino Graph (Analyzer, Planning, Translator, Validator)")
+	logger.LogStep("Build 8-agent Eino Graph (Archaeologist, Analyzer, Planner, Translator, Reviewer, Validator, VerdictPanel, Recruiter)")
 	magharcmGraph, err := graph.NewMAgHARCMGraph(ctx, models, runID)
 	if err != nil {
 		return nil, fmt.Errorf("construct graph: %w", err)
 	}
 
-	logger.LogStep("Starting multi-agent translation execution")
+	logger.LogStep("Start multi-agent translation execution")
 	finalState, err := magharcmGraph.Execute(ctx, initialState)
 	if err != nil {
 		return nil, fmt.Errorf("execute pipeline: %w", err)
@@ -91,12 +91,12 @@ func Run(ctx context.Context, cfg *config.Config) (*types.State, error) {
 
 	if finalState.ValidationReport.IsAllSuccess() {
 		if err := agents.Cleanup(runID); err != nil {
-			logger.LogWarning("Failed to clean up checkpoints for run `%s`: %v", runID, err)
+			logger.LogWarning("Cannot remove checkpoints for run `%s`: %v", runID, err)
 		}
-		logger.LogAgent("MAgHARCM", "Translation and validation completed successfully: %s", finalState.ValidationReport.String())
+		logger.LogAgent("MAgHARCM", "Translation and validation completed: %s", finalState.ValidationReport.String())
 		logger.LogStep("Target project ready in `%s`", filepath.Clean(cfg.TargetDir))
 	} else {
-		logger.LogWarning("Execution finished: %s", finalState.ValidationReport.String())
+		logger.LogWarning("Execution stopped: %s", finalState.ValidationReport.String())
 		// PRIM-29 Recruitment-Adaptive Planning (AgentVerse style):
 		// Evaluate validation metrics through Recruiter to derive next-iteration plan.
 		recruiter := agents.NewRecruiter()
@@ -107,7 +107,7 @@ func Run(ctx context.Context, cfg *config.Config) (*types.State, error) {
 			AdversarialWeakeningDetected: false,
 		}
 		if plan, err := recruiter.Recruit(ctx, agents.Profile{}, summary); err == nil {
-			logger.LogAgent("Recruiter", "Adaptive plan for follow-up iteration: %s (tools: %v, agents: %v)",
+			logger.LogAgent("Recruiter", "Plan for next iteration: %s (tools: %v, agents: %v)",
 				plan.Rationale, plan.Tools, plan.Agents)
 		}
 	}

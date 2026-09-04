@@ -115,3 +115,34 @@ func TestComprehensionPipeline(t *testing.T) {
 		t.Errorf("expected recognized patterns, got none")
 	}
 }
+
+func TestIncrementalStrategySwitch(t *testing.T) {
+	reg := NewDefaultRegistry()
+	// Start with BigBang
+	p := Profile{FileCount: 2, LoC: 200, HasTests: true, HasBuild: true}
+	next, err := reg.NextStrategy(context.Background(), StrategyBigBang, p)
+	if err != nil {
+		t.Fatalf("NextStrategy failed: %v", err)
+	}
+	if next != StrategyIncremental {
+		t.Errorf("expected next strategy Incremental, got %s", next)
+	}
+
+	// Test SwitchToNextStrategy on state
+	state := &State{
+		AnalyzerOutput: AnalyzerOutput{
+			Research: DocumentWrapper[SourceProjectResearch]{
+				Data: SourceProjectResearch{
+					MigrationStrategy: string(StrategyBigBang),
+				},
+			},
+		},
+	}
+	newStrat, switched := SwitchToNextStrategy(context.Background(), state)
+	if !switched {
+		t.Fatalf("expected strategy switch to succeed")
+	}
+	if newStrat != StrategyFrozenLegacy {
+		t.Errorf("expected FROZEN_LEGACY when HasTests is false, got %s", newStrat)
+	}
+}

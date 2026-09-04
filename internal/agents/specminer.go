@@ -32,6 +32,15 @@ type Invariants struct {
 	BranchCoverage     map[string]float64
 }
 
+// SpecMinerInvariants represents the dynamic invariants recovered by SpecMiner.
+type SpecMinerInvariants struct {
+	AllocSizes         []int              `json:"alloc_sizes"`
+	PointerNullability map[string]bool    `json:"pointer_nullability"`
+	AliasingPairs      [][2]string        `json:"aliasing_pairs"`
+	LifetimeRanges     map[string][2]int  `json:"lifetime_ranges"`
+	BranchCoverage     map[string]float64 `json:"branch_coverage"`
+}
+
 // SpecMiner recovers likely program invariants by exercising a source
 // binary with a corpus of inputs and observing execution traces. The
 // recovered categories follow the SpecMiner taxonomy: allocation sizes,

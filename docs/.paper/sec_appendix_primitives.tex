@@ -102,15 +102,36 @@ At translation iteration $i$, the Navigator re-indexes with prior translated fra
 \end{enumerate}
 
 \paragraph{Implementation Mapping.}
-Key primitives implemented in the MAgHARCM codebase include:
+All 31 foundational primitives are implemented in the MAgHARCM codebase:
 \begin{itemize}
-\item Reverse Topological Scheduling \& Back-Edge Cycle Removal --- \texttt{internal/agents/planning.go}
-\item Multi-Stage Build/Test Feedback Repair --- \texttt{internal/agents/validator.go}
-\item Adversarial Test-Weakening Guard --- \texttt{internal/agents/validator.go}
-\item Migration Strategy Selection --- \texttt{internal/agents/analyzer.go}
-\item Chunked Translation Dispatch --- \texttt{internal/agents/chunked\_translator.go}
-\item Symbol-Aware Navigator --- \texttt{internal/agents/navigator.go}
-\item Coverage Plateau Detection --- \texttt{internal/agents/plateau.go}
-\item Conversable State Checkpoint Persistence --- \texttt{internal/agents/checkpoint.go}
-\item Source-to-Target Manifest Rewriter --- \texttt{internal/agents/manifest_rewriter.go}
+\item Reverse Topological Scheduling \& Back-Edge Linearization (PRIM-1, PRIM-2) --- \texttt{internal/agents/planning.go}
+\item Target Skeleton-First Generation (PRIM-3) --- \texttt{internal/agents/planning.go}
+\item SpecMiner Dynamic Invariant Recovery (PRIM-4) --- \texttt{internal/agents/specminer.go}
+\item Test Suite Co-Translation \& Synthesis (PRIM-5) --- \texttt{internal/agents/validator.go}
+\item Multi-Stage Build/Test Feedback Repair (PRIM-6) --- \texttt{internal/agents/validator.go}
+\item Multi-Agent Verdict Validation (PRIM-7) --- \texttt{internal/agents/verdict\_panel.go}
+\item State-Grounded Mock-Based In-Isolation Validation (PRIM-8) --- \texttt{internal/agents/mock\_validator.go}
+\item Tri-Representation Hybrid Code Graph (PRIM-9) --- \texttt{internal/agents/cpg.go}
+\item Feature-Mapping \& Type-Compatibility Validation (PRIM-10) --- \texttt{internal/agents/feature\_mapping.go}
+\item Implementation-Agnostic Testing (PRIM-11) --- \texttt{internal/agents/impl\_agnostic.go}
+\item Wasm-Based Reference Execution Oracle (PRIM-12) --- \texttt{internal/agents/wasm\_oracle.go}
+\item Adversarial Test-Weakening Guard (PRIM-13) --- \texttt{internal/agents/validator.go}
+\item Software-Archaeology Stage (PRIM-14) --- \texttt{internal/agents/archaeology.go}
+\item Evidence-First Adaptation Pattern (PRIM-15) --- \texttt{internal/agents/evidence\_adaptation.go}
+\item Spec-Driven Development Lifecycle (PRIM-16) --- \texttt{internal/agents/spec\_lifecycle.go}
+\item Asynchronous SE Agent Blackboard (PRIM-17) --- \texttt{internal/agents/blackboard.go}
+\item Jaccard-Coupling Architecture Recovery (PRIM-18) --- \texttt{internal/agents/jaccard\_coupling.go}
+\item Design Rule Hierarchy Partitioning (PRIM-19) --- \texttt{internal/agents/design\_rule\_hierarchy.go}
+\item Concept Assignment and Redocumentation (PRIM-20) --- \texttt{internal/agents/concept\_assignment.go}
+\item Migration Strategy Try-and-Fail Selection (PRIM-21) --- \texttt{internal/agents/strategy.go}
+\item Four Phases of Comprehension (PRIM-22) --- \texttt{internal/agents/comprehension.go}
+\item Chunked Translation Dispatch (PRIM-23) --- \texttt{internal/agents/chunked\_translator.go}
+\item SOP-Anchored Role-Artifact Schema (PRIM-24) --- \texttt{internal/artifacts/versioning.go}
+\item Communicative Role-Flip De-Hallucination Gate (PRIM-25) --- \texttt{internal/agents/roleflip.go}
+\item Symbol-Aware Navigator (PRIM-26) --- \texttt{internal/agents/navigator.go}
+\item Coverage-Guided Plateau Detection (PRIM-27) --- \texttt{internal/agents/plateau.go}
+\item Conversable State Checkpoint Persistence (PRIM-28) --- \texttt{internal/agents/checkpoint.go}
+\item Recruitment-Adaptive Planning (PRIM-29) --- \texttt{internal/agents/recruit.go}
+\item Source-to-Target Manifest Rewriter (PRIM-30) --- \texttt{internal/agents/manifest\_rewriter.go}
+\item Iterative Retrieval Refinement (PRIM-31) --- \texttt{internal/agents/iter\_retrieval.go}
 \end{itemize}

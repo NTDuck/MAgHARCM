@@ -11,7 +11,6 @@ import (
 
 	"MAgHARCM/internal/logger"
 	"MAgHARCM/internal/tools"
-	"MAgHARCM/internal/types"
 )
 
 // SymbolResolution is the planner-callable result of a Navigator.LookupSymbol call.
@@ -183,7 +182,7 @@ const maxNavigatorLookups = 50
 // (resolved information is logged but not yet folded back into the
 // planning output). When no Navigator or no Provider is configured the
 // state is forwarded unchanged so the rest of the pipeline is unaffected.
-func (n *NavigatorAgent) Run(ctx context.Context, state *types.State) (*types.State, error) {
+func (n *NavigatorAgent) Run(ctx context.Context, state *State) (*State, error) {
 	if state == nil {
 		return nil, nil
 	}

@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"MAgHARCM/internal/types"
+	"MAgHARCM/internal/compiletime"
 )
 
 // CheckpointDir returns the per-run checkpoint directory under .artifacts/<run-id>/checkpoints/.
@@ -24,7 +24,7 @@ func CheckpointDir(runID string) string {
 // source directory always lands on the same checkpoint directory under
 // .artifacts/. Two source dirs that canonicalize to the same path share a
 // run ID.
-func RunIDForTask(task types.TranslationTask) string {
+func RunIDForTask(task compiletime.Task) string {
 	src := filepath.Clean(task.SourceDir)
 	if src == "" || src == "." {
 		return "default"
@@ -32,13 +32,13 @@ func RunIDForTask(task types.TranslationTask) string {
 	return strings.NewReplacer(string(filepath.Separator), "-").Replace(src)
 }
 
-// Checkpoint is a snapshot of *types.State plus a version + timestamp.
+// Checkpoint is a snapshot of *State plus a version + timestamp.
 // Fields are versioned via Version so future schema changes don't break old checkpoints.
 type Checkpoint struct {
 	Version   int          `json:"version"`
 	CreatedAt time.Time    `json:"created_at"`
 	Iteration int          `json:"iteration"`
-	State     *types.State `json:"state"`
+	State     *State       `json:"state"`
 }
 
 const CurrentCheckpointVersion = 1
@@ -46,7 +46,7 @@ const CurrentCheckpointVersion = 1
 // Save writes a checkpoint for the given state under .artifacts/<runID>/checkpoints/iter-N.json.
 // If runID is empty, returns an error (caller must always provide a run ID — generate one if missing).
 // Returns the path written so the caller can log it.
-func Save(runID string, state *types.State) (string, error) {
+func Save(runID string, state *State) (string, error) {
 	if runID == "" {
 		return "", fmt.Errorf("checkpoint: runID must not be empty")
 	}

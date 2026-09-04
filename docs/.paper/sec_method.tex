@@ -92,12 +92,14 @@ exhausted.
 \begin{algorithmic}[1]
 \Input Source project $P_s$, source language $L_s$, target language $L_t$, max iterations $K$
 \Output Translated target project $P_t$ and validation report $\mathcal{R}$
+\StateIndent $\text{ArchReport} \gets \Call{InvestigateArchaeology}{P_s}$ \Comment{PRIM-14, 18, 19, 20, 22}
 \StateIndent $G_{\text{AST}}, \text{Manifest} \gets \Call{ExtractAST}{P_s}$
-\StateIndent $\text{Strategy}, \text{Design} \gets \Call{Analyze}{G_{\text{AST}}, \text{Manifest}, L_s, L_t}$
+\StateIndent $\text{Strategy}, \text{Design} \gets \Call{Analyze}{G_{\text{AST}}, \text{Manifest}, \text{ArchReport}, L_s, L_t}$
 \StateIndent $DAG, \text{Plan}, \text{Skel} \gets \Call{Plan}{G_{\text{AST}}, \text{Design}, L_s, L_t}$
 \StateIndent $P_t \gets \Call{InitializeCrate}{\text{Skel}, \text{Plan}}$
 \StateIndent $P_t \gets \Call{TranslateChunked}{\text{Translator}, P_t, \text{Plan}}$
 \StateIndent $\Call{SaveCheckpoint}{P_t, \text{iter}=0}$
+\StateIndent $\Call{ReviewRoleFlip}{P_t}$ \Comment{PRIM-25 Role-Flip Reviewer}
 \StateIndent $\mathcal{R} \gets \emptyset$
 \WhileIndent{$\text{iter} < K$}
     \StateDIndent $\mathcal{R} \gets \text{ValidatorAgent}.\Call{Validate}{P_t, P_s}$
@@ -105,9 +107,13 @@ exhausted.
         \StateTIndent \Return $P_t, \mathcal{R}$ \Comment{Converged}
     \EndIfIndent
     \IfDIndent{$\mathcal{R}.\text{PlateauDetected} \lor \mathcal{R}.\text{Weakened}$}
-        \StateTIndent \textbf{break} \Comment{Coverage plateau or weakening guard fired}
+        \StateTIndent $\text{switched} \gets \Call{SwitchToNextStrategy}{\text{Strategy}}$ \Comment{Incremental Strategy Failover}
+        \IfTIndent{$\neg \text{switched}$} \textbf{break} \EndIfIndent
     \EndIfIndent
+    \StateDIndent $\Call{EvaluateConsensus}{\text{VerdictPanel}, P_s, P_t}$ \Comment{PRIM-7}
+    \StateDIndent $\Call{RecruitAdaptivePlan}{\text{Recruiter}, \mathcal{R}}$ \Comment{PRIM-29}
     \StateDIndent $P_t \gets \text{TranslatorAgent}.\Call{Repair}{P_t, \mathcal{R}}$
+    \StateDIndent $\Call{ReviewRoleFlip}{P_t}$
     \StateDIndent $\text{iter} \gets \text{iter} + 1$
     \StateDIndent $\Call{SaveCheckpoint}{P_t, \text{iter}}$
 \EndWhile
@@ -119,10 +125,14 @@ exhausted.
 \label{sec:method_magharcm}
 
 Tools are essential components that enable agent autonomy. We first
-explain the tools that assist the four MAgHARCM agents with static
+explain the tools that assist the specialized MAgHARCM agents with static
 analysis (§\ref{sec:method_tools}) and then detail the workflow of each
-agent for code translation and validation through reasoning and tool
-usage (§\ref{sec:method_analyzer}--§\ref{sec:method_validator}).
+specialized agent unit for code translation, archaeological recovery,
+and validation through reasoning and tool usage
+(§\ref{sec:method_archaeologist}--§\ref{sec:method_recruiter}).
+
+\section{MAgHARCM}
+\label{sec:method_magharcm}
 
 \subsection{Tools}
 \label{sec:method_tools}
@@ -205,14 +215,28 @@ exploring the codebase and files. Functionalities included are:
     variables.
 \end{enumerate}
 
-The Tree-sitter backend is the default. It parses source files with
-the Tree-sitter grammar for the source language and extracts the same
-information as ReCodeAgent's PA tools at the cost of a single grammar
-per supported PL ($300$--$350$ LoC per PL). Adding a new PL does not
-require writing an analysis component; only a Tree-sitter grammar and
-a small extraction handler are required. The ABCoder MCP provider may
-be configured through YAML (\texttt{lsp.provider: abcoder-mcp}) for
-richer cross-language structural queries.
+The ABCoder MCP provider (\texttt{lsp.provider: abcoder-mcp}) is the
+default across configurations. It delegates structural queries to a
+Model-Context-Protocol server exposing UniAST semantic anchors across
+heterogeneous language targets. The native Tree-sitter backend is
+retained as a local fallback when external MCP processes are disabled.
+
+\subsection{Archaeologist Agent}
+\label{sec:method_archaeologist}
+
+The Archaeologist Agent (§\ref{sec:method_archaeologist}) executes an
+initial pre-planning software archaeology pass over $P_s$, combining
+foundational techniques from Rajlich~\cite{p28_weiser},
+M\"uller~\cite{p06_codes_bench}, Foltz~\cite{p30_lfm25}, and
+Kazman~\cite{p20_p51_kazman_drspaces}. It produces an
+\texttt{ArchaeologyReport} with five components:
+\begin{enumerate}
+    \item \emph{Boundary Extraction}: identifies module and file boundaries.
+    \item \emph{Time-Capsule Harness}: captures reproduction shell commands for historical toolchains.
+    \item \emph{Temporal Churn Coupling}: computes pairwise commit co-change Jaccard similarity to detect hidden coupling invisible to static import graphs (PRIM-18).
+    \item \emph{Design Rule Hierarchy Partitioning}: categorizes elements into L1 design-rule interfaces, L2 subsystems, and L3 concrete leaves, flagging modularity violations where L1 interfaces depend on L3 leaves (PRIM-19).
+    \item \emph{Concept Assignment \& Redocumentation}: clusters lexical tokens into domain concept bindings mapped to physical file paths (PRIM-20).
+\end{enumerate}
 
 \subsection{Analyzer Agent}
 \label{sec:method_analyzer}
@@ -469,33 +493,57 @@ the translated code is both functionally correct (with respect to the
 available tests) and more rigorously exercised. The iterative loop
 continues until all tests pass or the maximum iteration limit is
 reached.
+\subsection{Reviewer Agent}
+\label{sec:method_reviewer}
+
+The Reviewer Agent (§\ref{sec:method_reviewer}) executes a communicative
+de-hallucination pass over generated code using a role-flipped prompt
+(PRIM-25~\cite{p46_chatdev}). Rather than accepting the Translator's
+sycophantic assertions that generated code is bug-free, the Reviewer
+is explicitly primed to find defects and surface potential discrepancies
+before the code reaches the compiler.
+
+\subsection{Verdict Panel Agent}
+\label{sec:method_verdict_panel}
+
+When validation fails during iterative repair, the Verdict Panel Agent
+(§\ref{sec:method_verdict_panel}) queries independent reasoning models
+to evaluate functional equivalence between source and target fragments
+(PRIM-7~\cite{p08_matchfixagent}). The consensus decision (agreement
+status and structured disagreements) guides subsequent repair iterations.
+
+\subsection{Recruiter Agent}
+\label{sec:method_recruiter}
+
+The Recruiter Agent (§\ref{sec:method_recruiter}) evaluates runtime
+validation signals (compilation status, test pass rate, coverage plateau,
+and test weakening) to adapt the pipeline dynamically
+(PRIM-29~\cite{p26_agentverse}). When repair iterations stall or
+plateau, the Recruiter triggers incremental try-and-fail strategy
+failover, switching from the current migration strategy to the next
+viable strategy in the registry.
 
 \begin{figure*}[!t]
     \centering
     \includegraphics[width=\textwidth]{figures/fig4_lifecycle.png}
     \vspace{-0.5em}
     \caption{State-machine lifecycle of MAgHARCM. The system
-    transitions through intake, analysis, planning, chunked translation,
-    multi-stage validation, and repair until convergence, plateau
+    transitions through archaeology, analysis, planning, chunked translation,
+    review, multi-stage validation, and repair until convergence, plateau
     detection, weakening, or budget exhaustion.}
     \label{fig:lifecycle}
 \end{figure*}
 
-\subsection{State Container and Checkpointing}
+\subsection{State Container, Locality of Behaviour, and Checkpointing}
 
 Every agent reads from and writes back into a shared
-\texttt{types.State} container that embeds the three analyzer
-documents, the planner output (name mapping, skeleton, plan), the
-translated project, and the latest validation report. The shared
-state is the only contract between agents; each agent's signature is
-\texttt{(*State) error}, so no agent assumes knowledge of another's
-internals. The state is serialised to
-\texttt{.artifacts/<run-id>/checkpoints/iter-NNNN.json} after every
-iteration; a crashed run resumes from the most recent checkpoint on
-the next invocation. The artifact types embedded in \texttt{types.State}
-(\texttt{AnalyzerOutput}, \texttt{PlanningOutput},
-\texttt{TranslatedProject}, \texttt{ValidationReport}) live in
-\texttt{internal/artifacts}, which has zero upstream imports. This
-three-package layout (\texttt{artifacts} $\to$ \texttt{types} $\to$
-producers) avoids the import cycle that would arise from placing each
-output shape next to its producer agent.
+\texttt{State} container that coordinates data flow across explicit
+typed contracts. To enforce \emph{Locality of Behaviour} and deep
+cohesion, each agent declares its intermediate role artifacts directly
+within its own module (\texttt{AnalyzerOutput} in \texttt{analyzer.go},
+\texttt{PlanningOutput} in \texttt{planning.go},
+\texttt{ValidationReport} in \texttt{validator.go}). Centralized
+compile-time configurations, enums, sentinels, and initialization
+helpers live in \texttt{internal/compiletime}, enforcing the strict
+\texttt{Must} pattern without default fallbacks. State snapshots are
+persisted to disk after each stage, enabling idempotent checkpoint resumption.

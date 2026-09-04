@@ -11,10 +11,8 @@ import (
 	"github.com/cloudwego/eino/components/model"
 	"github.com/cloudwego/eino/schema"
 
-	"MAgHARCM/internal/artifacts"
 	"MAgHARCM/internal/logger"
 	"MAgHARCM/internal/tools"
-	"MAgHARCM/internal/types"
 )
 
 // AnalyzerAgent maps the source codebase hierarchy, identifies third-party library dependencies, and drafts the target architecture.
@@ -30,6 +28,64 @@ type AnalyzerAgent struct {
 	SpecMiner            *SpecMiner
 	AnalyzerSpecMinerConfig AnalyzerSpecMinerConfig
 }
+
+// DocumentWrapper keeps both structured data and markdown representation.
+type DocumentWrapper[T any] struct {
+	ArtifactSchemaVersion string `json:"schema_version"`
+	Data                  T      `json:"data"`
+	RawMarkdown           string `json:"raw_markdown"`
+}
+
+func (d DocumentWrapper[T]) SchemaVersion() string { return d.ArtifactSchemaVersion }
+
+// SourceProjectResearch represents the research document produced by AnalyzerAgent.
+type SourceProjectResearch struct {
+	Overview           string   `json:"overview"`
+	DirectoryStructure string   `json:"directory_structure"`
+	StructsInterfaces  string   `json:"structs_and_interfaces"`
+	DataModels         string   `json:"data_models"`
+	ErrorHandling      string   `json:"error_handling"`
+	Dependencies       []string `json:"dependencies"`
+	MigrationStrategy  string   `json:"migration_strategy,omitempty"`
+	StrategyRationale  string   `json:"strategy_rationale,omitempty"`
+	RawDocument        string   `json:"raw_document"`
+}
+
+// ThirdPartyLibraryAnalysis represents the library analysis document produced by AnalyzerAgent.
+type ThirdPartyLibraryAnalysis struct {
+	Libraries   []LibraryMapping `json:"libraries"`
+	RawDocument string           `json:"raw_document"`
+}
+
+// LibraryMapping details how a source library maps to a target library.
+type LibraryMapping struct {
+	SourceLibrary   string `json:"source_library"`
+	TargetLibrary   string `json:"target_library"`
+	Overview        string `json:"overview"`
+	Usage           string `json:"usage"`
+	Recommendations string `json:"recommendations"`
+}
+
+// TargetProjectDesign represents the design document produced by AnalyzerAgent.
+type TargetProjectDesign struct {
+	Overview                string   `json:"overview"`
+	TranslationRequirements string   `json:"translation_requirements"`
+	SourceFilesToTranslate  []string `json:"source_files_to_translate"`
+	ModuleStructure         string   `json:"module_structure"`
+	ErrorHandling           string   `json:"error_handling"`
+	ThirdPartyLibraries     []string `json:"third_party_libraries"`
+	RawDocument             string   `json:"raw_document"`
+}
+
+// AnalyzerOutput aggregates research, library mapping, and architectural design documents.
+type AnalyzerOutput struct {
+	ArtifactSchemaVersion string                                     `json:"schema_version"`
+	Research              DocumentWrapper[SourceProjectResearch]     `json:"research"`
+	Library               DocumentWrapper[ThirdPartyLibraryAnalysis] `json:"library"`
+	Design                DocumentWrapper[TargetProjectDesign]       `json:"design"`
+}
+
+func (a AnalyzerOutput) SchemaVersion() string { return a.ArtifactSchemaVersion }
 
 // AnalyzerSpecMinerConfig captures the inputs SpecMiner needs at analyzer
 // time. SourceBinary is the compiled source artifact path; Inputs are the
@@ -53,7 +109,7 @@ func NewAnalyzerAgentWithNavigator(m model.BaseChatModel, provider tools.LSPProv
 }
 
 // Run executes the 3-phase analysis workflow and returns updated state.
-func (a *AnalyzerAgent) Run(ctx context.Context, state *types.State) (*types.State, error) {
+func (a *AnalyzerAgent) Run(ctx context.Context, state *State) (*State, error) {
 	logger.LogAgent("Analyzer", "Starting source project analysis: `%s` (`%s` -> `%s`)",
 		state.Task.SourceDir, state.Task.SourceLang, state.Task.TargetLang)
 
@@ -74,7 +130,7 @@ func (a *AnalyzerAgent) Run(ctx context.Context, state *types.State) (*types.Sta
 			logger.LogWarning("PRIM-4 SpecMiner pre-analysis failed: %v", err)
 		} else {
 			logger.LogStep("PRIM-4 SpecMiner recovered %d allocation sizes across %d inputs", len(invars.AllocSizes), len(a.AnalyzerSpecMinerConfig.Inputs))
-			state.SpecMinerInvariants = artifacts.SpecMinerInvariants{
+			state.SpecMinerInvariants = SpecMinerInvariants{
 				AllocSizes:         invars.AllocSizes,
 				PointerNullability: invars.PointerNullability,
 				AliasingPairs:      invars.AliasingPairs,
@@ -148,7 +204,7 @@ func (a *AnalyzerAgent) extractFileStructures(files []string) ([]string, []strin
 }
 
 // synthesizeAnalysis queries the reasoning model with directory structure, AST elements, and file contents.
-func (a *AnalyzerAgent) synthesizeAnalysis(ctx context.Context, state *types.State, treeStr, structureSummary, allCode string) (string, error) {
+func (a *AnalyzerAgent) synthesizeAnalysis(ctx context.Context, state *State, treeStr, structureSummary, allCode string) (string, error) {
 	prompt, err := renderPromptTemplate("analyzer", analyzerPromptTemplate, map[string]any{
 		"SourceLang":         state.Task.SourceLang,
 		"TargetLang":         state.Task.TargetLang,
@@ -172,10 +228,10 @@ func (a *AnalyzerAgent) synthesizeAnalysis(ctx context.Context, state *types.Sta
 }
 
 // populateAnalyzerOutput unpacks markdown sections into structured documents on state.
-func (a *AnalyzerAgent) populateAnalyzerOutput(state *types.State, rawDoc, strategy, rationale string) {
-	state.AnalyzerOutput.Research = artifacts.DocumentWrapper[artifacts.SourceProjectResearch]{
-		ArtifactSchemaVersion: artifacts.CurrentSchemaVersion,
-		Data: artifacts.SourceProjectResearch{
+func (a *AnalyzerAgent) populateAnalyzerOutput(state *State, rawDoc, strategy, rationale string) {
+	state.AnalyzerOutput.Research = DocumentWrapper[SourceProjectResearch]{
+		ArtifactSchemaVersion: CurrentSchemaVersion,
+		Data: SourceProjectResearch{
 			Overview:           extractSection(rawDoc, "## 1. Overview", "## 2. Directory Structure"),
 			DirectoryStructure: extractSection(rawDoc, "## 2. Directory Structure", "## 3. Data Structures"),
 			MigrationStrategy:  strategy,
@@ -183,17 +239,17 @@ func (a *AnalyzerAgent) populateAnalyzerOutput(state *types.State, rawDoc, strat
 		},
 		RawMarkdown: rawDoc,
 	}
-	state.AnalyzerOutput.Library = artifacts.DocumentWrapper[artifacts.ThirdPartyLibraryAnalysis]{
-		ArtifactSchemaVersion: artifacts.CurrentSchemaVersion,
-		Data: artifacts.ThirdPartyLibraryAnalysis{
-			Libraries: []artifacts.LibraryMapping{},
+	state.AnalyzerOutput.Library = DocumentWrapper[ThirdPartyLibraryAnalysis]{
+		ArtifactSchemaVersion: CurrentSchemaVersion,
+		Data: ThirdPartyLibraryAnalysis{
+			Libraries: []LibraryMapping{},
 		},
 		RawMarkdown: extractSection(rawDoc, "=== SECTION: LIBRARY_ANALYSIS ===", "=== SECTION: TARGET_DESIGN ==="),
 	}
 
-	state.AnalyzerOutput.Design = artifacts.DocumentWrapper[artifacts.TargetProjectDesign]{
-		ArtifactSchemaVersion: artifacts.CurrentSchemaVersion,
-		Data: artifacts.TargetProjectDesign{
+	state.AnalyzerOutput.Design = DocumentWrapper[TargetProjectDesign]{
+		ArtifactSchemaVersion: CurrentSchemaVersion,
+		Data: TargetProjectDesign{
 			Overview: extractSection(rawDoc, "## Target Architecture", "## Module Decomposition"),
 		},
 		RawMarkdown: extractSection(rawDoc, "=== SECTION: TARGET_DESIGN ===", ""),

@@ -9,109 +9,172 @@ import (
 	"MAgHARCM/internal/agents"
 	"MAgHARCM/internal/llm"
 	"MAgHARCM/internal/logger"
-	"MAgHARCM/internal/types"
 )
 
 // MAgHARCMGraph wraps the compiled Eino runnable for the multi-agent pipeline.
 type MAgHARCMGraph struct {
-	Runnable compose.Runnable[*types.State, *types.State]
-	// RunID identifies the current translation run and is forwarded to the
-	// translator and validator agents so they can persist per-iteration
-	// checkpoints under .artifacts/<RunID>/checkpoints/. Empty disables
-	// checkpointing.
+	Runnable compose.Runnable[*agents.State, *agents.State]
+	// RunID identifies the current translation run for disk checkpoints.
 	RunID string
 }
 
-// checkpointLambda is the lambda body for the save_translator_ckpt and
-// save_validator_ckpt graph nodes. The actual save is performed inside the
-// translator/validator Run via a defer that runs on every return (success or
-// error). These lambda nodes exist as explicit graph checkpoints so the
-// repair-cycle branch can re-enter the translator only after the validator
-// checkpoint is on disk.
-func checkpointLambda(_ context.Context, state *types.State) (*types.State, error) {
+// checkpointLambda provides an explicit graph synchronization barrier
+// so downstream branches execute only after previous state is durable.
+func checkpointLambda(_ context.Context, state *agents.State) (*agents.State, error) {
 	return state, nil
 }
 
-// NewMAgHARCMGraph constructs and compiles the multi-agent cyclic graph with automated translation repair loop.
-// runID is forwarded to the translator and validator so each iteration is
-// checkpointed under .artifacts/<runID>/checkpoints/. Pass "" to disable
-// checkpointing entirely.
+// NewMAgHARCMGraph constructs and compiles the 8-agent cyclic graph with automated repair.
 func NewMAgHARCMGraph(ctx context.Context, models *llm.Models, runID string) (*MAgHARCMGraph, error) {
-	g := compose.NewGraph[*types.State, *types.State]()
+	g := compose.NewGraph[*agents.State, *agents.State]()
 
-	// Initialize reasoning and coding agent instances
+	// 1. Initialize independent agent execution units
+	archaeologistAgent := agents.NewArchaeologist()
 	analyzerAgent := agents.NewAnalyzerAgent(models.Reasoning)
-	// PRIM-9 HybridCodeGraph (AST ∪ CPG ∪ SDG) feeds the analyzer's
-	// Navigator so LSP-missed symbols get a synthesized definition before
-	// falling back to LLM-only resolution.
-	analyzerAgent.Navigator = agents.NewNavigator(nil)
-	analyzerAgent.Navigator.CodeGraph = agents.NewHybridCodeGraph("", nil)
-
-	// PRIM-26 Symbol-Aware Navigator is now a sub-mechanism of the Planner
-	// (LSP provider invocation), not a top-level graph node.
 	planningAgent := agents.NewPlanningAgent(models.Reasoning)
-	// PRIM-14 software-archaeology pre-planning pass: register an
-	// Archaeologist so planner.Run recovers boundaries, churn hotspots,
-	// and naming forensics before fragment extraction.
-	planningAgent.Archaeologist = agents.NewArchaeologist()
 	translatorAgent := agents.NewTranslatorAgent(models.Coding, runID)
+	reviewerAgent := agents.NewRoleFlipGate(models.Reasoning)
 	validatorAgent := agents.NewValidatorAgent(models.Reasoning, runID)
+	verdictPanelAgent := agents.NewVerdictPanel(models.Reasoning)
+	recruiterAgent := agents.NewRecruiter()
 
-	// calls beyond the validator's reasoning tier); enable by default so
-	// the cascade surfaces disagreement before the repair loop iterates.
-	verdictPanel := agents.NewVerdictPanel(models.Reasoning)
-	validatorAgent.OptionalChecks = agents.DefaultOptionalChecks(agents.OptionalChecksConfig{
-		VerdictPanel: verdictPanel,
-	})
-	// PRIM-25 communicative-de-hallucination RoleFlipGate: feed the
-	// validator cascade a reviewer-model pass on the latest translator
-	// output before the repair loop iterates.
-	roleFlipGate := agents.NewRoleFlipGate(models.Reasoning)
-	validatorAgent.OptionalChecks = agents.DefaultOptionalChecks(agents.OptionalChecksConfig{
-		VerdictPanel: verdictPanel,
-		RoleFlipGate: roleFlipGate,
-	})
+	// 2. Register agent nodes in the Eino Graph
 
+	// Node 1: Archaeologist (PRIM-14, 18, 19, 20, 22)
+	if err := g.AddLambdaNode("archaeologist", compose.InvokableLambda(func(ctx context.Context, state *agents.State) (*agents.State, error) {
+		logger.LogAgent("Archaeologist", "Starting pre-planning software archaeology")
+		if state.Task.SourceDir != "" {
+			rep, err := archaeologistAgent.Investigate(ctx, state.Task.SourceDir)
+			if err != nil {
+				logger.LogWarning("Archaeologist investigation had warnings: %v", err)
+			} else {
+				state.ArchaeologyReport = rep
+				logger.LogAgent("Archaeologist", "Excavation complete: %d boundaries, %d churn hotspots, %d forensics",
+					len(rep.BoundaryMap), len(rep.ChurnHotspots), len(rep.NamingForensics))
+			}
+		}
+		return state, nil
+	})); err != nil {
+		return nil, err
+	}
 
-	// Register agent execution units as graph nodes with VRAM management
-	if err := g.AddLambdaNode("analyzer", compose.InvokableLambda(func(ctx context.Context, state *types.State) (*types.State, error) {
+	// Node 2: Analyzer
+	if err := g.AddLambdaNode("analyzer", compose.InvokableLambda(func(ctx context.Context, state *agents.State) (*agents.State, error) {
 		models.PrepareReasoning()
 		return analyzerAgent.Run(ctx, state)
 	})); err != nil {
 		return nil, err
 	}
 
-	if err := g.AddLambdaNode("planning", compose.InvokableLambda(func(ctx context.Context, state *types.State) (*types.State, error) {
+	// Node 3: Planner (PRIM-1, 2, 3)
+	if err := g.AddLambdaNode("planning", compose.InvokableLambda(func(ctx context.Context, state *agents.State) (*agents.State, error) {
 		models.PrepareReasoning()
 		return planningAgent.Run(ctx, state)
 	})); err != nil {
 		return nil, err
 	}
-	if err := g.AddLambdaNode("translator", compose.InvokableLambda(func(ctx context.Context, state *types.State) (*types.State, error) {
+
+	// Node 4: Translator (PRIM-23, 31)
+	if err := g.AddLambdaNode("translator", compose.InvokableLambda(func(ctx context.Context, state *agents.State) (*agents.State, error) {
 		models.PrepareCoding()
 		return translatorAgent.Run(ctx, state)
 	})); err != nil {
 		return nil, err
 	}
-	if err := g.AddLambdaNode("validator", compose.InvokableLambda(func(ctx context.Context, state *types.State) (*types.State, error) {
+
+	// Node 5: Checkpoint after translation
+	if err := g.AddLambdaNode("save_translator_ckpt", compose.InvokableLambda(checkpointLambda)); err != nil {
+		return nil, err
+	}
+
+	// Node 6: Reviewer (PRIM-25 Role-Flip Gate)
+	if err := g.AddLambdaNode("reviewer", compose.InvokableLambda(func(ctx context.Context, state *agents.State) (*agents.State, error) {
+		models.PrepareReasoning()
+		if len(state.TranslatedProject.Files) > 0 {
+			// Select a representative sample for role-flip inspection
+			var sample string
+			for _, content := range state.TranslatedProject.Files {
+				sample = content
+				break
+			}
+			verdict, err := reviewerAgent.Inspect(ctx, sample)
+			if err != nil {
+				logger.LogWarning("Reviewer role-flip gate error: %v", err)
+			} else if verdict.DefectFound {
+				logger.LogWarning("Reviewer detected potential defect: %s", verdict.Reason)
+			} else {
+				logger.LogAgent("Reviewer", "Role-flip sanity check passed")
+			}
+		}
+		return state, nil
+	})); err != nil {
+		return nil, err
+	}
+
+	// Node 7: Validator (PRIM-5, 6, 13, 27)
+	if err := g.AddLambdaNode("validator", compose.InvokableLambda(func(ctx context.Context, state *agents.State) (*agents.State, error) {
 		models.PrepareReasoning()
 		return validatorAgent.Run(ctx, state)
 	})); err != nil {
 		return nil, err
 	}
-	// Checkpoint lambda nodes: each is a no-op forwarder placed after the
-	// agent that has already persisted a snapshot via its own defer. They
-	// give the repair branch a stable anchor node so the cycle resumes only
-	// after the previous iteration's checkpoint is durable on disk.
-	if err := g.AddLambdaNode("save_translator_ckpt", compose.InvokableLambda(checkpointLambda)); err != nil {
-		return nil, err
-	}
+
+	// Node 8: Checkpoint after validation
 	if err := g.AddLambdaNode("save_validator_ckpt", compose.InvokableLambda(checkpointLambda)); err != nil {
 		return nil, err
 	}
+	// Node 9: Verdict Panel (PRIM-7 Multi-Agent Consensus)
+	if err := g.AddLambdaNode("verdict_panel", compose.InvokableLambda(func(ctx context.Context, state *agents.State) (*agents.State, error) {
+		models.PrepareReasoning()
+		if !state.ValidationReport.IsAllSuccess() && len(state.TranslatedProject.Files) > 0 {
+			var sampleTarget string
+			for _, c := range state.TranslatedProject.Files {
+				sampleTarget = c
+				break
+			}
+			res, err := verdictPanelAgent.Judge(ctx, "legacy source code", sampleTarget, agents.DefaultPanelSize)
+			if err != nil {
+				logger.LogWarning("Verdict panel error: %v", err)
+			} else {
+				logger.LogAgent("VerdictPanel", "Majority decision: agree=%v, disagreements=%d",
+					res.Agree, len(res.Disagreements))
+			}
+		}
+		return state, nil
+	})); err != nil {
+		return nil, err
+	}
 
-	// Wire the primary forward pipeline from analysis through validation
-	if err := g.AddEdge(compose.START, "analyzer"); err != nil {
+	// Node 10: Recruiter (PRIM-29 Dynamic Iteration Adaptation)
+	if err := g.AddLambdaNode("recruiter", compose.InvokableLambda(func(ctx context.Context, state *agents.State) (*agents.State, error) {
+		if !state.ValidationReport.IsAllSuccess() {
+			// Trigger try-and-fail migration strategy switch if needed
+			if state.ValidationReport.PlateauDetected || len(state.ValidationReport.CompilationErrors) > 0 {
+				if next, switched := agents.SwitchToNextStrategy(ctx, state); switched {
+					logger.LogAgent("Recruiter", "Activated next migration strategy: %s", next)
+				}
+			}
+			summary := agents.ValidationSummary{
+				CompilationSuccess:           state.ValidationReport.CompilationSuccess,
+				PassRate:                     state.ValidationReport.TestPassRate,
+				PlateauDetected:              state.ValidationReport.PlateauDetected,
+				AdversarialWeakeningDetected: state.ValidationReport.AdversarialWeakeningDetected,
+			}
+			plan, err := recruiterAgent.Recruit(ctx, agents.Profile{}, summary)
+			if err == nil {
+				logger.LogAgent("Recruiter", "Adaptive plan for repair: %s (tools: %v)", plan.Rationale, plan.Tools)
+			}
+		}
+		return state, nil
+	})); err != nil {
+		return nil, err
+	}
+
+	// 3. Connect Forward Pipeline Edges
+	if err := g.AddEdge(compose.START, "archaeologist"); err != nil {
+		return nil, err
+	}
+	if err := g.AddEdge("archaeologist", "analyzer"); err != nil {
 		return nil, err
 	}
 	if err := g.AddEdge("analyzer", "planning"); err != nil {
@@ -123,38 +186,48 @@ func NewMAgHARCMGraph(ctx context.Context, models *llm.Models, runID string) (*M
 	if err := g.AddEdge("translator", "save_translator_ckpt"); err != nil {
 		return nil, err
 	}
-	if err := g.AddEdge("save_translator_ckpt", "validator"); err != nil {
+	if err := g.AddEdge("save_translator_ckpt", "reviewer"); err != nil {
+		return nil, err
+	}
+	if err := g.AddEdge("reviewer", "validator"); err != nil {
 		return nil, err
 	}
 	if err := g.AddEdge("validator", "save_validator_ckpt"); err != nil {
 		return nil, err
 	}
-	// Implement dynamic repair feedback loop returning to translator on validation failure.
-	// Branch off save_validator_ckpt so the cycle resumes only after the
-	// validator checkpoint is durable.
+
+	// 4. Connect Validation Branching & Cyclic Repair Loop
 	repairBranch := compose.NewGraphBranch(
-		func(ctx context.Context, state *types.State) (string, error) {
+		func(ctx context.Context, state *agents.State) (string, error) {
 			if state.IsComplete || state.ValidationReport.IsAllSuccess() || state.Iteration >= state.MaxIterations {
-				logger.LogStep("Graph pipeline terminating: complete=%v, all_success=%v, iteration=%d/%d",
+				logger.LogStep("Pipeline termination condition met: complete=%v, all_success=%v, iteration=%d/%d",
 					state.IsComplete, state.ValidationReport.IsAllSuccess(), state.Iteration, state.MaxIterations)
 				return compose.END, nil
 			}
-			logger.LogStep("Validation incomplete, cycling back to translator for repair (iteration %d/%d)",
+			logger.LogStep("Validation incomplete; routing to verdict panel and recruiter for repair (iteration %d/%d)",
 				state.Iteration, state.MaxIterations)
-			return "translator", nil
+			return "verdict_panel", nil
 		},
 		map[string]bool{
-			compose.END:  true,
-			"translator": true,
+			compose.END:     true,
+			"verdict_panel": true,
 		},
 	)
 	if err := g.AddBranch("save_validator_ckpt", repairBranch); err != nil {
 		return nil, err
 	}
 
-	// Compile graph with step budget accommodating multiple repair iterations
+	// Connect repair branch sequence: verdict_panel -> recruiter -> translator
+	if err := g.AddEdge("verdict_panel", "recruiter"); err != nil {
+		return nil, err
+	}
+	if err := g.AddEdge("recruiter", "translator"); err != nil {
+		return nil, err
+	}
+
+	// 5. Compile Graph with safety run-step ceiling
 	runnable, err := g.Compile(ctx,
-		compose.WithGraphName("MAgHARCM"),
+		compose.WithGraphName("MAgHARCM-8Agent"),
 		compose.WithMaxRunSteps(50),
 	)
 	if err != nil {
@@ -165,6 +238,6 @@ func NewMAgHARCMGraph(ctx context.Context, models *llm.Models, runID string) (*M
 }
 
 // Execute runs the translation graph with initial state and returns final state.
-func (rg *MAgHARCMGraph) Execute(ctx context.Context, initialState *types.State) (*types.State, error) {
+func (rg *MAgHARCMGraph) Execute(ctx context.Context, initialState *agents.State) (*agents.State, error) {
 	return rg.Runnable.Invoke(ctx, initialState)
 }

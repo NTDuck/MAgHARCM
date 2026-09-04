@@ -1,53 +1,15 @@
-// Package types holds the State container and the input contract
-// (TranslationTask) for the translation pipeline. The output artifacts
-// produced by each agent live in internal/artifacts so producers and
-// consumers can share them without an import cycle.
-//
-// Dependency direction:
-//
-//	internal/artifacts  (no deps)
-//	         ^
-//	         |
-//	internal/types  --> internal/agents, internal/graph, internal/runner
+// Package types re-exports the State container and Task definition for backward compatibility.
+// Artifact definitions now live directly within their producing agent modules in internal/agents
+// (preserving Locality of Behaviour), and compile-time task specs live in internal/compiletime.
 package types
 
-import "MAgHARCM/internal/artifacts"
+import (
+	"MAgHARCM/internal/agents"
+	"MAgHARCM/internal/compiletime"
+)
 
-// TranslationTask defines the input specification for the translation pipeline.
-// It stays in internal/types (rather than internal/artifacts) because the YAML
-// loader in internal/config populates it directly from the request file; the
-// type has no "produced by agent" semantics — it is the user's request, so it
-// belongs with State.
-type TranslationTask struct {
-	SourceDir   string `json:"source_dir"`
-	TargetDir   string `json:"target_dir"`
-	SourceLang  string `json:"source_lang"`
-	TargetLang  string `json:"target_lang"`
-	Toolchain   string `json:"toolchain,omitempty"`
-	LSPProvider string `json:"lsp_provider,omitempty"`
-}
+// TranslationTask is the compile-time task definition re-exported from compiletime.Task.
+type TranslationTask = compiletime.Task
 
-// State is the shared context passed between Eino graph nodes. Each field is
-// a structured artifact produced by one agent and consumed by later agents;
-// the underlying types live in internal/artifacts.
-type State struct {
-	Task               TranslationTask             `json:"task"`
-	AnalyzerOutput     artifacts.AnalyzerOutput    `json:"analyzer_output"`
-	PlanningOutput     artifacts.PlanningOutput    `json:"planning_output"`
-	TranslatedProject  artifacts.TranslatedProject `json:"translated_project"`
-	ValidationReport   artifacts.ValidationReport  `json:"validation_report"`
-	Iteration          int                         `json:"iteration"`
-	MaxIterations      int                         `json:"max_iterations"`
-	IsComplete         bool                        `json:"is_complete"`
-	PriorTestSnapshots map[string]string           `json:"prior_test_snapshots,omitempty"`
-	// SpecMinerInvariants is the PRIM-4 dynamic-invariant recovery side-channel
-	// populated by the analyzer when SpecMiner is enabled. Independent of the
-	// versioned artifact schema because invariants evolve alongside the
-	// primitive rather than the role contract.
-	SpecMinerInvariants artifacts.SpecMinerInvariants `json:"spec_miner_invariants,omitempty"`
-	// ArchaeologyReport is the PRIM-14 software-archaeology pre-planning
-	// report (boundaries, churn hotspots, time-capsule commands, legacy
-	// naming findings). Side-channel: not part of the versioned artifact
-	// schema because the archaeology primitive evolves independently.
-	ArchaeologyReport artifacts.ArchaeologyReport `json:"archaeology_report,omitempty"`
-}
+// State is the shared pipeline state re-exported from agents.State.
+type State = agents.State

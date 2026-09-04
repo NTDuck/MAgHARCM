@@ -21,6 +21,7 @@ import (
 	"sync"
 	"time"
 
+	"MAgHARCM/internal/compiletime"
 	"MAgHARCM/internal/consts"
 )
 
@@ -45,7 +46,7 @@ type BlackboardEvent struct {
 type WorkUnit struct {
 	ID        string
 	ClaimedBy string
-	Status    string
+	Status    compiletime.WorkUnitStatus
 	Result    any
 }
 

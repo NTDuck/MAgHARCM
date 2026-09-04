@@ -14,11 +14,9 @@ import (
 	"github.com/cloudwego/eino/components/model"
 	"github.com/cloudwego/eino/schema"
 
-	"MAgHARCM/internal/artifacts"
 	"MAgHARCM/internal/languages"
 	"MAgHARCM/internal/logger"
 	"MAgHARCM/internal/tools"
-	"MAgHARCM/internal/types"
 )
 
 // PlanningAgent extracts translation units, maps symbols to target conventions, generates project skeletons, and devises execution plans.
@@ -36,10 +34,43 @@ func NewPlanningAgent(m model.BaseChatModel) *PlanningAgent {
 	return &PlanningAgent{Model: m}
 }
 
+// PlanStep represents a single step in Part A or Part B of the implementation plan.
+type PlanStep struct {
+	ID              string `json:"id"`
+	Description     string `json:"description"`
+	SourceFile      string `json:"source_file,omitempty"`
+	TargetFile      string `json:"target_file,omitempty"`
+	Type            string `json:"type,omitempty"` // "source" or "test"
+	Completed       bool   `json:"completed,omitempty"`
+	StepName        string `json:"step_name,omitempty"`
+	Details         string `json:"details,omitempty"`
+	ReverseTopoRank int    `json:"reverse_topo_rank,omitempty"`
+}
+
+// ImplementationPlan organizes code translation and test verification steps into ordered phases.
+type ImplementationPlan struct {
+	ArtifactSchemaVersion string     `json:"schema_version"`
+	Overview              string     `json:"overview"`
+	PartA                 []PlanStep `json:"part_a"` // Source code translation
+	PartB                 []PlanStep `json:"part_b"` // Test code translation & validation
+	RawPlan               string     `json:"raw_plan"`
+}
+
+// PlanningOutput captures AST fragments, symbol mappings, generated skeletons, and translation steps.
+type PlanningOutput struct {
+	ArtifactSchemaVersion string            `json:"schema_version"`
+	Fragments             []string          `json:"fragments"`      // file_name:fragment_name
+	NameMapping           map[string]string `json:"name_mapping"`   // source_name -> target_name
+	SkeletonFiles         map[string]string `json:"skeleton_files"` // relative_path -> skeleton_content
+	Plan                  ImplementationPlan `json:"plan"`
+}
+
+func (p PlanningOutput) SchemaVersion() string { return p.ArtifactSchemaVersion }
+
 // Run executes the planning phase and populates PlanningOutput in state.
-func (p *PlanningAgent) Run(ctx context.Context, state *types.State) (*types.State, error) {
+func (p *PlanningAgent) Run(ctx context.Context, state *State) (*State, error) {
 	logger.LogAgent("Planning", "Decomposing translation into granular translation units and constructing plan")
-	state.PlanningOutput.ArtifactSchemaVersion = artifacts.CurrentSchemaVersion
+	state.PlanningOutput.ArtifactSchemaVersion = CurrentSchemaVersion
 
 	// PRIM-14 software-archaeology pre-pass: when the archaeologist is
 	// registered, investigate the source for boundaries, churn hotspots,
@@ -50,22 +81,7 @@ func (p *PlanningAgent) Run(ctx context.Context, state *types.State) (*types.Sta
 		if err != nil {
 			logger.LogWarning("PRIM-14 Archaeologist pre-planning failed: %v", err)
 		} else {
-			forensics := make([]artifacts.NamingFinding, len(report.NamingForensics))
-			for i, nf := range report.NamingForensics {
-				forensics[i] = artifacts.NamingFinding{
-					OldName:   nf.Style + ":" + nf.Token,
-					NewName:   nf.Suggestion,
-					Location:  fmt.Sprintf("%s:%d", nf.File, nf.Line),
-					Rationale: "",
-				}
-			}
-			state.ArchaeologyReport = artifacts.ArchaeologyReport{
-				BoundaryMap:         report.BoundaryMap,
-				TimeCapsuleCommands: report.TimeCapsuleCommands,
-				ChurnHotspots:       report.ChurnHotspots,
-				NamingForensics:     forensics,
-				ConceptMap:          report.ConceptMap,
-			}
+			state.ArchaeologyReport = report
 			logger.LogStep("PRIM-14 Archaeologist recovered %d boundaries, %d churn hotspots, %d naming findings",
 				len(report.BoundaryMap), len(report.ChurnHotspots), len(report.NamingForensics))
 		}
@@ -172,7 +188,7 @@ func (p *PlanningAgent) extractFragments(sourceDir string) ([]string, []string, 
 }
 
 // generatePlanningArtifacts queries the reasoning model for name mapping, skeleton, and implementation plan.
-func (p *PlanningAgent) generatePlanningArtifacts(ctx context.Context, state *types.State, sourceSummaries []string) (string, error) {
+func (p *PlanningAgent) generatePlanningArtifacts(ctx context.Context, state *State, sourceSummaries []string) (string, error) {
 	prompt, err := renderPromptTemplate("planning", planningPromptTemplate, map[string]any{
 		"SourceLang":   state.Task.SourceLang,
 		"TargetLang":   state.Task.TargetLang,
@@ -204,7 +220,7 @@ func (p *PlanningAgent) parseNameMapping(rawContent string) map[string]string {
 }
 
 // resolveSkeletonFiles extracts skeleton files or synthesizes default boilerplate for the target language.
-func (p *PlanningAgent) resolveSkeletonFiles(rawContent string, state *types.State, fragments []string) map[string]string {
+func (p *PlanningAgent) resolveSkeletonFiles(rawContent string, state *State, fragments []string) map[string]string {
 	skeletonFiles := parseFileBlocks(rawContent, "=== SKELETON_FILES ===")
 	if len(skeletonFiles) == 0 {
 		logger.LogWarning("Planning LLM did not emit explicit skeleton files; generating fallback skeleton for `%s`", state.Task.TargetLang)
@@ -235,17 +251,17 @@ func (p *PlanningAgent) writeSkeletonFiles(targetDir string, skeletonFiles map[s
 
 // parseImplementationPlan parses the implementation plan sections into structured steps
 // and schedules them in reverse topological order (NEW-PRIM-1, NEW-PRIM-2 / GAP-02).
-func (p *PlanningAgent) parseImplementationPlan(rawContent string, fragments []string) artifacts.ImplementationPlan {
+func (p *PlanningAgent) parseImplementationPlan(rawContent string, fragments []string) ImplementationPlan {
 	planStr := extractBlock(rawContent, "=== IMPLEMENTATION_PLAN ===", "")
 	if planStr == "" {
 		planStr = rawContent
 	}
 
 	orderedFrags := ComputeReverseTopoOrder(fragments, nil)
-	var partASteps []artifacts.PlanStep
+	var partASteps []PlanStep
 	if len(orderedFrags) > 0 {
 		for i, frag := range orderedFrags {
-			partASteps = append(partASteps, artifacts.PlanStep{
+			partASteps = append(partASteps, PlanStep{
 				ID:              fmt.Sprintf("A%d", i+1),
 				Description:     fmt.Sprintf("Translate module fragment: %s", frag),
 				Type:            "source",
@@ -254,16 +270,16 @@ func (p *PlanningAgent) parseImplementationPlan(rawContent string, fragments []s
 			})
 		}
 	} else {
-		partASteps = []artifacts.PlanStep{
+		partASteps = []PlanStep{
 			{ID: "A1", Description: "Translate all source modules to target language", Type: "source", ReverseTopoRank: 1},
 		}
 	}
 
-	return artifacts.ImplementationPlan{
-		ArtifactSchemaVersion: artifacts.CurrentSchemaVersion,
+	return ImplementationPlan{
+		ArtifactSchemaVersion: CurrentSchemaVersion,
 		Overview:              extractSection(planStr, "## Overview", "## Part A"),
 		PartA:                 partASteps,
-		PartB: []artifacts.PlanStep{
+		PartB: []PlanStep{
 			{ID: "B1", Description: "Translate and execute test suite", Type: "test", ReverseTopoRank: len(partASteps) + 1},
 		},
 		RawPlan: planStr,

@@ -14,4 +14,4 @@ translation:
     max_iterations: 20
     timeout_seconds: 7200
   lsp:
-    provider: "native"
+    provider: "abcoder-mcp"

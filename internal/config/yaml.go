@@ -47,6 +47,24 @@ func LoadYAML(path string) (*Config, error) {
 	return ParseYAML(data)
 }
 
+// MustLoadYAML reads a YAML file and returns *Config or panics on any error.
+func MustLoadYAML(path string) *Config {
+	cfg, err := LoadYAML(path)
+	if err != nil {
+		panic(fmt.Sprintf("MustLoadYAML %s failed: %v", path, err))
+	}
+	return cfg
+}
+
+// MustParseYAML decodes YAML bytes and returns *Config or panics on any error.
+func MustParseYAML(data []byte) *Config {
+	cfg, err := ParseYAML(data)
+	if err != nil {
+		panic(fmt.Sprintf("MustParseYAML failed: %v", err))
+	}
+	return cfg
+}
+
 // ParseYAML decodes YAML bytes into a Config. Every field must be present in
 // the file; missing fields are reported as a single structured error.
 func ParseYAML(data []byte) (*Config, error) {

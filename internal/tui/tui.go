@@ -26,7 +26,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/textinput"
+	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/glamour"
 	"github.com/charmbracelet/lipgloss"
@@ -102,10 +104,13 @@ type model struct {
 	phase    Phase
 	rs       *ReplState
 	input    textinput.Model
+	viewport viewport.Model
+	spinner  spinner.Model
 	history  []string
 	quitting bool
 	width    int
 	height   int
+	ready    bool
 }
 
 func newModel(cfg *config.Config, rs *ReplState) model {
@@ -115,25 +120,48 @@ func newModel(cfg *config.Config, rs *ReplState) model {
 	ti.CharLimit = 0
 	ti.Width = 80
 
+	s := spinner.New()
+	s.Spinner = spinner.Dot
+	s.Style = lipgloss.NewStyle().Foreground(lipgloss.Color("#A3E4D7"))
+
 	return model{
-		cfg:   cfg,
-		phase: PhaseCollect,
-		rs:    rs,
-		input: ti,
+		cfg:     cfg,
+		phase:   PhaseCollect,
+		rs:      rs,
+		input:   ti,
+		spinner: s,
 	}
 }
 
 func (m model) Init() tea.Cmd {
-	return textinput.Blink
+	return tea.Batch(textinput.Blink, m.spinner.Tick)
 }
+
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.width = msg.Width
 		m.height = msg.Height
+		headerHeight := 6
+		footerHeight := 3
+		vHeight := msg.Height - headerHeight - footerHeight
+		if vHeight < 5 {
+			vHeight = 5
+		}
+		if !m.ready {
+			m.viewport = viewport.New(msg.Width, vHeight)
+			m.ready = true
+		} else {
+			m.viewport.Width = msg.Width
+			m.viewport.Height = vHeight
+		}
 		return m, nil
 
+	case spinner.TickMsg:
+		var cmd tea.Cmd
+		m.spinner, cmd = m.spinner.Update(msg)
+		return m, cmd
 	case tea.KeyMsg:
 		switch msg.Type {
 		case tea.KeyCtrlC, tea.KeyEsc:
@@ -199,10 +227,13 @@ func (m model) View() string {
 	b.WriteString(renderedBanner)
 	b.WriteString("\n")
 
-	// Phase label + recent log lines (last 5).
-	b.WriteString(promptStyle.Render(fmt.Sprintf("[%s]", PhaseLabel(m.phase))))
+	if m.phase == PhaseExecute {
+		b.WriteString(promptStyle.Render(fmt.Sprintf("[%s] %s Running pipeline...", PhaseLabel(m.phase), m.spinner.View())))
+	} else {
+		b.WriteString(promptStyle.Render(fmt.Sprintf("[%s]", PhaseLabel(m.phase))))
+	}
 	b.WriteString("\n")
-	for _, h := range lastNLines(5) {
+	for _, h := range lastNLines(8) {
 		b.WriteString(logStyle.Render(h))
 		b.WriteString("\n")
 	}

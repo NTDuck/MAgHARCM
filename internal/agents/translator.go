@@ -14,7 +14,6 @@ import (
 
 	"MAgHARCM/internal/logger"
 	"MAgHARCM/internal/tools"
-	"MAgHARCM/internal/types"
 )
 
 // TranslatorAgent generates target source and test implementations, and iteratively resolves compiler errors in repair mode.
@@ -29,6 +28,14 @@ type TranslatorAgent struct {
 	IterativeNavigator *IterativeNavigator
 }
 
+// TranslatedProject contains the files written or edited in the target repository.
+type TranslatedProject struct {
+	ArtifactSchemaVersion string            `json:"schema_version"`
+	Files                 map[string]string `json:"files"` // relative_path -> code_content
+}
+
+func (t TranslatedProject) SchemaVersion() string { return t.ArtifactSchemaVersion }
+
 // NewTranslatorAgent creates a TranslatorAgent instance. runID enables
 // per-run checkpoint persistence; pass "" to disable checkpointing.
 func NewTranslatorAgent(m model.BaseChatModel, runID string) *TranslatorAgent {
@@ -36,7 +43,7 @@ func NewTranslatorAgent(m model.BaseChatModel, runID string) *TranslatorAgent {
 }
 
 // Run translates the code and tests, or executes repairs if validation report has failures.
-func (t *TranslatorAgent) Run(ctx context.Context, state *types.State) (*types.State, error) {
+func (t *TranslatorAgent) Run(ctx context.Context, state *State) (*State, error) {
 	defer t.checkpoint(state)
 	if state.TranslatedProject.Files == nil {
 		state.TranslatedProject.Files = make(map[string]string)
@@ -68,7 +75,7 @@ func (t *TranslatorAgent) Run(ctx context.Context, state *types.State) (*types.S
 // checkpoint persists a snapshot of state if RunID is set. Errors are logged
 // but never propagated — checkpointing is best-effort and must not abort the
 // pipeline when the disk is full or the runID is empty.
-func (t *TranslatorAgent) checkpoint(state *types.State) {
+func (t *TranslatorAgent) checkpoint(state *State) {
 	if t.RunID == "" || state == nil {
 		return
 	}
@@ -80,7 +87,7 @@ func (t *TranslatorAgent) checkpoint(state *types.State) {
 }
 
 // translate generates the initial translation from source modules, design, and implementation plan.
-func (t *TranslatorAgent) translate(ctx context.Context, state *types.State) (*types.State, error) {
+func (t *TranslatorAgent) translate(ctx context.Context, state *State) (*State, error) {
 	sourceFiles := t.collectSourceFiles(state.Task.SourceDir)
 	packageName := t.resolvePackageName(state.Task.TargetDir, state.Task.TargetLang)
 
@@ -97,7 +104,7 @@ func (t *TranslatorAgent) translate(ctx context.Context, state *types.State) (*t
 }
 
 // repair prompts the coding model with compiler diagnostics and test failure output to fix code.
-func (t *TranslatorAgent) repair(ctx context.Context, state *types.State) (*types.State, error) {
+func (t *TranslatorAgent) repair(ctx context.Context, state *State) (*State, error) {
 	targetFiles := t.collectCurrentTargetFiles(state)
 	packageName := t.resolvePackageName(state.Task.TargetDir, state.Task.TargetLang)
 
@@ -130,7 +137,7 @@ func (t *TranslatorAgent) collectSourceFiles(sourceDir string) []string {
 }
 
 // collectCurrentTargetFiles gathers the in-memory translated file contents.
-func (t *TranslatorAgent) collectCurrentTargetFiles(state *types.State) []string {
+func (t *TranslatorAgent) collectCurrentTargetFiles(state *State) []string {
 	var targetFilesData []string
 	for relPath, content := range state.TranslatedProject.Files {
 		targetFilesData = append(targetFilesData, fmt.Sprintf("=== Current File: %s ===\n%s\n", relPath, content))
@@ -158,7 +165,7 @@ func (t *TranslatorAgent) resolvePackageName(targetDir, targetLang string) strin
 }
 
 // generateTranslation renders the translation prompt and queries the coding model.
-func (t *TranslatorAgent) generateTranslation(ctx context.Context, state *types.State, sourceFiles []string, packageName string) (map[string]string, error) {
+func (t *TranslatorAgent) generateTranslation(ctx context.Context, state *State, sourceFiles []string, packageName string) (map[string]string, error) {
 	logger.LogStep("Prompting Coding Model for complete `%s` translation", state.Task.TargetLang)
 
 	prompt, err := renderPromptTemplate("translator_translate", translatorTranslatePromptTemplate, map[string]any{
@@ -186,7 +193,7 @@ func (t *TranslatorAgent) generateTranslation(ctx context.Context, state *types.
 }
 
 // generateRepair renders the repair prompt and queries the coding model for targeted fixes.
-func (t *TranslatorAgent) generateRepair(ctx context.Context, state *types.State, targetFiles []string, packageName string) (map[string]string, error) {
+func (t *TranslatorAgent) generateRepair(ctx context.Context, state *State, targetFiles []string, packageName string) (map[string]string, error) {
 	logger.LogStep("Feeding compiler diagnostics and test failures to Coding Model for targeted repair")
 	prompt, err := renderPromptTemplate("translator_repair", translatorRepairPromptTemplate, map[string]any{
 		"PackageName":         packageName,
@@ -211,7 +218,7 @@ func (t *TranslatorAgent) generateRepair(ctx context.Context, state *types.State
 }
 
 // syncFilesToDisk cleans, writes files to disk, and updates the in-memory state.
-func (t *TranslatorAgent) syncFilesToDisk(targetDir string, files map[string]string, state *types.State) error {
+func (t *TranslatorAgent) syncFilesToDisk(targetDir string, files map[string]string, state *State) error {
 	hasNewTest := false
 	for relPath := range files {
 		if strings.HasPrefix(relPath, "tests/") {

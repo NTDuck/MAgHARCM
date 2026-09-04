@@ -14,8 +14,6 @@ import (
 	"context"
 	"fmt"
 
-	"MAgHARCM/internal/artifacts"
-	"MAgHARCM/internal/types"
 )
 
 // verdictPanelCheck adapts the multi-agent verdict panel
@@ -27,7 +25,7 @@ type verdictPanelCheck struct {
 }
 
 func (c *verdictPanelCheck) Name() string { return "PRIM-7-verdict-panel" }
-func (c *verdictPanelCheck) Run(ctx context.Context, state *types.State) (string, string, error) {
+func (c *verdictPanelCheck) Run(ctx context.Context, state *State) (string, string, error) {
 	if c.panel == nil {
 		return "skipped", "no verdict panel configured", nil
 	}
@@ -63,7 +61,7 @@ type mockValidatorCheck struct {
 }
 
 func (c *mockValidatorCheck) Name() string { return "PRIM-8-mock-validator" }
-func (c *mockValidatorCheck) Run(ctx context.Context, state *types.State) (string, string, error) {
+func (c *mockValidatorCheck) Run(ctx context.Context, state *State) (string, string, error) {
 	if c.validator == nil {
 		return "skipped", "no mock validator configured", nil
 	}
@@ -96,7 +94,7 @@ type implAgnosticCheck struct {
 }
 
 func (c *implAgnosticCheck) Name() string { return "PRIM-11-impl-agnostic" }
-func (c *implAgnosticCheck) Run(ctx context.Context, state *types.State) (string, string, error) {
+func (c *implAgnosticCheck) Run(ctx context.Context, state *State) (string, string, error) {
 	if c.tester == nil || len(c.vectors) == 0 {
 		return "skipped", "no IO test vectors registered", nil
 	}
@@ -125,7 +123,7 @@ type wasmOracleCheck struct {
 }
 
 func (c *wasmOracleCheck) Name() string { return "PRIM-12-wasm-oracle" }
-func (c *wasmOracleCheck) Run(ctx context.Context, state *types.State) (string, string, error) {
+func (c *wasmOracleCheck) Run(ctx context.Context, state *State) (string, string, error) {
 	if c.oracle == nil {
 		return "skipped", "no wasm oracle configured", nil
 	}
@@ -202,7 +200,6 @@ func (c OptionalChecksConfig) AnyEnabled() bool {
 }
 
 // re-export for callers that prefer artifacts-side imports.
-var _ artifacts.OptionalCheckResult // keep artifacts import live for downstream consumers
 
 // roleFlipCheck adapts the PRIM-25 communicative-de-hallucination
 // RoleFlipGate (ChatDev §2.4) into an OptionalCheck. When the translator's
@@ -214,7 +211,7 @@ type roleFlipCheck struct {
 }
 
 func (c *roleFlipCheck) Name() string { return "PRIM-25-role-flip-gate" }
-func (c *roleFlipCheck) Run(ctx context.Context, state *types.State) (string, string, error) {
+func (c *roleFlipCheck) Run(ctx context.Context, state *State) (string, string, error) {
 	if c.gate == nil || state == nil {
 		return "skipped", "no role-flip gate or state", nil
 	}
@@ -235,7 +232,7 @@ func (c *roleFlipCheck) Run(ctx context.Context, state *types.State) (string, st
 // latestEmittedSample returns the first non-empty translator snippet from
 // TranslatedProject.Files to feed the PRIM-25 role-flip reviewer. Map
 // iteration order is non-deterministic; any sample suffices for the gate.
-func latestEmittedSample(state *types.State) string {
+func latestEmittedSample(state *State) string {
 	if state == nil {
 		return ""
 	}

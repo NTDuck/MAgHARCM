@@ -14,12 +14,80 @@ import (
 
 	"github.com/cloudwego/eino/components/model"
 	"github.com/cloudwego/eino/schema"
-
-	"MAgHARCM/internal/artifacts"
+	"MAgHARCM/internal/compiletime"
 	"MAgHARCM/internal/logger"
 	"MAgHARCM/internal/tools"
-	"MAgHARCM/internal/types"
 )
+
+// FileStatus records the build/test outcome of an individual file.
+type FileStatus struct {
+	Path      string `json:"path"`
+	Kind      string `json:"kind"` // "source" or "test"
+	Compiles  bool   `json:"compiles"`
+	TestPass  bool   `json:"test_pass"`
+	LineCount int    `json:"line_count"`
+	Error     string `json:"error,omitempty"`
+}
+
+// OptionalCheckResult is the persisted shape of an auxiliary validator primitive outcome.
+type OptionalCheckResult struct {
+	Name    string `json:"name"`
+	Verdict string `json:"verdict"`
+	Detail  string `json:"detail,omitempty"`
+}
+
+// ValidationReport is the structured report produced by the validator agent.
+type ValidationReport struct {
+	ArtifactSchemaVersion        string                `json:"schema_version"`
+	AllSuccess                   bool                  `json:"all_success"`
+	CompilationSuccess           bool                  `json:"compilation_success"`
+	TestPassRate                 float64               `json:"test_pass_rate"`
+	TotalTests                   int                   `json:"total_tests"`
+	PassedTests                  int                   `json:"passed_tests"`
+	FailedTests                  int                   `json:"failed_tests"`
+	RealTests                    int                   `json:"real_tests"`
+	MinRealTests                 int                   `json:"min_real_tests"`
+	CompilationErrors            []string              `json:"compilation_errors"`
+	TestFailures                 []string              `json:"test_failures"`
+	UncoveredFunctions           []string              `json:"uncovered_functions"`
+	CoverageGapReport            string                `json:"coverage_gap_report"`
+	Diagnostics                  string                `json:"diagnostics"`
+	PerFile                      []FileStatus          `json:"per_file"`
+	IterationStart               time.Time             `json:"iteration_start,omitempty"`
+	IterationWallMs              int64                 `json:"iteration_wall_ms,omitempty"`
+	RemedyIterations             int                   `json:"remedy_iterations,omitempty"`
+	PlateauDetected              bool                  `json:"plateau_detected,omitempty"`
+	AdversarialWeakeningDetected bool                  `json:"adversarial_weakening_detected,omitempty"`
+	WeakeningReasons             []string              `json:"weakening_reasons,omitempty"`
+	ASTSyntaxErrors              []string              `json:"ast_syntax_errors,omitempty"`
+	OptionalCheckResults         []OptionalCheckResult `json:"optional_check_results,omitempty"`
+}
+
+func (v ValidationReport) SchemaVersion() string { return v.ArtifactSchemaVersion }
+
+func (v ValidationReport) IsAllSuccess() bool {
+	return v.AllSuccess && v.CompilationSuccess && v.FailedTests == 0 && len(v.CompilationErrors) == 0 &&
+		(!v.AdversarialWeakeningDetected) &&
+		(v.TotalTests == 0 || v.PassedTests > 0) &&
+		v.RealTests >= v.MinRealTests
+}
+
+// CompilationStatus returns the binary per-project compilation status (PASS or FAIL).
+func (v ValidationReport) CompilationStatus() compiletime.CompilationStatus {
+	if v.CompilationSuccess {
+		return compiletime.CompilationStatusPass
+	}
+	return compiletime.CompilationStatusFail
+}
+
+func (v ValidationReport) String() string {
+	if v.IsAllSuccess() {
+		return fmt.Sprintf("Validation SUCCESS: compilation=%s, passed=%d/%d (%.1f%%), real_tests=%d (min=%d)",
+			v.CompilationStatus(), v.PassedTests, v.TotalTests, v.TestPassRate, v.RealTests, v.MinRealTests)
+	}
+	return fmt.Sprintf("Validation INCOMPLETE: compilation=%s, passed=%d/%d (%.1f%%), compile_errs=%d, test_fails=%d, uncovered=%d\nDiagnostics:\n%s",
+		v.CompilationStatus(), v.PassedTests, v.TotalTests, v.TestPassRate, len(v.CompilationErrors), len(v.TestFailures), len(v.UncoveredFunctions), v.Diagnostics)
+}
 
 // ValidatorAgent executes build and test suites, detects coverage gaps, and triggers test synthesis.
 type ValidatorAgent struct {
@@ -55,7 +123,7 @@ type OptionalCheck interface {
 	// Run inspects the current state and returns a short verdict ("pass", "fail", "skipped")
 	// and a human-readable detail string. Returned error indicates a transport-level
 	// failure and aborts the optional-check phase (the core cascade is unaffected).
-	Run(ctx context.Context, state *types.State) (verdict, detail string, err error)
+	Run(ctx context.Context, state *State) (verdict, detail string, err error)
 }
 
 // MaxRemedyIterations caps the bounded coverage-remediation loop driven by
@@ -72,14 +140,14 @@ func NewValidatorAgent(m model.BaseChatModel, runID string) *ValidatorAgent {
 }
 
 // Run validates the target project and produces a ValidationReport.
-func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.State, error) {
+func (v *ValidatorAgent) Run(ctx context.Context, state *State) (*State, error) {
 	defer v.checkpoint(state)
 	state.Iteration++
 	iterStart := time.Now()
-	logger.LogAgent("Validator", "Validating target project `%s` (Iteration %d/%d)",
+	logger.LogAgent("Validator", "Running build and test validation on target `%s` (Iteration %d/%d)",
 		state.Task.TargetDir, state.Iteration, state.MaxIterations)
-	report := artifacts.ValidationReport{
-		ArtifactSchemaVersion: artifacts.CurrentSchemaVersion,
+	report := ValidationReport{
+		ArtifactSchemaVersion: CurrentSchemaVersion,
 		IterationStart:        iterStart,
 	}
 
@@ -166,7 +234,7 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *types.State) (*types.St
 // checkpoint persists a snapshot of state if RunID is set. Errors are logged
 // but never propagated — checkpointing is best-effort and must not abort the
 // pipeline when the disk is full or the runID is empty.
-func (v *ValidatorAgent) checkpoint(state *types.State) {
+func (v *ValidatorAgent) checkpoint(state *State) {
 	if v.RunID == "" || state == nil {
 		return
 	}
@@ -178,7 +246,7 @@ func (v *ValidatorAgent) checkpoint(state *types.State) {
 }
 
 // checkCompilation verifies compilation using the target toolchain.
-func (v *ValidatorAgent) checkCompilation(ctx context.Context, state *types.State) (*tools.ValidateBuildOutput, error) {
+func (v *ValidatorAgent) checkCompilation(ctx context.Context, state *State) (*tools.ValidateBuildOutput, error) {
 	buildRes, err := tools.ValidateProjectBuild(ctx, state.Task.TargetDir, state.Task.TargetLang, state.Task.Toolchain)
 	if err != nil {
 		return nil, fmt.Errorf("validator failed to run build check: %w", err)
@@ -194,7 +262,7 @@ func (v *ValidatorAgent) checkCompilation(ctx context.Context, state *types.Stat
 }
 
 // runTestSuite executes the target test suite and records test metrics.
-func (v *ValidatorAgent) runTestSuite(ctx context.Context, state *types.State) (*tools.RunTestsOutput, error) {
+func (v *ValidatorAgent) runTestSuite(ctx context.Context, state *State) (*tools.RunTestsOutput, error) {
 	testRes, err := tools.RunProjectTests(ctx, state.Task.TargetDir, state.Task.TargetLang, state.Task.Toolchain, "")
 	if err != nil {
 		return nil, fmt.Errorf("validator failed to execute tests: %w", err)
@@ -204,7 +272,7 @@ func (v *ValidatorAgent) runTestSuite(ctx context.Context, state *types.State) (
 }
 
 // findUncoveredFunctions scans test files and matches discovered AST fragments against test bodies.
-func (v *ValidatorAgent) findUncoveredFunctions(state *types.State) []string {
+func (v *ValidatorAgent) findUncoveredFunctions(state *State) []string {
 	var testFilesContent []string
 	_ = filepath.Walk(filepath.Join(state.Task.TargetDir, "tests"), func(path string, info os.FileInfo, err error) error {
 		if err == nil && !info.IsDir() {
@@ -233,7 +301,7 @@ func (v *ValidatorAgent) findUncoveredFunctions(state *types.State) []string {
 // It now delegates to remedyWithPlateau, which wraps the per-iteration
 // (generate tests → re-run suite) cycle in a bounded plateau-detected loop
 // (CodaMOSA / NEW-PRIM-27). The wrapped inner behavior is unchanged.
-func (v *ValidatorAgent) remedyCoverageGaps(ctx context.Context, state *types.State, uncovered []string, report *artifacts.ValidationReport) {
+func (v *ValidatorAgent) remedyCoverageGaps(ctx context.Context, state *State, uncovered []string, report *ValidationReport) {
 	v.remedyWithPlateau(ctx, state, uncovered, report)
 }
 
@@ -250,7 +318,7 @@ func (v *ValidatorAgent) remedyCoverageGaps(ctx context.Context, state *types.St
 // observed trajectory. If v.Plateau is nil (legacy callers / unit tests that
 // construct ValidatorAgent directly), a fresh detector is allocated so the
 // loop is always safe.
-func (v *ValidatorAgent) remedyWithPlateau(ctx context.Context, state *types.State, uncovered []string, report *artifacts.ValidationReport) {
+func (v *ValidatorAgent) remedyWithPlateau(ctx context.Context, state *State, uncovered []string, report *ValidationReport) {
 	detector := v.Plateau
 	if detector == nil {
 		detector = NewPlateauDetector()
@@ -316,7 +384,7 @@ func (v *ValidatorAgent) remedyWithPlateau(ctx context.Context, state *types.Sta
 }
 
 // finalizeReport evaluates convergence criteria and sets milestone diagnostics.
-func (v *ValidatorAgent) finalizeReport(report *artifacts.ValidationReport, state *types.State, testOutput string) {
+func (v *ValidatorAgent) finalizeReport(report *ValidationReport, state *State, testOutput string) {
 	report.AllSuccess = report.CompilationSuccess && len(report.CompilationErrors) == 0 && report.FailedTests == 0 && report.RealTests >= report.MinRealTests
 	if report.AllSuccess {
 		report.Diagnostics = fmt.Sprintf("All %d tests passed successfully! Codebase compiled cleanly without errors.", report.PassedTests)
@@ -329,7 +397,7 @@ func (v *ValidatorAgent) finalizeReport(report *artifacts.ValidationReport, stat
 	}
 }
 
-func (v *ValidatorAgent) generateAdditionalTests(ctx context.Context, state *types.State, uncovered []string, report *artifacts.ValidationReport) {
+func (v *ValidatorAgent) generateAdditionalTests(ctx context.Context, state *State, uncovered []string, report *ValidationReport) {
 	var sourceFilesData []string
 	for relPath, content := range state.TranslatedProject.Files {
 		if !strings.HasPrefix(relPath, "tests/") {
@@ -380,9 +448,9 @@ var fileErrorPattern = regexp.MustCompile(`(?:^|["'\s])([A-Za-z0-9_./\-]+\.[A-Za
 
 // scanTargetFiles enumerates target source + test files and joins each file to
 // any compilation error mentioning it. Used for per-file observability.
-func scanTargetFiles(state *types.State, compileErrors []string) []artifacts.FileStatus {
+func scanTargetFiles(state *State, compileErrors []string) []FileStatus {
 	targetDir := state.Task.TargetDir
-	statuses := []artifacts.FileStatus{}
+	statuses := []FileStatus{}
 	seen := map[string]bool{}
 
 	// First: in-memory translated project files (most authoritative).
@@ -391,7 +459,7 @@ func scanTargetFiles(state *types.State, compileErrors []string) []artifacts.Fil
 		if strings.HasPrefix(relPath, "tests/") || strings.HasSuffix(relPath, "_test."+strings.ToLower(state.Task.TargetLang)) {
 			kind = "test"
 		}
-		statuses = append(statuses, artifacts.FileStatus{
+		statuses = append(statuses, FileStatus{
 			Path:      relPath,
 			Kind:      kind,
 			Compiles:  true, // assume yes; failure is signaled by error grep below
@@ -418,7 +486,7 @@ func scanTargetFiles(state *types.State, compileErrors []string) []artifacts.Fil
 		if strings.HasPrefix(rel, "tests/") || strings.HasSuffix(rel, "_test."+strings.ToLower(state.Task.TargetLang)) {
 			kind = "test"
 		}
-		statuses = append(statuses, artifacts.FileStatus{
+		statuses = append(statuses, FileStatus{
 			Path:      rel,
 			Kind:      kind,
 			Compiles:  true,
@@ -489,7 +557,7 @@ func (v *ValidatorAgent) DetectTestWeakening(prevTests, currentTests map[string]
 }
 
 // collectCurrentTestFiles extracts a snapshot of all test files in the target project.
-func (v *ValidatorAgent) collectCurrentTestFiles(state *types.State) map[string]string {
+func (v *ValidatorAgent) collectCurrentTestFiles(state *State) map[string]string {
 	tests := make(map[string]string)
 	for path, content := range state.TranslatedProject.Files {
 		if strings.Contains(path, "test") || strings.HasSuffix(path, "_test.go") || strings.HasSuffix(path, "_test.rs") {
@@ -506,8 +574,8 @@ func (v *ValidatorAgent) collectCurrentTestFiles(state *types.State) map[string]
 // and PRIM-12 wasm oracle into the repair loop without touching the core
 // cascade. Order follows v.OptionalChecks (callers register in the order
 // they want results recorded).
-func (v *ValidatorAgent) runOptionalChecks(ctx context.Context, state *types.State) []artifacts.OptionalCheckResult {
-	results := make([]artifacts.OptionalCheckResult, 0, len(v.OptionalChecks))
+func (v *ValidatorAgent) runOptionalChecks(ctx context.Context, state *State) []OptionalCheckResult {
+	results := make([]OptionalCheckResult, 0, len(v.OptionalChecks))
 	for _, check := range v.OptionalChecks {
 		if check == nil {
 			continue
@@ -518,7 +586,7 @@ func (v *ValidatorAgent) runOptionalChecks(ctx context.Context, state *types.Sta
 			detail = "check error: " + err.Error()
 			logger.LogWarning("OptionalCheck %s failed: %v", check.Name(), err)
 		}
-		results = append(results, artifacts.OptionalCheckResult{
+		results = append(results, OptionalCheckResult{
 			Name:    check.Name(),
 			Verdict: verdict,
 			Detail:  detail,
