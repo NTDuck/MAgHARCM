@@ -44,9 +44,13 @@ func NewMAgHARCMGraph(ctx context.Context, models *llm.Models, runID string) (*M
 	// PRIM-26 Symbol-Aware Navigator is now a sub-mechanism of the Planner
 	// (LSP provider invocation), not a top-level graph node.
 	planningAgent := agents.NewPlanningAgent(models.Reasoning)
+	// PRIM-14 software-archaeology pre-planning pass: register an
+	// Archaeologist so planner.Run recovers boundaries, churn hotspots,
+	// and naming forensics before fragment extraction.
+	planningAgent.Archaeologist = agents.NewArchaeologist()
 	translatorAgent := agents.NewTranslatorAgent(models.Coding, runID)
 	validatorAgent := agents.NewValidatorAgent(models.Reasoning, runID)
-	// PRIM-7 verdict panel is the cheapest auxiliary check (no extra LLM
+
 	// calls beyond the validator's reasoning tier); enable by default so
 	// the cascade surfaces disagreement before the repair loop iterates.
 	verdictPanel := agents.NewVerdictPanel(models.Reasoning)
