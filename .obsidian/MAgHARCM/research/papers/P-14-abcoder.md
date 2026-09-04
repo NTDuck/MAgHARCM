@@ -1,7 +1,7 @@
 ---
 title: ABCoder — Universal AST (UniAST) Framework for Repo-Level Coding Context
 bibkey: p14_abcoder
-tags: [paper, ast, code-rag, mcp, navigator, [PRIM-26], hop-1]
+tags: [paper, ast, code-rag, mcp, navigator, [[PRIM-26]], hop-1]
 ---
 
 # ABCoder — Universal AST (UniAST) Framework for Repo-Level Coding Context

@@ -76,7 +76,7 @@ func Run(ctx context.Context, cfg *config.Config) (*types.State, error) {
 		return nil, fmt.Errorf("initialize Ollama models: %w", err)
 	}
 
-	logger.LogStep("Constructing 5-agent Eino Graph (Analyzer, Navigator, Planning, Translator, Validator)")
+	logger.LogStep("Constructing 4-agent Eino Graph (Analyzer, Planning, Translator, Validator)")
 	magharcmGraph, err := graph.NewMAgHARCMGraph(ctx, models, runID)
 	if err != nil {
 		return nil, fmt.Errorf("construct graph: %w", err)

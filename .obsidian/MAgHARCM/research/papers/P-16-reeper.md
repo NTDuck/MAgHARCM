@@ -1,7 +1,7 @@
 ---
 title: "Reeper — Evidence-First Adaptation Pattern for External Repository Integration"
 bibkey: p16_reeper
-tags: [paper, evidence-first, adaptation, external-integration, [PRIM-15], hop-2]
+tags: [paper, evidence-first, adaptation, external-integration, [[PRIM-15]], hop-2]
 ---
 
 # Reeper — Evidence-First Adaptation Pattern for External Repository Integration
@@ -20,7 +20,7 @@ tags: [paper, evidence-first, adaptation, external-integration, [PRIM-15], hop-2
 
 ## Relevance to MAgHARCM
 
-[[PRIM-15]] cites Reeper verbatim for the four-artefact gate that must precede any external-code adaptation. MAgHARCM's commons-validator and Apache HTTP client samples both pull in third-party C/Java helpers that the target Rust crate ecosystem does not 1:1 replicate; without Reeper's evidence-first gate, the `internal/agents/manifest_rewriter.go` ([[PRIM-31]]) cannot tell whether a missing crate is a clean drop-in or a silent convention-violator. The contract-before-code map in particular should be wired into `internal/agents/feature_mapping.go` ([[PRIM-10]]) so that each idiom mapping carries an explicit "preserves target convention?" boolean — this catches the [[Pan-2024-LostInTranslation]] failure class at mapping time rather than at validation time.
+[[PRIM-15]] cites Reeper verbatim for the four-artefact gate that must precede any external-code adaptation. MAgHARCM's commons-validator and Apache HTTP client samples both pull in third-party C/Java helpers that the target Rust crate ecosystem does not 1:1 replicate; without Reeper's evidence-first gate, the `internal/agents/manifest_rewriter.go` ([[PRIM-30]]) cannot tell whether a missing crate is a clean drop-in or a silent convention-violator. The contract-before-code map in particular should be wired into `internal/agents/feature_mapping.go` ([[PRIM-10]]) so that each idiom mapping carries an explicit "preserves target convention?" boolean — this catches the [[Pan-2024-LostInTranslation]] failure class at mapping time rather than at validation time.
 
 ## Hop-1 References
 

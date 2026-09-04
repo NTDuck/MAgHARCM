@@ -22,7 +22,7 @@ START → analyzer → planner → translator → validator → branch
 | ----- | -------- | ------------ |
 | 1     | analyzer   | Walks the source tree, runs the 8B reasoning model, and emits three documents: Source Project Research, Third-Party Library Analysis, Target Project Design. Picks a migration strategy via `internal/agents/strategy.go::Registry.TryInOrder` ([[PRIM-21]]). |
 | 2     | planner    | Reads analyzer output, fragments the AST ([[PRIM-2]]) into translation units, resolves ambiguous symbol names ([[PRIM-26]]), and emits an `ImplementationPlan` with two ordered lists: source translation steps (Part A) and test generation + validation steps (Part B). Builds reverse-topological DAG ([[PRIM-1]]). |
-| 3     | translator | Runs the 4B coding model per fragment in topological order ([[PRIM-23]]). Each fragment sees bounded context ([[PRIM-26]] + [[PRIM-30]], each capped at 4KB) and the previously emitted modules as a context prefix. Optional role-flip gate ([[PRIM-25]]) inspects output for hallucinated bug-free claims. Persists a checkpoint ([[PRIM-28]]) after each fragment. |
+| 3     | translator | Runs the 4B coding model per fragment in topological order ([[PRIM-23]]). Each fragment sees bounded context ([[PRIM-26]] + [[PRIM-31]], each capped at 4KB) and the previously emitted modules as a context prefix. Optional role-flip gate ([[PRIM-25]]) inspects output for hallucinated bug-free claims. Persists a checkpoint ([[PRIM-28]]) after each fragment. |
 | 4     | validator  | Compiles the target, runs the test suite, and emits a `ValidationReport`. The cascade runs AST pre-check ([[PRIM-6]]) → cargo check → cargo test → adversarial weakening guard ([[PRIM-13]]) → plateau detector ([[PRIM-27]]). Optional auxiliary checks: multi-agent verdict ([[PRIM-7]]), mock-based in-isolation ([[PRIM-8]]), implementation-agnostic I/O ([[PRIM-11]]), Wasm oracle ([[PRIM-12]]). When the cascade detects failure, the report triggers a repair iteration back on the translator. |
 
 ## Migration Strategy Registry ([[PRIM-21]])
@@ -55,7 +55,7 @@ The translator runs in two modes sharing `TranslatorAgent`:
 - **Chunked** (`RunChunked`): fragments the source by topological order
   ([[PRIM-1]]) and prompts the coding model per fragment. Each fragment
   sees the previously emitted modules as a small context prefix
-  ([[PRIM-30]] Iterative Retrieval Refinement).
+  ([[PRIM-31]] Iterative Retrieval Refinement).
 
 The chunked mode emits a `Cargo.toml` skeleton ([[PRIM-3]]) and falls
 back to a minimal manifest when the analyzer did not produce one

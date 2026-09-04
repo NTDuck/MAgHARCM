@@ -1,7 +1,7 @@
 ---
 title: HyperAgent — Generalist Software Engineering Agents to Solve Coding Tasks at Scale
 bibkey: p13_hyperagent
-tags: [paper, software-engineering-agent, generalist, navigator, [PRIM-26], hop-1]
+tags: [paper, software-engineering-agent, generalist, navigator, [[PRIM-26]], hop-1]
 ---
 
 # HyperAgent — Generalist Software Engineering Agents to Solve Coding Tasks at Scale
@@ -24,7 +24,7 @@ HyperAgent is the direct citation for [[PRIM-26]] (Symbol-Aware Navigator). MAgH
 
 - [[Yang-2024-SWE-Agent]] — earlier generalist SWE-agent; introduces the agent-computer-interface (ACI) concept that HyperAgent extends with a multi-agent decomposition.
 - [[Jimenez-2024-SWE-Bench]] — the benchmark HyperAgent is evaluated on; defines the issue-resolution task that motivates generalist SE agents.
-- [[Yang-2024-RepoCoder]] — iterative retrieval-augmented repo-level code completion; precursor of MAgHARCM's [[PRIM-30]] (Iterative Retrieval Refinement) and HyperAgent's Navigator re-indexing loop.
+- [[Yang-2024-RepoCoder]] — iterative retrieval-augmented repo-level code completion; precursor of MAgHARCM's [[PRIM-31]] (Iterative Retrieval Refinement) and HyperAgent's Navigator re-indexing loop.
 - [[CloudWeGo-2025-ABCoder]] — AST-based code-RAG via MCP; an alternative to HyperAgent's navigator with stronger structural grounding but no generalist agent layer.
 - [[Phan-2024-HyperAgent-Appendix]] — supplementary material with the exact tool-call protocols and ranker weights the public implementation uses.
 

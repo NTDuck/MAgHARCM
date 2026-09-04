@@ -1,7 +1,7 @@
 ---
 title: "GitHub Spec Kit — Spec-Driven Development Lifecycle Toolkit"
 bibkey: p17_spec_kit
-tags: [paper, spec-driven-development, lifecycle, scaffolding, [PRIM-16], hop-2]
+tags: [paper, spec-driven-development, lifecycle, scaffolding, [[PRIM-16]], hop-2]
 ---
 
 # GitHub Spec Kit — Spec-Driven Development Lifecycle Toolkit
@@ -27,7 +27,7 @@ tags: [paper, spec-driven-development, lifecycle, scaffolding, [PRIM-16], hop-2]
 - [[Hong-2023-MetaGPT]] — SOP-anchored role-artifact schema ([[PRIM-24]]) is the agent-side cousin of spec-kit's phase artefact; MetaGPT encodes SOPs in code, spec-kit encodes them in templates, both reject "vibe coding".
 - [[Qian-2023-ChatDev]] — chat-chain role-flipping ([[PRIM-25]]) is the agent-level quality gate that spec-kit's per-phase human/agent review replicates at the workflow level.
 - [[Wu-2023-AutoGen]] — AutoGen's `reply_func` + interrupt/resume primitive ([[PRIM-28]]) supplies the runtime machinery spec-kit needs to *enforce* a phase gate (pause the agent until the artefact is signed off).
-- [[Chen-2023-AgentVerse]] — recruitment-adaptive planning ([[PRIM-30]]) reuses spec-kit's phase artefacts as the input that the recruitment step reads when deciding which agent configuration to spin up next.
+- [[Chen-2023-AgentVerse]] — recruitment-adaptive planning ([[PRIM-29]]) reuses spec-kit's phase artefacts as the input that the recruitment step reads when deciding which agent configuration to spin up next.
 - [[Müller-2000-IWPC]] — spec-kit's "constitution" stage is a modern repackaging of Müller's migration-strategy selection gate; both force the human to commit to non-negotiables *before* the technical plan is drafted.
 
 ## Hop-2 Anchors (software-archaeology lean)

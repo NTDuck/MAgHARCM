@@ -1,7 +1,7 @@
 ---
 title: Primitives Index
 backlink: [[Primitives]]
-tags: [primitives, catalog, status, [[PRIM-1]]..[[PRIM-30]]]
+tags: [primitives, catalog, status, [[PRIM-1]]..[[PRIM-31]]]
 ---
 
 # Primitives Index
@@ -40,7 +40,8 @@ it; not a codebase primitive).
 | [[PRIM-27]] | Coverage-Guided Plateau Detection | `internal/agents/plateau.go` | present |
 | [[PRIM-28]] | Conversable State Checkpoints & Interrupts | `internal/agents/checkpoint.go` | present |
 | [[PRIM-29]] | Recruitment-Adaptive Planning | `internal/agents/recruit.go` | absent-implemented |
-| [[PRIM-30]] | Iterative Retrieval Refinement | `internal/agents/iter_retrieval.go` | absent-implemented |
+| [[PRIM-30]] | Source-to-Target Manifest Rewriter | `internal/agents/manifest_rewriter.go` | present |
+| [[PRIM-31]] | Iterative Retrieval Refinement | `internal/agents/iter_retrieval.go` | absent-implemented |
 
 ## Partial — extend in next sprint
 

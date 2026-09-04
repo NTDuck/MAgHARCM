@@ -1,7 +1,7 @@
 ---
 title: "Kazman et al. — A Case Study in Locating the Architectural Roots of Technical Debt"
 bibkey: p51_kazman_drspaces
-tags: [paper, design-rules, architectural-recovery, technical-debt, load-bearing, [PRIM-19], hop-1]
+tags: [paper, design-rules, architectural-recovery, technical-debt, load-bearing, [[PRIM-19]], hop-1]
 ---
 
 # Kazman et al. — A Case Study in Locating the Architectural Roots of Technical Debt

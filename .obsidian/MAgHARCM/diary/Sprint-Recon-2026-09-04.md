@@ -42,12 +42,12 @@ Cross-reference of paper appendix primitives (`docs/.paper/sec_appendix_primitiv
 | PRIM-27 | Coverage-Guided Plateau Detection | `internal/agents/plateau.go` | present |
 | PRIM-28 | Conversable State Checkpoints & Interrupts | `internal/agents/checkpoint.go` | present |
 | PRIM-29 | Recruitment-Adaptive Planning | — | **absent** |
-| PRIM-30 | Iterative Retrieval Refinement | — | **absent** |
+| PRIM-30 | Source-to-Target Manifest Rewriter | `internal/agents/manifest_rewriter.go` | present |
+| PRIM-31 | Iterative Retrieval Refinement | `internal/agents/iter_retrieval.go` | absent-implemented |
 
 ## Decision
 
 Implement the 12 high-value absents in the codebase: PRIM-4, PRIM-7, PRIM-8, PRIM-9,
-PRIM-11, PRIM-12, PRIM-14, PRIM-25, PRIM-29, PRIM-30, plus PRIM-17 (spec only) and PRIM-24
 (add schema version field).
 
 Skip the software-archaeology *analysis* primitives (PRIM-15, PRIM-16, PRIM-18, PRIM-19,

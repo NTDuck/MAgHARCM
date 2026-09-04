@@ -1,7 +1,7 @@
 ---
 title: ChatDev — Communicative Agents for Software Development
 bibkey: p12_chatdev
-tags: [paper, multi-agent, chat-chain, communicative-dehallucination, [PRIM-25], hop-1]
+tags: [paper, multi-agent, chat-chain, communicative-dehallucination, [[PRIM-25]], hop-1]
 ---
 
 # ChatDev — Communicative Agents for Software Development

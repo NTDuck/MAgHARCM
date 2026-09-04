@@ -13,8 +13,14 @@
       "type": "external",
       "label": "YAML Config",
       "sublabel": ".config/<sample>.yml",
-      "pos": [40, 260],
-      "size": [130, 70],
+      "pos": [
+        40,
+        260
+      ],
+      "size": [
+        130,
+        70
+      ],
       "tag": "src/tgt + models"
     },
     {
@@ -22,8 +28,14 @@
       "type": "cloud",
       "label": "Ollama Runtime",
       "sublabel": ":11434 local",
-      "pos": [40, 90],
-      "size": [150, 80],
+      "pos": [
+        40,
+        90
+      ],
+      "size": [
+        150,
+        80
+      ],
       "tag": "Qwen3-30B Thinking + Qwen3-4B"
     },
     {
@@ -31,8 +43,14 @@
       "type": "backend",
       "label": "1. Intake",
       "sublabel": "Tree-sitter AST",
-      "pos": [230, 260],
-      "size": [130, 70],
+      "pos": [
+        230,
+        260
+      ],
+      "size": [
+        130,
+        70
+      ],
       "tag": "manifest + files"
     },
     {
@@ -40,17 +58,29 @@
       "type": "backend",
       "label": "2. Analyzer",
       "sublabel": "agents.analyzer",
-      "pos": [420, 260],
-      "size": [140, 70],
-      "tag": "Müller strategy"
+      "pos": [
+        420,
+        260
+      ],
+      "size": [
+        140,
+        70
+      ],
+      "tag": "M\u00fcller strategy"
     },
     {
       "id": "planner",
       "type": "backend",
       "label": "3. Planner",
       "sublabel": "agents.planning",
-      "pos": [620, 260],
-      "size": [140, 70],
+      "pos": [
+        620,
+        260
+      ],
+      "size": [
+        140,
+        70
+      ],
       "tag": "Reverse-topo DAG"
     },
     {
@@ -58,8 +88,14 @@
       "type": "backend",
       "label": "Navigator",
       "sublabel": "agents.navigator",
-      "pos": [830, 90],
-      "size": [140, 80],
+      "pos": [
+        830,
+        90
+      ],
+      "size": [
+        140,
+        80
+      ],
       "tag": "Symbol lookup <=4KB"
     },
     {
@@ -67,8 +103,14 @@
       "type": "backend",
       "label": "4. Translator",
       "sublabel": "agents.translator",
-      "pos": [830, 260],
-      "size": [140, 70],
+      "pos": [
+        830,
+        260
+      ],
+      "size": [
+        140,
+        70
+      ],
       "tag": "Chunked dispatch"
     },
     {
@@ -76,8 +118,14 @@
       "type": "backend",
       "label": "5. Validator",
       "sublabel": "agents.validator",
-      "pos": [1040, 260],
-      "size": [140, 70],
+      "pos": [
+        1040,
+        260
+      ],
+      "size": [
+        140,
+        70
+      ],
       "tag": "Multi-stage + guard"
     },
     {
@@ -85,8 +133,14 @@
       "type": "database",
       "label": "Checkpoint Store",
       "sublabel": ".artifacts/<run>/checkpoints/",
-      "pos": [420, 450],
-      "size": [150, 70],
+      "pos": [
+        420,
+        450
+      ],
+      "size": [
+        150,
+        70
+      ],
       "tag": "State persistence"
     },
     {
@@ -94,8 +148,14 @@
       "type": "backend",
       "label": "Eino Runner",
       "sublabel": "internal/runner",
-      "pos": [630, 450],
-      "size": [140, 70],
+      "pos": [
+        630,
+        450
+      ],
+      "size": [
+        140,
+        70
+      ],
       "tag": "Cyclic graph"
     },
     {
@@ -103,8 +163,14 @@
       "type": "database",
       "label": "Target Repository",
       "sublabel": ".artifacts/<run>/rust/",
-      "pos": [830, 450],
-      "size": [150, 70],
+      "pos": [
+        830,
+        450
+      ],
+      "size": [
+        150,
+        70
+      ],
       "tag": "Validated crate"
     }
   ],
@@ -185,7 +251,11 @@
       "label": "sync disk",
       "fromSide": "bottom",
       "toSide": "top",
-      "labelDy": 24
+      "labelDy": 24,
+      "labelAt": [
+        950,
+        380
+      ]
     },
     {
       "id": "runner-checkpoint",
@@ -194,26 +264,12 @@
       "label": "save / resume",
       "fromSide": "left",
       "toSide": "right",
-      "labelDy": -20
-    },
-    {
-      "id": "translator-to-target",
-      "from": "translator",
-      "to": "target",
-      "label": "sync disk",
-      "fromSide": "bottom",
-      "toSide": "top",
-      "labelDy": 50
-    },
-    {
-      "id": "runner-checkpoint",
-      "from": "runner",
-      "to": "checkpoint",
-      "label": "save / resume",
-      "fromSide": "left",
-      "toSide": "right",
-      "labelDy": -28
-    },
+      "labelDy": -20,
+      "labelAt": [
+        600,
+        446
+      ]
+    }
   ],
   "cards": [
     {

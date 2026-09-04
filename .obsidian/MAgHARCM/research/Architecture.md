@@ -19,7 +19,7 @@ internal/types       (State + TranslationTask; embeds artifacts.*)
        ^
        |
 internal/agents      (4 spine agents + auxiliary primitives
-                      [[PRIM-1]]..[[PRIM-30]] per [[primitives/INDEX]])
+                      [[PRIM-1]]..[[PRIM-31]] per [[primitives/INDEX]])
        |
 internal/graph       (Eino graph wiring the 4 agents + 2 checkpoint lambdas)
        |
@@ -66,7 +66,7 @@ per-fragment translation where latency and determinism dominate.
   implementation plan.
 - **Translator** (coding) — executes the plan in topological order,
   replacing skeleton stubs with concrete target code ([[PRIM-23]]). Each
-  fragment sees bounded context ([[PRIM-26]] + [[PRIM-30]]).
+  fragment sees bounded context ([[PRIM-26]] + [[PRIM-31]]).
 - **Validator** (coding) — runs AST pre-check ([[PRIM-6]]), compiler
   build, test suite, weakening guard ([[PRIM-13]]), plateau detector
   ([[PRIM-27]]); feeds diagnostics back to the Translator.

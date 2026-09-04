@@ -18,7 +18,7 @@ tags: [paper, repository-coding, planning, [[PRIM-1]], [[PRIM-23]], [[PRIM-29]],
 
 ## Relevance to MAgHARCM
 
-CodePlan is the planning lineage that MAgHARCM inherits alongside [[AlphaTrans-2024]]. The incremental-dependency + may-impact pair is what `internal/agents/planning.go::ComputeReverseTopoOrder` ([PRIM-1]) produces when fragmenting the AST before the chunked translator ([PRIM-23]) is invoked. The adaptive-planning idea — re-plan after each iteration's report — reappears in [[PRIM-29]]'s recruiter loop, which picks per-iteration tool/agent configurations based on the validator report. CodePlan also prefigures [[PRIM-30]] (Iterative Retrieval Refinement): the planner re-queries context after each plan step, just as RepoCoder re-indexes after each fragment.
+CodePlan is the planning lineage that MAgHARCM inherits alongside [[AlphaTrans-2024]]. The incremental-dependency + may-impact pair is what `internal/agents/planning.go::ComputeReverseTopoOrder` ([[PRIM-1]]) produces when fragmenting the AST before the chunked translator ([[PRIM-23]]) is invoked. The adaptive-planning idea — re-plan after each iteration's report — reappears in [[PRIM-29]]'s recruiter loop, which picks per-iteration tool/agent configurations based on the validator report. CodePlan also prefigures [[PRIM-31]] (Iterative Retrieval Refinement): the planner re-queries context after each plan step, just as RepoCoder re-indexes after each fragment.
 
 ## Hop-1 References
 

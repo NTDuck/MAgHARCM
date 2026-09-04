@@ -1,6 +1,6 @@
 package agents
 
-// Backlink: [[Primitives]] §NEW-PRIM-30 (Iterative Retrieval Refinement, RepoCoder-style
+// Backlink: [[Primitives]] §[[PRIM-31]] (Iterative Retrieval Refinement, RepoCoder-style
 // [P61]). Sits between the Navigator and the Translator: every translated fragment
 // emitted by upstream stages is reindexed so subsequent Lookups for symbols those
 // fragments already touched can be served from the index instead of another LSP

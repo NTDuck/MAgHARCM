@@ -1,7 +1,7 @@
 ---
 title: "CAID — Effective Strategies for Asynchronous Software Engineering Agents"
 bibkey: p54_caid
-tags: [paper, multi-agent, asynchronous, isolated-workspaces, git-worktree, [PRIM-17], hop-1]
+tags: [paper, multi-agent, asynchronous, isolated-workspaces, git-worktree, [[PRIM-17]], hop-1]
 ---
 
 # CAID — Effective Strategies for Asynchronous Software Engineering Agents
@@ -24,7 +24,7 @@ tags: [paper, multi-agent, asynchronous, isolated-workspaces, git-worktree, [PRI
 
 - [[Hong-2023-MetaGPT]] — assembly-line SOP encoding; CAID's centralised manager is the "Product Manager" role elevated to a top-level scheduler with isolated workspaces.
 - [[Wu-2023-AutoGen]] — conversable-agent substrate and interrupt/resume ([[PRIM-28]]); CAID inherits AutoGen's per-agent autonomy but adds hard workspace isolation.
-- [[Chen-2023-AgentVerse]] — recruitment-adaptive planning ([[PRIM-30]]); CAID's per-subtask agent assignment is recruitment at subtask granularity rather than per-iteration granularity.
+- [[Chen-2023-AgentVerse]] — recruitment-adaptive planning ([[PRIM-29]]); CAID's per-subtask agent assignment is recruitment at subtask granularity rather than per-iteration granularity.
 - [[Qian-2023-ChatDev]] — chat-chain role-flipping ([[PRIM-25]]); CAID's merge-time integration test is an asynchronous analogue of ChatDev's review step.
 - [[Yang-2024-SWE-Agent]] — agent-computer interface; CAID's `git worktree` is the SWE-agent sandboxing primitive generalised to long-horizon multi-agent settings.
 

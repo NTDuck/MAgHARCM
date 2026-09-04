@@ -18,7 +18,7 @@ tags: [paper, repository-translation, multi-agent, [[PRIM-1]], [[PRIM-3]], [[PRI
 
 ## Relevance to MAgHARCM
 
-ReCodeAgent is the closest prior work and the spine of [[PRIM-1]], [[PRIM-3]], [[PRIM-5]], [[PRIM-6]]. MAgHARCM's `internal/agents/planning.go::ComputeReverseTopoOrder` ([PRIM-1]) is the local-SLM re-implementation of ReCodeAgent's bottom-up module plan; `internal/agents/planning.go::DefaultProjectSkeleton` ([PRIM-3]) mirrors the skeleton-first emit step; `internal/agents/validator.go::generateAdditionalTests` ([PRIM-5]) realises the algorithm-1 lines 14-21 test-synthesis path; and `internal/agents/validator.go` ([PRIM-6]) runs the same AST → compiler → test cascade with rustc diagnostics fed back to the chunked translator ([PRIM-23]). The four-agent decomposition is adopted wholesale; only the cloud-LLM assumption is replaced by the local 30 B reasoning + 4 B coding topology.
+ReCodeAgent is the closest prior work and the spine of [[PRIM-1]], [[PRIM-3]], [[PRIM-5]], [[PRIM-6]]. MAgHARCM's `internal/agents/planning.go::ComputeReverseTopoOrder` ([[PRIM-1]]) is the local-SLM re-implementation of ReCodeAgent's bottom-up module plan; `internal/agents/planning.go::DefaultProjectSkeleton` ([[PRIM-3]]) mirrors the skeleton-first emit step; `internal/agents/validator.go::generateAdditionalTests` ([[PRIM-5]]) realises the algorithm-1 lines 14-21 test-synthesis path; and `internal/agents/validator.go` ([[PRIM-6]]) runs the same AST → compiler → test cascade with rustc diagnostics fed back to the chunked translator ([[PRIM-23]]). The four-agent decomposition is adopted wholesale; only the cloud-LLM assumption is replaced by the local 30 B reasoning + 4 B coding topology.
 
 ## Hop-1 References
 

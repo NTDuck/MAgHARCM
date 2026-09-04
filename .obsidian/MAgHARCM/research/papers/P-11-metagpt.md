@@ -1,7 +1,7 @@
 ---
 title: MetaGPT — Meta Programming for A Multi-Agent Collaborative Framework
 bibkey: p11_metagpt
-tags: [paper, multi-agent, sop, role-artifact, [PRIM-24], hop-1]
+tags: [paper, multi-agent, sop, role-artifact, [[PRIM-24]], hop-1]
 ---
 
 # MetaGPT — Meta Programming for A Multi-Agent Collaborative Framework

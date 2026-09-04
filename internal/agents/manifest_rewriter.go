@@ -1,6 +1,6 @@
 package agents
 
-// Backlink: [[Primitives]] §NEW-PRIM-31 (Source-to-Target Manifest Rewriter).
+// Backlink: [[Primitives]] §[[PRIM-30]] (Source-to-Target Manifest Rewriter).
 
 import (
 	"fmt"
