@@ -258,22 +258,21 @@ type ConceptKeywordCluster struct {
 // DefaultConceptClusters is the canonical keyword → concept table used by
 // the PRIM-20 ConceptAssigner.
 var DefaultConceptClusters = []ConceptKeywordCluster{
-	{Label: ConceptLabelValidation, Keywords: []string{"validat", "check"}},
-	{Label: ConceptLabelParsing, Keywords: []string{"parse", "lex", "token"}},
-	{Label: ConceptLabelMathStats, Keywords: []string{"stat", "math", "calc"}},
-	{Label: ConceptLabelEntityStorage, Keywords: []string{"item", "store", "repo"}},
+	{Label: ConceptLabelValidation, Keywords: []string{"validat", "check", "verif"}},
+	{Label: ConceptLabelParsing, Keywords: []string{"parse", "lex", "token", "scan"}},
+	{Label: ConceptLabelMathStats, Keywords: []string{"stat", "math", "calc", "mean"}},
+	{Label: ConceptLabelEntityStorage, Keywords: []string{"item", "store", "repo", "record"}},
 }
 
 // -------------------------------------------------------------------------
-// Design-Rule Hierarchy (PRIM-19)
-// -------------------------------------------------------------------------
+// ArchitectureStabilityLayer is one of the L1/L2/L3 design-rule partitions (PRIM-19).
+type ArchitectureStabilityLayer string
 
-// ArchitectureStabilityLayerL1/L2/L3 are the human-readable labels of the
-// design-rule hierarchy partitions.
+// ArchitectureStabilityLayerL1/L2/L3 are the canonical layer identifiers.
 const (
-	ArchitectureStabilityLayerL1 = "L1 Interface"
-	ArchitectureStabilityLayerL2 = "L2 Subsystem"
-	ArchitectureStabilityLayerL3 = "L3 Leaf"
+	ArchitectureStabilityLayerL1 ArchitectureStabilityLayer = "L1 Interface"
+	ArchitectureStabilityLayerL2 ArchitectureStabilityLayer = "L2 Subsystem"
+	ArchitectureStabilityLayerL3 ArchitectureStabilityLayer = "L3 Leaf"
 )
 
 // ArchitectureStabilityDescriptionL1/L2/L3 are short descriptions paired

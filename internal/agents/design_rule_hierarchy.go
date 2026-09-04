@@ -2,26 +2,22 @@ package agents
 
 import (
 	"fmt"
-	"sort"
+	"slices"
+	"cmp"
+
+	"MAgHARCM/internal/compiletime"
 )
 
-// Backlink: [[1.0.0 PRIM-19]] Design Rule Hierarchy Partitioning (Kazman et al. DRSpaces-2017).
-// Classifies architectural elements by stability layer:
-// L1: Design Rules / Interfaces (highest stability, abstract contracts)
-// L2: Subsystems / Intermediaries (moderate stability)
-// L3: Leaves / Concrete implementations (most volatile)
-// Applies load-bearing concentration checks to detect modularity violations.
+type ArchitectureStabilityLayer = compiletime.ArchitectureStabilityLayer
 
-// ArchitectureStabilityLayer defines the architectural strata.
-type ArchitectureStabilityLayer string
-
+// Layer* are the back-compat aliases for compiletime.ArchitectureStabilityLayer*.
+// New code should reference the compiletime constants directly.
 const (
-	LayerL1Interface ArchitectureStabilityLayer = "L1_INTERFACE"
-	LayerL2Subsystem ArchitectureStabilityLayer = "L2_SUBSYSTEM"
-	LayerL3Leaf      ArchitectureStabilityLayer = "L3_LEAF"
+	LayerL1Interface ArchitectureStabilityLayer = compiletime.ArchitectureStabilityLayerL1
+	LayerL2Subsystem ArchitectureStabilityLayer = compiletime.ArchitectureStabilityLayerL2
+	LayerL3Leaf      ArchitectureStabilityLayer = compiletime.ArchitectureStabilityLayerL3
 )
 
-// PartitionedElement represents one module or file mapped to a stability layer.
 type PartitionedElement struct {
 	Name        string                     `json:"name"`
 	Layer       ArchitectureStabilityLayer `json:"layer"`
@@ -88,20 +84,19 @@ func (d *DRHierarchyPartitioner) Partition(elements []string, dependencies map[s
 		var desc string
 
 		if in >= 2 && out <= 1 {
-			layer = LayerL1Interface
-			desc = "High-stability design rule contract"
+			desc = compiletime.ArchitectureStabilityDescriptionL1
 			hierarchy.L1Interfaces = append(hierarchy.L1Interfaces, PartitionedElement{
 				Name: el, Layer: layer, InDegree: in, OutDegree: out, Description: desc,
 			})
 		} else if out >= 2 && in <= 1 {
 			layer = LayerL3Leaf
-			desc = "Volatile concrete leaf implementation"
+			desc = compiletime.ArchitectureStabilityDescriptionL3
 			hierarchy.L3Leaves = append(hierarchy.L3Leaves, PartitionedElement{
 				Name: el, Layer: layer, InDegree: in, OutDegree: out, Description: desc,
 			})
 		} else {
 			layer = LayerL2Subsystem
-			desc = "Intermediate subsystem coordinator"
+			desc = compiletime.ArchitectureStabilityDescriptionL2
 			hierarchy.L2Subsystems = append(hierarchy.L2Subsystems, PartitionedElement{
 				Name: el, Layer: layer, InDegree: in, OutDegree: out, Description: desc,
 			})
@@ -123,9 +118,9 @@ func (d *DRHierarchyPartitioner) Partition(elements []string, dependencies map[s
 	}
 
 	// Stable sort for deterministic outputs
-	sort.Slice(hierarchy.L1Interfaces, func(i, j int) bool { return hierarchy.L1Interfaces[i].Name < hierarchy.L1Interfaces[j].Name })
-	sort.Slice(hierarchy.L2Subsystems, func(i, j int) bool { return hierarchy.L2Subsystems[i].Name < hierarchy.L2Subsystems[j].Name })
-	sort.Slice(hierarchy.L3Leaves, func(i, j int) bool { return hierarchy.L3Leaves[i].Name < hierarchy.L3Leaves[j].Name })
+	slices.SortFunc(hierarchy.L1Interfaces, func(a, b PartitionedElement) int { return cmp.Compare(a.Name, b.Name) })
+	slices.SortFunc(hierarchy.L2Subsystems, func(a, b PartitionedElement) int { return cmp.Compare(a.Name, b.Name) })
+	slices.SortFunc(hierarchy.L3Leaves, func(a, b PartitionedElement) int { return cmp.Compare(a.Name, b.Name) })
 
 	return hierarchy
 }
