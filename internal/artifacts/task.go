@@ -7,6 +7,10 @@ package artifacts
 
 // DocumentWrapper keeps both structured data and markdown representation.
 type DocumentWrapper[T any] struct {
-	Data        T      `json:"data"`
-	RawMarkdown string `json:"raw_markdown"`
+	ArtifactSchemaVersion string `json:"schema_version"`
+	Data          T      `json:"data"`
+	RawMarkdown   string `json:"raw_markdown"`
 }
+
+// SchemaVersion returns the schema version stamped on the wrapper.
+func (d DocumentWrapper[T]) SchemaVersion() string { return d.ArtifactSchemaVersion }

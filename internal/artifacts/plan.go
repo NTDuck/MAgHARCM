@@ -23,8 +23,12 @@ type ImplementationPlan struct {
 
 // PlanningOutput captures AST fragments, symbol mappings, generated skeletons, and translation steps.
 type PlanningOutput struct {
-	Fragments     []string           `json:"fragments"`      // file_name:fragment_name
-	NameMapping   map[string]string  `json:"name_mapping"`   // source_name -> target_name
-	SkeletonFiles map[string]string  `json:"skeleton_files"` // relative_path -> skeleton_content
+	ArtifactSchemaVersion string            `json:"schema_version"`
+	Fragments     []string          `json:"fragments"`      // file_name:fragment_name
+	NameMapping   map[string]string `json:"name_mapping"`   // source_name -> target_name
+	SkeletonFiles map[string]string `json:"skeleton_files"` // relative_path -> skeleton_content
 	Plan          ImplementationPlan `json:"plan"`
 }
+
+// SchemaVersion returns the schema version stamped on the planning output.
+func (p PlanningOutput) SchemaVersion() string { return p.ArtifactSchemaVersion }

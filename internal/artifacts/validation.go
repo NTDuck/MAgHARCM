@@ -19,6 +19,7 @@ type FileStatus struct {
 // A run is AllSuccess ONLY when compilation passes AND every real test passes
 // AND the MinRealTests gate is satisfied.
 type ValidationReport struct {
+	ArtifactSchemaVersion string `json:"schema_version"`
 	AllSuccess         bool         `json:"all_success"`
 	CompilationSuccess bool         `json:"compilation_success"`
 	TestPassRate       float64      `json:"test_pass_rate"`
@@ -48,6 +49,9 @@ type ValidationReport struct {
 	// ASTSyntaxErrors contains parse/syntax errors found before compilation (NEW-PRIM-6 / GAP-08).
 	ASTSyntaxErrors []string `json:"ast_syntax_errors,omitempty"`
 }
+
+// SchemaVersion returns the schema version stamped on the validation report.
+func (v *ValidationReport) SchemaVersion() string { return v.ArtifactSchemaVersion }
 
 // HasUncoveredFunctions determines if any discovered AST functions lack test assertions.
 func (v *ValidationReport) HasUncoveredFunctions() bool {

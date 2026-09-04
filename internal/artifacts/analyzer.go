@@ -41,7 +41,11 @@ type TargetProjectDesign struct {
 
 // AnalyzerOutput aggregates research, library mapping, and architectural design documents.
 type AnalyzerOutput struct {
-	Research DocumentWrapper[SourceProjectResearch]     `json:"research"`
-	Library  DocumentWrapper[ThirdPartyLibraryAnalysis] `json:"library"`
-	Design   DocumentWrapper[TargetProjectDesign]       `json:"design"`
+	ArtifactSchemaVersion string                                      `json:"schema_version"`
+	Research      DocumentWrapper[SourceProjectResearch]     `json:"research"`
+	Library       DocumentWrapper[ThirdPartyLibraryAnalysis] `json:"library"`
+	Design        DocumentWrapper[TargetProjectDesign]       `json:"design"`
 }
+
+// SchemaVersion returns the schema version stamped on the analyzer output.
+func (a AnalyzerOutput) SchemaVersion() string { return a.ArtifactSchemaVersion }
