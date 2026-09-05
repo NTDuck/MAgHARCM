@@ -112,6 +112,7 @@ func SwitchToNextStrategy(ctx context.Context, state *compiletime.State) (Strate
 		return current, false
 	}
 	logger.LogAgent(compiletime.LogScopeStrategyRegistry, "Incremental failover: switching strategy from %s to %s", current, next)
+	state.AnalyzerOutput.Research.Data.StrategyHistory = append(state.AnalyzerOutput.Research.Data.StrategyHistory, fmt.Sprintf("%s->%s", current, next))
 	state.AnalyzerOutput.Research.Data.StrategyRationale = rationaleFor(next)
 	return next, true
 }

@@ -89,7 +89,7 @@ func TestPAToolsCreation(t *testing.T) {
 }
 
 func TestLSPToolsCreation(t *testing.T) {
-	lspTools := tools.NewLSPTools()
+	lspTools := tools.MustNewLSPToolsWithProvider(tools.NewNativeLSPProvider())
 	if len(lspTools) != 6 {
 		t.Errorf("expected 6 LSP tools, got %d", len(lspTools))
 	}

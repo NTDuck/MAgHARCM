@@ -113,6 +113,7 @@ type SourceProjectResearch struct {
 	Dependencies       []string `json:"dependencies"`
 	MigrationStrategy  string   `json:"migration_strategy,omitempty"`
 	StrategyRationale  string   `json:"strategy_rationale,omitempty"`
+	StrategyHistory    []string `json:"strategy_history,omitempty"`
 	RawDocument        string   `json:"raw_document"`
 }
 
