@@ -84,6 +84,16 @@ const LegacySourceSampleDescriptor = "legacy source code"
 // loop while still aborting runaway cycles.
 const MaxGraphRunSteps = 50
 
+// ModularityTrapYears is the age threshold beyond which a design rule is
+// flagged as potentially obsolete — the "modularity trap" introduced in
+// [[1.0.0 P-71]] (Fleming &amp; Baldwin 2024 retrospective on Design Rules).
+// Design rules that were historically optimal but lock in a decomposition
+// older than this threshold accumulate translation debt at the rate Lehman
+// predicted. The Archaeologist agent surfaces design rules older than this
+// threshold to the user for explicit re-validation. Default 15 years matches
+// the empirical half-life of design-rule stability reported in P-71.
+const ModularityTrapYears = 15
+
 // -------------------------------------------------------------------------
 // Logger Scopes (PRIM-Pipeline logging)
 // -------------------------------------------------------------------------

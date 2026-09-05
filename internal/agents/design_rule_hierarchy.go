@@ -1,9 +1,9 @@
 package agents
-
 import (
 	"fmt"
 	"slices"
 	"cmp"
+	"time"
 
 	"MAgHARCM/internal/compiletime"
 )
@@ -24,6 +24,13 @@ type PartitionedElement struct {
 	InDegree    int                        `json:"in_degree"`
 	OutDegree   int                        `json:"out_degree"`
 	Description string                     `json:"description"`
+	// StableSinceYear is the year the design rule became visible / stable;
+	// nil when unknown. Set by callers who can read git blame or file mtime;
+	// consumed by IsModularityTrap to flag rules older than
+	// [[1.0.0 PRIM-71]]'s threshold.
+	StableSinceYear *int    `json:"stable_since_year,omitempty"`
+	IsTrap          bool    `json:"is_modularity_trap,omitempty"`
+	TrapReason      string  `json:"trap_reason,omitempty"`
 }
 
 // ModularityViolation records an architectural smell where an L1 element depends on an L3 leaf.
@@ -48,11 +55,20 @@ type DRHierarchyPartitioner struct{}
 func NewDRHierarchyPartitioner() *DRHierarchyPartitioner {
 	return &DRHierarchyPartitioner{}
 }
-
 // Partition classifies elements based on their fan-in (in-degree) and fan-out (out-degree).
 // Elements with high fan-in and low fan-out are L1 design rules.
 // Elements with zero fan-in are L3 leaf implementations.
 func (d *DRHierarchyPartitioner) Partition(elements []string, dependencies map[string][]string) *DRHierarchy {
+	return d.PartitionWithStableSince(elements, dependencies, nil)
+}
+
+// PartitionWithStableSince extends Partition with optional per-element
+// stable-since-year input. When provided, each L1 element whose stable-since
+// year is older than [[1.0.0 PRIM-71]]'s ModularityTrapYears threshold is
+// flagged as a modularity trap; the caller surfaces these to the user for
+// explicit re-validation. Years reference [[1.0.0 P-71]] (Fleming &amp;
+// Baldwin 2024 retrospective on Design Rules).
+func (d *DRHierarchyPartitioner) PartitionWithStableSince(elements []string, dependencies map[string][]string, stableSinceYears map[string]int) *DRHierarchy {
 	inDegree := make(map[string]int)
 	outDegree := make(map[string]int)
 
@@ -85,9 +101,11 @@ func (d *DRHierarchyPartitioner) Partition(elements []string, dependencies map[s
 
 		if in >= 2 && out <= 1 {
 			desc = compiletime.ArchitectureStabilityDescriptionL1
-			hierarchy.L1Interfaces = append(hierarchy.L1Interfaces, PartitionedElement{
-				Name: el, Layer: layer, InDegree: in, OutDegree: out, Description: desc,
-			})
+			elem := PartitionedElement{Name: el, Layer: layer, InDegree: in, OutDegree: out, Description: desc}
+			if trapEl, isTrap := markModularityTrap(elem, el, stableSinceYears); isTrap {
+				elem = trapEl
+			}
+			hierarchy.L1Interfaces = append(hierarchy.L1Interfaces, elem)
 		} else if out >= 2 && in <= 1 {
 			layer = LayerL3Leaf
 			desc = compiletime.ArchitectureStabilityDescriptionL3
@@ -120,7 +138,36 @@ func (d *DRHierarchyPartitioner) Partition(elements []string, dependencies map[s
 	// Stable sort for deterministic outputs
 	slices.SortFunc(hierarchy.L1Interfaces, func(a, b PartitionedElement) int { return cmp.Compare(a.Name, b.Name) })
 	slices.SortFunc(hierarchy.L2Subsystems, func(a, b PartitionedElement) int { return cmp.Compare(a.Name, b.Name) })
-	slices.SortFunc(hierarchy.L3Leaves, func(a, b PartitionedElement) int { return cmp.Compare(a.Name, b.Name) })
 
 	return hierarchy
 }
+
+// markModularityTrap flags an L1 design rule as a modularity trap when its
+// stable-since year is older than [[1.0.0 PRIM-71]]'s ModularityTrapYears
+// threshold. Returns the original element unchanged when stableSinceYears
+// is nil or does not contain the element. Caller surfaces flagged elements
+// to the user for explicit re-validation per [[1.0.0 P-71]] §4.
+func markModularityTrap(elem PartitionedElement, name string, stableSinceYears map[string]int) (PartitionedElement, bool) {
+	if stableSinceYears == nil {
+		return elem, false
+	}
+	year, ok := stableSinceYears[name]
+	if !ok {
+		return elem, false
+	}
+	age := currentYear() - year
+	if age < compiletime.ModularityTrapYears {
+		return elem, false
+	}
+	yearCopy := year
+	elem.StableSinceYear = &yearCopy
+	elem.IsTrap = true
+	elem.TrapReason = fmt.Sprintf("Design rule stable since %d (%d years ago, exceeds %d-year threshold)",
+		year, age, compiletime.ModularityTrapYears)
+	return elem, true
+}
+
+// currentYear is a package-private seam so tests can stub the calendar
+// without monkey-patching time.Now everywhere.
+var currentYear = func() int { return time.Now().Year() }
+
