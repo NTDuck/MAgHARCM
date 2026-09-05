@@ -1,10 +1,10 @@
 ---
 title: "P-71 — Fleming & Baldwin 2024 — The Architecture of Complexity Revisited"
-backlink: "[[2.0.0 P-71]]"
+backlink: "[[1.0.0 P-71]]"
 tags: [paper, modularity, retrospective, design-rules, [[1.0.0 P-41]], [[1.0.0 P-70]], hop-2]
 ---
 
-# [[2.0.0 P-71 — Fleming & Baldwin 2024]]
+# [[1.0.0 P-71 — Fleming & Baldwin 2024]]
 
 ## Citation
 
@@ -37,8 +37,8 @@ The retrospective synthesises 247 papers that cite Baldwin & Clark 2006 (using G
 ## References
 
 ### Hop-1 (Fleming & Baldwin 2024 cites)
-- Baldwin, C. Y. & Clark, K. B. (2006). *Design Rules, Vol. 1: The Power of Modularity*. MIT Press. See [[2.0.0 P-70]].
-- Simon, H. A. (1962). *The Architecture of Complexity*. See [[2.0.0 P-31]].
+- Baldwin, C. Y. & Clark, K. B. (2006). *Design Rules, Vol. 1: The Power of Modularity*. MIT Press. See [[1.0.0 P-70]].
+- Simon, H. A. (1962). *The Architecture of Complexity*. See [[1.0.0 P-31]].
 - Sanchez, R. & Mahoney, J. T. (1996). *Modularity, Flexibility, and Knowledge Management in Product and Organization Design*. Strategic Management Journal 17:63-76.
 
 ### Hop-2

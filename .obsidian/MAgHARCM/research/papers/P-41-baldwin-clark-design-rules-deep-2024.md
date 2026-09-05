@@ -8,7 +8,7 @@ tags: [paper, design-rules, modular-architecture, [[1.0.0 PRIM-19]], hop-1]
 
 **Authors**: Carliss Y. Baldwin (Harvard Business School), Kim B. Clark (Harvard Business School); with retrospective commentary drawing on the 2024 work of Fleming & Baldwin.
 **Year**: 2006 (working paper); 2024 (retrospective synthesis)
-**Venue**: MIT Sloan School Working Paper ([[NEEDS-LINK Baldwin-Clark-2006-WorkingPaper]]); retrospective framing via Fleming & Baldwin in current software-archaeology literature ([[NEEDS-LINK Fleming-Baldwin-2024]]).
+**Venue**: MIT Sloan School Working Paper ([[1.0.0 P-70]]); retrospective framing via Fleming &amp; Baldwin in current software-archaeology literature ([[1.0.0 P-71]]).
 **eprint / DOI**: 2006 working paper on SSRN (Baldwin & Clark, "Modularization and the Pace of Innovation", MIT Sloan School WP); 1999/2000 MIT Press book carries DOI 10.7551/mitpress/2366.001.0001 ([[P-34]]); 2016 modular-money paper via Harvard Business School Working Paper series.
 **Cited by**: [[Software-Archaeology-Lineage]] §4, [[PRIM-19]] (Design Rule Hierarchy Partitioning), [[primitives/INDEX]] row 19, [[P-34]], [[P-20]].
 

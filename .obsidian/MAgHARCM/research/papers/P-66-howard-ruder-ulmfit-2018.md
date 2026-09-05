@@ -1,10 +1,10 @@
 ---
 title: "P-66 — Howard & Ruder 2018 — Universal Language Model Fine-tuning for Text Classification (ULMFiT)"
-backlink: "[[2.0.0 P-66]]"
+backlink: "[[1.0.0 P-66]]"
 tags: [paper, transfer-learning, slm, language-model, fine-tuning, discriminative-learning-rate, [[1.0.0 P-55]], hop-2]
 ---
 
-# [[2.0.0 P-66 — ULMFiT]]
+# [[1.0.0 P-66 — ULMFiT]]
 
 ## Citation
 
@@ -37,7 +37,7 @@ Three stages:
 - Mikolov, T. et al. (2013). *Distributed Representations of Words and Phrases and their Compositionality*. (word2vec)
 - Peters, M. et al. (2018). *Deep contextualized word representations* (ELMo).
 - McCann, B. et al. (2017). *Learned in Translation: Contextualized Word Vectors* (CoVe).
-- Kingma, D. & Ba, J. (2015). *Adam: A Method for Stochastic Optimization*. ICLR 2015. arXiv:1412.6980. See [[2.0.0 P-67]].
+- Kingma, D. & Ba, J. (2015). *Adam: A Method for Stochastic Optimization*. ICLR 2015. arXiv:1412.6980. See [[1.0.0 P-67]].
 - Ruder, S. (2016). *An Overview of Gradient Descent Optimization Algorithms*. arXiv:1609.04747.
 
 ### Hop-2

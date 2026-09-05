@@ -1,10 +1,10 @@
 ---
 title: "P-72 — Yamaguchi 2014 — Code Similarity and Clones in Software Archaeology"
-backlink: "[[2.0.0 P-72]]"
+backlink: "[[1.0.0 P-72]]"
 tags: [paper, code-clone, software-archaeology, semantic-analysis, [[1.0.0 P-48]], hop-2]
 ---
 
-# [[2.0.0 P-72 — Yamaguchi Code Clones]]
+# [[1.0.0 P-72 — Yamaguchi Code Clones]]
 
 ## Citation
 
@@ -47,7 +47,7 @@ Query: traverse the CPG with declarative graph queries (Gremlin-style) that matc
 
 ### Hop-2
 - AlBahnassy, K. (2019). *A Deep Learning Model for Function Type Prediction in CPG-based Vulnerability Detection*. (joern-related work)
-- Jia, Y. & Harman, M. (2011). *An Analysis and Survey of the Development of Mutation Testing*. IEEE TSE 37(5):825-854. See [[2.0.0 P-48]].
+- Jia, Y. & Harman, M. (2011). *An Analysis and Survey of the Development of Mutation Testing*. IEEE TSE 37(5):825-854. See [[1.0.0 P-48]].
 
 ## Backlinks
 

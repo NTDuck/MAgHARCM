@@ -1,10 +1,10 @@
 ---
 title: "P-69 — Anthropic 2025 — Sycophancy in Language Models"
-backlink: "[[2.0.0 P-69]]"
+backlink: "[[1.0.0 P-69]]"
 tags: [paper, alignment, sycophancy, evaluation, rlhf, [[1.0.0 P-38]], [[1.0.0 P-61]], hop-2]
 ---
 
-# [[2.0.0 P-69 — Anthropic Sycophancy]]
+# [[1.0.0 P-69 — Anthropic Sycophancy]]
 
 ## Citation
 

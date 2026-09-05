@@ -1,10 +1,10 @@
 ---
 title: "P-68 — Shazeer 2019 — Fast Transformer Decoding: One Write-Head is All You Need (MQA)"
-backlink: "[[2.0.0 P-68]]"
+backlink: "[[1.0.0 P-68]]"
 tags: [paper, transformer, inference-speed, multi-query-attention, kv-cache, [[1.0.0 P-57]], hop-2]
 ---
 
-# [[2.0.0 P-68 — Multi-Query Attention]]
+# [[1.0.0 P-68 — Multi-Query Attention]]
 
 ## Citation
 

@@ -3,7 +3,7 @@ title: "ADR-2026-09-07 Dup-Row Escape Recipe — When the Same [[P-NN]] Belongs 
 backlink: "[[1.0.0 ADR-2026-09-07-Dup-Row-Escape-Recipe]]"
 status: Accepted
 date: 2026-09-07
-tags: [adr, lineage, matrix, [[1.0.0 Architecture]]]
+tags: [adr, lineage, matrix, [[2.0.0 Architecture]]]
 ---
 
 # [[1.0.0 ADR-2026-09-07 Dup-Row Escape Recipe]]

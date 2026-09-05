@@ -8,7 +8,7 @@ tags: [sprint, modernization, software-archaeology, refactor, [[2.0.0 MAgHARCM]]
 
 ## Context & Handoff
 
-This sprint resumes from [[1.0.0 Sprint-Recon-2026-09-04]].
+This sprint resumes from [[2.0.0 Sprint-Recon-2026-09-04]].
 The prior iteration established the basic multi-agent pipeline and cataloged 31 primitives.
 However, discrepancies remained:
 1. Primitives parity was split: several primitives ([[PRIM-15]], [[PRIM-16]], [[PRIM-18]], [[PRIM-19]], [[PRIM-20]], [[PRIM-22]]) were marked "referenced" rather than implemented, creating multiple sources of truth.

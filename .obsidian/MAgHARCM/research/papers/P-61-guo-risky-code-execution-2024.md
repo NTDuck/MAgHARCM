@@ -1,10 +1,10 @@
 ---
 title: "P-61 — Guo et al. 2024 — RedCode: Risky Code Execution Benchmark"
-backlink: "[[2.0.0 P-61]]"
+backlink: "[[1.0.0 P-61]]"
 tags: [paper, adversarial, red-team, code-generation, risky-execution, verifier-of-verifier, [[1.0.0 PRIM-7]], [[1.0.0 PRIM-25]], [[1.0.0 P-57]], [[2.0.0 MAgHARCM]]]
 ---
 
-# [[2.0.0 P-61 — Guo et al. — RedCode]]
+# [[1.0.0 P-61 — Guo et al. — RedCode]]
 
 ## Citation
 

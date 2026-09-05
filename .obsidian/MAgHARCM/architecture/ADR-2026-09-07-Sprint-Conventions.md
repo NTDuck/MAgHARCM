@@ -3,7 +3,7 @@ title: "ADR-2026-09-07 Sprint Conventions — Authoritative Rule-Set for MAgHARC
 backlink: "[[1.0.0 ADR-2026-09-07-Sprint-Conventions]]"
 status: Accepted
 date: 2026-09-07
-tags: [adr, conventions, [[2.0.0 MAgHARCM]], [[1.0.0 Architecture]]]
+tags: [adr, conventions, [[2.0.0 MAgHARCM]], [[2.0.0 Architecture]]]
 ---
 
 # [[1.0.0 ADR-2026-09-07 Sprint Conventions]]

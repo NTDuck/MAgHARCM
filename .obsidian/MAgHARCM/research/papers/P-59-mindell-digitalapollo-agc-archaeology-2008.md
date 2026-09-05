@@ -1,10 +1,10 @@
 ---
 title: "P-59 — Mindell 2008 — Digital Apollo: Human and Machine in Spaceflight"
-backlink: "[[2.0.0 P-59]]"
+backlink: "[[1.0.0 P-59]]"
 tags: [paper, software-archaeology, case-study, agc, legacy-modernization, [[1.0.0 PRIM-14]], [[1.0.0 PRIM-18]], [[1.0.0 PRIM-19]], [[1.0.0 PRIM-20]], hop-1]
 ---
 
-# [[2.0.0 P-59 — Mindell — Digital Apollo]]
+# [[1.0.0 P-59 — Mindell — Digital Apollo]]
 
 ## Citation
 

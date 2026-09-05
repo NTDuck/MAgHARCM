@@ -1,10 +1,10 @@
 ---
 title: "P-64 — Li, Wei, Zhang & Zhang 2024 — EAGLE: Speculative Sampling Requires Rethinking Feature Uncertainty"
-backlink: "[[2.0.0 P-64]]"
+backlink: "[[1.0.0 P-64]]"
 tags: [paper, inference, decoding, speculative, feature-level, slm, lossless, code-generation, [[1.0.0 PRIM-7]], [[1.0.0 P-57]], [[2.0.0 MAgHARCM]]]
 ---
 
-# [[2.0.0 P-64 — EAGLE: Speculative Sampling Requires Rethinking Feature Uncertainty]]
+# [[1.0.0 P-64 — EAGLE: Speculative Sampling Requires Rethinking Feature Uncertainty]]
 
 ## Citation
 

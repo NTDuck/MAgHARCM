@@ -1,10 +1,10 @@
 ---
 title: "P-60 — Bisbal, Lawless, Wu & Grimson 1999 — Legacy Information Systems: Issues and Directions"
-backlink: "[[2.0.0 P-60]]"
+backlink: "[[1.0.0 P-60]]"
 tags: [paper, legacy-information-systems, big-bang-vs-incremental, migration-strategies, cascading-fallback, [[1.0.0 PRIM-21]], hop-1]
 ---
 
-# [[2.0.0 P-60 — Bisbal et al. — Legacy Information Systems]]
+# [[1.0.0 P-60 — Bisbal et al. — Legacy Information Systems]]
 
 ## Citation
 

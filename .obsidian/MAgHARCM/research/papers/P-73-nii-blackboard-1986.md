@@ -1,10 +1,10 @@
 ---
 title: "P-73 — Nii 1986 — Blackboard Systems: The Blackboard Model of Problem Solving"
-backlink: "[[2.0.0 P-73]]"
+backlink: "[[1.0.0 P-73]]"
 tags: [paper, blackboard, multi-agent, problem-solving, knowledge-source, [[1.0.0 P-44]], hop-2]
 ---
 
-# [[2.0.0 P-73 — Nii Blackboard Systems]]
+# [[1.0.0 P-73 — Nii Blackboard Systems]]
 
 ## Citation
 
@@ -55,7 +55,7 @@ The graph orchestrator (cf. `internal/graph/graph.go`) implements the **control 
 - Hayes-Roth, B. (1985). *A Blackboard Architecture for Control*. Artificial Intelligence 26(3):251-321.
 
 ### Hop-2
-- Corkill, D. D. (1991). *Blackboard Systems*. AI Expert 6(9):40-47. See [[2.0.0 P-44]].
+- Corkill, D. D. (1991). *Blackboard Systems*. AI Expert 6(9):40-47. See [[1.0.0 P-44]].
 - Rao, A. S. & Georgeff, M. P. (1995). *BDI Agents: From Theory to Practice*. ICMAS 1995.
 - Wooldridge, M. & Jennings, N. R. (1995). *Intelligent Agents: Theory and Practice*. Knowledge Engineering Review 10(2):115-152.
 

@@ -1,10 +1,10 @@
 ---
 title: "P-70 — Baldwin & Clark 2006 — Design Rules: The Power of Modularity"
-backlink: "[[2.0.0 P-70]]"
+backlink: "[[1.0.0 P-70]]"
 tags: [paper, modularity, design-rules, software-economics, [[1.0.0 P-41]], hop-2]
 ---
 
-# [[2.0.0 P-70 — Design Rules Modularity]]
+# [[1.0.0 P-70 — Design Rules Modularity]]
 
 ## Citation
 
@@ -37,15 +37,15 @@ The Archaeologist agent's `extractDesignRuleHierarchy` (cf. `internal/agents/arc
 ## References
 
 ### Hop-1 (Baldwin & Clark 2006 cites)
-- Simon, H. A. (1962). *The Architecture of Complexity*. Proceedings of the American Philosophical Society 106(6):467-482. See [[2.0.0 P-31]].
-- Parnas, D. L. (1972). *On the Criteria to Be Used in Decomposing Systems into Modules*. CACM 15(12):1053-1058. See [[2.0.0 P-31]].
+- Simon, H. A. (1962). *The Architecture of Complexity*. Proceedings of the American Philosophical Society 106(6):467-482. See [[1.0.0 P-31]].
+- Parnas, D. L. (1972). *On the Criteria to Be Used in Decomposing Systems into Modules*. CACM 15(12):1053-1058. See [[1.0.0 P-31]].
 - Langlois, R. N. (2002). *Modularity in Technology and Organization*. Journal of Economic Behavior & Organization 49:19-37.
 - Schilling, M. A. (2000). *Toward a General Modular Systems Theory and Its Application to Interfirm Product Modularity*. Academy of Management Review 25(2):312-334.
 
 ### Hop-2
 - Baldwin, C. Y. (2008). *Where do Transactions Come From? Modularity, Transactions, and the Boundaries of Firms*. Industrial and Corporate Change 17(1):155-195.
-- Fleming, L. & Baldwin, C. Y. (2024). *The Architecture of Complexity Revisited*. (See [[2.0.0 P-71]].)
-- MacCormack, A., Baldwin, C. Y., Rusnak, J. (2012). *Exploring the Duality between Product and Organizational Architectures*. HBS Working Paper 12-099. See [[2.0.0 P-42]].
+- Fleming, L. & Baldwin, C. Y. (2024). *The Architecture of Complexity Revisited*. (See [[1.0.0 P-71]].)
+- MacCormack, A., Baldwin, C. Y., Rusnak, J. (2012). *Exploring the Duality between Product and Organizational Architectures*. HBS Working Paper 12-099. See [[1.0.0 P-42]].
 
 ## Backlinks
 

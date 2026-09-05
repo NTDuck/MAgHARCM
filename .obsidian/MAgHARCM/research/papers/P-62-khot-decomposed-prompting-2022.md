@@ -1,10 +1,10 @@
 ---
 title: "P-62 — Khot et al. 2022 — Decomposed Prompting: A Modular Approach for Solving Complex Tasks"
-backlink: "[[2.0.0 P-62]]"
+backlink: "[[1.0.0 P-62]]"
 tags: [paper, prompting, decomposition, modular, multi-step, slm, chain-of-thought, [[1.0.0 PRIM-22]], [[1.0.0 PRIM-24]], [[1.0.0 PRIM-31]], [[2.0.0 MAgHARCM]]]
 ---
 
-# [[2.0.0 P-62 — Khot et al. — Decomposed Prompting]]
+# [[1.0.0 P-62 — Khot et al. — Decomposed Prompting]]
 
 ## Citation
 

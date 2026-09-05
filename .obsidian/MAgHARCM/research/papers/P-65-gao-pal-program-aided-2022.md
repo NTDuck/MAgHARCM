@@ -1,6 +1,6 @@
 ---
 title: "P-65 — Gao et al. 2022 — PAL: Program-aided Language Models"
-backlink: "[[2.0.0 P-65]]"
+backlink: "[[1.0.0 P-65]]"
 tags: [paper, neuro-symbolic, code-as-reasoning, executable-prompting, slm, [[1.0.0 PRIM-3]], [[1.0.0 PRIM-23]], [[1.0.0 PRIM-26]], [[1.0.0 PRIM-31]], [[2.0.0 MAgHARCM]]]
 ---
 

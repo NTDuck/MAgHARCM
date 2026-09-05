@@ -1,10 +1,10 @@
 ---
 title: "P-58 — Hui et al. 2024 — Qwen2.5-Coder Technical Report"
-backlink: "[[2.0.0 P-58]]"
+backlink: "[[1.0.0 P-58]]"
 tags: [paper, slm, code-generation, code-translation, qwen2.5-coder, multilingual, fill-in-the-middle, long-context, [[1.0.0 PRIM-3]], [[1.0.0 PRIM-5]], [[1.0.0 PRIM-22]], [[1.0.0 PRIM-23]], [[1.0.0 PRIM-25]], [[1.0.0 PRIM-26]], [[1.0.0 PRIM-31]], [[1.0.0 P-50]], [[1.0.0 P-51]], [[1.0.0 P-52]], [[1.0.0 P-53]], [[1.0.0 P-54]], [[1.0.0 P-55]], [[1.0.0 P-56]], [[1.0.0 P-57]], [[2.0.0 MAgHARCM]]]
 ---
 
-# [[2.0.0 P-58 — Hui et al. — Qwen2.5-Coder]]
+# [[1.0.0 P-58 — Hui et al. — Qwen2.5-Coder]]
 
 ## Citation
 

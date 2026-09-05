@@ -1,10 +1,10 @@
 ---
 title: "P-67 — Kingma & Ba 2015 — Adam: A Method for Stochastic Optimization"
-backlink: "[[2.0.0 P-67]]"
+backlink: "[[1.0.0 P-67]]"
 tags: [paper, optimizer, adam, deep-learning, transfer-learning, [[1.0.0 P-66]], hop-2]
 ---
 
-# [[2.0.0 P-67 — Adam Optimizer]]
+# [[1.0.0 P-67 — Adam Optimizer]]
 
 ## Citation
 
@@ -47,7 +47,7 @@ Adam's contribution is the **bias correction** that makes the first-moment and s
 
 ### Hop-2
 - Loshchilov, I. & Hutter, F. (2019). *Decoupled Weight Decay Regularization* (AdamW). ICLR 2019. arXiv:1711.05101.
-- Howard, J. & Ruder, S. (2018). See [[2.0.0 P-66]].
+- Howard, J. & Ruder, S. (2018). See [[1.0.0 P-66]].
 - Vaswani, A. et al. (2017). *Attention Is All You Need*. arXiv:1706.03762.
 
 ## Backlinks

@@ -1,10 +1,10 @@
 ---
 title: "P-63 — Dong et al. 2025 — A Survey on Code Generation with LLM-based Agents"
-backlink: "[[2.0.0 P-63]]"
+backlink: "[[1.0.0 P-63]]"
 tags: [paper, survey, multi-agent, code-generation, workflow-taxonomy, [[1.0.0 PRIM-23]], [[1.0.0 PRIM-24]], [[1.0.0 PRIM-29]], [[1.0.0 PRIM-17]], [[2.0.0 MAgHARCM]]]
 ---
 
-# [[2.0.0 P-63 — Dong et al. — Survey on Code Generation with LLM-based Agents]]
+# [[1.0.0 P-63 — Dong et al. — Survey on Code Generation with LLM-based Agents]]
 
 ## Citation
 
