@@ -476,7 +476,7 @@ func HandleSlash(line string, cfg *config.Config, current Phase, state *ReplStat
 		return PhaseExecute, true, nil
 
 	case "/dry-run":
-		logger.LogStep("(dry-run) would execute with: source=%s target=%s reasoning=%s coding=%s iterations=%d",
+		logger.LogStep("(dry-run) execute: source=%s target=%s reasoning=%s coding=%s iterations=%d",
 			cfg.SourceDir, cfg.TargetDir, cfg.ReasoningModel, cfg.CodingModel, cfg.MaxIterations)
 		return PhaseExecute, true, nil
 
