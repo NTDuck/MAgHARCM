@@ -255,7 +255,7 @@ It produces an
     \item \emph{Time-Capsule Harness}: captures reproduction shell commands for historical toolchains.
     \item \emph{Temporal Churn Coupling}: computes pairwise commit co-change Jaccard similarity to detect hidden coupling invisible to static import graphs (PRIM-18).
     \item \emph{Design Rule Hierarchy Partitioning}: categorizes elements into L1 design-rule interfaces, L2 subsystems, and L3 concrete leaves, flagging modularity violations where L1 interfaces depend on L3 leaves (PRIM-19).
-    \item \emph{Concept Assignment \& Redocumentation}: clusters lexical tokens into domain concept bindings mapped to physical file paths (PRIM-20).
+    \item \emph{Concept Assignment \& Redocumentation}: clusters lexical tokens into domain concept bindings mapped to physical file paths (PRIM-20). The static-first / dynamic-fallback concept-locator strategy~\cite{p74_biggerstaff_concept_assignment_1993} is implemented as the comprehension phase's traversal order over the CPG.
 \end{enumerate}
 The archaeology pass is informed by long-running engineering case
 studies of mission-critical software evolution, such as the Digital
@@ -303,8 +303,11 @@ registry retries the next strategy if the active one fails, before
 falling back to a final always-accept entry. Adding a strategy is a
 one-line append to \texttt{NewDefaultRegistry}.
 This cascading-fallback structure mirrors the migration strategy
-taxonomy proposed for legacy system
-modernisation~\cite{p60_bisbal_cascading_fallback}.
+taxonomy proposed for legacy system modernisation~\cite{p60_bisbal_cascading_fallback}
+and the canonical wrap/reengineer/replace/wrap/migrate taxonomy~\cite{p75_bennett_legacy_coping_success_1995},
+with the broader research-agenda mapping of grand challenges (concept location,
+impact analysis, comprehension at scale, migration strategies, empirical validation)
+to primitives~\cite{p76_bennett_rajlich_roadmap_2000}.
 
 \begin{table}[!t]
 \centering
@@ -573,7 +576,9 @@ Vulnerability-aware fragments additionally cross-reference the
 RedCode benchmark~\cite{p61_redcode}, and latency-sensitive
 consensus rounds may delegate token-level decoding to a
 speculative-decoding helper following the EAGLE line of
-work~\cite{p64_eagle}.
+work~\cite{p64_eagle}. The breadth+depth red-teaming methodology---automated
+prompt generation for breadth, human/role-flip review for depth~\cite{p77_openai_red_teaming_2024}---is
+the methodological precedent for MAgHARCM's verifier-of-verifier pattern.
 
 \subsection{Recruiter Agent}
 \label{sec:method_recruiter}
