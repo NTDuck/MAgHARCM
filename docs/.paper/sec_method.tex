@@ -255,7 +255,7 @@ It produces an
     \item \emph{Time-Capsule Harness}: captures reproduction shell commands for historical toolchains.
     \item \emph{Temporal Churn Coupling}: computes pairwise commit co-change Jaccard similarity to detect hidden coupling invisible to static import graphs (PRIM-18).
     \item \emph{Design Rule Hierarchy Partitioning}: categorizes elements into L1 design-rule interfaces, L2 subsystems, and L3 concrete leaves, flagging modularity violations where L1 interfaces depend on L3 leaves (PRIM-19).
-    \item \emph{Concept Assignment \& Redocumentation}: clusters lexical tokens into domain concept bindings mapped to physical file paths (PRIM-20). The static-first / dynamic-fallback concept-locator strategy~\cite{p74_biggerstaff_concept_assignment_1993} is implemented as the comprehension phase's traversal order over the CPG.
+    \item \emph{Concept Assignment \& Redocumentation}: clusters lexical tokens into domain concept bindings mapped to physical file paths (PRIM-20). The static-first / dynamic-fallback concept-locator strategy~\cite{p74_biggerstaff_concept_assignment_1993,p79_wilde_scully_1995} is implemented as the comprehension phase's traversal order over the CPG.
 \end{enumerate}
 The archaeology pass is informed by long-running engineering case
 studies of mission-critical software evolution, such as the Digital
@@ -341,7 +341,7 @@ of these Qwen2.5-Coder checkpoints can drive the loop without the
 full-thinker overhead of larger general-purpose models. Domain-adapter training
 follows the ULMFiT transfer recipe~\cite{p66_howard_ruder_ulmfit_2018} with Adam
 optimisation~\cite{p67_kingma_ba_adam_2015}; long-context inference relies on
-multi-query attention~\cite{p68_shazeer_mqa_2019} for tractable KV-cache
+multi-query attention~\cite{p68_shazeer_mqa_2019,p80_streaming_llm_2024} for tractable KV-cache
 footprint.
 
 \subsection{Planning Agent}
@@ -555,7 +555,7 @@ before the code reaches the compiler.
 \subsection{Role-Flip Reviewer Agent}
 \label{sec:method_roleflip}
 
-The Role-Flip Reviewer Agent (PRIM-25~\cite{p46_chatdev_deepread,p69_anthropic_sycophancy_2025_acl}) inspects the Translator's
+The Role-Flip Reviewer Agent (PRIM-25~\cite{p46_chatdev_deepread,p69_anthropic_sycophancy_2025_acl,p81_gorilla_2023}) inspects the Translator's
 output with an adversary-prompted second pass: the role-flipped system message
 forces the model to find at least one defect rather than to confirm correctness.
 The reviewer emits a binary accepted/defect verdict and, on defect, a targeted
@@ -571,12 +571,12 @@ When validation fails during iterative repair, the Verdict Panel Agent
 (§\ref{sec:method_verdict}) queries independent reasoning models
 to evaluate functional equivalence between source and target fragments
 (PRIM-7~\cite{p08_matchfixagent}). The consensus decision (agreement
-status and structured disagreements) guides subsequent repair iterations.
+status and structured disagreements) guides subsequent repair iterations; multi-problem self-consistency over the consensus ensemble~\cite{p83_code_self_consistency_2024} raises agreement precision on hard equivalence verdicts.
 Vulnerability-aware fragments additionally cross-reference the
 RedCode benchmark~\cite{p61_redcode}, and latency-sensitive
 consensus rounds may delegate token-level decoding to a
 speculative-decoding helper following the EAGLE line of
-work~\cite{p64_eagle}. The breadth+depth red-teaming methodology---automated
+work~\cite{p64_eagle,p78_eagle3_2025}. The breadth+depth red-teaming methodology---automated
 prompt generation for breadth, human/role-flip review for depth~\cite{p77_openai_red_teaming_2024}---is
 the methodological precedent for MAgHARCM's verifier-of-verifier pattern.
 
