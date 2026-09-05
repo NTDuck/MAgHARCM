@@ -73,3 +73,18 @@ All 31 primitives are compiled into the codebase, preserving architectural integ
 
 - Indexed 6 new SLM-era anchor papers (P-90 Wei CoT, P-91 Snell test-time compute, P-92 Lightman PRM, P-93 Rafailov DPO, P-94 LIMA, P-95 Roziere Code Llama) — all verified — into relevant primitive rows.
 - PR backlog (low-risk follow-ups): re-tag Yamaguchi (PRIM-9) and Nii (PRIM-17) backlinks once their standalone paper notes are materialised.
+
+## Sprint 2026-09-18 Vault Sync Audit
+
+- Indexed 6 wave-10 entries (P-102 SmallCode, P-103 AgentModernize arXiv 2026, P-104 S*, P-105 ChunkKV, P-106 BFCL, P-107 re-anchor of P-100) into relevant primitive rows (PRIM-21, 22, 23, 24, 25, 26, 27, 31).
+- P-103 venue corrected: arXiv:2605.17535 (2026), NOT ICSE 2025.
+
+## Sprint 2026-09-19 Vault Sync Audit
+
+- All 31 primitives verified to have implementation files in internal/agents/ (35 files = 31 impl + 4 test files + 0 orphan).
+- Ponytail sweep: zero fmt.Print* / log.Print* / raw panic / os.Stdout in production code; all fmt.* uses are Sprintf/Fprintf to buffers (string construction, not I/O).
+- 8-agent graph verified: Archaeologist, Analyzer, Planning, Translator, RoleFlipGate, Validator, VerdictPanel, Recruiter.
+- Try-and-fail strategy registry confirmed; SelectMigrationStrategy replaced by Registry.TryInOrder.
+- Renamed 3 *Default* constants to *Placeholder to align naming with no-fallback rule: TranslatedPackagePlaceholder, ProjectDirPlaceholder, ConceptDescriptionPlaceholder.
+- configs/agents.yml now lists `lsp.provider: abcoder-mcp` as canonical example (abcoder MCP default surfaced in docs).
+- Wave-11 deferred: 5 candidates identified (EAGLE-3, GraphCoder/CodeGraphRAG, MemoryBank-E, TinyRM, SWE-bench Verified 2025) but no new SLM-era mechanism requires an anchor yet.
