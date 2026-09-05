@@ -76,3 +76,12 @@ To be committed at end of this handoff:
 - Externalities adoption: comprehensive (carried over).
 - ADR-V-001 versioning: clean (no version-slot drift; prose parentheticals retained).
 - Wave-10 anchor honesty: 5 verified + 1 re-anchor, P-103 venue corrected.
+
+## Closure (2026-09-18 EOD)
+
+- `docs/.paper/refs.bib`: 6 wave-10 entries appended (P-102..P-107) — file now 1301 lines.
+- `docs/.paper/sec_method.tex` L336: wave-10 cite keys (p102/p104/p105/p106/p107) + p85_yue_function_calling_2025_unverified + Wave-10 narrative paragraph explaining each anchor's MAgHARCM role.
+- Commits this sprint (3 total):
+ - `f95bc03` docs(research): wave-10 SLM-era anchors (P-102..P-107) persisted.
+ - `d5cdac5` docs(paper): wave-10 bib entries + sec_method cite for P-102..P-107.
+- Sprint-2026-09-18 closed green: all 22 items done, paper + vault + handoff synced.
