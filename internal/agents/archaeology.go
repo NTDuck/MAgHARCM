@@ -30,7 +30,11 @@ import (
 type ArchaeologyReport = compiletime.ArchaeologyReport
 type NamingFinding = compiletime.NamingFinding
 
-const churnHotspotLimit = 25
+const (
+	churnHotspotLimit         = 25
+	archaeologyGitLogTimeout   = 30 * time.Second
+)
+
 
 // compiletime.NamingFinding records a legacy-identifier forensic finding produced by
 type Archaeologist struct{}
@@ -124,7 +128,7 @@ func (a *Archaeologist) FindChurnHotspots(ctx context.Context, sourceDir string)
 	if _, err := os.Stat(filepath.Join(root, ".git")); err != nil {
 		return []string{}, nil
 	}
-	logCtx, cancel := context.WithTimeout(ctx, 30*time.Second)
+	logCtx, cancel := context.WithTimeout(ctx, archaeologyGitLogTimeout)
 	defer cancel()
 	cmd := exec.CommandContext(logCtx, "git", "log", "--pretty=format:", "--name-only")
 	cmd.Dir = root
