@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 	"unicode"
-
+	"MAgHARCM/internal/compiletime"
 	"github.com/cloudwego/eino/components/model"
 	"github.com/cloudwego/eino/schema"
 
@@ -65,7 +65,7 @@ func (p PlanningOutput) SchemaVersion() string { return p.ArtifactSchemaVersion 
 // Run executes the planning phase and populates PlanningOutput in state.
 func (p *PlanningAgent) Run(ctx context.Context, state *State) (*State, error) {
 	logger.LogAgent("Planning", "Decomposing translation into granular translation units and constructing plan")
-	state.PlanningOutput.ArtifactSchemaVersion = CurrentSchemaVersion
+	state.PlanningOutput.ArtifactSchemaVersion = compiletime.CurrentSchemaVersion
 
 
 	fragments, sourceSummaries, err := p.extractFragments(state.Task.SourceDir)
@@ -257,7 +257,7 @@ func (p *PlanningAgent) parseImplementationPlan(rawContent string, fragments []s
 	}
 
 	return ImplementationPlan{
-		ArtifactSchemaVersion: CurrentSchemaVersion,
+		ArtifactSchemaVersion: compiletime.CurrentSchemaVersion,
 		Overview:              extractSection(planStr, "## Overview", "## Part A"),
 		PartA:                 partASteps,
 		PartB: []PlanStep{

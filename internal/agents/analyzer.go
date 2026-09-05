@@ -7,10 +7,9 @@ import (
 	"fmt"
 	"path/filepath"
 	"strings"
-
 	"github.com/cloudwego/eino/components/model"
+	"MAgHARCM/internal/compiletime"
 	"github.com/cloudwego/eino/schema"
-
 	"MAgHARCM/internal/logger"
 	"MAgHARCM/internal/tools"
 )
@@ -219,7 +218,7 @@ func (a *AnalyzerAgent) synthesizeAnalysis(ctx context.Context, state *State, tr
 // populateAnalyzerOutput unpacks markdown sections into structured documents on state.
 func (a *AnalyzerAgent) populateAnalyzerOutput(state *State, rawDoc, strategy, rationale string) {
 	state.AnalyzerOutput.Research = DocumentWrapper[SourceProjectResearch]{
-		ArtifactSchemaVersion: CurrentSchemaVersion,
+		ArtifactSchemaVersion: compiletime.CurrentSchemaVersion,
 		Data: SourceProjectResearch{
 			Overview:           extractSection(rawDoc, "## 1. Overview", "## 2. Directory Structure"),
 			DirectoryStructure: extractSection(rawDoc, "## 2. Directory Structure", "## 3. Data Structures"),
@@ -229,7 +228,7 @@ func (a *AnalyzerAgent) populateAnalyzerOutput(state *State, rawDoc, strategy, r
 		RawMarkdown: rawDoc,
 	}
 	state.AnalyzerOutput.Library = DocumentWrapper[ThirdPartyLibraryAnalysis]{
-		ArtifactSchemaVersion: CurrentSchemaVersion,
+		ArtifactSchemaVersion: compiletime.CurrentSchemaVersion,
 		Data: ThirdPartyLibraryAnalysis{
 			Libraries: []LibraryMapping{},
 		},
@@ -237,7 +236,7 @@ func (a *AnalyzerAgent) populateAnalyzerOutput(state *State, rawDoc, strategy, r
 	}
 
 	state.AnalyzerOutput.Design = DocumentWrapper[TargetProjectDesign]{
-		ArtifactSchemaVersion: CurrentSchemaVersion,
+		ArtifactSchemaVersion: compiletime.CurrentSchemaVersion,
 		Data: TargetProjectDesign{
 			Overview: extractSection(rawDoc, "## Target Architecture", "## Module Decomposition"),
 		},
