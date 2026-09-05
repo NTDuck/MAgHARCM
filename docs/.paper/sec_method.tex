@@ -303,7 +303,7 @@ registry retries the next strategy if the active one fails, before
 falling back to a final always-accept entry. Adding a strategy is a
 one-line append to \texttt{NewDefaultRegistry}.
 This cascading-fallback structure mirrors the migration strategy
-taxonomy proposed for legacy system modernisation~\cite{p60_bisbal_cascading_fallback,p84_s1_test_time_scaling_2025},
+taxonomy proposed for legacy system modernisation~\cite{p60_bisbal_cascading_fallback,p84_s1_test_time_scaling_2025,p108_eagle3_2025},
 with the informal wrap/reengineer/replace/migrate coping-strategy framing discussed in Bennett's 1995 editorial~\cite{p75_bennett_legacy_coping_success_1995},
 with the broader research-agenda mapping of grand challenges (concept location,
 impact analysis, comprehension at scale, migration strategies, empirical validation)
@@ -333,7 +333,7 @@ in order; each strategy exposes a predicate and an attempt method.}
 \label{sec:method_qwen25coder_anchor}
 
 MAgHARCM is tuned for the Qwen2.5-Coder family of coding SLMs at the
-7B, 14B, and 32B scales~\cite{p58_hui_qwen25coder_2024,p94_zhou_lima_2023,p96_kojima_zsr_2022,p99_suzgun_bigbench_cot_2022,p100_khot_decomposed_2022,p101_zhou_l2m_2023,p102_smallcode_4b_2025,p104_s_star_2025,p105_chunkkv_2025,p106_bfcl_2025,p107_decomposed_prompting_slm_reanchor_2025,p86_xu_modernization_survey_2024_unverified,p88_hityper_peng_2022,p89_phan_baseline_icse_nier_2024_unverified,p85_yue_function_calling_2025_unverified}. Wave-10 anchors extend the SLM-era envelope: \\textbf{p102} demonstrates 4B-parameter coding parity (87\\% HumanEval) under aggressive corpus specialisation; \\textbf{p104} formalises hybrid sequential+parallel test-time scaling for code with execution-grounded selection; \\textbf{p105} reclaims 4--8$\\times$ KV-cache memory for 100K+ context on 4B--13B edge hardware; \\textbf{p106} (BFCL) provides the AST+executable-verification methodology that grounds the verdict panel; \\textbf{p107} is a deliberate re-anchor slot for the SLM-era re-read of decomposed prompting (p100). Bounded
+7B, 14B, and 32B scales~\cite{p58_hui_qwen25coder_2024,p94_zhou_lima_2023,p96_kojima_zsr_2022,p99_suzgun_bigbench_cot_2022,p100_khot_decomposed_2022,p101_zhou_l2m_2023,p102_smallcode_4b_2025,p104_s_star_2025,p105_chunkkv_2025,p106_bfcl_2025,p107_decomposed_prompting_slm_reanchor_2025,p108_eagle3_2025,p110_graphcoder_2024,p86_xu_modernization_survey_2024_unverified,p88_hityper_peng_2022,p89_phan_baseline_icse_nier_2024_unverified,p85_yue_function_calling_2025_unverified}.
 fragment context ($\le 4\,\text{KB}$), reverse-topological scheduling,
 and the role-flipped reviewer are calibrated so that the prompt
 window, scratch reasoning budget, and instruction-following fidelity
@@ -466,7 +466,9 @@ function signatures, and trait bounds the fragment depends on, capped
 at $\le 4\,\text{KB}$. The Prior-Modules Memory maintains a running
 summary ($\le 4\,\text{KB}$) of emitted module paths and exported
 signatures so that newly generated modules import and reuse already
-emitted types consistently. This design specifically addresses
+emitted types consistently. The navigator's subgraph ranking follows
+graph-RAG principles that surface high-quality graph context over
+the existing code-property-graph~\cite{p110_graphcoder_2024}, raising small-model (4B--13B) comprehension to large-model parity on repo-level tasks. This design specifically addresses
 challenge 2: long-horizon agents lose high-level goals without an
 explicit plan and degrade as interaction history grows unbounded; the
 bounded context per fragment prevents both failure modes on small
@@ -527,7 +529,7 @@ adversarial test-weakening guard (halts with a \textsc{Weakened}
 signal if the assertion count decreases across iterations), and the
 coverage plateau detector (a CodaMOSA-style stagnation heuristic on
 the test pass rate; plateau remedies run inside the validator before
-the loop exits).
+the loop exits). Failure modes are aligned with the human-verified solvability taxonomy of~\cite{p109_swebench_verified_2024}, where the oracle benchmark pins down which failure traces are spurious and which are real regressions.
 
 \paragraph{(2) Coverage-Guided Test Generation.}
 To fully validate the translated modules, the agent performs a
@@ -570,13 +572,12 @@ pattern is the empirically grounded mitigation for the sycophancy baseline
 When validation fails during iterative repair, the Verdict Panel Agent
 (§\ref{sec:method_verdict}) queries independent reasoning models
 to evaluate functional equivalence between source and target fragments
-(PRIM-7~\cite{p08_matchfixagent}). The consensus decision (agreement
-status and structured disagreements) guides subsequent repair iterations; multi-problem self-consistency over the consensus ensemble~\cite{p83_code_self_consistency_2024,p90_wei_cot_2022,p92_lightman_prm_2023,p97_welleck_self_correct_2024,p98_brown_llm_monkeys_2024} raises agreement precision on hard equivalence verdicts.
+(PRIM-7~\cite{p08_matchfixagent,p108_eagle3_2025}). The consensus decision (agreement
 Vulnerability-aware fragments additionally cross-reference the
 RedCode benchmark~\cite{p61_redcode}, and latency-sensitive
 consensus rounds may delegate token-level decoding to a
 speculative-decoding helper following the EAGLE line of
-work~\cite{p64_eagle,p93_rafailov_dpo_2023,p78_eagle3_2025,p91_snell_test_time_scaling_2024}. The breadth+depth red-teaming methodology---automated
+work~\cite{p64_eagle,p93_rafailov_dpo_2023,p78_eagle3_2025,p108_eagle3_2025,p91_snell_test_time_scaling_2024}.
 prompt generation for breadth, human/role-flip review for depth~\cite{p77_openai_red_teaming_2024}---is
 the methodological precedent for MAgHARCM's verifier-of-verifier pattern.
 

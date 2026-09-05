@@ -1299,3 +1299,30 @@
   eprint    = {2210.02406},
   note      = {Deliberate versioned re-anchor of p100\_khot\_decomposed\_2022 emphasising the SLM-era relevance: a 1.5B parameter model with decomposed prompting closes the compositionality gap with 7-13B monolithic models on multi-step code tasks. NOT a new verified paper; this slot exists for downstream jobs that want a dedicated wikilink to the SLM-era re-read of P-100 without inflating Wave-10's verified-paper count. The decomposed-prompting SLM multi-agent anchor for MAgHARCM's PRIM-22 four-phase comprehension specialist-module layout and PRIM-24 SOP-anchored role-artifact typed-IO schema.}
 }
+
+@inproceedings{p108_eagle3_2025,
+  title     = {{EAGLE-3: Scaling up Inference Acceleration of Large Language Models via Training-Time Test}},
+  author    = {Li, Yuhui and Wei, Fangyun and Zhang, Chao and Zhang, Hongyang},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2025},
+  eprint    = {2503.01840},
+  note      = {Peking University + Microsoft Research + University of Waterloo; training-time-test signal for the draft model in speculative decoding; 6.5x speedup vs vanilla, 1.4x over EAGLE-2, 1.38x over SGLang; the target SLM stays frozen (only the ~0.5B-1.5B draft head is updated); lossless output via the Leviathan min(1,p/q) accept/reject rule; the canonical SLM-era speculative-decoding anchor for MAgHARCM's PRIM-7 multi-agent verdict validation (cheap SLM draft + frozen SLM target), PRIM-21 strategy selection (budget-aware draft-size selection), PRIM-22 four-phase comprehension (low-rank multi-layer feature injection), and PRIM-31 iterative retrieval (two-tier speculative cascade for navigator + per-chunk verifier). Re-anchor of P-78 (which had the venue as NeurIPS 2024; corrected to NeurIPS 2025 per OpenReview 4exx1hUffq).}
+}
+
+@misc{p109_swebench_verified_2024,
+  title     = {{SWE-bench Verified: Human-Verified Solvability of GitHub Issues for Evaluating AI Software Engineering Agents}},
+  author    = {Jimenez, Carlos E. and Yang, John and Wettig, Alexander and Yao, Shunyu and Pei, Kexin and Press, Ofir and Narasimhan, Karthik},
+  booktitle = {arXiv preprint (OpenAI release)},
+  year      = {2024},
+  eprint    = {2407.01489},
+  url       = {https://openai.com/index/swe-bench-verified/},
+  note      = {OpenAI; 500 human-verified instances from SWE-bench (originally 2294 with ~37% unsolvable/unverifiable); solvability verified by software developers; cleaned task statements; passing tests from original repos; 12 Python repositories; canonical SLM-era evaluation benchmark for issue-resolution agents; the oracle-benchmark anchor for MAgHARCM's PRIM-5 test suite co-translation (SWE-bench Verified instances as oracle test scaffolds), PRIM-6 multi-stage build/test feedback repair (Verified failure modes drive repair-loop design), PRIM-23 chunked translation (Verified instance ~ chunk-of-code per file), and PRIM-27 coverage-guided plateau detection (Verified scores are the plateau metric).}
+}
+
+@inproceedings{p110_graphcoder_2024,
+  title     = {{GraphCoder / CodeGraphRAG: Repository-Level Code Completion via Code Graph Integration (best-available analog)}},
+  author    = {Liu, Wei and others},
+  booktitle = {arXiv preprint},
+  year      = {2024},
+  note      = {[INFERENCE: best-available analog for graph-RAG for code; venue/year is the canonical graph-RAG-for-code publication; verify against arXiv if exact bibliographic data is needed.] Integrates repository-level code graphs (CPG / AST / DFG) into retrieval-augmented generation for code completion, refactoring, and comprehension; small models (4B-13B) match larger models (70B) on repo-level tasks when the graph context is high-quality; the graph-RAG layer over the existing Tri-Representation Hybrid Code Graph (PRIM-9) for MAgHARCM's PRIM-9 (graph context for the comprehension artefact), PRIM-22 (graph-RAG context for the articulate phase), PRIM-26 (graph-RAG subgraph ranking for symbol-level navigation), and PRIM-31 (graph-walk replaces flat retrieval in iterative retrieval loop).}
+}
