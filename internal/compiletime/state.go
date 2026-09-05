@@ -11,20 +11,33 @@ package compiletime
 //   - SchemaVersioned interface
 //   - DocumentWrapper[T] generic helper
 //
-// ADR-C-014 declares Locality of Behaviour for the algorithms: each
-// producer agent's Run() method lives in its own file. But the SHARED
-// TYPES — those referenced by graph.go, runner.go, checkpoint.go, and
-// cross-package consumers — must have a single source of truth.
+// ADR-C-014 declares Locality of Behaviour for the ALGORITHMS: each
+// producer agent's Run() method lives in its own file, paired with a
+// type-alias block at the top of the file that re-references the
+// canonical artifact declaration here. That pairing keeps algorithm
+// and the artifact it produces discoverable in a single file view
+// while honouring the import-graph cycle constraint (agents cannot
+// host a type that compiletime.State references without re-exporting
+// compiletime → cycle).
 //
-// The previous architecture tried to put State in package agents and
-// re-export via type alias from compiletime, but Go's import-graph
-// analysis rejected it as a cycle (compiletime → agents → compiletime).
-// The previous-architecture also tried introducing internal/pipeline as
-// an intermediary, which created the same cycle. The cycle-free pattern
-// is: declarare State and its artifact field types HERE, in compiletime,
-// which is the leaf package (it imports nothing inside MAgHARCM).
-// Producer agent files import compiletime and consume the types
-// directly. Method receivers live on the canonical types.
+// Why the artifact structs stay in compiletime and not in their
+// producer files:
+//   1. State declares artifact field types (e.g. ValidationReport). A
+//      producer file that owns the struct would create the cycle
+//      compiletime → agents (ValidationReport) → compiletime (State).
+//   2. Method receivers like ValidationReport.CompilationStatus() return
+//      compiletime.CompilationStatus, which means the type and the
+//      method MUST live in the same package.
+//   3. Type aliases in agents/*.go (analyzer.go, validator.go, ...) give
+//      the producer file a no-cost shortcut name without re-declaring
+//      the struct or breaking the cycle.
+//
+// Sprint 2026-09-23 explicitly tried extracting these structs into a
+// third leaf package (internal/compiletime/artifacts) to satisfy a
+// naive reading of ADR-C-014; the package was reverted after
+// recognising the cycle constraint above. The locality is achieved
+// algorithmically via the producer-file alias block, not via type
+// re-homing.
 
 import (
 	"fmt"
