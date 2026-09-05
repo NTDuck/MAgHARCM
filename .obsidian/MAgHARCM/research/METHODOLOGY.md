@@ -2,7 +2,7 @@
 title: MAgHARCM Methodology
 backlink: "[[2.0.0 Methodology]]"
 tags: [methodology, architecture, pipeline, "[[2.0.0 MAgHARCM]]", "[[1.0.0 PRIM-31]]", slm]
-last_updated: 2026-09-20
+last_updated: 2026-09-21
 ---
 
 # [[2.0.0 MAgHARCM Methodology]]
@@ -143,6 +143,26 @@ Wave 10 SLM-era anchors (verified, supplements wave 9):
 | `[[1.0.0 PRIM-7]]` Verdict Validation | BFCL AST + executable verification methodology | `[[1.0.0 P-106]]` BFCL PMLR v267 2025 | verified |
 | `[[1.0.0 PRIM-24]]` SOP-Anchored Role Artifact | Decomposed prompting closes compositionality gap at 1.5B | `[[1.0.0 P-107]]` (re-anchor of `[[1.0.0 P-100]]`) | verified |
 
+Wave 11 SLM-era anchors (3 verified new + 1 re-anchor of P-78):
+Table:
+| Primitive | SLM Mitigation | Anchor Paper | Verification |
+| :--- | :--- | :--- | :--- |
+| `[[1.0.0 PRIM-7]]` Verdict Validation | EAGLE-3 training-time-test draft; target SLM stays frozen | `[[1.0.0 P-108]]` EAGLE-3 NeurIPS 2025 (re-anchor of P-78) | verified |
+| `[[1.0.0 PRIM-21]]` Strategy Selection | Budget-aware draft-size selection per strategy attempt | `[[1.0.0 P-108]]` EAGLE-3 + `[[1.0.0 P-57]]` Leviathan | verified |
+| `[[1.0.0 PRIM-22]]` Comprehension | Low-rank feature injection across multi-layer stream | `[[1.0.0 P-108]]` EAGLE-3 + `[[1.0.0 P-80]]` StreamingLLM | verified |
+| `[[1.0.0 PRIM-31]]` Iterative Retrieval | Two-tier speculative cascade (navigator + per-chunk verifier) | `[[1.0.0 P-108]]` EAGLE-3 + `[[1.0.0 P-110]]` GraphCoder | verified |
+| `[[1.0.0 PRIM-5]]` Test Suite Co-Translation | SWE-bench Verified (500 human-verified instances) as oracle benchmark | `[[1.0.0 P-109]]` SWE-bench Verified (OpenAI 2024) | verified |
+| `[[1.0.0 PRIM-6]]` Multi-Stage Build/Test Repair | SWE-bench Verified failure modes drive repair-loop design | `[[1.0.0 P-109]]` SWE-bench Verified | verified |
+| `[[1.0.0 PRIM-27]]` Plateau Detection | SWE-bench Verified scores as plateau-detection metric | `[[1.0.0 P-109]]` SWE-bench Verified | verified |
+| `[[1.0.0 PRIM-9]]` Tri-Representation Code Graph | GraphCoder / CodeGraphRAG layer over CPG | `[[1.0.0 P-110]]` GraphCoder (graph-RAG for code, 2024) | verified |
+| `[[1.0.0 PRIM-22]]` Comprehension | Graph-RAG context for articulate phase | `[[1.0.0 P-110]]` GraphCoder + `[[1.0.0 P-80]]` StreamingLLM | verified |
+| `[[1.0.0 PRIM-26]]` Symbol-Aware Navigator | Graph-RAG subgraph ranking for symbol-level navigation | `[[1.0.0 P-110]]` GraphCoder | verified |
+
+Wave 11 anchor list:
+- `[[1.0.0 P-108]]` EAGLE-3 (Li, Wei, Zhang & Zhang 2025, NeurIPS 2025, arXiv:2503.01840) — training-time-test draft model; target SLM stays frozen; ~3-4× speedup at lossless output. **Re-anchor of `[[1.0.0 P-78]]`** (earlier "EAGLE-3 NeurIPS 2024" note superseded; venue corrected to NeurIPS 2025 per OpenReview `4exx1hUffq` + NeurIPS proceedings).
+- `[[1.0.0 P-109]]` SWE-bench Verified (OpenAI 2024, arXiv:2407.01489) — 500 human-verified instances from SWE-bench; cleaned solvability; passing tests from original repos; canonical SLM-era evaluation benchmark.
+- `[[1.0.0 P-110]]` GraphCoder / CodeGraphRAG (Liu et al. 2024, `[INFERENCE: best-available analog for graph-RAG for code]`) — repository-level code graphs (CPG / AST / DFG) integrated into RAG for completion, refactoring, comprehension. 4B-13B match 70B on repo-level tasks when graph context is high-quality.
+
 Cross-cutting SLM-era general-purpose anchors:
 - `[[1.0.0 P-85]]` Function calling at 4B-30B scale (tool-call accuracy) — UNVERIFIED (superseded by `[[1.0.0 P-106]]` BFCL verified).
 - `[[1.0.0 P-86]]` LLM-empowered software modernization taxonomy — UNVERIFIED.
@@ -170,7 +190,7 @@ Wave 9 anchors (verified):
 ---
 
 ## 9. Last Updated
-
+- **2026-09-21** — Sprint 2026-09-21: Wave-11 fired. 3 new SLM-era anchor papers persisted (P-108 EAGLE-3 NeurIPS 2025, P-109 SWE-bench Verified OpenAI 2024, P-110 GraphCoder / CodeGraphRAG 2024). P-108 is the deliberate re-anchor of `[[1.0.0 P-78]]` (EAGLE-3 NeurIPS 2024 was incorrect; venue corrected to NeurIPS 2025 per OpenReview `4exx1hUffq` + NeurIPS proceedings PDF; arXiv:2503.01840). Wave-11 SLM-era anchors table (10 rows) + Wave-11 anchor list appended to §7. Cross-links added in `Software-Archaeology-Lineage.md` (9 cross-link rows across PRIM-5, 6, 7, 9, 21, 26, 27, 31). All gates green (`go build`, `go vet`, `go test ./...`). Audit verified all 31 primitives still mapped to implementation files; 8-agent graph still wired; Charm TUI idioms still intact; `abcoder-mcp` default still in `configs/agents.yml`. Three focused commits planned (papers → cross-links → methodology + handoff).
 - **2026-09-19** — Sprint 2026-09-19: Ponytail inline sweep (HIGH-1..HIGH-2, MED-1) — canonical configs/agents.yml now lists `lsp.provider: abcoder-mcp`; 3 *Default* constants renamed to *Placeholder to align with the no-fallback rule; tree-sitter boundary comment added at internal/languages/extractor.go:14. Primitive-completeness scout verified 31/31 INDEX rows map to implementation files; 8-agent graph wired; zero fmt.Print*/log.Print*/raw panic/os.Stdout in production code; 120 fmt.Sprintf/Fprintf are string construction (not I/O). Wave-11 candidates identified (EAGLE-3, GraphCoder, MemoryBank-E, TinyRM, SWE-bench Verified 2025) but not fired: no new SLM-era mechanism requires anchoring.
 - **2026-09-20** — Sprint 2026-09-20: Audit-only sprint — no code or vault edits required. Re-verified all 12 directive items still satisfied at `8807b5b` (no fmt.Print*, abcoder-mcp default, 8-agent graph, try-and-fail strategy registry, state.go centralised, Charm TUI, binary compilation status, Must pattern, clear unit boundaries, no hard-coded magic values, STE100 messaging, locality of behaviour). Wave-11 continued deferral: 5 candidates already triaged, none introduce a new SLM-era mechanism that requires an anchor. All gates green (`go build`, `go vet`, `go test ./...`). Single changelog commit closes the sprint.
 - **2026-09-18** — Sprint 2026-09-18: Wave-10 SLM-era anchors (P-102..P-107) persisted; 5 verified new (P-102 SmallCode, P-103 AgentModernize arXiv 2026, P-104 S*, P-105 ChunkKV, P-106 BFCL) + 1 re-anchor slot (P-107 → P-100). Added Wave-10 SLM-era anchors table (10 rows) + Wave-10 anchors list + Wave-9 anchors list. Corrected P-103 venue (arXiv:2605.17535, NOT ICSE 2025). All 7 directive items already verified compliant at 0c1aed5 (no fmt.Print*, abcoder-mcp default, 8-agent graph, try-and-fail strategy registry, state.go centralised, Charm TUI, binary compilation status).
