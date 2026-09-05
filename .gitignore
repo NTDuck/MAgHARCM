@@ -59,3 +59,4 @@ docs/sample-results/.skip-*
 # Manual tmp save dirs (created by editor workflows that back up
 # in-flight edits before destructive ops like `git checkout -- .`).
 /tmp-magh-save-*/
+texput.log
