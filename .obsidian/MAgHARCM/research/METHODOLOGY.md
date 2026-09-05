@@ -2,7 +2,7 @@
 title: MAgHARCM Methodology
 backlink: "[[2.0.0 Methodology]]"
 tags: [methodology, architecture, pipeline, "[[2.0.0 MAgHARCM]]", "[[1.0.0 PRIM-31]]", slm]
-last_updated: 2026-09-17
+last_updated: 2026-09-18
 ---
 
 # [[2.0.0 MAgHARCM Methodology]]
@@ -118,12 +118,33 @@ Most large papers assume frontier LLM scale. MAgHARCM targets Small Language Mod
 | `[[1.0.0 PRIM-1]]` Reverse Topological Ordering | LtM chained-decomposition template | `[[1.0.0 P-101]]` Zhou Least-to-Most 2023 | verified |
 | `[[1.0.0 PRIM-23]]` Chunked Translation | LtM chained prefix-conditioning for cross-chunk state | `[[1.0.0 P-101]]` Zhou Least-to-Most 2023 | verified |
 | `[[1.0.0 PRIM-24]]` SOP-Anchored Role Artifact | Typed-IO specialist modules | `[[1.0.0 P-100]]` Khot Decomposed 2022 (SLM re-anchor) | verified |
-| `[[1.0.0 PRIM-1]]` Reverse Topological Ordering | LLM-empowered modernization taxonomy | `[[1.0.0 P-86]]` Xu et al. 2024 | UNVERIFIED |
 | `[[1.0.0 PRIM-25]]` Role-Flip De-Hallucination | Function-calling SLM gap | `[[1.0.0 P-85]]` Yue et al. 2025 | UNVERIFIED |
 | `[[1.0.0 PRIM-3]]` Target Skeleton-First Gen | Legacy-modernization baseline | `[[1.0.0 P-89]]` Phan et al. ICSE-NIER 2024 | UNVERIFIED |
 
+Wave 10 anchors (5 verified + 1 re-anchor slot):
+- `[[1.0.0 P-102]]` SmallCode (fp8.co 2025) — 4B-parameter SLM at 87% HumanEval via specialised corpus + scaffolding.
+- `[[1.0.0 P-103]]` AgentModernize (Ahmed & Galib, arXiv:2605.17535, 2026) — Behavioural Specification Graphs; multi-agent legacy modernisation (NOT ICSE 2025).
+- `[[1.0.0 P-104]]` S* Test-Time Scaling for Code (Dacheng Li et al., UC Berkeley, arXiv:2502.14382, 2025) — hybrid sequential+parallel sampling for code.
+- `[[1.0.0 P-105]]` ChunkKV (Xiang Liu et al., NeurIPS 2025) — semantic-preserving KV cache compression; companion NVIDIA/kvpress library.
+- `[[1.0.0 P-106]]` BFCL Berkeley Function Calling Leaderboard (Patil et al., PMLR v267, 2025) — de facto function-calling benchmark; AST + executable verification.
+- `[[1.0.0 P-107]]` Decomposed Prompting SLM Multi-Agent (re-anchor of `[[1.0.0 P-100]]`) — deliberate versioned slot for SLM-era relevance commentary; NOT a new verified paper.
+
+Wave 10 SLM-era anchors (verified, supplements wave 9):
+| Primitive | SLM Mitigation | Anchor Paper | Verification |
+| :--- | :--- | :--- | :--- |
+| `[[1.0.0 PRIM-25]]` Role-Flip De-Hallucination | 4B model with scaffolding passes adversarial inspection | `[[1.0.0 P-102]]` SmallCode 4B 87% HumanEval | verified |
+| `[[1.0.0 PRIM-14]]` Software-Archaeology Stage | Multi-agent behavioural-preservation decomposition | `[[1.0.0 P-103]]` AgentModernize arXiv 2026 | verified |
+| `[[1.0.0 PRIM-15]]` Evidence-First Adaptation | Behavioural Specification Graph intermediate artifact | `[[1.0.0 P-103]]` AgentModernize BSG | verified |
+| `[[1.0.0 PRIM-7]]` Verdict Validation | Hybrid sequential+parallel sampling for code | `[[1.0.0 P-104]]` S* Test-Time Scaling Code | verified |
+| `[[1.0.0 PRIM-21]]` Strategy Selection | Execution-signal-guided strategy switching | `[[1.0.0 P-104]]` S* + `[[1.0.0 P-98]]` LLM Monkeys | verified |
+| `[[1.0.0 PRIM-22]]` Comprehension | ChunkKV semantic-preserving KV cache compression | `[[1.0.0 P-105]]` ChunkKV NeurIPS 2025 + `[[1.0.0 P-80]]` StreamingLLM | verified |
+| `[[1.0.0 PRIM-31]]` Iterative Retrieval | ChunkKV enables 100K context on 4B-13B edge hardware | `[[1.0.0 P-105]]` ChunkKV + `[[1.0.0 P-102]]` SmallCode | verified |
+| `[[1.0.0 PRIM-25]]` Role-Flip De-Hallucination | BFCL "knowing when not to call" relevance detection | `[[1.0.0 P-106]]` BFCL PMLR v267 2025 | verified |
+| `[[1.0.0 PRIM-7]]` Verdict Validation | BFCL AST + executable verification methodology | `[[1.0.0 P-106]]` BFCL PMLR v267 2025 | verified |
+| `[[1.0.0 PRIM-24]]` SOP-Anchored Role Artifact | Decomposed prompting closes compositionality gap at 1.5B | `[[1.0.0 P-107]]` (re-anchor of `[[1.0.0 P-100]]`) | verified |
+
 Cross-cutting SLM-era general-purpose anchors:
-- `[[1.0.0 P-85]]` Function calling at 4B-30B scale (tool-call accuracy) — UNVERIFIED.
+- `[[1.0.0 P-85]]` Function calling at 4B-30B scale (tool-call accuracy) — UNVERIFIED (superseded by `[[1.0.0 P-106]]` BFCL verified).
 - `[[1.0.0 P-86]]` LLM-empowered software modernization taxonomy — UNVERIFIED.
 - `[[1.0.0 P-87]]` TOSEM systematic literature review (SLM4SE coverage) — verified (Hou et al. TOSEM 2024).
 - `[[1.0.0 P-88]]` HiTyper type-annotation migration (ICSE 2022) — verified (Peng et al. ICSE 2022, venue corrected from ISSTA 2024).
@@ -135,7 +156,6 @@ Wave 9 anchors (verified):
 - `[[1.0.0 P-99]]` Suzgun et al. 2022 — BIG-Bench Hard CoT (arXiv:2210.09261).
 - `[[1.0.0 P-100]]` Khot et al. 2022 — Decomposed Prompting (ICLR 2023, arXiv:2210.02406; SLM-era re-anchor of P-62).
 - `[[1.0.0 P-101]]` Zhou et al. 2023 — Least-to-Most Prompting (ICLR 2023, arXiv:2205.10625).
-
 
 ---
 
@@ -151,6 +171,7 @@ Wave 9 anchors (verified):
 
 ## 9. Last Updated
 
+- **2026-09-18** — Sprint 2026-09-18: Wave-10 SLM-era anchors (P-102..P-107) persisted; 5 verified new (P-102 SmallCode, P-103 AgentModernize arXiv 2026, P-104 S*, P-105 ChunkKV, P-106 BFCL) + 1 re-anchor slot (P-107 → P-100). Added Wave-10 SLM-era anchors table (10 rows) + Wave-10 anchors list + Wave-9 anchors list. Corrected P-103 venue (arXiv:2605.17535, NOT ICSE 2025). All 7 directive items already verified compliant at 0c1aed5 (no fmt.Print*, abcoder-mcp default, 8-agent graph, try-and-fail strategy registry, state.go centralised, Charm TUI, binary compilation status).
 - **2026-09-17** — Sprint 2026-09-17: Ste100 messaging sweep verified clean (zero marketing jargon in user-facing messages; hedge-language only in code comments describing intent). Externalities audit verified comprehensive (yaml.v3, charm stack, abcoder-mcp, container/ring, filepath, env, flag, json). ADR-V-001 sweep reverted initial over-aggressive sed sweep; prose parentheticals `(PRIM-NN)` / `(P-NN)` retained as standard academic-writing convention. No version-slot drift detected. P-06 re-verified absent (closest analog: RepoTransBench = P-09). All gates green.
 - **2026-09-16** — Sprint 2026-09-16: Ponytail inline audit + ADR-C-014 locality documentation strengthened via producer-file backlink headers. Dead Charm `errorStyle` removed from `internal/tui/tui.go`. Wave-10 deferred: wave-9 (P-96..P-101) saturated the reasoning-anchors set; next wave launches when new SLM-era mechanisms require anchors. Method entry-point unchanged from Sprint 2026-09-15.
 - **2026-09-15** — Sprint 2026-09-15: Added wave 9 SLM-era anchors (P-96..P-101) to §7 SLM-Era Anchors table + cross-cutting list (all 6 verified). Cross-linked into lineage matrix + primitives INDEX.
