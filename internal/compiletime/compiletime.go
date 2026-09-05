@@ -17,7 +17,7 @@ import (
 // CurrentSchemaVersion is the canonical schema version string for role artifacts.
 const CurrentSchemaVersion = "1.0.0"
 // ErrorUnknown is the sentinel compiler/toolchain string when no language matches.
-const ErrorUnknown = "unknown"
+const ErrorUnknown = "Unknown"
 
 // ToolchainCargo is the canonical Cargo toolchain name.
 const ToolchainCargo = "cargo"
