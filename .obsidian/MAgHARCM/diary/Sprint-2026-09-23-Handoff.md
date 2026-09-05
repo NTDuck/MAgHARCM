@@ -38,14 +38,14 @@ constraint.
 
 - `[[1.0.0 P-115]]` OpenHands / CodeAct — Wang et al. 2024
   ([arxiv:2312.10714](https://arxiv.org/abs/2312.10714)). Anchors
-  `[[1.0.0 PRIM-25]]` (PRIM-29); cross-linked into `Software-Archaeology-Lineage.md`.
+  `[[1.0.0 PRIM-25]]` (`[[1.0.0 PRIM-29]]`); cross-linked into `Software-Archaeology-Lineage.md`.
 - `[[1.0.0 P-116]]` Aider — Gauthier 2024-2025. Anchors `[[1.0.0 PRIM-9]]`
-  (PRIM-22); cross-linked.
+  (`[[1.0.0 PRIM-22]]`); cross-linked.
 - `[[1.0.0 P-117]]` RepoCoder — Zhang et al. ICLR 2023
   ([arxiv:2303.12570](https://arxiv.org/abs/2303.12570)). Anchors
-  `[[1.0.0 PRIM-9]]` (PRIM-22); cross-linked.
+  `[[1.0.0 PRIM-9]]` (`[[1.0.0 PRIM-22]]`); cross-linked.
 - `[[1.0.0 P-118]]` SWE-bench Lite — Jimenez et al. 2024. Anchors
-  `[[1.0.0 PRIM-5]]` (PRIM-6, PRIM-27); cross-linked.
+  `[[1.0.0 PRIM-5]]` (`[[1.0.0 PRIM-6]]`, `[[1.0.0 PRIM-27]]`); cross-linked.
 
 All four are verified via primary source (arXiv abstract / official
 repository); no paper required deep triangulation this wave.

@@ -33,9 +33,9 @@ Six wave-10 paper notes persisted:
 - **P-104 S\* (Dacheng Li et al., UC Berkeley, arXiv:2502.14382, 2025)** — verified. Hybrid sequential+parallel test-time scaling for code with execution-grounded selection. Anchors PRIM-7 (verdict validation) + PRIM-21 (strategy selection) + PRIM-27 (plateau detection).
 - **P-105 ChunkKV (Xiang Liu et al., NeurIPS 2025)** — verified. Semantic-preserving KV cache compression; 4-8× memory reduction; companion NVIDIA/kvpress library. Anchors PRIM-22 (comprehension) + PRIM-23 (chunked translation) + PRIM-31 (iterative retrieval).
 - **P-106 BFCL Berkeley Function Calling Leaderboard (Patil et al., PMLR v267, 2025)** — verified. De facto function-calling benchmark; AST + executable verification; SLM relevance-detection gap. Anchors PRIM-25 (Role-Flip Gate) + PRIM-26 (Symbol-Aware Navigator).
-- **P-107 Decomposed Prompting SLM Multi-Agent (re-anchor of P-100)** — **deliberate versioned slot, NOT a new verified paper**. Khot et al. 2022 (P-100) is the actual paper; P-107 is a wikilink target for the SLM-era re-read.
+- **P-107 Decomposed Prompting SLM Multi-Agent (re-anchor of `[[1.0.0 P-100]]`)** — **deliberate versioned slot, NOT a new verified paper**. Khot et al. 2022 (`[[1.0.0 P-100]]`) is the actual paper; P-107 is a wikilink target for the SLM-era re-read.
 
-Honest Wave-10 count: **5 new verified papers (P-102..P-106) + 1 re-anchor slot (P-107)**.
+Honest Wave-10 count: **5 new verified papers (`[[1.0.0 P-102]]`..`[[1.0.0 P-106]]`) + 1 re-anchor slot (`[[1.0.0 P-107]]`)**.
 
 ## Track-3 Vault Sync (closed)
 

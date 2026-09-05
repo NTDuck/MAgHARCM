@@ -46,5 +46,5 @@ Closed all 10 items. Three phases finished: Foundation, Track-1 Codebase (wave-8
 
 ## Open follow-ups (low-risk)
 
-- Re-tag Yamaguchi (PRIM-9) and Nii (PRIM-17) backlinks once their standalone paper notes are materialised.
+- Re-tag Yamaguchi (`[[1.0.0 PRIM-9]]`) and Nii (`[[1.0.0 PRIM-17]]`) backlinks once their standalone paper notes are materialised.
 - Continue wave-9 research (hop-2 refs from P-90..P-95) when a new SLM-aware mechanism needs an anchor.

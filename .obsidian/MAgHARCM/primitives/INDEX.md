@@ -72,7 +72,7 @@ All 31 primitives are compiled into the codebase, preserving architectural integ
 ## Sprint 2026-09-14 Vault Sync Audit
 
 - Indexed 6 new SLM-era anchor papers (P-90 Wei CoT, P-91 Snell test-time compute, P-92 Lightman PRM, P-93 Rafailov DPO, P-94 LIMA, P-95 Roziere Code Llama) — all verified — into relevant primitive rows.
-- PR backlog (low-risk follow-ups): re-tag Yamaguchi (PRIM-9) and Nii (PRIM-17) backlinks once their standalone paper notes are materialised.
+- PR backlog (low-risk follow-ups): re-tag Yamaguchi (`[[1.0.0 PRIM-9]]`) and Nii (`[[1.0.0 PRIM-17]]`) backlinks once their standalone paper notes are materialised.
 
 ## Sprint 2026-09-18 Vault Sync Audit
 
@@ -115,6 +115,13 @@ All 31 primitives are compiled into the codebase, preserving architectural integ
 - Indexed 4 wave-13 deep-research papers: P-115 OpenHands/CodeAct (Wang 2024), P-116 Aider (Gauthier 2024-2025), P-117 RepoCoder (Zhang ICLR 2023), P-118 SWE-bench Lite (Jimenez 2024).
 - P-115 + P-112 + P-113 + P-116 form the canonical "agent scaffold" cluster for SWE-bench-style issue resolution.
 - P-117 + P-110 + P-113 form the canonical "repository-level retrieval-augmented completion" cluster.
-- P-118 narrows the SWE-bench evaluation target from 2,294 (P-111) to a 300-instance leaner subset for faster SLM-era iteration.
+- P-118 narrows the SWE-bench evaluation target from 2,294 (`[[1.0.0 P-111]]`) to a 300-instance leaner subset for faster SLM-era iteration.
 - Cross-linked 16 rows in Software-Archaeology-Lineage.md.
 - 31/31 primitives still mapped to implementation files; 8-agent graph still wired; Charm TUI idioms still intact; abcoder-mcp default still in configs/agents.yml.
+
+## Sprint 2026-09-24 Vault Sync Audit
+- ADR-V-001 sweep: 11 stray `(P-NN)` / `(PRIM-NN)` parentheticals rewritten to `[[1.0.0 P-NN]]` / `[[1.0.0 PRIM-NN]]` form across `METHODOLOGY.md`, `primitives/INDEX.md`, and `diary/Sprint-2026-09-06-Handoff.md`, `Sprint-2026-09-18-Handoff.md`, `Sprint-2026-09-22-Handoff.md`, `Sprint-2026-09-23-Handoff.md`. ASCII diagram in `Software-Archaeology-Lineage.md:51` retained (diagram context, not version slots); ADR-V-001 rule statement in `architecture/ADR-2026-09-07-Sprint-Conventions.md` retained as the canonical counter-example.
+- Primitive-count audit: `grep -oE 'PRIM-[0-9]+' primitives/INDEX.md | sort -u | wc -l` = 31 (no orphan rows, no missing rows).
+- Compliance re-verified: 8-agent graph still wired (archaeologist, analyzer, planning, translator, reviewer, validator, verdict_panel, recruiter = 8 `AddLambdaNode` calls); `configs/agents.yml` still lists `lsp.provider: abcoder-mcp`; zero `fmt.Print*` I/O in production Go code; Must pattern still used 19 times across `compiletime/` + `tools/lsp.go` + `agents/spec_lifecycle.go`; all 31 primitive artifacts still in `internal/agents/*.go` (35 files = 31 impl + 4 test files + 0 orphan).
+- Wave-14 deferred: no new SLM-era mechanism landed this sprint; wave-14 trigger criterion (`new SLM-era primitive OR 2026 venue paper introduces unanchored mechanism`) not satisfied.
+- All gates green: `go build ./...`, `go vet ./...`, `go test ./...`.
