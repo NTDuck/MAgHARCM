@@ -5,6 +5,8 @@ package agents
 import (
 	"fmt"
 	"strings"
+
+	"MAgHARCM/internal/compiletime"
 )
 
 // CrateMapping maps a source-language dependency identifier to a target
@@ -167,7 +169,7 @@ func sanitizePkgName(name string) string {
 
 // DetectSourceLang is a best-effort heuristic for the source language from
 // a manifest file extension or path fragment. Returns the canonical
-// language name (e.g. "Java", "Python", "JavaScript") or "Unknown".
+// language name (e.g. "Java", "Python", "JavaScript") or compiletime.ErrorUnknown.
 func DetectSourceLang(manifestPath string) string {
 	lower := strings.ToLower(manifestPath)
 	switch {
@@ -184,6 +186,6 @@ func DetectSourceLang(manifestPath string) string {
 	case strings.HasSuffix(lower, "cargo.toml"):
 		return "Rust" // already in target — pass through
 	default:
-		return "Unknown"
+		return compiletime.ErrorUnknown
 	}
 }

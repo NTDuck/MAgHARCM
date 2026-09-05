@@ -1140,3 +1140,58 @@
   year      = {2024},
   note      = {UNVERIFIED --- no paper with this exact title by author Phan located in ICSE-NIER 2024 program. Closest verified analogues: Li et al. 2024 ``Understanding Code Changes Practically with Small-Scale Language Models'' at ASE 2024 (arXiv:2409.11462); Abdelhalim et al. 2024 ``Leveraging LLMs for Legacy Code Modernization'' at arXiv:2411.14971. Huy Nhat Phan's 2024 work focuses on repository-level code completion, not modernization baselines.}
 }
+
+@inproceedings{p90_wei_cot_2022,
+  title     = {{Chain-of-Thought Prompting Elicits Reasoning in Large Language Models}},
+  author    = {Wei, Jason and Wang, Xuezhi and Schuurmans, Dale and Bosma, Maarten and Ichter, Brian and Xia, Fei and Chi, Ed H. and Le, Quoc V. and Zhou, Denny},
+  booktitle = {Advances in Neural Information Processing Systems 35 (NeurIPS 2022)},
+  pages     = {24824--24837},
+  year      = {2022},
+  eprint    = {2201.11903},
+  note      = {Google Research / Brain; foundational CoT prompting paper; emergent at PaLM 540B; 56.9\% on GSM8K with CoT vs 17.9\% without.}
+}
+
+@article{p91_snell_test_time_scaling_2024,
+  title     = {{Scaling LLM Test-Time Compute Optimally Can be More Effective than Scaling Model Parameters}},
+  author    = {Snell, Charlie and Lee, Jaehoon and Xu, Kelvin and Kumar, Aviral},
+  journal   = {arXiv preprint arXiv:2408.03314},
+  year      = {2024},
+  eprint    = {2408.03314},
+  note      = {Google DeepMind, Aug 2024; compute-optimal allocation between parallel sampling and sequential revision; PaLM 2-S vs PaLM 2-L; ORM vs PRM verifiers; FLOP-matched evaluation on MATH and GSM8K.}
+}
+
+@article{p92_lightman_prm_2023,
+  title     = {{Let's Verify Step by Step}},
+  author    = {Lightman, Hunter and Kosaraju, Vineet and Burda, Yuri and Edwards, Harri and Baker, Bowen and Lee, Teddy and Leike, Jan and Schulman, John and Sutskever, Ilya and Cobbe, Karl},
+  journal   = {arXiv preprint arXiv:2305.02188},
+  year      = {2023},
+  eprint    = {2305.02188},
+  note      = {OpenAI, May 2023; introduces PRM800K (800K step-level labels over 7,500 MATH problems); process-supervision beats outcome-supervision by ~6pp at matched label budget; GPT-4 + PRM best-of-N at 78.2\% pass@1 on MATH.}
+}
+
+@inproceedings{p93_rafailov_dpo_2023,
+  title     = {{Direct Preference Optimization}: Your Language Model is Secretly a Reward Model},
+  author    = {Rafailov, Rafael and Sharma, Archit and Mitchell, Eric and Ermon, Stefano and Manning, Christopher D. and Finn, Chelsea},
+  booktitle = {Advances in Neural Information Processing Systems 36 (NeurIPS 2023)},
+  year      = {2023},
+  eprint    = {2305.18290},
+  note      = {Stanford; closed-form derivation showing RLHF optimal policy depends only on reference policy and reward; reward is implicit; single supervised fine-tuning stage replaces PPO + separate reward model; SLM-era alignment technique of choice.}
+}
+
+@inproceedings{p94_zhou_lima_2023,
+  title     = {{LIMA}: Less Is More for Alignment},
+  author    = {Zhou, Chunting and Liu, Pengfei and Xu, Puxin and Iyer, Srini and Sun, Jiao and Mao, Yuning and Ma, Xuezhe and Efrat, Avia and Yu, Ping and Zhang, Susan and Ghosh, Gargi and Lewis, Mike and Zettlemoyer, Luke and Levy, Omer},
+  booktitle = {Advances in Neural Information Processing Systems 36 (NeurIPS 2023)},
+  year      = {2023},
+  eprint    = {2305.11206},
+  note      = {Meta AI / FAIR, May 2023; 1,000 carefully curated prompt-response pairs fine-tune LLaMA-65B to match GPT-4 on Alpaca; ``superficial alignment'' hypothesis; the ``less is more'' data-curation anchor for SLM alignment.}
+}
+
+@article{p95_roziere_code_llama_2023,
+  title     = {{Code Llama}: Open Foundation Models for Code},
+  author    = {Roziere, Baptiste and Gehring, Jonas and Gloeckle, Fabian and Sootla, Sten and Gat, Itai and Tan, Xiaoqing Ellen and Adi, Yossi and Liu, Jingyu and Remez, Tal and Rapin, J{\'e}r{\'e}my and Kozhevnikov, Artyom and Evtimov, Ivan and Bitton, Joanna and Bhatt, Manish and Canton Ferrer, Cristian and Grattafiori, Aaron and Xiong, Wenhan and D{\'e}fossez, Alexandre and Copet, Jade and Azhar, Faisal and Touvron, Hugo and Martin, Louis and Usunier, Nicolas and Scialom, Thomas and Synnaeve, Gabriel},
+  journal   = {arXiv preprint arXiv:2308.12950},
+  year      = {2023},
+  eprint    = {2308.12950},
+  note      = {Meta AI / FAIR, Aug 2023 (v3 31 Jan 2024); 7B/13B/34B code-specialised Llama 2 variants; 100K-token context via RoPE scaling; CodeLlama-34B-Instruct at 48.8\% HumanEval at release; licensed under Llama 2 Community License; the Meta-side code-SLM baseline for MAgHARCM's evaluation fleet.}
+}
