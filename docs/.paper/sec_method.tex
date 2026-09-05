@@ -49,7 +49,9 @@ plan; the Translator, RoleFlipReviewer, Validator, VerdictPanel, and
 Recruiter agents execute an iterative translate--review--validate--
 verdict--recruit--repair loop to produce $P_t$.
 The pipeline design follows the broader multi-agent orchestration pattern
-surveyed by~\cite{p63_multi_agent_survey}.
+surveyed by~\cite{p63_multi_agent_survey}. The graph-of-agents architecture follows the
+typed-blackboard model~\cite{p73_nii_blackboard_1986}, with each agent writing to and reading
+from a typed panel of the shared state.
 
 The \emph{Analyzer Agent} performs extensive analysis of $P_s$. It walks
 the source tree through MCP tools and produces a report that
@@ -201,7 +203,7 @@ include:
 The native LSP provider wraps the language servers bundled with the
 development toolchain (\texttt{gopls}, \texttt{rust-analyzer},
 \texttt{clangd}, Eclipse JDT, TypeScript Language Server, Python
-Language Server). An optional ABCoderMcp provider delegates the same
+Language Server). An optional ABCoderMcpProvider delegates the same
 operations to a Model-Context-Protocol server that exposes structural
 queries across the same six language servers used by
 \textsc{ReCodeAgent}~\cite{ibrahimzada2026recodeagent}. When no
@@ -229,8 +231,11 @@ exploring the codebase and files. Functionalities included are:
 The ABCoderMcpProvider (\texttt{lsp.provider: abcoder-mcp}) is the
 default across configurations. It delegates structural queries to a
 Model-Context-Protocol server exposing UniAST semantic anchors across
-heterogeneous language targets. The native Tree-sitter backend is
-retained as a local fallback when external MCP processes are disabled.
+heterogeneous language targets. ABCoder MCP exposes a Code Property
+Graph~\cite{p72_yamaguchi_cpg_2014} unifying abstract syntax trees,
+control flow graphs, and data flow graphs; concept-cluster extraction
+and mutation-delta analysis are implemented as traversals over this
+graph. The native Tree-sitter backend is retained as a local fallback when external MCP processes are disabled.
 
 \subsection{Archaeologist Agent}
 \label{sec:method_archaeologist}
@@ -239,7 +244,11 @@ The Archaeologist Agent (§\ref{sec:method_archaeologist}) executes an
 initial pre-planning software archaeology pass over $P_s$, combining
 foundational techniques from Rajlich~\cite{p28_weiser},
 M\"uller~\cite{p06_codes_bench}, Foltz~\cite{p30_lfm25}, and
-Kazman~\cite{p51_kazman_drspaces}. It produces an
+Kazman~\cite{p51_kazman_drspaces}. The design-rule taxonomy follows Baldwin
+and Clark~\cite{p70_baldwin_clark_design_rules_2006}; obsolete design rules
+that fall into the ``modularity trap'' are flagged via the Fleming and Baldwin
+2024 retrospective~\cite{p71_fleming_baldwin_arch_complexity_2024}.
+It produces an
 \texttt{ArchaeologyReport} with five components:
 \begin{enumerate}
     \item \emph{Boundary Extraction}: identifies module and file boundaries.
@@ -326,7 +335,11 @@ fragment context ($\le 4\,\text{KB}$), reverse-topological scheduling,
 and the role-flipped reviewer are calibrated so that the prompt
 window, scratch reasoning budget, and instruction-following fidelity
 of these Qwen2.5-Coder checkpoints can drive the loop without the
-full-thinker overhead of larger general-purpose models.
+full-thinker overhead of larger general-purpose models. Domain-adapter training
+follows the ULMFiT transfer recipe~\cite{p66_howard_ruder_ulmfit_2018} with Adam
+optimisation~\cite{p67_kingma_ba_adam_2015}; long-context inference relies on
+multi-query attention~\cite{p68_shazeer_mqa_2019} for tractable KV-cache
+footprint.
 
 \subsection{Planning Agent}
 \label{sec:method_planning}
@@ -539,7 +552,7 @@ before the code reaches the compiler.
 \subsection{Role-Flip Reviewer Agent}
 \label{sec:method_roleflip}
 
-The Role-Flip Reviewer Agent (PRIM-25~\cite{p46_chatdev_deepread,p71_anthropic_sycophancy_2025}) inspects the Translator's
+The Role-Flip Reviewer Agent (PRIM-25~\cite{p46_chatdev_deepread,p69_anthropic_sycophancy_2025_acl}) inspects the Translator's
 output with an adversary-prompted second pass: the role-flipped system message
 forces the model to find at least one defect rather than to confirm correctness.
 The reviewer emits a binary accepted/defect verdict and, on defect, a targeted
