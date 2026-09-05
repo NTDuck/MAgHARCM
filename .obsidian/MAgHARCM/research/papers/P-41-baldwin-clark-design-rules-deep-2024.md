@@ -22,7 +22,7 @@ Baldwin and Clark ([[1.0.0 P-41]]) extend the modularity thesis of [[P-34]] by l
 
 The 2024 retrospective, distilled in Fleming & Baldwin's current writing on modular designs, applies the same design-rule lens to software-archaeology contexts. A legacy codebase is a layered design-rule space whose L1 rules (interfaces, type contracts, build invariants) constrain the L3 leaves. As with physical products, software L1 stability is the precondition for parallel translation work; erosion of L1 rules is the precondition for translation failure.
 
-A second applied strand appears in Baldwin's 2008 work on modular organisations ([[1.0.0 P-70]] §6, "Where do Transactions Come From?") and in the 2014 Colfer & Baldwin study of the mirroring hypothesis ([[1.0.0 P-70]] hop-2). A monetary system is treated as a modular interface that lets heterogeneous counterparties transact without bilateral negotiation; the same argument applies to internal API surfaces in legacy systems: a stable interface is a transaction medium for independent contributors, and its erosion is a hidden tax on coordination.
+A second applied strand extends the design-rules framework to other modular-interface contexts (monetary systems as modular interfaces that let heterogeneous counterparties transact without bilateral negotiation). The same argument applies to internal API surfaces in legacy systems: a stable interface is a transaction medium for independent contributors, and its erosion is a hidden tax on coordination. Specific sub-citations deferred; the broader modular-money framing is anchored via `[[1.0.0 P-70]]`'s hop-2 references.
 
 ## Relevance to MAgHARCM
 
@@ -37,16 +37,14 @@ A second applied strand appears in Baldwin's 2008 work on modular organisations 
 - [[Langlois-Robertson-1992]] — Modularity in the economy; complementary economics argument that modular industries out-evolve integral ones, mirroring the 2006 working-paper empirical claim.
 - [[Schilling-2000-Toward-General-Modular-Systems-Theory]] — Synthesis of modular-systems theory across biology, organizations, and software; supplies the cross-domain vocabulary for design-rule decomposition.
 - [[Garud-Kumaraswamy-2005]] — Modularity, technology evolution, and the changing boundaries of firms; shows how design-rule stability governs the option value of modular experimentation.
-- [[Colfer-Baldwin-2016-Where-Do-Transactions-Come-From]] — Same author cluster; applies design-rule thinking to money as a modular interface, the conceptual bridge to API-as-transaction-medium in legacy systems.
-- [[Fleming-Baldwin-2024-Evolution-Modular-Designs]] — Current retrospective synthesizing design-rule theory with software-archaeology contexts; the source of the 2024 framing in this note.
+- [[1.0.0 P-71]] Fleming &amp; Baldwin 2024 — Current retrospective synthesizing design-rule theory with software-archaeology contexts.
 
 ## Hop-2 Anchors (Software Archaeology Lean)
 
 - [[Parnas-1972-On-Criteria]] — Information-hiding as the design-rule kernel; L1 visibility is Parnas's abstract-interface contract, and PRIM-19 is its enforcement.
 - [[Lehman-1980-Programs-Life-Cycles-Laws]] — Laws of software evolution as design-rule erosion; increasing complexity and continuing change are the mechanisms by which a legacy system's L1 rules decay.
-- [[Kazman-Cai-2024-DRSpaces-Design-Rule-Extraction]] — Kazman & Cai's recent operationalization of design-rule extraction from legacy repositories; the tool-side anchor that PRIM-19 should consume rather than re-implement.
-- [[Rajlich-Bennett-2000-Staged-Life-Cycle]] — Concept assignment and the staged lifecycle locate domain concepts that, once measured, become L1 rules in the design-rule hierarchy.
-- [[Müller-2000-Reverse-Engineering-Roadmap]] — The five legacy migration strategies operate within a design-rule hierarchy; PRIM-19 supplies the partition that PRIM-21's strategy selector consumes.
+- [[1.0.0 P-20]] Kazman &amp; Cai — Design Rule extraction from legacy repositories; the tool-side anchor that PRIM-19 should consume rather than re-implement.
+- [[1.0.0 P-35]] Müller 2000 — Reverse Engineering Roadmap; the five legacy migration strategies operate within a design-rule hierarchy. PRIM-19 supplies the partition that PRIM-21's strategy selector consumes.
 
 ## Backlinks
 

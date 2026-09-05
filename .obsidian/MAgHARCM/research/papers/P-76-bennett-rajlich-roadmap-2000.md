@@ -15,7 +15,7 @@ Bennett, K. H., & Rajlich, V. T. (2000). *Software Maintenance and Evolution: A 
 Bennett & Rajlich's 2000 Roadmap paper (FOSE 2000, a special track at ICSE 2000) is the field-defining **research-agenda statement** for software maintenance and evolution in the 21st century. The paper is structured as:
 1. **Definition**: distinguishes *software maintenance* (corrective, adaptive, perfective, preventive) from *software evolution* (the broader category that includes re-engineering, migration, and retirement).
 2. **State of the Art**: reviews the 1990s maintenance research (Biggerstaff's concept assignment, Lehman's laws, Chikofsky-Cross reverse-engineering taxonomy, Seacord's modernisation textbook, Ward's maintenance-process models).
-3. **Research Challenges**: lists seven grand challenges:
+3. **Research Challenges**: lists grand challenges including concept location, impact analysis, comprehension at scale, software visualisation, reuse-driven maintenance, migration strategies, and empirical validation of maintenance techniques.
    - Concept location and feature identification.
    - Impact analysis of changes.
    - Program comprehension at scale.
@@ -31,14 +31,14 @@ The paper is a **position / roadmap** paper, not an empirical study. Its contrib
 
 ## Findings Relevant to MAgHARCM
 
-- **Seven grand challenges** map directly onto MAgHARCM primitives: concept location → `[[1.0.0 PRIM-20]]`; impact analysis → `[[1.0.0 PRIM-18]]`; comprehension at scale → `[[1.0.0 PRIM-22]]`; visualisation → TUI; reuse-driven maintenance → domain-adapter training (cf. `[[1.0.0 P-58]]` Qwen2.5-Coder); migration strategies → `[[1.0.0 PRIM-21]]`; empirical validation → the experiment framework.
+- **Research-agenda grand challenges** map onto MAgHARCM primitives: concept location → `[[1.0.0 PRIM-20]]`; impact analysis → `[[1.0.0 PRIM-18]]`; comprehension at scale → `[[1.0.0 PRIM-22]]`; visualisation → TUI; reuse-driven maintenance → domain-adapter training (cf. `[[1.0.0 P-58]]` Qwen2.5-Coder); migration strategies → `[[1.0.0 PRIM-21]]`; empirical validation → the experiment framework.
 - **Empirical validation requirement** is the precedent for MAgHARCM's "honest experiments" directive — every primitive must be validated on a real legacy codebase, not just a synthetic example.
 - **Open-source as maintenance laboratory** is the precedent for MAgHARCM's choice of case-study codebases (the open-source repositories used in `cmd/magh/bench`).
 - **Tool integration** is the precedent for MAgHARCM's ABCoder MCP integration (cf. `[[1.0.0 P-72]]`).
 
 ## How MAgHARCM Uses It
 
-The roadmap paper's seven challenges are referenced in `[[2.0.0 Software-Archaeology-Lineage]]` §3 as the **research-agenda table**. Each MAgHARCM primitive's "Application" column points back to one of the seven challenges.
+The roadmap paper's grand challenges are referenced in `[[2.0.0 Software-Archaeology-Lineage]]` §3 as the **research-agenda table**. Each MAgHARCM primitive's "Application" column points back to one of the challenges.
 
 ## References
 
@@ -58,4 +58,4 @@ The roadmap paper's seven challenges are referenced in `[[2.0.0 Software-Archaeo
 
 [[1.0.0 P-32]], [[1.0.0 P-33]], [[1.0.0 P-46]], [[1.0.0 P-74]], [[1.0.0 P-75]], [[1.0.0 PRIM-18]], [[1.0.0 PRIM-20]], [[1.0.0 PRIM-21]], [[1.0.0 PRIM-22]], [[2.0.0 MAgHARCM]], [[2.0.0 Software-Archaeology-Lineage]].
 
-P-76 is the **research-agenda anchor** for MAgHARCM's primitive roadmap — each primitive maps to one of the seven Bennett-Rajlich challenges.
+P-76 is the **research-agenda anchor** for MAgHARCM's primitive roadmap — each primitive maps to one of the Bennett-Rajlich challenges.

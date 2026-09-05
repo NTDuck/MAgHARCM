@@ -13,18 +13,18 @@ Sprint 2026-09-11 closed. Four new anchor papers persisted (P-74..P-77), all rea
 ## Research Wave 5 (closed)
 
 - `[[1.0.0 P-74]]` Biggerstaff, Mitbander, Webster 1993 — *The Concept Assignment Problem in Program Understanding* (ICSE 1993). The foundational paper defining concept-assignment; static-first / dynamic-fallback strategy for concept locators; 60-70% of mature-codebase concepts resolvable statically.
-- `[[1.0.0 P-75]]` Bennett 1995 — *Legacy Systems: Coping with Success* (IEEE Software 12(1)). The canonical 2-page framing for legacy modernisation; the wrap / reengineer / replace / migrate taxonomy that grounds `[[1.0.0 PRIM-21]]`.
-- `[[1.0.0 P-76]]` Bennett & Rajlich 2000 — *Software Maintenance and Evolution: A Roadmap* (FOSE 2000 at ICSE 2000). The seven-grand-challenges research-agenda statement; maps directly onto MAgHARCM primitives.
+- `[[1.0.0 P-75]]` Bennett 1995 — *Legacy Systems: Coping with Success* (IEEE Software 12(1)). The canonical 2-page framing for legacy modernisation; defines legacy systems informally and discusses wrap-and-migrate vs. reengineer-from-scratch as alternative coping strategies.
+- `[[1.0.0 P-76]]` Bennett &amp; Rajlich 2000 — *Software Maintenance and Evolution: A Roadmap* (FOSE 2000 at ICSE 2000). A multi-area research-agenda statement covering concept location, impact analysis, comprehension at scale, visualisation, reuse-driven maintenance, migration strategies, and empirical validation; maps onto MAgHARCM primitives (challenge counts were not separately audited).
 - `[[1.0.0 P-77]]` OpenAI 2024 — *Advancing Red Teaming with People and AI* (November 2024). The breadth+depth methodology (manual + automated + mixed); precedent for MAgHARCM's verifier-of-verifier pattern.
 
-**Provenance correction**: initial draft of P-74 fabricated a "Rajlich & Bennett 1997" co-authored paper and a "Bennett & Rajlich 2000 staged lifecycle" paper. Both removed; the real papers (Biggerstaff 1993 for concept-assignment; Bennett & Rajlich 2000 *Roadmap*) are now persisted with correct titles and authors. `Baldwin-Clark-2016-Money` was a conflation of modularity literature with monetary theory — that reference does not exist; the placeholder was replaced with Baldwin 2008 "Where do Transactions Come From?" + Colfer & Baldwin 2016 "Mirroring Hypothesis", both cited via `[[1.0.0 P-70]]`.
+**Provenance correction**: initial draft of P-74 fabricated a "Rajlich &amp; Bennett 1997" co-authored paper and a "Bennett &amp; Rajlich 2000 staged lifecycle" paper. Both removed; the real papers (Biggerstaff 1993 for concept-assignment; Bennett &amp; Rajlich 2000 *Roadmap*) are now persisted with correct titles and authors. `Baldwin-Clark-2016-Money` was a conflation of modularity literature with monetary theory — that reference does not exist; the placeholder was replaced with general Baldwin &amp; Clark design-rules sub-citations via `[[1.0.0 P-70]]`, with specific year+title sub-citations deferred pending primary-source verification.
 
 ## NEEDS-LINK Resolution (closed)
 
 All 6 remaining stubs resolved:
 - `[[NEEDS-LINK Rajlich-1997]]` (in `Software-Archaeology-Lineage.md`, `P-40-foltz-dr-jones-2023.md`) → `[[1.0.0 P-74]]` Biggerstaff 1993 (the actual concept-assignment paper; Rajlich cites this).
 - `[[NEEDS-LINK Bennett-2000]]` (in `Software-Archaeology-Lineage.md`) → `[[1.0.0 P-75]]` Bennett 1995 + `[[1.0.0 P-76]]` Bennett & Rajlich 2000 Roadmap.
-- `[[NEEDS-LINK Baldwin-Clark-2016-Money]]` (in `P-41-baldwin-clark-design-rules-deep-2024.md`) → conflation; replaced with real Baldwin 2008 + Colfer & Baldwin 2014 refs via `[[1.0.0 P-70]]`.
+- `[[NEEDS-LINK Baldwin-Clark-2016-Money]]` (in `P-41-baldwin-clark-design-rules-deep-2024.md`) → conflation; replaced with general Baldwin &amp; Clark design-rules sub-citations via `[[1.0.0 P-70]]`, with specific year+title sub-citations deferred pending primary-source verification.
 - `[[NEEDS-LINK Anthropic-2024-Claude35Sonnet]]` (in `P-56-zan-multiswebench-2025.md`) → cross-link to `[[1.0.0 P-38]]`.
 - `[[NEEDS-LINK Anthropic-2025]]` (in `P-61-guo-risky-code-execution-2024.md`) → cross-link to `[[1.0.0 P-38]]` + `[[1.0.0 P-69]]`.
 - `[[NEEDS-LINK OpenAI-2024-CodexRedTeam]]` (in `P-61-guo-risky-code-execution-2024.md`) → cross-link to `[[1.0.0 P-77]]` (no Codex-specific red-team report exists; OpenAI 2024 is the closest analogue).
