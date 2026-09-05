@@ -95,7 +95,7 @@ func (r *Registry) NextStrategy(ctx context.Context, current StrategyKind, p Pro
 }
 
 // SwitchToNextStrategy advances state to the next viable strategy when current strategy fails or plateaus.
-func SwitchToNextStrategy(ctx context.Context, state *State) (StrategyKind, bool) {
+func SwitchToNextStrategy(ctx context.Context, state *compiletime.State) (StrategyKind, bool) {
 	if state == nil {
 		return "", false
 	}

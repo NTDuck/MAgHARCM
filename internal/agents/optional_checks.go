@@ -26,7 +26,7 @@ type verdictPanelCheck struct {
 }
 
 func (c *verdictPanelCheck) Name() string { return compiletime.OptionalCheckVerdictPanel }
-func (c *verdictPanelCheck) Run(ctx context.Context, state *State) (string, string, error) {
+func (c *verdictPanelCheck) Run(ctx context.Context, state *compiletime.State) (string, string, error) {
 	if c.panel == nil {
 		return string(compiletime.VerdictSkipped), "no verdict panel configured", nil
 	}
@@ -63,7 +63,7 @@ type mockValidatorCheck struct {
 }
 
 func (c *mockValidatorCheck) Name() string { return compiletime.OptionalCheckMockValidator }
-func (c *mockValidatorCheck) Run(ctx context.Context, state *State) (string, string, error) {
+func (c *mockValidatorCheck) Run(ctx context.Context, state *compiletime.State) (string, string, error) {
 	if c.validator == nil {
 		return string(compiletime.VerdictSkipped), "no mock validator configured", nil
 	}
@@ -96,7 +96,7 @@ type implAgnosticCheck struct {
 }
 
 func (c *implAgnosticCheck) Name() string { return compiletime.OptionalCheckImplAgnostic }
-func (c *implAgnosticCheck) Run(ctx context.Context, state *State) (string, string, error) {
+func (c *implAgnosticCheck) Run(ctx context.Context, state *compiletime.State) (string, string, error) {
 	if c.tester == nil || len(c.vectors) == 0 {
 		return string(compiletime.VerdictSkipped), "no IO test vectors registered", nil
 	}
@@ -125,7 +125,7 @@ type wasmOracleCheck struct {
 
 func (c *wasmOracleCheck) Name() string { return compiletime.OptionalCheckWasmOracle }
 
-func (c *wasmOracleCheck) Run(ctx context.Context, state *State) (string, string, error) {
+func (c *wasmOracleCheck) Run(ctx context.Context, state *compiletime.State) (string, string, error) {
 	if c.oracle == nil {
 		return string(compiletime.VerdictSkipped), "no wasm oracle configured", nil
 	}
@@ -213,7 +213,7 @@ type roleFlipCheck struct {
 }
 
 func (c *roleFlipCheck) Name() string { return compiletime.OptionalCheckRoleFlipGate }
-func (c *roleFlipCheck) Run(ctx context.Context, state *State) (string, string, error) {
+func (c *roleFlipCheck) Run(ctx context.Context, state *compiletime.State) (string, string, error) {
 	if c.gate == nil || state == nil {
 		return string(compiletime.VerdictSkipped), "no role-flip gate or state", nil
 	}

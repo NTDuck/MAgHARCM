@@ -1,65 +1,72 @@
-package agents
-
-// Backlink: [[Primitives]] §NEW-PRIM-28 (Human-in-the-Loop Interrupt & Checkpoint).
+// Package checkpoint persists snapshots of *compiletime.State to disk
+// after every pipeline stage. It is a leaf package that depends only on
+// internal/compiletime — no agent-internal imports — so the wider
+// dependency graph (compiletime ↔ agents) stays acyclic.
+//
+// Backlink: [[1.0.0 PRIM-28]] Conversable State Checkpoints & Interrupts.
+package checkpoint
 
 import (
-	"strings"
 	"encoding/json"
 	"fmt"
 	"os"
-	"strconv"
 	"path/filepath"
 	"regexp"
+	"strconv"
+	"strings"
 	"time"
 
 	"MAgHARCM/internal/compiletime"
 )
 
-// pathSepReplacer replaces path separators with '-' when deriving a Run ID
-// from the task source directory. Hoisted to package-level for clarity.
+// pathSepReplacer replaces path separators with '-' when deriving a Run
+// ID from a source directory. Hoisted to package-level for clarity.
 var pathSepReplacer = strings.NewReplacer(string(filepath.Separator), "-")
 
-// checkpointIterRe matches the per-iteration checkpoint filename pattern.
-// Compiled once at package init to avoid recompiling per LoadLatest call.
-var checkpointIterRe = regexp.MustCompile(`iter-(\d{4})` + regexp.QuoteMeta(compiletime.CheckpointExt))
+// iterRe matches the per-iteration checkpoint filename pattern. Compiled
+// once at package init.
+var iterRe = regexp.MustCompile(`iter-(\d{4})` + regexp.QuoteMeta(compiletime.CheckpointExt))
 
-// CheckpointDir returns the per-run checkpoint directory under .artifacts/<run-id>/checkpoints/.
-func CheckpointDir(runID string) string {
+// Dir returns the per-run checkpoint directory under
+// .artifacts/<run-id>/checkpoints/.
+func Dir(runID string) string {
 	return filepath.Join(compiletime.DefaultArtifactDir, runID, "checkpoints")
 }
 
-// RunIDForTask derives a stable, human-readable run identifier from the
-// translation task's source directory. The run ID is the cleaned source-dir
-// path with path separators replaced by '-', so re-running against the same
-// source directory always lands on the same checkpoint directory under
-// run ID.
-func RunIDForTask(task compiletime.Task) string {
-	src := filepath.Clean(task.SourceDir)
+// RunIDForSourceDir derives a stable, human-readable run identifier from
+// a source directory path. The run ID is the cleaned source-dir path
+// with path separators replaced by '-', so re-running against the same
+// source directory always lands on the same checkpoint directory.
+func RunIDForSourceDir(sourceDir string) string {
+	src := filepath.Clean(sourceDir)
 	if src == "" || src == compiletime.DefaultProjectDir {
 		return compiletime.DefaultRunID
 	}
 	return pathSepReplacer.Replace(src)
 }
 
-// Checkpoint is a snapshot of *State plus a version + timestamp.
-// Fields are versioned via Version so future schema changes don't break old checkpoints.
+// Checkpoint is a snapshot of *compiletime.State plus a version +
+// timestamp. Versioned so future schema changes don't break old
+// checkpoints.
 type Checkpoint struct {
-	Version   int          `json:"version"`
-	CreatedAt time.Time    `json:"created_at"`
-	Iteration int          `json:"iteration"`
-	State     *State       `json:"state"`
+	Version   int                  `json:"version"`
+	CreatedAt time.Time            `json:"created_at"`
+	Iteration int                   `json:"iteration"`
+	State     *compiletime.State   `json:"state"`
 }
 
+// CurrentCheckpointVersion is the schema version for new checkpoints.
 const CurrentCheckpointVersion = 1
 
-// Save writes a checkpoint for the given state under .artifacts/<runID>/checkpoints/iter-N.json.
-// If runID is empty, returns an error (caller must always provide a run ID — generate one if missing).
+// Save writes a checkpoint for the given state under
+// .artifacts/<runID>/checkpoints/iter-N.json. runID must be non-empty
+// (use RunIDForSourceDir if the caller has no explicit run ID).
 // Returns the path written so the caller can log it.
-func Save(runID string, state *State) (string, error) {
+func Save(runID string, state *compiletime.State) (string, error) {
 	if runID == "" {
 		return "", fmt.Errorf("checkpoint: runID must not be empty")
 	}
-	dir := CheckpointDir(runID)
+	dir := Dir(runID)
 	if err := os.MkdirAll(dir, compiletime.CheckpointDirMode); err != nil {
 		return "", fmt.Errorf("checkpoint: mkdir %s: %w", dir, err)
 	}
@@ -75,7 +82,7 @@ func Save(runID string, state *State) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("checkpoint: marshal: %w", err)
 	}
-	// Write to temp file then rename for atomicity
+	// Atomic write: temp file then rename.
 	tmp := path + ".tmp"
 	if err := os.WriteFile(tmp, data, compiletime.CheckpointFileMode); err != nil {
 		return "", fmt.Errorf("checkpoint: write %s: %w", tmp, err)
@@ -86,13 +93,14 @@ func Save(runID string, state *State) (string, error) {
 	return path, nil
 }
 
-// LoadLatest returns the most recent checkpoint for runID, or (nil, nil) if no checkpoint exists.
-// Errors are returned only for I/O or JSON-decode failures.
+// LoadLatest returns the most recent checkpoint for runID, or
+// (nil, nil) if no checkpoint exists. Errors are returned only for I/O
+// or JSON-decode failures.
 func LoadLatest(runID string) (*Checkpoint, error) {
 	if runID == "" {
 		return nil, fmt.Errorf("checkpoint: runID must not be empty")
 	}
-	dir := CheckpointDir(runID)
+	dir := Dir(runID)
 	entries, err := os.ReadDir(dir)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -106,7 +114,7 @@ func LoadLatest(runID string) (*Checkpoint, error) {
 		if e.IsDir() || filepath.Ext(e.Name()) != compiletime.CheckpointExt {
 			continue
 		}
-		match := checkpointIterRe.FindStringSubmatch(e.Name())
+		match := iterRe.FindStringSubmatch(e.Name())
 		if match == nil {
 			continue
 		}
@@ -137,10 +145,10 @@ func LoadLatest(runID string) (*Checkpoint, error) {
 	return &ckpt, nil
 }
 
-// Cleanup removes all checkpoints for runID (typically called on successful completion).
-// Returns nil if the directory doesn't exist.
+// Cleanup removes all checkpoints for runID (typically called on
+// successful completion). Returns nil if the directory doesn't exist.
 func Cleanup(runID string) error {
-	dir := CheckpointDir(runID)
+	dir := Dir(runID)
 	if err := os.RemoveAll(dir); err != nil && !os.IsNotExist(err) {
 		return fmt.Errorf("checkpoint: cleanup %s: %w", dir, err)
 	}

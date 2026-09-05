@@ -101,7 +101,7 @@ func TestConceptAssigner(t *testing.T) {
 }
 
 func TestComprehensionPipeline(t *testing.T) {
-	pipeline := NewComprehensionPipeline()
+	comp := NewComprehensionPipeline()
 	files := []string{"cmd/main.go", "pkg/math/calc.go", "pkg/math/calc_test.go"}
 	contents := map[string]string{
 		"cmd/main.go":          "import fmt",
@@ -109,7 +109,7 @@ func TestComprehensionPipeline(t *testing.T) {
 		"pkg/math/calc_test.go": "import testing",
 	}
 
-	phases := pipeline.Comprehend(context.Background(), files, contents)
+	phases := comp.Comprehend(context.Background(), files, contents)
 	if len(phases.Decomposition) != 3 {
 		t.Errorf("expected 3 decomposed units, got %d", len(phases.Decomposition))
 	}
@@ -131,10 +131,10 @@ func TestIncrementalStrategySwitch(t *testing.T) {
 	}
 
 	// Test SwitchToNextStrategy on state
-	state := &State{
-		AnalyzerOutput: AnalyzerOutput{
-			Research: DocumentWrapper[SourceProjectResearch]{
-				Data: SourceProjectResearch{
+	state := &compiletime.State{
+		AnalyzerOutput: compiletime.AnalyzerOutput{
+			Research: compiletime.DocumentWrapper[compiletime.SourceProjectResearch]{
+				Data: compiletime.SourceProjectResearch{
 					MigrationStrategy: string(compiletime.StrategyBigBang),
 				},
 			},

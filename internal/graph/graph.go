@@ -9,24 +9,25 @@ import (
 	"MAgHARCM/internal/agents"
 	"MAgHARCM/internal/llm"
 	"MAgHARCM/internal/logger"
+	"MAgHARCM/internal/compiletime"
 )
 
 // MAgHARCMGraph wraps the compiled Eino runnable for the multi-agent pipeline.
 type MAgHARCMGraph struct {
-	Runnable compose.Runnable[*agents.State, *agents.State]
+	Runnable compose.Runnable[*compiletime.State, *compiletime.State]
 	// RunID identifies the current translation run for disk checkpoints.
 	RunID string
 }
 
 // checkpointLambda provides an explicit graph synchronization barrier
 // so downstream branches execute only after previous state is durable.
-func checkpointLambda(_ context.Context, state *agents.State) (*agents.State, error) {
+func checkpointLambda(_ context.Context, state *compiletime.State) (*compiletime.State, error) {
 	return state, nil
 }
 
 // NewMAgHARCMGraph constructs and compiles the 8-agent cyclic graph with automated repair.
 func NewMAgHARCMGraph(ctx context.Context, models *llm.Models, runID string) (*MAgHARCMGraph, error) {
-	g := compose.NewGraph[*agents.State, *agents.State]()
+	g := compose.NewGraph[*compiletime.State, *compiletime.State]()
 
 	// 1. Initialize independent agent execution units
 	archaeologistAgent := agents.NewArchaeologist()
@@ -41,7 +42,7 @@ func NewMAgHARCMGraph(ctx context.Context, models *llm.Models, runID string) (*M
 	// 2. Register agent nodes in the Eino Graph
 
 	// Node 1: Archaeologist (PRIM-14, 18, 19, 20, 22)
-	if err := g.AddLambdaNode("archaeologist", compose.InvokableLambda(func(ctx context.Context, state *agents.State) (*agents.State, error) {
+	if err := g.AddLambdaNode("archaeologist", compose.InvokableLambda(func(ctx context.Context, state *compiletime.State) (*compiletime.State, error) {
 		logger.LogAgent("Archaeologist", "Starting pre-planning software archaeology")
 		if state.Task.SourceDir != "" {
 			rep, err := archaeologistAgent.Investigate(ctx, state.Task.SourceDir)
@@ -59,7 +60,7 @@ func NewMAgHARCMGraph(ctx context.Context, models *llm.Models, runID string) (*M
 	}
 
 	// Node 2: Analyzer
-	if err := g.AddLambdaNode("analyzer", compose.InvokableLambda(func(ctx context.Context, state *agents.State) (*agents.State, error) {
+	if err := g.AddLambdaNode("analyzer", compose.InvokableLambda(func(ctx context.Context, state *compiletime.State) (*compiletime.State, error) {
 		models.PrepareReasoning()
 		return analyzerAgent.Run(ctx, state)
 	})); err != nil {
@@ -67,7 +68,7 @@ func NewMAgHARCMGraph(ctx context.Context, models *llm.Models, runID string) (*M
 	}
 
 	// Node 3: Planner (PRIM-1, 2, 3)
-	if err := g.AddLambdaNode("planning", compose.InvokableLambda(func(ctx context.Context, state *agents.State) (*agents.State, error) {
+	if err := g.AddLambdaNode("planning", compose.InvokableLambda(func(ctx context.Context, state *compiletime.State) (*compiletime.State, error) {
 		models.PrepareReasoning()
 		return planningAgent.Run(ctx, state)
 	})); err != nil {
@@ -75,7 +76,7 @@ func NewMAgHARCMGraph(ctx context.Context, models *llm.Models, runID string) (*M
 	}
 
 	// Node 4: Translator (PRIM-23, 31)
-	if err := g.AddLambdaNode("translator", compose.InvokableLambda(func(ctx context.Context, state *agents.State) (*agents.State, error) {
+	if err := g.AddLambdaNode("translator", compose.InvokableLambda(func(ctx context.Context, state *compiletime.State) (*compiletime.State, error) {
 		models.PrepareCoding()
 		return translatorAgent.Run(ctx, state)
 	})); err != nil {
@@ -88,7 +89,7 @@ func NewMAgHARCMGraph(ctx context.Context, models *llm.Models, runID string) (*M
 	}
 
 	// Node 6: Reviewer (PRIM-25 Role-Flip Gate)
-	if err := g.AddLambdaNode("reviewer", compose.InvokableLambda(func(ctx context.Context, state *agents.State) (*agents.State, error) {
+	if err := g.AddLambdaNode("reviewer", compose.InvokableLambda(func(ctx context.Context, state *compiletime.State) (*compiletime.State, error) {
 		models.PrepareReasoning()
 		if len(state.TranslatedProject.Files) > 0 {
 			// Select a representative sample for role-flip inspection
@@ -112,7 +113,7 @@ func NewMAgHARCMGraph(ctx context.Context, models *llm.Models, runID string) (*M
 	}
 
 	// Node 7: Validator (PRIM-5, 6, 13, 27)
-	if err := g.AddLambdaNode("validator", compose.InvokableLambda(func(ctx context.Context, state *agents.State) (*agents.State, error) {
+	if err := g.AddLambdaNode("validator", compose.InvokableLambda(func(ctx context.Context, state *compiletime.State) (*compiletime.State, error) {
 		models.PrepareReasoning()
 		return validatorAgent.Run(ctx, state)
 	})); err != nil {
@@ -124,7 +125,7 @@ func NewMAgHARCMGraph(ctx context.Context, models *llm.Models, runID string) (*M
 		return nil, err
 	}
 	// Node 9: Verdict Panel (PRIM-7 Multi-Agent Consensus)
-	if err := g.AddLambdaNode("verdict_panel", compose.InvokableLambda(func(ctx context.Context, state *agents.State) (*agents.State, error) {
+	if err := g.AddLambdaNode("verdict_panel", compose.InvokableLambda(func(ctx context.Context, state *compiletime.State) (*compiletime.State, error) {
 		models.PrepareReasoning()
 		if !state.ValidationReport.IsAllSuccess() && len(state.TranslatedProject.Files) > 0 {
 			var sampleTarget string
@@ -146,7 +147,7 @@ func NewMAgHARCMGraph(ctx context.Context, models *llm.Models, runID string) (*M
 	}
 
 	// Node 10: Recruiter (PRIM-29 Dynamic Iteration Adaptation)
-	if err := g.AddLambdaNode("recruiter", compose.InvokableLambda(func(ctx context.Context, state *agents.State) (*agents.State, error) {
+	if err := g.AddLambdaNode("recruiter", compose.InvokableLambda(func(ctx context.Context, state *compiletime.State) (*compiletime.State, error) {
 		if !state.ValidationReport.IsAllSuccess() {
 			// Trigger try-and-fail migration strategy switch if needed
 			if state.ValidationReport.PlateauDetected || len(state.ValidationReport.CompilationErrors) > 0 {
@@ -198,7 +199,7 @@ func NewMAgHARCMGraph(ctx context.Context, models *llm.Models, runID string) (*M
 
 	// 4. Connect Validation Branching & Cyclic Repair Loop
 	repairBranch := compose.NewGraphBranch(
-		func(ctx context.Context, state *agents.State) (string, error) {
+		func(ctx context.Context, state *compiletime.State) (string, error) {
 			if state.IsComplete || state.ValidationReport.IsAllSuccess() || state.Iteration >= state.MaxIterations {
 				logger.LogStep("Pipeline termination condition met: complete=%v, all_success=%v, iteration=%d/%d",
 					state.IsComplete, state.ValidationReport.IsAllSuccess(), state.Iteration, state.MaxIterations)
@@ -238,6 +239,6 @@ func NewMAgHARCMGraph(ctx context.Context, models *llm.Models, runID string) (*M
 }
 
 // Execute runs the translation graph with initial state and returns final state.
-func (rg *MAgHARCMGraph) Execute(ctx context.Context, initialState *agents.State) (*agents.State, error) {
+func (rg *MAgHARCMGraph) Execute(ctx context.Context, initialState *compiletime.State) (*compiletime.State, error) {
 	return rg.Runnable.Invoke(ctx, initialState)
 }

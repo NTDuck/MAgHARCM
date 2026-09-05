@@ -143,8 +143,8 @@ func GroupFragmentsBySourceFile(fragments []string) map[string][]string {
 // running "previously emitted modules" state into each subsequent model call.
 // It populates state.TranslatedProject.Files (merged with the existing skeleton
 // entries), persists everything to disk via syncFilesToDisk, and returns the
-// merged TranslatedProject.
-func (t *TranslatorAgent) RunChunked(ctx context.Context, state *State) (*TranslatedProject, error) {
+// merged compiletime.TranslatedProject.
+func (t *TranslatorAgent) RunChunked(ctx context.Context, state *compiletime.State) (*compiletime.TranslatedProject, error) {
 	if state == nil {
 		return nil, fmt.Errorf("nil state passed to RunChunked")
 	}
@@ -264,7 +264,7 @@ func (t *TranslatorAgent) ensureRustCargoManifest(state *State) {
 // files extracted from the model's response.
 func (t *TranslatorAgent) translateFragment(
 	ctx context.Context,
-	state *State,
+	state *compiletime.State,
 	packageName, sourceBlock, priorSummary string,
 ) (map[string]string, error) {
 	prompt, err := renderPromptTemplate("translator_chunked", translatorChunkedPromptTemplate, map[string]any{

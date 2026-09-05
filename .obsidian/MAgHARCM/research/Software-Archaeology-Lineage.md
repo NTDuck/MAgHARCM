@@ -126,35 +126,35 @@ The MAgHARCM pipeline grounds modern agentic reasoning in 45+ years of rigorous 
 | :--- | :--- | :--- | :--- | :--- |
 | `[[1.0.0 PRIM-1]]` | Reverse Topological Ordering | ReCodeAgent [[P-01]] | Parnas (1972) Information Hiding | `internal/agents/planning.go` |
 | `[[1.0.0 PRIM-2]]` | Back-Edge Cycle Linearization | AlphaTrans [[P-02]] | Tarjan DAG decomposition | `internal/agents/planning.go` |
-| `[[1.0.0 PRIM-3]]` | Target Skeleton-First Gen | Skel [[P-03]], ReCodeAgent | Baldwin & Clark (2000) Design Rules; [[P-42]] DSM (MacCormack 2006); [[P-53]] Liu (2023) Lost in the Middle | `internal/agents/planning.go` |
+| `[[1.0.0 PRIM-3]]` | Target Skeleton-First Gen | Skel [[P-03]], ReCodeAgent; [[P-54]] Abdin (2024) Phi-3 Tech Report | Baldwin & Clark (2000) Design Rules; [[P-42]] DSM (MacCormack 2006); [[P-53]] Liu (2023) Lost in the Middle | `internal/agents/planning.go` |
 | `[[1.0.0 PRIM-4]]` | SpecMiner Dynamic Invariants | Syzygy [[P-14]], Daikon | Dynamic Invariant Detection (Ernst) | `internal/agents/specminer.go` |
-| `[[1.0.0 PRIM-5]]` | Test Co-Translation & Synth | Pynguin [[P-23]], ReCodeAgent | Feathers (2004) Characterization Tests | `internal/agents/validator.go` |
-| `[[1.0.0 PRIM-6]]` | Multi-Stage Build/Test Repair | AlphaTrans [[P-02]], ReCodeAgent | Automated Program Repair (Le Goues) | `internal/agents/validator.go` |
-| `[[1.0.0 PRIM-7]]` | Multi-Agent Verdict Validation | MatchFixAgent [[P-08]] | N-Version Programming (Avizienis); [[P-52]] Wang (2023) Self-Consistency | `internal/agents/verdict_panel.go` |
+| `[[1.0.0 PRIM-5]]` | Test Co-Translation & Synth | Pynguin [[P-23]], ReCodeAgent; [[P-56]] Zan (2025) Multi-SWE-bench | Feathers (2004) Characterization Tests; multilingual SLM baseline (Java/Go/Rust/C) | `internal/agents/validator.go` |
+| `[[1.0.0 PRIM-6]]` | Multi-Stage Build/Test Repair | AlphaTrans [[P-02]], ReCodeAgent; [[P-54]] Abdin (2024) Phi-3 | Automated Program Repair (Le Goues); Phi-3 chat-format alignment for repair prompts | `internal/agents/validator.go` |
+| `[[1.0.0 PRIM-7]]` | Multi-Agent Verdict Validation | MatchFixAgent [[P-08]]; [[P-57]] Leviathan (2023) Speculative Decoding | N-Version Programming (Avizienis); [[P-52]] Wang (2023) Self-Consistency; speculative draft/target for SLM fleet | `internal/agents/verdict_panel.go` |
 | `[[1.0.0 PRIM-8]]` | State-Grounded Mock Validation | TRAM [[P-10]] | Feathers (2004) Sensing Pins | `internal/agents/mock_validator.go` |
 | `[[1.0.0 PRIM-9]]` | Tri-Representation Code Graph | RepoGraph [[P-14]], Yamaguchi | Code Property Graphs (Yamaguchi 2014) | `internal/agents/cpg.go` |
 | `[[1.0.0 PRIM-10]]` | Feature-Mapping Validation | Oxidizer [[P-05]], RustRepoTrans; [[P-43]] FODA (Kang 1990) | Language Idiom Mapping (Czarnecki) | `internal/agents/feature_mapping.go` |
-| `[[1.0.0 PRIM-11]]` | Implementation-Agnostic Test | RepoMod-Bench [[P-11]] | Black-Box Specification Testing | `internal/agents/impl_agnostic.go` |
-| `[[1.0.0 PRIM-12]]` | Wasm Reference Oracle | VERT [[P-12]] | Differential Execution Oracles (McKeeman) | `internal/agents/wasm_oracle.go` |
-| `[[1.0.0 PRIM-13]]` | Adversarial Test Guard | AdvTestGen [[P-25]] | Mutation Testing & Assertion Invariants, [[P-48]] Jia & Harman (2011) Mutation Survey | `internal/agents/validator.go` |
-| `[[1.0.0 PRIM-14]]` | Software-Archaeology Stage | pp-besm, AgentPatterns.ai | Chikofsky & Cross (1990) Reverse Eng, [[P-46]] Seacord et al. (2003) Modernizing Legacy Systems | `internal/agents/archaeology.go` |
+| `[[1.0.0 PRIM-11]]` | Implementation-Agnostic Test | RepoMod-Bench [[P-11]]; [[P-56]] Zan (2025) Multi-SWE-bench | Black-Box Specification Testing; multilingual real-issue benchmark | `internal/agents/impl_agnostic.go` |
+| `[[1.0.0 PRIM-12]]` | Wasm Reference Oracle | VERT [[P-12]]; [[P-56]] Zan (2025) Multi-SWE-bench | Differential Execution Oracles (McKeeman); per-language differential baseline | `internal/agents/wasm_oracle.go` |
+| `[[1.0.0 PRIM-13]]` | Adversarial Test Guard | AdvTestGen [[P-25]]; [[P-56]] Zan (2025) Multi-SWE-bench | Mutation Testing & Assertion Invariants, [[P-48]] Jia & Harman (2011) Mutation Survey; multilingual adversarial benchmark | `internal/agents/validator.go` |
+| `[[1.0.0 PRIM-14]]` | Software-Archaeology Stage | pp-besm, AgentPatterns.ai; [[P-54]] Abdin (2024) Phi-3 | Chikofsky & Cross (1990) Reverse Eng, [[P-46]] Seacord et al. (2003) Modernizing Legacy Systems; Phi-3-mini-128K whole-file archaeology | `internal/agents/archaeology.go` |
 | `[[1.0.0 PRIM-15]]` | Evidence-First Adaptation | Reeper [[P-16]] | Cleanroom Software Engineering (Mills) | `internal/agents/evidence_adaptation.go` |
 | `[[1.0.0 PRIM-16]]` | Spec-Driven Dev Lifecycle | spec-kit [[P-17]] | Design-by-Contract (Meyer 1988) | `internal/agents/spec_lifecycle.go` |
 | `[[1.0.0 PRIM-17]]` | Asynchronous SE Blackboard | CAID [[P-18]]; [[P-44]] Corkill (1991) | Blackboard Architecture (Nii 1986) | `internal/agents/blackboard.go` |
 | `[[1.0.0 PRIM-18]]` | Jaccard-Coupling Recovery | MSR4SA [[P-19]] | Mining Software Repositories (Hassan), [[P-47]] Gall Hajek Jazayeri (1998) Logical Coupling | `internal/agents/jaccard_coupling.go` |
 | `[[1.0.0 PRIM-19]]` | Design Rule Hierarchy Part | Kazman et al. [[P-20]], Baldwin-Clark | Baldwin & Clark (2000) Modularity, [[P-41]] 2024 retrospective, [[P-42]] MacCormack (2006) DSM | `internal/agents/design_rule_hierarchy.go` |
 | `[[1.0.0 PRIM-20]]` | Concept Assignment & Redoc | Rajlich (1997) [[P-28]] | Concept Assignment (Biggerstaff 1993) | `internal/agents/concept_assignment.go` |
-| `[[1.0.0 PRIM-21]]` | Migration Strategy Selection | Müller et al. [[P-06]] | Legacy Migration Frameworks (Müller); [[P-52]] Wang (2023) Self-Consistency (strategy-level ensemble) | `internal/agents/strategy.go` |
-| `[[1.0.0 PRIM-22]]` | Four Phases Comprehension | Foltz (2023) [[P-30]]; canonical hop-1 [[P-40]]; [[P-51]] Cassano (2024) Can It Edit | Cognitive Program Comprehension (Soloway-Adelson, Pennington, Brooks, Détienne) | `internal/agents/comprehension.go` |
+| `[[1.0.0 PRIM-21]]` | Migration Strategy Selection | Müller et al. [[P-06]]; [[P-57]] Leviathan (2023) Speculative Decoding | Legacy Migration Frameworks (Müller); [[P-52]] Wang (2023) Self-Consistency (strategy-level ensemble); speculative decoding strategy registry | `internal/agents/strategy.go` |
+| `[[1.0.0 PRIM-22]]` | Four Phases Comprehension | Foltz (2023) [[P-30]]; canonical hop-1 [[P-40]]; [[P-51]] Cassano (2024) Can It Edit; [[P-54]] Abdin (2024) Phi-3; [[P-55]] Schick (2021) SLM Few-Shot; [[P-56]] Zan (2025) Multi-SWE-bench | Cognitive Program Comprehension (Soloway-Adelson, Pennington, Brooks, Détienne) | `internal/agents/comprehension.go` |
 | `[[1.0.0 PRIM-23]]` | Chunked Translation | ChatDev [[P-12]], MetaGPT [[P-11]]; [[P-53]] Liu (2023) Lost in the Middle | Bounded-Context Translation | `internal/agents/chunked_translator.go` |
-| `[[1.0.0 PRIM-24]]` | SOP-Anchored Role Artifact | MetaGPT [[P-11]]; [[P-45]] Curtis-Kellner-Over (1992) | Standard Operating Procedures (SOP) | `internal/compiletime/compiletime.go`, `internal/agents/state.go` |
-| `[[1.0.0 PRIM-25]]` | Role-Flip De-Hallucination | ChatDev [[P-12]]; sycophancy anchor [[P-38]] (Raman 2025); [[P-51]] Cassano (2024) Can It Edit | Adversarial Verification (Sycophancy Gate) | `internal/agents/roleflip.go` |
+| `[[1.0.0 PRIM-24]]` | SOP-Anchored Role Artifact | MetaGPT [[P-11]]; [[P-45]] Curtis-Kellner-Over (1992); [[P-55]] Schick (2021) SLM Few-Shot | Standard Operating Procedures (SOP); cloze reformulation as artifact schema | `internal/compiletime/compiletime.go`, `internal/agents/state.go` |
+| `[[1.0.0 PRIM-25]]` | Role-Flip De-Hallucination | ChatDev [[P-12]]; sycophancy anchor [[P-38]] (Raman 2025); [[P-51]] Cassano (2024) Can It Edit; [[P-55]] Schick (2021) SLM Few-Shot | Adversarial Verification (Sycophancy Gate); SLM few-shot role-flip prompt pattern | `internal/agents/roleflip.go` |
 | `[[1.0.0 PRIM-26]]` | Symbol-Aware Navigator | HyperAgent [[P-13]], ABCoder; [[P-50]] Jiang (2024) Code-Gen Survey | Targeted Context Retrieval | `internal/agents/navigator.go` |
 | `[[1.0.0 PRIM-27]]` | Coverage-Guided Plateau Det | CodaMOSA [[P-23]] | Search-Based Software Testing (Harman) | `internal/agents/plateau.go` |
 | `[[1.0.0 PRIM-28]]` | Conversable Checkpoints | AutoGen [[P-26]] | State-Snapshotting & Resumption | `internal/agents/checkpoint.go` |
 | `[[1.0.0 PRIM-29]]` | Recruitment-Adaptive Plan | AgentVerse [[P-26]]; controller-expert [[P-39]] (HuggingGPT / Jarvis) | Dynamic Team Organization, [[P-49]] Shehory & Kraus (1998) Coalition Formation | `internal/agents/recruit.go` |
 | `[[1.0.0 PRIM-30]]` | Source-to-Target Manifest | Syzygy [[P-14]], JavaC2Rust | Dependency Graph Transpilation | `internal/agents/manifest_rewriter.go` |
-| `[[1.0.0 PRIM-31]]` | Iterative Retrieval Refine | RepoCoder [[P-13]]; [[P-53]] Liu (2023) Lost in the Middle | Dynamic Feedback Retrieval-Augmented Gen | `internal/agents/iter_retrieval.go` |
+| `[[1.0.0 PRIM-31]]` | Iterative Retrieval Refine | RepoCoder [[P-13]]; [[P-53]] Liu (2023) Lost in the Middle; [[P-56]] Zan (2025) Multi-SWE-bench; [[P-57]] Leviathan (2023) Speculative Decoding | Dynamic Feedback Retrieval-Augmented Gen; speculative decoding for retrieval-decoding | `internal/agents/iter_retrieval.go` |
 
 
 ---

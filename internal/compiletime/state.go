@@ -2,21 +2,29 @@ package compiletime
 
 // Backlink: [[1.0.0 ADR-2026-09-07-Sprint-Conventions]] (rule ADR-C-014).
 //
-// This file is the canonical home for the schema-versioned inter-agent
-// pipeline context. The State struct and its six artifact structs live here
-// as concrete types. Per-agent producer files in internal/agents/ declare
-// `type Foo = compiletime.Foo` aliases so callsites continue to compile
-// unchanged while the single source of truth moves to compiletime.
+// This file is the canonical home for the cross-cutting pipeline types
+// shared across every agent and the orchestration graph:
+//   - State (the wire type threaded through every agent Run())
+//   - Task (the user-supplied translation specification)
+//   - All per-agent artifact structs (declaration here, algorithms in
+//     each producer agent's own file under internal/agents/)
+//   - SchemaVersioned interface
+//   - DocumentWrapper[T] generic helper
 //
-// Per ADR-C-014:
+// ADR-C-014 declares Locality of Behaviour for the algorithms: each
+// producer agent's Run() method lives in its own file. But the SHARED
+// TYPES — those referenced by graph.go, runner.go, checkpoint.go, and
+// cross-package consumers — must have a single source of truth.
 //
-//   - State + SchemaVersioned: HERE (canonical).
-//   - Per-artifact structs: HERE (canonical) — they are pipeline artefacts,
-//     not agent-internal state. Locality of Behaviour is preserved because
-//     each agent's Run() method still lives in its own file and writes its
-//     own artefact through the alias.
-//   - Agents reference via `type Foo = compiletime.Foo` alias in their
-//     respective files.
+// The previous architecture tried to put State in package agents and
+// re-export via type alias from compiletime, but Go's import-graph
+// analysis rejected it as a cycle (compiletime → agents → compiletime).
+// The previous-architecture also tried introducing internal/pipeline as
+// an intermediary, which created the same cycle. The cycle-free pattern
+// is: declarare State and its artifact field types HERE, in compiletime,
+// which is the leaf package (it imports nothing inside MAgHARCM).
+// Producer agent files import compiletime and consume the types
+// directly. Method receivers live on the canonical types.
 
 import (
 	"fmt"
@@ -30,11 +38,9 @@ type SchemaVersioned interface {
 	SchemaVersion() string
 }
 
-// -------------------------------------------------------------------------
-// Analyzer artefacts (PRIM-1 / NEW-PRIM-20 / NEW-PRIM-21 / NEW-PRIM-26)
-// -------------------------------------------------------------------------
-
 // DocumentWrapper keeps both structured data and markdown representation.
+// Generic so many different artifact types can wrap their structured
+// data alongside the raw markdown the reasoning model produced.
 type DocumentWrapper[T any] struct {
 	ArtifactSchemaVersion string `json:"schema_version"`
 	Data                  T      `json:"data"`
@@ -44,7 +50,60 @@ type DocumentWrapper[T any] struct {
 // SchemaVersion implements SchemaVersioned.
 func (d DocumentWrapper[T]) SchemaVersion() string { return d.ArtifactSchemaVersion }
 
-// SourceProjectResearch represents the research document produced by AnalyzerAgent.
+// -------------------------------------------------------------------------
+// Task (user-supplied translation specification; producer: cmd entry-points
+// and config loader). Lives here so State can reference it without
+// dragging in a non-leaf dependency.
+// -------------------------------------------------------------------------
+
+// Task defines the specification for a translation task. Every required
+// field is populated by the configuration loader before pipeline execution.
+type Task struct {
+	SourceDir   string
+	TargetDir   string
+	SourceLang  string
+	TargetLang  string
+	Toolchain   string
+	LSPProvider string
+	RequestFile string
+}
+
+// Validate verifies that every required field of Task is populated.
+func (t Task) Validate() error {
+	if t.SourceDir == "" {
+		return fmt.Errorf("task: source_dir is required")
+	}
+	if t.TargetDir == "" {
+		return fmt.Errorf("task: target_dir is required")
+	}
+	if t.SourceLang == "" {
+		return fmt.Errorf("task: source_lang is required")
+	}
+	if t.TargetLang == "" {
+		return fmt.Errorf("task: target_lang is required")
+	}
+	if t.Toolchain == "" {
+		return fmt.Errorf("task: toolchain is required")
+	}
+	if t.LSPProvider == "" {
+		return fmt.Errorf("task: lsp_provider is required")
+	}
+	return nil
+}
+
+// MustTask returns the task or panics if invalid. Use at startup where a
+// malformed task is a fatal configuration error.
+func MustTask(t Task) Task {
+	Must(struct{}{}, t.Validate())
+	return t
+}
+
+// -------------------------------------------------------------------------
+// Analyzer artefacts. Algorithm: internal/agents/analyzer.go (Run, etc.).
+// -------------------------------------------------------------------------
+
+// SourceProjectResearch is the structured research document produced by
+// the Analyzer Agent.
 type SourceProjectResearch struct {
 	Overview           string   `json:"overview"`
 	DirectoryStructure string   `json:"directory_structure"`
@@ -57,13 +116,13 @@ type SourceProjectResearch struct {
 	RawDocument        string   `json:"raw_document"`
 }
 
-// ThirdPartyLibraryAnalysis represents the library analysis document.
+// ThirdPartyLibraryAnalysis is the library analysis document.
 type ThirdPartyLibraryAnalysis struct {
 	Libraries   []LibraryMapping `json:"libraries"`
 	RawDocument string           `json:"raw_document"`
 }
 
-// LibraryMapping details how a source library maps to a target library.
+// LibraryMapping maps a source library to its target counterpart.
 type LibraryMapping struct {
 	SourceLibrary   string `json:"source_library"`
 	TargetLibrary   string `json:"target_library"`
@@ -72,7 +131,7 @@ type LibraryMapping struct {
 	Recommendations string `json:"recommendations"`
 }
 
-// TargetProjectDesign represents the design document produced by AnalyzerAgent.
+// TargetProjectDesign is the design document produced by the Analyzer.
 type TargetProjectDesign struct {
 	Overview                string   `json:"overview"`
 	TranslationRequirements string   `json:"translation_requirements"`
@@ -83,8 +142,7 @@ type TargetProjectDesign struct {
 	RawDocument             string   `json:"raw_document"`
 }
 
-// AnalyzerOutput aggregates research, library mapping, and architectural
-// design documents. Producer: AnalyzerAgent (internal/agents/analyzer.go).
+// AnalyzerOutput aggregates research, library mapping, and design documents.
 type AnalyzerOutput struct {
 	ArtifactSchemaVersion string                                     `json:"schema_version"`
 	Research              DocumentWrapper[SourceProjectResearch]     `json:"research"`
@@ -96,11 +154,10 @@ type AnalyzerOutput struct {
 func (a AnalyzerOutput) SchemaVersion() string { return a.ArtifactSchemaVersion }
 
 // -------------------------------------------------------------------------
-// Planning artefacts (PRIM-3 / NEW-PRIM-01 / NEW-PRIM-02)
+// Planning artefacts. Algorithm: internal/agents/planning.go (Run, etc.).
 // -------------------------------------------------------------------------
 
-// PlanStep represents a single step in Part A or Part B of the
-// implementation plan.
+// PlanStep is a single step in Part A or Part B of the implementation plan.
 type PlanStep struct {
 	ID              string `json:"id"`
 	Description     string `json:"description"`
@@ -123,8 +180,8 @@ type ImplementationPlan struct {
 	RawPlan               string     `json:"raw_plan"`
 }
 
-// PlanningOutput captures AST fragments, symbol mappings, generated
-// skeletons, and translation steps. Producer: PlanningAgent.
+// PlanningOutput captures fragments, name mappings, generated skeletons,
+// and translation steps.
 type PlanningOutput struct {
 	ArtifactSchemaVersion string             `json:"schema_version"`
 	Fragments             []string           `json:"fragments"`      // file_name:fragment_name
@@ -137,11 +194,11 @@ type PlanningOutput struct {
 func (p PlanningOutput) SchemaVersion() string { return p.ArtifactSchemaVersion }
 
 // -------------------------------------------------------------------------
-// Translator artefact (PRIM-6 / NEW-PRIM-23 / NEW-PRIM-24 / NEW-PRIM-25)
+// Translator artefact. Algorithm: internal/agents/translator.go (Run, etc.).
 // -------------------------------------------------------------------------
 
 // TranslatedProject contains the files written or edited in the target
-// repository. Producer: TranslatorAgent.
+// repository.
 type TranslatedProject struct {
 	ArtifactSchemaVersion string            `json:"schema_version"`
 	Files                 map[string]string `json:"files"` // relative_path -> code_content
@@ -151,7 +208,7 @@ type TranslatedProject struct {
 func (t TranslatedProject) SchemaVersion() string { return t.ArtifactSchemaVersion }
 
 // -------------------------------------------------------------------------
-// Validator artefact (PRIM-5 / NEW-PRIM-13)
+// Validator artefacts. Algorithm: internal/agents/validator.go (Run, etc.).
 // -------------------------------------------------------------------------
 
 // FileStatus records the build/test outcome of an individual file.
@@ -172,8 +229,7 @@ type OptionalCheckResult struct {
 	Detail  string `json:"detail,omitempty"`
 }
 
-// ValidationReport is the structured report produced by the validator
-// agent. Producer: ValidatorAgent.
+// ValidationReport is the structured report produced by the validator.
 type ValidationReport struct {
 	ArtifactSchemaVersion        string                `json:"schema_version"`
 	AllSuccess                   bool                  `json:"all_success"`
@@ -213,7 +269,7 @@ func (v ValidationReport) IsAllSuccess() bool {
 }
 
 // CompilationStatus returns the binary per-project compilation status
-// (PASS or FAIL). Per ADR-C-009 there is no partial compilation rate.
+// (Pass or Fail). Per ADR-C-009 there is no partial compilation rate.
 func (v ValidationReport) CompilationStatus() CompilationStatus {
 	if v.CompilationSuccess {
 		return CompilationStatusPass
@@ -234,11 +290,10 @@ func (v ValidationReport) String() string {
 }
 
 // -------------------------------------------------------------------------
-// SpecMiner artefact (PRIM-4)
+// SpecMiner artefact. Algorithm: internal/agents/specminer.go (Recover).
 // -------------------------------------------------------------------------
 
-// SpecMinerInvariants represents the dynamic invariants recovered by
-// SpecMiner. Producer: SpecMiner.
+// SpecMinerInvariants are the dynamic invariants recovered by SpecMiner.
 type SpecMinerInvariants struct {
 	AllocSizes         []int              `json:"alloc_sizes"`
 	PointerNullability map[string]bool    `json:"pointer_nullability"`
@@ -248,18 +303,16 @@ type SpecMinerInvariants struct {
 }
 
 // -------------------------------------------------------------------------
-// Archaeologist artefact (PRIM-14)
+// Archaeologist artefacts. Algorithm: internal/agents/archaeology.go (Investigate).
 // -------------------------------------------------------------------------
 
-// NamingFinding records a legacy-identifier forensic finding produced by
-// the Archaeologist.
+// NamingFinding records a legacy-identifier forensic finding.
 type NamingFinding struct {
 	Style, File, Token, Suggestion string
 	Line                           int
 }
 
 // ArchaeologyReport is the structured output of the archaeologist agent.
-// Producer: Archaeologist.
 type ArchaeologyReport struct {
 	BoundaryMap         []string            // module / file / function boundaries
 	TimeCapsuleCommands []string            // shell commands that reproduce the original build / test env
@@ -269,11 +322,12 @@ type ArchaeologyReport struct {
 }
 
 // -------------------------------------------------------------------------
-// Pipeline State (the wire type threaded through every agent Run())
+// Pipeline State — the wire type threaded through every agent Run().
 // -------------------------------------------------------------------------
 
-// State is the shared context passed between multi-agent pipeline nodes.
-// Each artifact field is owned by one producer agent (Locality of Behaviour).
+// State is the shared context passed between every multi-agent pipeline
+// node. Each artifact field is owned by exactly one producer agent
+// (algorithm in the producer file; type declared here).
 type State struct {
 	Task                Task                `json:"task"`
 	AnalyzerOutput      AnalyzerOutput      `json:"analyzer_output"`

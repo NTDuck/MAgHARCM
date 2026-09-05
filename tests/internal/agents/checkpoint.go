@@ -1,7 +1,8 @@
 package agents_test
 
 import (
-	"MAgHARCM/internal/agents"
+	"MAgHARCM/internal/checkpoint"
+	"MAgHARCM/internal/compiletime"
 	"os"
 	"path/filepath"
 	"strings"
@@ -13,37 +14,37 @@ import (
 // back with identical iteration and state contents.
 func TestCheckpointSaveLoadRoundTrip(t *testing.T) {
 	runID := "test-roundtrip"
-	t.Cleanup(func() { _ = agents.Cleanup(runID) })
+	t.Cleanup(func() { _ = checkpoint.Cleanup(runID) })
 
-	state := &agents.State{
+	state := &compiletime.State{
 		Iteration:     3,
 		MaxIterations: 50,
 		IsComplete:    false,
-		TranslatedProject: agents.TranslatedProject{
+		TranslatedProject: compiletime.TranslatedProject{
 			Files: map[string]string{"src/lib.rs": "fn hi() {}"},
 		},
 	}
 
-	path, err := agents.Save(runID, state)
+	path, err := checkpoint.Save(runID, state)
 	if err != nil {
-		t.Fatalf("agents.Save: %v", err)
+		t.Fatalf("checkpoint.Save: %v", err)
 	}
 	if path == "" {
-		t.Fatalf("agents.Save returned empty path")
+		t.Fatalf("checkpoint.Save returned empty path")
 	}
 	if !strings.Contains(path, "iter-0003.json") {
 		t.Errorf("expected iter-0003.json in path, got %q", path)
 	}
 
-	ckpt, err := agents.LoadLatest(runID)
+	ckpt, err := checkpoint.LoadLatest(runID)
 	if err != nil {
-		t.Fatalf("agents.LoadLatest: %v", err)
+		t.Fatalf("checkpoint.LoadLatest: %v", err)
 	}
 	if ckpt == nil {
-		t.Fatal("agents.LoadLatest returned nil checkpoint")
+		t.Fatal("checkpoint.LoadLatest returned nil checkpoint")
 	}
-	if ckpt.Version != agents.CurrentCheckpointVersion {
-		t.Errorf("Version mismatch: got %d, want %d", ckpt.Version, agents.CurrentCheckpointVersion)
+	if ckpt.Version != checkpoint.CurrentCheckpointVersion {
+		t.Errorf("Version mismatch: got %d, want %d", ckpt.Version, checkpoint.CurrentCheckpointVersion)
 	}
 	if ckpt.Iteration != 3 {
 		t.Errorf("Iteration mismatch: got %d, want 3", ckpt.Iteration)
@@ -59,85 +60,85 @@ func TestCheckpointSaveLoadRoundTrip(t *testing.T) {
 	}
 }
 
-// TestCheckpointLoadLatestEmpty verifies that agents.LoadLatest returns (nil, nil) when
+// TestCheckpointLoadLatestEmpty verifies that checkpoint.LoadLatest returns (nil, nil) when
 // no checkpoint exists for the runID.
 func TestCheckpointLoadLatestEmpty(t *testing.T) {
 	runID := "test-empty"
-	t.Cleanup(func() { _ = agents.Cleanup(runID) })
+	t.Cleanup(func() { _ = checkpoint.Cleanup(runID) })
 
-	ckpt, err := agents.LoadLatest(runID)
+	ckpt, err := checkpoint.LoadLatest(runID)
 	if err != nil {
-		t.Fatalf("agents.LoadLatest: expected nil error, got %v", err)
+		t.Fatalf("checkpoint.LoadLatest: expected nil error, got %v", err)
 	}
 	if ckpt != nil {
-		t.Errorf("agents.LoadLatest: expected nil checkpoint, got %+v", ckpt)
+		t.Errorf("checkpoint.LoadLatest: expected nil checkpoint, got %+v", ckpt)
 	}
 }
 
-// TestCheckpointLoadLatestPicksHighestIteration verifies that agents.LoadLatest returns
+// TestCheckpointLoadLatestPicksHighestIteration verifies that checkpoint.LoadLatest returns
 // the checkpoint with the highest iteration number when multiple are present.
 func TestCheckpointLoadLatestPicksHighestIteration(t *testing.T) {
 	runID := "test-multiple"
-	t.Cleanup(func() { _ = agents.Cleanup(runID) })
+	t.Cleanup(func() { _ = checkpoint.Cleanup(runID) })
 
-	// agents.Save in non-monotonic order to make sure sorting is on disk content, not save order.
+	// checkpoint.Save in non-monotonic order to make sure sorting is on disk content, not save order.
 	for _, iter := range []int{1, 7, 3} {
-		if _, err := agents.Save(runID, &agents.State{Iteration: iter}); err != nil {
-			t.Fatalf("agents.Save iter=%d: %v", iter, err)
+		if _, err := checkpoint.Save(runID, &compiletime.State{Iteration: iter}); err != nil {
+			t.Fatalf("checkpoint.Save iter=%d: %v", iter, err)
 		}
 	}
 
-	ckpt, err := agents.LoadLatest(runID)
+	ckpt, err := checkpoint.LoadLatest(runID)
 	if err != nil {
-		t.Fatalf("agents.LoadLatest: %v", err)
+		t.Fatalf("checkpoint.LoadLatest: %v", err)
 	}
 	if ckpt == nil {
-		t.Fatal("agents.LoadLatest returned nil checkpoint")
+		t.Fatal("checkpoint.LoadLatest returned nil checkpoint")
 	}
 	if ckpt.Iteration != 7 {
 		t.Errorf("expected highest iteration 7, got %d", ckpt.Iteration)
 	}
 }
 
-// TestCheckpointSaveEmptyRunIDReturnsError verifies that agents.Save rejects an empty runID.
+// TestCheckpointSaveEmptyRunIDReturnsError verifies that checkpoint.Save rejects an empty runID.
 func TestCheckpointSaveEmptyRunIDReturnsError(t *testing.T) {
-	if _, err := agents.Save("", &agents.State{Iteration: 1}); err == nil {
-		t.Fatal("agents.Save with empty runID: expected error, got nil")
+	if _, err := checkpoint.Save("", &compiletime.State{Iteration: 1}); err == nil {
+		t.Fatal("checkpoint.Save with empty runID: expected error, got nil")
 	}
 }
 
-// TestCheckpointCleanupRemovesDirectory verifies that agents.Cleanup removes the
+// TestCheckpointCleanupRemovesDirectory verifies that checkpoint.Cleanup removes the
 // checkpoint directory entirely.
 func TestCheckpointCleanupRemovesDirectory(t *testing.T) {
 	runID := "test-cleanup"
 
-	if _, err := agents.Save(runID, &agents.State{Iteration: 2}); err != nil {
-		t.Fatalf("agents.Save: %v", err)
+	if _, err := checkpoint.Save(runID, &compiletime.State{Iteration: 2}); err != nil {
+		t.Fatalf("checkpoint.Save: %v", err)
 	}
-	dir := agents.CheckpointDir(runID)
+	dir := checkpoint.Dir(runID)
 	if _, err := os.Stat(dir); err != nil {
-		t.Fatalf("expected checkpoint dir to exist after agents.Save: %v", err)
+		t.Fatalf("expected checkpoint dir to exist after checkpoint.Save: %v", err)
 	}
 
-	if err := agents.Cleanup(runID); err != nil {
-		t.Fatalf("agents.Cleanup: %v", err)
+	if err := checkpoint.Cleanup(runID); err != nil {
+		t.Fatalf("checkpoint.Cleanup: %v", err)
 	}
 	if _, err := os.Stat(dir); !os.IsNotExist(err) {
-		t.Errorf("expected checkpoint dir gone after agents.Cleanup, got err=%v", err)
+		t.Errorf("expected checkpoint dir gone after checkpoint.Cleanup, got err=%v", err)
 	}
-	// agents.Cleanup on a missing directory must be a no-op (no error).
-	if err := agents.Cleanup(runID); err != nil {
-		t.Errorf("agents.Cleanup on missing dir: expected nil error, got %v", err)
+	// checkpoint.Cleanup on a missing directory must be a no-op (no error).
+	if err := checkpoint.Cleanup(runID); err != nil {
+		t.Errorf("checkpoint.Cleanup on missing dir: expected nil error, got %v", err)
 	}
 }
 
 // TestCheckpointVersionMismatchReturnsError verifies that a checkpoint with an
-// unsupported version is rejected by agents.LoadLatest.
+// unsupported version is rejected by checkpoint.LoadLatest.
 func TestCheckpointVersionMismatchReturnsError(t *testing.T) {
 	runID := "test-version"
-	t.Cleanup(func() { _ = agents.Cleanup(runID) })
+	t.Cleanup(func() { _ = checkpoint.Cleanup(runID) })
 
-	dir := agents.CheckpointDir(runID)
+	dir := checkpoint.Dir(runID)
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		t.Fatalf("mkdir: %v", err)
 	}
@@ -147,7 +148,7 @@ func TestCheckpointVersionMismatchReturnsError(t *testing.T) {
 		t.Fatalf("write bad checkpoint: %v", err)
 	}
 
-	_, err := agents.LoadLatest(runID)
+	_, err := checkpoint.LoadLatest(runID)
 	if err == nil {
 		t.Fatal("expected version-mismatch error, got nil")
 	}

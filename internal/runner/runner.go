@@ -13,6 +13,7 @@ import (
 
 	"MAgHARCM/internal/agents"
 	"MAgHARCM/internal/compiletime"
+	"MAgHARCM/internal/checkpoint"
 	"MAgHARCM/internal/config"
 	"MAgHARCM/internal/graph"
 	"MAgHARCM/internal/llm"
@@ -24,8 +25,7 @@ var ErrMissingFields = errors.New("cfg is required")
 
 // Run executes the full analyzer -> planning -> translator -> validator
 // pipeline and returns the final state. cfg MUST have every required field
-// populated; missing fields produce a structured error from config.Require.
-func Run(ctx context.Context, cfg *config.Config) (*agents.State, error) {
+func Run(ctx context.Context, cfg *config.Config) (*compiletime.State, error) {
 	if cfg == nil {
 		return nil, ErrMissingFields
 	}
@@ -45,22 +45,22 @@ func Run(ctx context.Context, cfg *config.Config) (*agents.State, error) {
 	logger.LogStep("Run: source=%s (%s) -> target=%s (%s) toolchain=%s",
 		task.SourceDir, task.SourceLang, task.TargetDir, task.TargetLang, task.Toolchain)
 
-	runID := agents.RunIDForTask(task)
+	runID := checkpoint.RunIDForSourceDir(task.SourceDir)
 	logger.LogStep("Run ID: %s", runID)
 
-	resumed, err := agents.LoadLatest(runID)
+	resumed, err := checkpoint.LoadLatest(runID)
 	if err != nil {
 		return nil, fmt.Errorf("load checkpoint for %s: %w", runID, err)
 	}
-	var initialState *agents.State
+	var initialState *compiletime.State
 	if resumed != nil {
 		logger.LogStep("Resume from checkpoint iter-%d", resumed.Iteration)
 		initialState = resumed.State
 	} else {
-		initialState = &agents.State{
+		initialState = &compiletime.State{
 			Task:          task,
 			MaxIterations: cfg.MaxIterations,
-			TranslatedProject: agents.TranslatedProject{
+			TranslatedProject: compiletime.TranslatedProject{
 				ArtifactSchemaVersion: compiletime.CurrentSchemaVersion,
 				Files:                 make(map[string]string),
 			},
@@ -89,7 +89,7 @@ func Run(ctx context.Context, cfg *config.Config) (*agents.State, error) {
 	}
 
 	if finalState.ValidationReport.IsAllSuccess() {
-		if err := agents.Cleanup(runID); err != nil {
+		if err := checkpoint.Cleanup(runID); err != nil {
 			logger.LogWarning("Cannot remove checkpoints for run `%s`: %v", runID, err)
 		}
 		logger.LogAgent("MAgHARCM", "Translation and validation completed: %s", finalState.ValidationReport.String())
@@ -114,6 +114,6 @@ func Run(ctx context.Context, cfg *config.Config) (*agents.State, error) {
 }
 
 // Success reports whether the final state cleared validation.
-func Success(s *agents.State) bool {
+func Success(s *compiletime.State) bool {
 	return s != nil && s.ValidationReport.IsAllSuccess()
 }

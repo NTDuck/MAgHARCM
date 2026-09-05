@@ -2,7 +2,7 @@
 //
 // Derived from: pp-besm dev.to "Software Archaeology", AgentPatterns.ai
 // Legacy Code Archaeology, Rajlich, Müller, Foltz, Baldwin & Clark, Kazman
-// & Cai. Emits an ArchaeologyReport: boundaries, time-capsule reproduction
+// & Cai. Emits an compiletime.ArchaeologyReport: boundaries, time-capsule reproduction
 // commands, git churn hotspots, legacy naming findings, co-occurrence
 // concept map.
 package agents
@@ -23,21 +23,24 @@ import (
  	"MAgHARCM/internal/logger"
 )
 
-const churnHotspotLimit = 25
-
+// Type aliases (cycle-free Locality of Behaviour).
+// Producer files declare the algorithms; canonical artifact types
+// live in internal/compiletime/state.go. Aliases let method receivers
+// reference the type name without package qualification.
+type ArchaeologyReport = compiletime.ArchaeologyReport
 type NamingFinding = compiletime.NamingFinding
 
-// ArchaeologyReport is the structured output of the archaeologist agent.
-type ArchaeologyReport = compiletime.ArchaeologyReport
+const churnHotspotLimit = 25
 
+// compiletime.NamingFinding records a legacy-identifier forensic finding produced by
 type Archaeologist struct{}
 
 func NewArchaeologist() *Archaeologist { return &Archaeologist{} }
 
-func (a *Archaeologist) Investigate(ctx context.Context, sourceDir string) (ArchaeologyReport, error) {
+func (a *Archaeologist) Investigate(ctx context.Context, sourceDir string) (compiletime.ArchaeologyReport, error) {
 	logger.LogAgent("Archaeology", "starting pass for %s", sourceDir)
 	if err := ctx.Err(); err != nil {
-		return ArchaeologyReport{}, err
+		return compiletime.ArchaeologyReport{}, err
 	}
 	b, _ := a.ExtractBoundaries(ctx, sourceDir)
 	t, _ := a.BuildTimeCapsule(ctx, sourceDir)
@@ -45,7 +48,7 @@ func (a *Archaeologist) Investigate(ctx context.Context, sourceDir string) (Arch
 	n, _ := a.ForensicNaming(ctx, sourceDir)
 	m, _ := a.MapConcepts(ctx, sourceDir)
 	logger.LogStep("archaeology: %d/%d/%d/%d/%d", len(b), len(t), len(c), len(n), len(m))
-	return ArchaeologyReport{BoundaryMap: b, TimeCapsuleCommands: t, ChurnHotspots: c, NamingForensics: n, ConceptMap: m}, nil
+	return compiletime.ArchaeologyReport{BoundaryMap: b, TimeCapsuleCommands: t, ChurnHotspots: c, NamingForensics: n, ConceptMap: m}, nil
 }
 
 // ExtractBoundaries reports module, file and function boundaries.
@@ -149,7 +152,7 @@ func (a *Archaeologist) FindChurnHotspots(ctx context.Context, sourceDir string)
 
 // ForensicNaming scans source files for legacy identifier encodings:
 // Hungarian prefixes, leading / trailing underscores, ALL_CAPS, m_ members.
-func (a *Archaeologist) ForensicNaming(ctx context.Context, sourceDir string) ([]NamingFinding, error) {
+func (a *Archaeologist) ForensicNaming(ctx context.Context, sourceDir string) ([]compiletime.NamingFinding, error) {
 	if err := ctx.Err(); err != nil {
 		return nil, err
 	}
@@ -161,13 +164,13 @@ func (a *Archaeologist) ForensicNaming(ctx context.Context, sourceDir string) ([
 		{"all_caps", regexp.MustCompile(`\b[A-Z]{3,}\b`)},
 		{"mfc_member", regexp.MustCompile(`\bm_[A-Za-z][A-Za-z0-9]*\b`)},
 	}
-	var findings []NamingFinding
+	var findings []compiletime.NamingFinding
 	walkSources(ctx, root, func(path string, lines []string) {
 		for i, line := range lines {
 			for _, p := range patterns {
 				if loc := p.re.FindStringIndex(line); loc != nil {
 					tok := line[loc[0]:loc[1]]
-					findings = append(findings, NamingFinding{
+					findings = append(findings, compiletime.NamingFinding{
 						Style: p.style, File: path, Line: i + 1,
 						Token: tok, Suggestion: suggestGoName(p.style, tok),
 					})

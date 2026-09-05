@@ -1,7 +1,5 @@
 package agents
 
-// Backlink: [[Methodology]] §1 Stage 5 & 6 and [[Primitives]] §NEW-PRIM-05, §NEW-PRIM-06, §NEW-PRIM-13.
-
 import (
 	"context"
 	"fmt"
@@ -15,18 +13,29 @@ import (
 	"github.com/cloudwego/eino/components/model"
 	"github.com/cloudwego/eino/schema"
 	"MAgHARCM/internal/compiletime"
+	"MAgHARCM/internal/checkpoint"
 	"MAgHARCM/internal/logger"
 	"MAgHARCM/internal/tools"
 )
 
-// FileStatus records the build/test outcome of an individual file.
+// Type aliases (cycle-free Locality of Behaviour).
+// Producer files declare the algorithms; canonical artifact types
+// live in internal/compiletime/state.go. Aliases let method receivers
+// reference the type name without package qualification.
 type FileStatus = compiletime.FileStatus
-
-// OptionalCheckResult is the persisted shape of an auxiliary validator primitive outcome.
 type OptionalCheckResult = compiletime.OptionalCheckResult
-
-// ValidationReport is the structured report produced by the validator agent.
 type ValidationReport = compiletime.ValidationReport
+
+// compiletime.FileStatus records the build/test outcome of an individual file.
+// Producer: ValidatorAgent (this file).
+// IsAllSuccess evaluates convergence criteria: compilation passes, all
+// tests pass, no adversarial weakening, no empty-test-suite escape.
+
+// CompilationStatus returns the binary per-project compilation status
+// (PASS or FAIL). Per ADR-C-009 there is no partial compilation rate.
+
+// String renders a one-line summary of the validation report for log output.
+
 // ValidatorAgent executes build and test suites, detects coverage gaps, and triggers test synthesis.
 type ValidatorAgent struct {
 	Model model.BaseChatModel
@@ -52,7 +61,7 @@ type ValidatorAgent struct {
 
 // OptionalCheck is the contract implemented by auxiliary validation primitives.
 // A check is invoked only after the core cascade succeeds; its verdict is
-// attached to ValidationReport.OptionalCheckResults for downstream inspection.
+// attached to compiletime.ValidationReport.OptionalCheckResults for downstream inspection.
 // Implementations MUST be idempotent — the validator may call them on every
 // repair iteration until the cascade converges.
 type OptionalCheck interface {
@@ -61,7 +70,7 @@ type OptionalCheck interface {
 	// Run inspects the current state and returns a short verdict ("pass", "fail", "skipped")
 	// and a human-readable detail string. Returned error indicates a transport-level
 	// failure and aborts the optional-check phase (the core cascade is unaffected).
-	Run(ctx context.Context, state *State) (verdict, detail string, err error)
+	Run(ctx context.Context, state *compiletime.State) (verdict, detail string, err error)
 }
 
 // MaxRemedyIterations caps the bounded coverage-remediation loop driven by
@@ -77,14 +86,14 @@ func NewValidatorAgent(m model.BaseChatModel, runID string) *ValidatorAgent {
 	return &ValidatorAgent{Model: m, RunID: runID, Plateau: NewPlateauDetector()}
 }
 
-// Run validates the target project and produces a ValidationReport.
-func (v *ValidatorAgent) Run(ctx context.Context, state *State) (*State, error) {
+// Run validates the target project and produces a compiletime.ValidationReport.
+func (v *ValidatorAgent) Run(ctx context.Context, state *compiletime.State) (*compiletime.State, error) {
 	defer v.checkpoint(state)
 	state.Iteration++
 	iterStart := time.Now()
 	logger.LogAgent("Validator", "Running build and test validation on target `%s` (Iteration %d/%d)",
 		state.Task.TargetDir, state.Iteration, state.MaxIterations)
-	report := ValidationReport{
+	report := compiletime.ValidationReport{
 		ArtifactSchemaVersion: compiletime.CurrentSchemaVersion,
 		IterationStart:        iterStart,
 	}
@@ -176,7 +185,7 @@ func (v *ValidatorAgent) checkpoint(state *State) {
 	if v.RunID == "" || state == nil {
 		return
 	}
-	if path, err := Save(v.RunID, state); err != nil {
+	if path, err := checkpoint.Save(v.RunID, state); err != nil {
 		logger.LogWarning("Validator checkpoint save failed: %v", err)
 	} else {
 		logger.LogStep("Validator checkpoint saved: %s", path)
@@ -184,7 +193,7 @@ func (v *ValidatorAgent) checkpoint(state *State) {
 }
 
 // checkCompilation verifies compilation using the target toolchain.
-func (v *ValidatorAgent) checkCompilation(ctx context.Context, state *State) (*tools.ValidateBuildOutput, error) {
+func (v *ValidatorAgent) checkCompilation(ctx context.Context, state *compiletime.State) (*tools.ValidateBuildOutput, error) {
 	buildRes, err := tools.ValidateProjectBuild(ctx, state.Task.TargetDir, state.Task.TargetLang, state.Task.Toolchain)
 	if err != nil {
 		return nil, fmt.Errorf("validator failed to run build check: %w", err)
@@ -200,7 +209,7 @@ func (v *ValidatorAgent) checkCompilation(ctx context.Context, state *State) (*t
 }
 
 // runTestSuite executes the target test suite and records test metrics.
-func (v *ValidatorAgent) runTestSuite(ctx context.Context, state *State) (*tools.RunTestsOutput, error) {
+func (v *ValidatorAgent) runTestSuite(ctx context.Context, state *compiletime.State) (*tools.RunTestsOutput, error) {
 	testRes, err := tools.RunProjectTests(ctx, state.Task.TargetDir, state.Task.TargetLang, state.Task.Toolchain, "")
 	if err != nil {
 		return nil, fmt.Errorf("validator failed to execute tests: %w", err)
@@ -239,7 +248,7 @@ func (v *ValidatorAgent) findUncoveredFunctions(state *State) []string {
 // It now delegates to remedyWithPlateau, which wraps the per-iteration
 // (generate tests → re-run suite) cycle in a bounded plateau-detected loop
 // (CodaMOSA / NEW-PRIM-27). The wrapped inner behavior is unchanged.
-func (v *ValidatorAgent) remedyCoverageGaps(ctx context.Context, state *State, uncovered []string, report *ValidationReport) {
+func (v *ValidatorAgent) remedyCoverageGaps(ctx context.Context, state *compiletime.State, uncovered []string, report *compiletime.ValidationReport) {
 	v.remedyWithPlateau(ctx, state, uncovered, report)
 }
 
@@ -256,7 +265,7 @@ func (v *ValidatorAgent) remedyCoverageGaps(ctx context.Context, state *State, u
 // observed trajectory. If v.Plateau is nil (legacy callers / unit tests that
 // construct ValidatorAgent directly), a fresh detector is allocated so the
 // loop is always safe.
-func (v *ValidatorAgent) remedyWithPlateau(ctx context.Context, state *State, uncovered []string, report *ValidationReport) {
+func (v *ValidatorAgent) remedyWithPlateau(ctx context.Context, state *compiletime.State, uncovered []string, report *compiletime.ValidationReport) {
 	detector := v.Plateau
 	if detector == nil {
 		detector = NewPlateauDetector()
@@ -322,7 +331,7 @@ func (v *ValidatorAgent) remedyWithPlateau(ctx context.Context, state *State, un
 }
 
 // finalizeReport evaluates convergence criteria and sets milestone diagnostics.
-func (v *ValidatorAgent) finalizeReport(report *ValidationReport, state *State, testOutput string) {
+func (v *ValidatorAgent) finalizeReport(report *compiletime.ValidationReport, state *compiletime.State, testOutput string) {
 	report.AllSuccess = report.CompilationSuccess && len(report.CompilationErrors) == 0 && report.FailedTests == 0 && report.RealTests >= report.MinRealTests
 	if report.AllSuccess {
 		report.Diagnostics = fmt.Sprintf("All %d tests passed successfully! Codebase compiled cleanly without errors.", report.PassedTests)
@@ -335,7 +344,7 @@ func (v *ValidatorAgent) finalizeReport(report *ValidationReport, state *State, 
 	}
 }
 
-func (v *ValidatorAgent) generateAdditionalTests(ctx context.Context, state *State, uncovered []string, report *ValidationReport) {
+func (v *ValidatorAgent) generateAdditionalTests(ctx context.Context, state *compiletime.State, uncovered []string, report *compiletime.ValidationReport) {
 	var sourceFilesData []string
 	for relPath, content := range state.TranslatedProject.Files {
 		if !strings.HasPrefix(relPath, "tests/") {
@@ -386,9 +395,9 @@ var fileErrorPattern = regexp.MustCompile(`(?:^|["'\s])([A-Za-z0-9_./\-]+\.[A-Za
 
 // scanTargetFiles enumerates target source + test files and joins each file to
 // any compilation error mentioning it. Used for per-file observability.
-func scanTargetFiles(state *State, compileErrors []string) []FileStatus {
+func scanTargetFiles(state *compiletime.State, compileErrors []string) []compiletime.FileStatus {
 	targetDir := state.Task.TargetDir
-	statuses := []FileStatus{}
+	statuses := []compiletime.FileStatus{}
 	seen := map[string]bool{}
 
 	// First: in-memory translated project files (most authoritative).
@@ -397,7 +406,7 @@ func scanTargetFiles(state *State, compileErrors []string) []FileStatus {
 		if strings.HasPrefix(relPath, "tests/") || strings.HasSuffix(relPath, "_test."+strings.ToLower(state.Task.TargetLang)) {
 			kind = "test"
 		}
-		statuses = append(statuses, FileStatus{
+		statuses = append(statuses, compiletime.FileStatus{
 			Path:      relPath,
 			Kind:      kind,
 			Compiles:  true, // assume yes; failure is signaled by error grep below
@@ -424,7 +433,7 @@ func scanTargetFiles(state *State, compileErrors []string) []FileStatus {
 		if strings.HasPrefix(rel, "tests/") || strings.HasSuffix(rel, "_test."+strings.ToLower(state.Task.TargetLang)) {
 			kind = "test"
 		}
-		statuses = append(statuses, FileStatus{
+		statuses = append(statuses, compiletime.FileStatus{
 			Path:      rel,
 			Kind:      kind,
 			Compiles:  true,
@@ -512,8 +521,8 @@ func (v *ValidatorAgent) collectCurrentTestFiles(state *State) map[string]string
 // and PRIM-12 wasm oracle into the repair loop without touching the core
 // cascade. Order follows v.OptionalChecks (callers register in the order
 // they want results recorded).
-func (v *ValidatorAgent) runOptionalChecks(ctx context.Context, state *State) []OptionalCheckResult {
-	results := make([]OptionalCheckResult, 0, len(v.OptionalChecks))
+func (v *ValidatorAgent) runOptionalChecks(ctx context.Context, state *compiletime.State) []compiletime.OptionalCheckResult {
+	results := make([]compiletime.OptionalCheckResult, 0, len(v.OptionalChecks))
 	for _, check := range v.OptionalChecks {
 		if check == nil {
 			continue
@@ -524,7 +533,7 @@ func (v *ValidatorAgent) runOptionalChecks(ctx context.Context, state *State) []
 			detail = "check error: " + err.Error()
 			logger.LogWarning("OptionalCheck %s failed: %v", check.Name(), err)
 		}
-		results = append(results, OptionalCheckResult{
+		results = append(results, compiletime.OptionalCheckResult{
 			Name:    check.Name(),
 			Verdict: verdict,
 			Detail:  detail,

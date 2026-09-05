@@ -1,7 +1,5 @@
 package agents
 
-// Backlink: [[Methodology]] §1 Stage 2 and [[Primitives]] §NEW-PRIM-20, §NEW-PRIM-21, §NEW-PRIM-26.
-
 import (
 	"context"
 	"fmt"
@@ -14,6 +12,17 @@ import (
 	"MAgHARCM/internal/tools"
 )
 
+// Type aliases (cycle-free Locality of Behaviour).
+// Producer files declare the algorithms; canonical artifact types
+// live in internal/compiletime/state.go. Aliases let method receivers
+// reference the type name without package qualification.
+type AnalyzerOutput = compiletime.AnalyzerOutput
+type DocumentWrapper[T any] = compiletime.DocumentWrapper[T]
+type LibraryMapping = compiletime.LibraryMapping
+type SourceProjectResearch = compiletime.SourceProjectResearch
+type TargetProjectDesign = compiletime.TargetProjectDesign
+type ThirdPartyLibraryAnalysis = compiletime.ThirdPartyLibraryAnalysis
+
 // AnalyzerAgent maps the source codebase hierarchy, identifies third-party library dependencies, and drafts the target architecture.
 type AnalyzerAgent struct {
 	Model                model.BaseChatModel
@@ -25,25 +34,8 @@ type AnalyzerAgent struct {
 	SpecMiner            *SpecMiner
 	AnalyzerSpecMinerConfig AnalyzerSpecMinerConfig
 }
-// DocumentWrapper keeps both structured data and markdown representation.
-type DocumentWrapper[T any] = compiletime.DocumentWrapper[T]
 
-// SourceProjectResearch represents the research document produced by AnalyzerAgent.
-type SourceProjectResearch = compiletime.SourceProjectResearch
-
-// ThirdPartyLibraryAnalysis represents the library analysis document produced by AnalyzerAgent.
-type ThirdPartyLibraryAnalysis = compiletime.ThirdPartyLibraryAnalysis
-
-// LibraryMapping details how a source library maps to a target library.
-type LibraryMapping = compiletime.LibraryMapping
-
-// TargetProjectDesign represents the design document produced by AnalyzerAgent.
-type TargetProjectDesign = compiletime.TargetProjectDesign
-
-// AnalyzerOutput aggregates research, library mapping, and architectural design documents.
-type AnalyzerOutput = compiletime.AnalyzerOutput
-
-// AnalyzerSpecMinerConfig captures the inputs SpecMiner needs at analyzer
+// compiletime.DocumentWrapper keeps both structured data and markdown representation.
 // time. SourceBinary is the compiled source artifact path; Inputs are the
 // representative inputs the analyzer passes to SpecMiner.Recover to
 // exercise the runtime. Zero value disables SpecMiner entirely.
@@ -56,7 +48,7 @@ func NewAnalyzerAgent(m model.BaseChatModel) *AnalyzerAgent {
 }
 
 // Run executes the 3-phase analysis workflow and returns updated state.
-func (a *AnalyzerAgent) Run(ctx context.Context, state *State) (*State, error) {
+func (a *AnalyzerAgent) Run(ctx context.Context, state *compiletime.State) (*compiletime.State, error) {
 	logger.LogAgent("Analyzer", "Starting source project analysis: `%s` (`%s` -> `%s`)",
 		state.Task.SourceDir, state.Task.SourceLang, state.Task.TargetLang)
 
@@ -77,7 +69,7 @@ func (a *AnalyzerAgent) Run(ctx context.Context, state *State) (*State, error) {
 			logger.LogWarning("PRIM-4 SpecMiner pre-analysis failed: %v", err)
 		} else {
 			logger.LogStep("PRIM-4 SpecMiner recovered %d allocation sizes across %d inputs", len(invars.AllocSizes), len(a.AnalyzerSpecMinerConfig.Inputs))
-			state.SpecMinerInvariants = SpecMinerInvariants{
+			state.SpecMinerInvariants = compiletime.SpecMinerInvariants{
 				AllocSizes:         invars.AllocSizes,
 				PointerNullability: invars.PointerNullability,
 				AliasingPairs:      invars.AliasingPairs,
@@ -151,7 +143,7 @@ func (a *AnalyzerAgent) extractFileStructures(files []string) ([]string, []strin
 }
 
 // synthesizeAnalysis queries the reasoning model with directory structure, AST elements, and file contents.
-func (a *AnalyzerAgent) synthesizeAnalysis(ctx context.Context, state *State, treeStr, structureSummary, allCode string) (string, error) {
+func (a *AnalyzerAgent) synthesizeAnalysis(ctx context.Context, state *compiletime.State, treeStr, structureSummary, allCode string) (string, error) {
 	prompt, err := renderPromptTemplate("analyzer", analyzerPromptTemplate, map[string]any{
 		"SourceLang":         state.Task.SourceLang,
 		"TargetLang":         state.Task.TargetLang,
@@ -175,10 +167,10 @@ func (a *AnalyzerAgent) synthesizeAnalysis(ctx context.Context, state *State, tr
 }
 
 // populateAnalyzerOutput unpacks markdown sections into structured documents on state.
-func (a *AnalyzerAgent) populateAnalyzerOutput(state *State, rawDoc, strategy, rationale string) {
-	state.AnalyzerOutput.Research = DocumentWrapper[SourceProjectResearch]{
+func (a *AnalyzerAgent) populateAnalyzerOutput(state *compiletime.State, rawDoc, strategy, rationale string) {
+	state.AnalyzerOutput.Research = compiletime.DocumentWrapper[compiletime.SourceProjectResearch]{
 		ArtifactSchemaVersion: compiletime.CurrentSchemaVersion,
-		Data: SourceProjectResearch{
+		Data: compiletime.SourceProjectResearch{
 			Overview:           extractSection(rawDoc, "## 1. Overview", "## 2. Directory Structure"),
 			DirectoryStructure: extractSection(rawDoc, "## 2. Directory Structure", "## 3. Data Structures"),
 			MigrationStrategy:  strategy,
@@ -186,17 +178,15 @@ func (a *AnalyzerAgent) populateAnalyzerOutput(state *State, rawDoc, strategy, r
 		},
 		RawMarkdown: rawDoc,
 	}
-	state.AnalyzerOutput.Library = DocumentWrapper[ThirdPartyLibraryAnalysis]{
-		ArtifactSchemaVersion: compiletime.CurrentSchemaVersion,
-		Data: ThirdPartyLibraryAnalysis{
-			Libraries: []LibraryMapping{},
+	state.AnalyzerOutput.Library = compiletime.DocumentWrapper[compiletime.ThirdPartyLibraryAnalysis]{
+		Data: compiletime.ThirdPartyLibraryAnalysis{
+			Libraries: []compiletime.LibraryMapping{},
 		},
 		RawMarkdown: extractSection(rawDoc, "=== SECTION: LIBRARY_ANALYSIS ===", "=== SECTION: TARGET_DESIGN ==="),
 	}
 
-	state.AnalyzerOutput.Design = DocumentWrapper[TargetProjectDesign]{
-		ArtifactSchemaVersion: compiletime.CurrentSchemaVersion,
-		Data: TargetProjectDesign{
+	state.AnalyzerOutput.Design = compiletime.DocumentWrapper[compiletime.TargetProjectDesign]{
+		Data: compiletime.TargetProjectDesign{
 			Overview: extractSection(rawDoc, "## Target Architecture", "## Module Decomposition"),
 		},
 		RawMarkdown: extractSection(rawDoc, "=== SECTION: TARGET_DESIGN ===", ""),

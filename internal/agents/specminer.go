@@ -18,23 +18,16 @@ import (
 	"MAgHARCM/internal/logger"
 )
 
+// Type aliases (cycle-free Locality of Behaviour).
+// Producer files declare the algorithms; canonical artifact types
+// live in internal/compiletime/state.go. Aliases let method receivers
+// reference the type name without package qualification.
+type SpecMinerInvariants = compiletime.SpecMinerInvariants
+
 // specminerTimeout caps each per-input binary invocation so a runaway
 // target or sanitizer loop cannot wedge the recovery loop.
 const specminerTimeout = 30 * time.Second
 
-// Invariants is the merged corpus of dynamic invariants recovered from
-// running sourceBinary against each entry of inputs. It is the value
-// object returned by SpecMiner.Recover.
-type Invariants struct {
-	AllocSizes         []int
-	PointerNullability map[string]bool
-	AliasingPairs      [][2]string
-	LifetimeRanges     map[string][2]int
-	BranchCoverage     map[string]float64
-}
-
-// SpecMinerInvariants represents the dynamic invariants recovered by SpecMiner.
-type SpecMinerInvariants = compiletime.SpecMinerInvariants
 
 // SpecMiner recovers likely program invariants by exercising a source
 // binary with a corpus of inputs and observing execution traces. The
@@ -136,3 +129,4 @@ func (s *SpecMiner) Recover(ctx context.Context, sourceBinary string, inputs []s
 	return out, nil
 }
 
+type Invariants = compiletime.SpecMinerInvariants

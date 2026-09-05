@@ -31,7 +31,7 @@ The paper's central claim is that *mutation testing is the strongest available f
 1. [[PRIM-13]] (Adversarial Test-Weakening Guard, `internal/agents/validator.go::verifyNoTestWeakening`): the mutation-score drop detection is the operational realization of the paper's anti-weakening corollary. The primitive generates a representative sample of mutants from the translated code, measures the mutation score before and after the translation, and flags any drop as a weakening. This is the adversarial test-quality gate the paper's empirical claim motivates.
 2. [[PRIM-5]] (Test Suite Co-Translation & Synthesis): mutation testing is the evaluation oracle for the synthesized test suite. A test suite with low mutation score is incomplete; the synthesizer must keep generating tests until mutation score stabilizes.
 3. [[PRIM-27]] (Coverage-Guided Plateau Detection, `internal/agents/plateau.go`): the plateau detection is a coverage-driven heuristic that complements mutation-score drop detection. Coverage plateau + mutation-score plateau together indicate that the synthesized test suite has converged.
-4. [[P-25]] (AdvTestGen-2024): AdvTestGen is a contemporary mutation-guided test-generation framework; [[P-48]] provides the academic anchor for the mutation-testing methodology it instantiates.
+4. [[P-25]]: AdvTestGen is a contemporary mutation-guided test-generation framework; [[P-48]] provides the academic anchor for the mutation-testing methodology it instantiates.
 
 ## Hop-1 References
 

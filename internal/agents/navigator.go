@@ -151,7 +151,6 @@ func ProjectDirOrDot(filePath string) string {
 	}
 	dir := filepath.Dir(filePath)
 	if dir == "" {
-		return compiletime.DefaultProjectDir
 	}
 	return dir
 }
@@ -191,7 +190,7 @@ const maxNavigatorLookups = 50
 // (resolved information is logged but not yet folded back into the
 // planning output). When no Navigator or no Provider is configured the
 // state is forwarded unchanged so the rest of the pipeline is unaffected.
-func (n *NavigatorAgent) Run(ctx context.Context, state *State) (*State, error) {
+func (n *NavigatorAgent) Run(ctx context.Context, state *compiletime.State) (*compiletime.State, error) {
 	if state == nil {
 		return nil, nil
 	}

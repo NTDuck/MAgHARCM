@@ -1,7 +1,5 @@
 package agents
 
-// Backlink: [[Methodology]] §1 Stage 3 and [[Primitives]] §NEW-PRIM-01, §NEW-PRIM-02, §NEW-PRIM-03.
-
 import (
 	"context"
 	"encoding/json"
@@ -19,6 +17,14 @@ import (
 	"MAgHARCM/internal/tools"
 )
 
+// Type aliases (cycle-free Locality of Behaviour).
+// Producer files declare the algorithms; canonical artifact types
+// live in internal/compiletime/state.go. Aliases let method receivers
+// reference the type name without package qualification.
+type ImplementationPlan = compiletime.ImplementationPlan
+type PlanStep = compiletime.PlanStep
+type PlanningOutput = compiletime.PlanningOutput
+
 // PlanningAgent extracts translation units, maps symbols to target conventions, generates project skeletons, and devises execution plans.
 type PlanningAgent struct {
 	Model model.BaseChatModel
@@ -29,17 +35,10 @@ func NewPlanningAgent(m model.BaseChatModel) *PlanningAgent {
 	return &PlanningAgent{Model: m}
 }
 
-// PlanStep represents a single step in Part A or Part B of the implementation plan.
-type PlanStep = compiletime.PlanStep
-
-// ImplementationPlan organizes code translation and test verification steps into ordered phases.
-type ImplementationPlan = compiletime.ImplementationPlan
-
-// PlanningOutput captures AST fragments, symbol mappings, generated skeletons, and translation steps.
-type PlanningOutput = compiletime.PlanningOutput
-
-// Run executes the planning phase and populates PlanningOutput in state.
-func (p *PlanningAgent) Run(ctx context.Context, state *State) (*State, error) {
+// compiletime.PlanStep represents a single step in Part A or Part B of the
+// implementation plan. Producer: PlanningAgent (this file).
+// Run executes the planning phase and populates compiletime.PlanningOutput in state.
+func (p *PlanningAgent) Run(ctx context.Context, state *compiletime.State) (*compiletime.State, error) {
 	logger.LogAgent("Planning", "Decomposing translation into granular translation units and constructing plan")
 	state.PlanningOutput.ArtifactSchemaVersion = compiletime.CurrentSchemaVersion
 
@@ -145,7 +144,7 @@ func (p *PlanningAgent) extractFragments(sourceDir string) ([]string, []string, 
 }
 
 // generatePlanningArtifacts queries the reasoning model for name mapping, skeleton, and implementation plan.
-func (p *PlanningAgent) generatePlanningArtifacts(ctx context.Context, state *State, sourceSummaries []string) (string, error) {
+func (p *PlanningAgent) generatePlanningArtifacts(ctx context.Context, state *compiletime.State, sourceSummaries []string) (string, error) {
 	prompt, err := renderPromptTemplate("planning", planningPromptTemplate, map[string]any{
 		"SourceLang":   state.Task.SourceLang,
 		"TargetLang":   state.Task.TargetLang,
@@ -177,7 +176,7 @@ func (p *PlanningAgent) parseNameMapping(rawContent string) map[string]string {
 }
 
 // resolveSkeletonFiles extracts skeleton files or synthesizes default boilerplate for the target language.
-func (p *PlanningAgent) resolveSkeletonFiles(rawContent string, state *State, fragments []string) map[string]string {
+func (p *PlanningAgent) resolveSkeletonFiles(rawContent string, state *compiletime.State, fragments []string) map[string]string {
 	skeletonFiles := parseFileBlocks(rawContent, "=== SKELETON_FILES ===")
 	if len(skeletonFiles) == 0 {
 		logger.LogWarning("Planning LLM did not emit explicit skeleton files; generating fallback skeleton for `%s`", state.Task.TargetLang)
@@ -208,17 +207,17 @@ func (p *PlanningAgent) writeSkeletonFiles(targetDir string, skeletonFiles map[s
 
 // parseImplementationPlan parses the implementation plan sections into structured steps
 // and schedules them in reverse topological order (NEW-PRIM-1, NEW-PRIM-2 / GAP-02).
-func (p *PlanningAgent) parseImplementationPlan(rawContent string, fragments []string) ImplementationPlan {
+func (p *PlanningAgent) parseImplementationPlan(rawContent string, fragments []string) compiletime.ImplementationPlan {
 	planStr := extractBlock(rawContent, "=== IMPLEMENTATION_PLAN ===", "")
 	if planStr == "" {
 		planStr = rawContent
 	}
 
 	orderedFrags := ComputeReverseTopoOrder(fragments, nil)
-	var partASteps []PlanStep
+	var partASteps []compiletime.PlanStep
 	if len(orderedFrags) > 0 {
 		for i, frag := range orderedFrags {
-			partASteps = append(partASteps, PlanStep{
+			partASteps = append(partASteps, compiletime.PlanStep{
 				ID:              fmt.Sprintf("A%d", i+1),
 				Description:     fmt.Sprintf("Translate module fragment: %s", frag),
 				Type:            "source",
@@ -227,16 +226,16 @@ func (p *PlanningAgent) parseImplementationPlan(rawContent string, fragments []s
 			})
 		}
 	} else {
-		partASteps = []PlanStep{
+		partASteps = []compiletime.PlanStep{
 			{ID: "A1", Description: "Translate all source modules to target language", Type: "source", ReverseTopoRank: 1},
 		}
 	}
 
-	return ImplementationPlan{
+	return compiletime.ImplementationPlan{
 		ArtifactSchemaVersion: compiletime.CurrentSchemaVersion,
 		Overview:              extractSection(planStr, "## Overview", "## Part A"),
 		PartA:                 partASteps,
-		PartB: []PlanStep{
+		PartB: []compiletime.PlanStep{
 			{ID: "B1", Description: "Translate and execute test suite", Type: "test", ReverseTopoRank: len(partASteps) + 1},
 		},
 		RawPlan: planStr,
