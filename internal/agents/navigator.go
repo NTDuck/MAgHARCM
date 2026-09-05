@@ -147,7 +147,7 @@ func RefCount(refs *tools.ReferencesOutput) int {
 // projectDirOrDot returns the directory containing filePath, or "." if filePath is empty.
 func ProjectDirOrDot(filePath string) string {
 	if filePath == "" {
-		return compiletime.DefaultProjectDir
+		return compiletime.ProjectDirPlaceholder
 	}
 	dir := filepath.Dir(filePath)
 	if dir == "" {

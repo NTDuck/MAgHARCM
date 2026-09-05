@@ -69,10 +69,10 @@ const DefaultRequestFile = "magharcm-request.yml"
 // analyzer and planner agree on the same traversal radius.
 const DefaultSourceTreeDepth = 15
 
-// DefaultTranslatedPackage is the fallback Rust crate / Go module / Python
+// TranslatedPackagePlaceholder is the fallback Rust crate / Go module / Python
 // package name used by the translator when neither the target directory nor
 // its parent yields a usable sanitised identifier.
-const DefaultTranslatedPackage = "translated_project"
+const TranslatedPackagePlaceholder = "translated_project"
 
 // LegacySourceSampleDescriptor is the placeholder source-side prompt fed
 // to the verdict panel when role-flip / consensus review asks about the
@@ -202,9 +202,9 @@ var ErrRoleFlipGateNotConfigured = errors.New("roleflip: Model is nil")
 // Navigator / Iterative Retrieval (PRIM-26 / PRIM-31)
 // -------------------------------------------------------------------------
 
-// DefaultProjectDir is the fallback project root used when an empty path is
+// ProjectDirPlaceholder is the fallback project root used when an empty path is
 // supplied to a Navigator lookup.
-const DefaultProjectDir = "."
+const ProjectDirPlaceholder = "."
 
 // ErrNavigatorNoProvider is the sentinel returned when the Navigator is
 // invoked without a configured LSPProvider.
@@ -306,9 +306,9 @@ const (
 // clustering identifiers into concepts. Shorter tokens are skipped.
 const ConceptTokenMinLength = 4
 
-// ConceptDescriptionDefault is the fallback description used when a
+// ConceptDescriptionPlaceholder is the fallback description used when a
 // concept binding has no caller-provided description.
-const ConceptDescriptionDefault = "(no description)"
+const ConceptDescriptionPlaceholder = "(no description)"
 
 // ConceptKeywordCluster binds a human-readable concept label to the list of
 // substring keywords that, when found in an identifier (case-insensitive),

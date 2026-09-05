@@ -77,7 +77,7 @@ func (c *ConceptAssigner) AssignConcepts(ctx context.Context, fileContents map[s
 		}
 		report.Concepts = append(report.Concepts, ConceptBinding{
 			Concept:     concept,
-			Description: compiletime.ConceptDescriptionDefault,
+			Description: compiletime.ConceptDescriptionPlaceholder,
 			Locations:   deduped,
 		})
 	}

@@ -154,7 +154,7 @@ func resolvePackageName(targetDir, targetLang string) string {
 		}
 	}
 	if packageName == "" {
-		packageName = compiletime.DefaultTranslatedPackage
+		packageName = compiletime.TranslatedPackagePlaceholder
 	}
 	return packageName
 }

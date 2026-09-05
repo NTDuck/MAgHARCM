@@ -39,7 +39,7 @@ func Dir(runID string) string {
 // source directory always lands on the same checkpoint directory.
 func RunIDForSourceDir(sourceDir string) string {
 	src := filepath.Clean(sourceDir)
-	if src == "" || src == compiletime.DefaultProjectDir {
+	if src == "" || src == compiletime.ProjectDirPlaceholder {
 		return compiletime.DefaultRunID
 	}
 	return pathSepReplacer.Replace(src)

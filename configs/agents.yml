@@ -13,3 +13,10 @@ agent_timeouts:
   coding_timeout: 120s
   # Upper bound on coverage-remediation iterations before plateau exit.
   max_iterations: 3
+
+# AST / LSP provider for agent-side code navigation. Agents MUST go
+# through abcoder MCP; the compile-time `native` constant exists only
+# as the offline structural-parser fallback for source-language feature
+# extraction in internal/languages/.
+lsp:
+  provider: abcoder-mcp

@@ -11,6 +11,12 @@ import (
 	tree_sitter "github.com/tree-sitter/go-tree-sitter"
 )
 
+// Scope boundary (Sprint-2026-09-19, MED-1): tree-sitter is the OFFLINE
+// structural-parser used here ONLY for source-language feature extraction
+// (function/struct/import boundaries into the Canonical Code IR). It is
+// NOT the AST provider for agent-side code navigation — that goes
+// through abcoder MCP via compiletime.LSPProviderABCoder (default).
+
 // CodeElement represents a structural code item extracted into Canonical Code IR.
 type CodeElement struct {
 	Kind      string `json:"kind"` // "function", "struct", "class", "interface", "trait", "type", "enum", "macro", "impl"
