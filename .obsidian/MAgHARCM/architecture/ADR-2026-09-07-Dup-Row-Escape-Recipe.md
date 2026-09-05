@@ -67,8 +67,8 @@ Row B: PRIM-M | P-XX | Hop-2 = ... | Evidence: "P-XX interface-stability finding
 
 | Row | Cell content | Legitimate? |
 | :--- | :--- | :--- |
-| `PRIM-3` row 129 | Primary: `P-42`. Hop-2: `Baldwin & Clark (2000) Design Rules`. Evidence: "DSM-based refactoring strategy (cycle → freeze interface → extract submodule) operationalises skeleton-first synthesis." | ✅ |
-| `PRIM-19` row 145 | Primary: `P-42`. Hop-2: `Baldwin & Clark (2000) Modularity, P-41 2024 retrospective`. Evidence: "DSM cycles map directly to design-rule partition boundaries; P-41 confirms in 2024 retrospective." | ✅ |
+| `PRIM-3` row 129 | Primary: `P-42`. Hop-2: `Baldwin & Clark ([[1.0.0 P-34 baldwin-clark-2000]]) Design Rules`. Evidence: "DSM-based refactoring strategy (cycle → freeze interface → extract submodule) operationalises skeleton-first synthesis." | ✅ |
+| `PRIM-19` row 145 | Primary: `P-42`. Hop-2: `Baldwin & Clark ([[1.0.0 P-34 baldwin-clark-2000]]) Modularity, P-41 2024 retrospective`. Evidence: "DSM cycles map directly to design-rule partition boundaries; P-41 confirms in 2024 retrospective." | ✅ |
 
 Q1: Hop-2 cells DIFFER (`Design Rules` vs `Modularity + P-41`). → KEEP both.
 

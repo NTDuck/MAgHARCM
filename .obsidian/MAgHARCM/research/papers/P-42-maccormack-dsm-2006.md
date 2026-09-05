@@ -50,6 +50,6 @@ The paper closes with a DSM-based refactoring strategy: identify high-cycle comp
 
 ## Backlinks
 
-- [[METHODOLOGY]] §PRIM-3 — MacCormack (2006) DSM is the empirical anchor for the skeleton-first synthesis order.
+- [[METHODOLOGY]] §PRIM-3 — [[1.0.0 P-42 maccormack-dsm-2006]] MacCormack DSM is the empirical anchor for the skeleton-first synthesis order.
 - [[primitives/INDEX]] — [[1.0.0 PRIM-3]] status entry now references [[P-42]] alongside [[Baldwin-Clark-2000]] and [[ReCodeAgent]].
 - [[Software-Archaeology-Lineage]] §4 — DSM cycle detection is one of the offline recovery techniques that PRIM-19's partition consumes.

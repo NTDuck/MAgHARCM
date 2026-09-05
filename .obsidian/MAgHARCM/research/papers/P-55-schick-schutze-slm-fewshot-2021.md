@@ -35,7 +35,7 @@ A direct rebuttal to the "scaling-hypothesis" orthodoxy following GPT-3 [[Brown-
 - Devlin et al. (2019) — BERT (the cloze-pattern origin; BERT's `[MASK]` token is the cloze primitive).
 - Vaswani et al. (2017) — Attention Is All You Need (transformer architecture).
 - Liu et al. (2019) — RoBERTa (a stronger cloze-trained baseline that PET improves on).
-- Howard & Ruder (2018) — ULMFiT (foundational transfer-learning recipe for small LMs).
+- [[NEEDS-LINK Howard-Ruder-2018]] — ULMFiT (foundational transfer-learning recipe for small LMs).
 - Radford et al. (2019) — Language Models are Unsupervised Multitask Learners (GPT-2; few-shot baseline).
 - Sanh et al. (2019) — DistilBERT (compression-from-large-LM recipe referenced as alternative to PET).
 - Houlsby et al. (2019) — Parameter-Efficient Transfer Learning with Adapters (referenced as a parameter-efficient alternative).
@@ -49,7 +49,7 @@ A direct rebuttal to the "scaling-hypothesis" orthodoxy following GPT-3 [[Brown-
 - Kaplan et al. (2020) — Scaling Laws for Neural Language Models (the scaling hypothesis that PET challenges; cited by GPT-3).
 - Raffel et al. (2020) — T5 / Exploring the Limits of Transfer Learning (text-to-text unification; referenced by MT-DNN).
 - Clark et al. (2020) — ELECTRA (replaced-token-detection pretraining; cited by RoBERTa).
-- Kingma & Ba (2015) — Adam (optimizer; cited by ULMFiT).
+- [[NEEDS-LINK Kingma-Ba-2015]] — Adam (optimizer; cited by ULMFiT).
 - Hochreiter & Schmidhuber (1997) — LSTM (the recurrent baseline that ULMFiT predates).
 - Wolf et al. (2020) — Transformers library (referenced by PET's open-source release).
 - Liu et al. (2024) — Lost in the Middle [[P-53]] in MAgHARCM lineage (cited by BERT-lineage papers as evidence for structured-input benefits).

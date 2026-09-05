@@ -77,7 +77,7 @@ func (p *PlanningAgent) Run(ctx context.Context, state *compiletime.State) (*com
 // drops 100+ files on Java corpora where most files are XML/Markdown/properties.
 func (p *PlanningAgent) extractFragments(sourceDir string) ([]string, []string, error) {
 	logger.LogStep("Extracting translation units across source and test files")
-	_, files, err := tools.BuildDirectoryTree(sourceDir, 15)
+	_, files, err := tools.BuildDirectoryTree(sourceDir, compiletime.DefaultSourceTreeDepth)
 	if err != nil {
 		return nil, nil, err
 	}

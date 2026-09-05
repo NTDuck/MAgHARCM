@@ -67,7 +67,7 @@ The `.obsidian/MAgHARCM/research/papers/` catalog now encompasses:
   - `[[1.0.0 P-31]]` Parnas (1972) Information Hiding & Modular Decomposition
   - `[[1.0.0 P-32]]` Lehman (1980) Laws of Software Evolution (E-Type Systems)
   - `[[1.0.0 P-33]]` Chikofsky & Cross (1990) Reverse Engineering Taxonomy
-  - `[[1.0.0 P-34]]` Baldwin & Clark (2000) Design Rules & Modular Operators
+  - `[[1.0.0 P-34 baldwin-clark-2000]]` Baldwin & Clark Design Rules & Modular Operators
   - `[[1.0.0 P-35]]` Müller et al. (2000) Reverse Engineering Roadmap & Five Migration Strategies
   - `[[1.0.0 P-36]]` pp-besm (2023) Software Archaeology Playbook & Five Geological Strata
   - `[[1.0.0 P-37]]` AgentPatterns.ai (2024) Legacy Code Archaeology for Autonomous Systems

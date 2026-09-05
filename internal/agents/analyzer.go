@@ -100,7 +100,7 @@ func (a *AnalyzerAgent) Run(ctx context.Context, state *compiletime.State) (*com
 // discoverSourceFiles scans the source directory hierarchy.
 func (a *AnalyzerAgent) discoverSourceFiles(sourceDir string) (string, []string, error) {
 	logger.LogStep("Scanning directory hierarchy via `get_directory_tree`")
-	treeStr, files, err := tools.BuildDirectoryTree(sourceDir, 15)
+	treeStr, files, err := tools.BuildDirectoryTree(sourceDir, compiletime.DefaultSourceTreeDepth)
 	if err != nil {
 		return "", nil, fmt.Errorf("failed to build directory tree: %w", err)
 	}

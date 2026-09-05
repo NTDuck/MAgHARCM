@@ -8,13 +8,13 @@ tags: [paper, design-rules, modular-architecture, [[1.0.0 PRIM-19]], hop-1]
 
 **Authors**: Carliss Y. Baldwin (Harvard Business School), Kim B. Clark (Harvard Business School); with retrospective commentary drawing on the 2024 work of Fleming & Baldwin.
 **Year**: 2006 (working paper); 2024 (retrospective synthesis)
-**Venue**: MIT Sloan School Working Paper (2006); retrospective framing via Fleming & Baldwin in current software-archaeology literature (2024).
+**Venue**: MIT Sloan School Working Paper ([[NEEDS-LINK Baldwin-Clark-2006-WorkingPaper]]); retrospective framing via Fleming & Baldwin in current software-archaeology literature ([[NEEDS-LINK Fleming-Baldwin-2024]]).
 **eprint / DOI**: 2006 working paper on SSRN (Baldwin & Clark, "Modularization and the Pace of Innovation", MIT Sloan School WP); 1999/2000 MIT Press book carries DOI 10.7551/mitpress/2366.001.0001 ([[P-34]]); 2016 modular-money paper via Harvard Business School Working Paper series.
 **Cited by**: [[Software-Archaeology-Lineage]] §4, [[PRIM-19]] (Design Rule Hierarchy Partitioning), [[primitives/INDEX]] row 19, [[P-34]], [[P-20]].
 
 ## Summary
 
-Baldwin and Clark (2006) extend the modularity thesis of [[P-34]] by linking **Design Rules** to the empirical **pace of innovation**. The 2000 MIT Press book proved that visible design rules decouple hidden modules so that independent experimentation can proceed in parallel. The 2006 Sloan working paper supplies the quantitative payoff: industries whose products obey a stable, public, and well-defined design-rule set exhibit systematically faster modular innovation cycles than vertically integrated industries. The argument rests on three claims:
+Baldwin and Clark ([[1.0.0 P-41 baldwin-clark-design-rules-deep-2024]]) extend the modularity thesis of [[P-34]] by linking **Design Rules** to the empirical **pace of innovation**. The 2000 MIT Press book proved that visible design rules decouple hidden modules so that independent experimentation can proceed in parallel. The 2006 Sloan working paper supplies the quantitative payoff: industries whose products obey a stable, public, and well-defined design-rule set exhibit systematically faster modular innovation cycles than vertically integrated industries. The argument rests on three claims:
 
 1. *Design-rule stability lowers coordination cost*: A small, public, slow-moving set of visible rules lets many actors design hidden modules without renegotiating the interface every release.
 2. *Modularity raises the option value of experiments*: Each hidden module is a real option; substituting, augmenting, or excluding a module is an exercise of that option with low sunk cost.
@@ -22,7 +22,7 @@ Baldwin and Clark (2006) extend the modularity thesis of [[P-34]] by linking **D
 
 The 2024 retrospective, distilled in Fleming & Baldwin's current writing on modular designs, applies the same design-rule lens to software-archaeology contexts. A legacy codebase is a layered design-rule space whose L1 rules (interfaces, type contracts, build invariants) constrain the L3 leaves. As with physical products, software L1 stability is the precondition for parallel translation work; erosion of L1 rules is the precondition for translation failure.
 
-A second applied strand, Baldwin & Clark (2016) on the origins of money, treats monetary design rules as a modular interface that lets heterogeneous counterparties transact without bilateral negotiation. The same argument applies to internal API surfaces in legacy systems: a stable interface is a transaction medium for independent contributors, and its erosion is a hidden tax on coordination.
+A second applied strand, Baldwin & Clark ([[NEEDS-LINK Baldwin-Clark-2016-Money]]) on the origins of money, treats monetary design rules as a modular interface that lets heterogeneous counterparties transact without bilateral negotiation. The same argument applies to internal API surfaces in legacy systems: a stable interface is a transaction medium for independent contributors, and its erosion is a hidden tax on coordination.
 
 ## Relevance to MAgHARCM
 
@@ -50,6 +50,6 @@ A second applied strand, Baldwin & Clark (2016) on the origins of money, treats 
 
 ## Backlinks
 
-- [[METHODOLOGY]] §PRIM-19 — Baldwin & Clark (2006) plus the 2024 retrospective are the modularity-theory anchor for the Design Rule Hierarchy Partitioning step in the Archaeologist agent's stage.
-- [[primitives/INDEX]] — [[1.0.0 PRIM-19]] status entry names Baldwin & Clark (2000) and Kazman & Cai (2017) as the two-hop modularity lineage.
-- [[Software-Archaeology-Lineage]] §4 — Baldwin & Clark (2006) is the empirical-pace-of-innovation citation that motivates why design-rule partition is a per-run diagnostic, not a one-shot pre-condition.
+- [[METHODOLOGY]] §PRIM-19 — Baldwin & Clark ([[1.0.0 P-41 baldwin-clark-design-rules-deep-2024]]) plus the 2024 retrospective are the modularity-theory anchor for the Design Rule Hierarchy Partitioning step in the Archaeologist agent's stage.
+- [[primitives/INDEX]] — [[1.0.0 PRIM-19]] status entry names Baldwin & Clark ([[1.0.0 P-34 baldwin-clark-2000]]) and Kazman & Cai ([[1.0.0 P-20 p51_kazman_drspaces]]) as the two-hop modularity lineage.
+- [[Software-Archaeology-Lineage]] §4 — Baldwin & Clark ([[1.0.0 P-41 baldwin-clark-design-rules-deep-2024]]) is the empirical-pace-of-innovation citation that motivates why design-rule partition is a per-run diagnostic, not a one-shot pre-condition.

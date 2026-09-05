@@ -133,7 +133,7 @@ func NewMAgHARCMGraph(ctx context.Context, models *llm.Models, runID string) (*M
 				sampleTarget = c
 				break
 			}
-			res, err := verdictPanelAgent.Judge(ctx, "legacy source code", sampleTarget, agents.DefaultPanelSize)
+			res, err := verdictPanelAgent.Judge(ctx, compiletime.LegacySourceSampleDescriptor, sampleTarget, agents.DefaultPanelSize)
 			if err != nil {
 				logger.LogWarning("Verdict panel error: %v", err)
 			} else {
@@ -229,7 +229,7 @@ func NewMAgHARCMGraph(ctx context.Context, models *llm.Models, runID string) (*M
 	// 5. Compile Graph with safety run-step ceiling
 	runnable, err := g.Compile(ctx,
 		compose.WithGraphName("MAgHARCM-8Agent"),
-		compose.WithMaxRunSteps(50),
+		compose.WithMaxRunSteps(compiletime.MaxGraphRunSteps),
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to compile MAgHARCM graph: %w", err)

@@ -64,6 +64,26 @@ const SourceFresh = "fresh"
 // DefaultRequestFile is the canonical YAML request file name.
 const DefaultRequestFile = "magharcm-request.yml"
 
+// DefaultSourceTreeDepth is the maximum directory depth walked by the
+// analyzer/planner BuildDirectoryTree probes. Centralised here so the
+// analyzer and planner agree on the same traversal radius.
+const DefaultSourceTreeDepth = 15
+
+// DefaultTranslatedPackage is the fallback Rust crate / Go module / Python
+// package name used by the translator when neither the target directory nor
+// its parent yields a usable sanitised identifier.
+const DefaultTranslatedPackage = "translated_project"
+
+// LegacySourceSampleDescriptor is the placeholder source-side prompt fed
+// to the verdict panel when role-flip / consensus review asks about the
+// original source artifact (the panel itself inspects the translated output).
+const LegacySourceSampleDescriptor = "legacy source code"
+
+// MaxGraphRunSteps is the per-invocation run-step ceiling Eino imposes on
+// the compiled MAgHARCM graph. Tuned to be safe for the bounded repair
+// loop while still aborting runaway cycles.
+const MaxGraphRunSteps = 50
+
 // -------------------------------------------------------------------------
 // Logger Scopes (PRIM-Pipeline logging)
 // -------------------------------------------------------------------------

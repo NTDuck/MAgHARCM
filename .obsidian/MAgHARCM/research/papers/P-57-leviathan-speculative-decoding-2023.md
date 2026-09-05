@@ -45,7 +45,7 @@ This is **strictly better** than rejection sampling: the expected acceptance rat
 - Raffel et al. (2020) — T5 (the family of models used in translation experiments; T5-XXL is the target, T5-small/base/large are the drafts).
 - Roberts et al. (2022) — T5X / SeqIO (the production T5 implementation that the wallclock baseline uses).
 - Hinton et al. (2015) — Distilling the Knowledge in a Neural Network (foundational draft-from-large-model recipe; referenced as an alternative to speculative decoding).
-- Shazeer (2019) — Fast Transformer Decoding: One Write-Head is All You Need (multi-query attention; related decoding-speedup technique).
+- [[NEEDS-LINK Shazeer-2019-MQA]] — Fast Transformer Decoding: One Write-Head is All You Need (multi-query attention; related decoding-speedup technique).
 - Stern et al. (2018) — Blockwise Parallel Decoding for Deep Autoregressive Models (the precursor parallel-decoding technique).
 - Sun et al. (2021) — Instantaneous Grammatical Error Correction with Shallow Aggressive Decoding (parallel-decoding predecessor).
 
@@ -54,7 +54,7 @@ This is **strictly better** than rejection sampling: the expected acceptance rat
 - Sanh et al. (2019) — DistilBERT (knowledge distillation; cited by Hinton et al. distillation lineage).
 - Jiao et al. (2020) — TinyBERT (further distillation of BERT; cited by knowledge-distillation lineage).
 - Devlin et al. (2019) — BERT (foundational transformer encoder; cited by T5 and DistilBERT).
-- Howard & Ruder (2018) — ULMFiT (transfer-learning recipe; cited by T5).
+- [[NEEDS-LINK Howard-Ruder-2018]] — ULMFiT (transfer-learning recipe; cited by T5).
 - Kaplan et al. (2020) — Scaling Laws for Neural Language Models (the scaling hypothesis that motivates speculative decoding as an alternative to scale-up).
 - Hoffmann et al. (2022) — Chinchilla compute-optimal scaling (referenced by PaLM as the compute-optimal precedent).
 - Liu et al. (2024) — Lost in the Middle [[P-53]] in MAgHARCM lineage (cited as a long-context challenge that speculative decoding helps with).
