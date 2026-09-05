@@ -303,7 +303,7 @@ registry retries the next strategy if the active one fails, before
 falling back to a final always-accept entry. Adding a strategy is a
 one-line append to \texttt{NewDefaultRegistry}.
 This cascading-fallback structure mirrors the migration strategy
-taxonomy proposed for legacy system modernisation~\cite{p60_bisbal_cascading_fallback},
+taxonomy proposed for legacy system modernisation~\cite{p60_bisbal_cascading_fallback,p84_s1_test_time_scaling_2025},
 with the informal wrap/reengineer/replace/migrate coping-strategy framing discussed in Bennett's 1995 editorial~\cite{p75_bennett_legacy_coping_success_1995},
 with the broader research-agenda mapping of grand challenges (concept location,
 impact analysis, comprehension at scale, migration strategies, empirical validation)
@@ -333,7 +333,7 @@ in order; each strategy exposes a predicate and an attempt method.}
 \label{sec:method_qwen25coder_anchor}
 
 MAgHARCM is tuned for the Qwen2.5-Coder family of coding SLMs at the
-7B, 14B, and 32B scales~\cite{p58_hui_qwen25coder_2024}. Bounded
+7B, 14B, and 32B scales~\cite{p58_hui_qwen25coder_2024,p86_xu_modernization_survey_2024_unverified,p88_hityper_peng_2022,p89_phan_baseline_icse_nier_2024_unverified}. Bounded
 fragment context ($\le 4\,\text{KB}$), reverse-topological scheduling,
 and the role-flipped reviewer are calibrated so that the prompt
 window, scratch reasoning budget, and instruction-following fidelity
@@ -341,7 +341,7 @@ of these Qwen2.5-Coder checkpoints can drive the loop without the
 full-thinker overhead of larger general-purpose models. Domain-adapter training
 follows the ULMFiT transfer recipe~\cite{p66_howard_ruder_ulmfit_2018} with Adam
 optimisation~\cite{p67_kingma_ba_adam_2015}; long-context inference relies on
-multi-query attention~\cite{p68_shazeer_mqa_2019,p80_streaming_llm_2024} for tractable KV-cache
+multi-query attention~\cite{p68_shazeer_mqa_2019,p80_streaming_llm_2024,p87_hou_slr_2024} for tractable KV-cache
 footprint.
 
 \subsection{Planning Agent}
@@ -555,7 +555,7 @@ before the code reaches the compiler.
 \subsection{Role-Flip Reviewer Agent}
 \label{sec:method_roleflip}
 
-The Role-Flip Reviewer Agent (PRIM-25~\cite{p46_chatdev_deepread,p69_anthropic_sycophancy_2025_acl,p81_gorilla_2023}) inspects the Translator's
+The Role-Flip Reviewer Agent (PRIM-25~\cite{p46_chatdev_deepread,p69_anthropic_sycophancy_2025_acl,p81_gorilla_2023,p85_function_calling_yue_2025_unverified}) inspects the Translator's
 output with an adversary-prompted second pass: the role-flipped system message
 forces the model to find at least one defect rather than to confirm correctness.
 The reviewer emits a binary accepted/defect verdict and, on defect, a targeted
