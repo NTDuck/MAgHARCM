@@ -60,10 +60,10 @@ The following modules now consume compile-time constants exclusively (no inline 
 Each paper follows the standard schema: frontmatter with `title`, `bibkey`, `tags`; frontmatter block with Authors/Year/Venue/eprint/Cited by; Summary; Relevance to MAgHARCM (cross-refs to PRIM entries); Hop-1 References; Hop-2 Anchors (software-archaeology lean); Backlinks.
 
 ### 3.2. Lineage Matrix Cross-References
-- PRIM-3 row: `Baldwin & Clark ([[1.0.0 P-34 baldwin-clark-2000]]) Design Rules; [[P-42]] DSM ([[1.0.0 P-42 maccormack-dsm-2006]] MacCormack)`
+- PRIM-3 row: `Baldwin & Clark ([[1.0.0 P-34]]) Design Rules; [[P-42]] DSM ([[1.0.0 P-42]] MacCormack)`
 - PRIM-10 row: `Oxidizer-2023, RustRepoTrans; [[P-43]] FODA (Kang 1990)`
 - PRIM-17 row: `CAID-2024; [[P-44]] Corkill (1991)`
-- PRIM-19 row: `Baldwin & Clark ([[1.0.0 P-34 baldwin-clark-2000]]), [[P-41]] 2024 retrospective, [[P-42]] MacCormack ([[1.0.0 P-42 maccormack-dsm-2006]]) DSM`
+- PRIM-19 row: `Baldwin & Clark ([[1.0.0 P-34]]), [[P-41]] 2024 retrospective, [[P-42]] MacCormack ([[1.0.0 P-42]]) DSM`
 - PRIM-24 row: `MetaGPT-2023 SOP Contracts; [[P-45]] Curtis-Kellner-Over (1992)`
 
 ### 3.3. Vault Hygiene

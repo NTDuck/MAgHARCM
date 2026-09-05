@@ -14,7 +14,7 @@ tags: [paper, design-rules, modular-architecture, [[1.0.0 PRIM-19]], hop-1]
 
 ## Summary
 
-Baldwin and Clark ([[1.0.0 P-41 baldwin-clark-design-rules-deep-2024]]) extend the modularity thesis of [[P-34]] by linking **Design Rules** to the empirical **pace of innovation**. The 2000 MIT Press book proved that visible design rules decouple hidden modules so that independent experimentation can proceed in parallel. The 2006 Sloan working paper supplies the quantitative payoff: industries whose products obey a stable, public, and well-defined design-rule set exhibit systematically faster modular innovation cycles than vertically integrated industries. The argument rests on three claims:
+Baldwin and Clark ([[1.0.0 P-41]]) extend the modularity thesis of [[P-34]] by linking **Design Rules** to the empirical **pace of innovation**. The 2000 MIT Press book proved that visible design rules decouple hidden modules so that independent experimentation can proceed in parallel. The 2006 Sloan working paper supplies the quantitative payoff: industries whose products obey a stable, public, and well-defined design-rule set exhibit systematically faster modular innovation cycles than vertically integrated industries. The argument rests on three claims:
 
 1. *Design-rule stability lowers coordination cost*: A small, public, slow-moving set of visible rules lets many actors design hidden modules without renegotiating the interface every release.
 2. *Modularity raises the option value of experiments*: Each hidden module is a real option; substituting, augmenting, or excluding a module is an exercise of that option with low sunk cost.
@@ -50,6 +50,6 @@ A second applied strand, Baldwin & Clark ([[NEEDS-LINK Baldwin-Clark-2016-Money]
 
 ## Backlinks
 
-- [[METHODOLOGY]] §PRIM-19 — Baldwin & Clark ([[1.0.0 P-41 baldwin-clark-design-rules-deep-2024]]) plus the 2024 retrospective are the modularity-theory anchor for the Design Rule Hierarchy Partitioning step in the Archaeologist agent's stage.
-- [[primitives/INDEX]] — [[1.0.0 PRIM-19]] status entry names Baldwin & Clark ([[1.0.0 P-34 baldwin-clark-2000]]) and Kazman & Cai ([[1.0.0 P-20 p51_kazman_drspaces]]) as the two-hop modularity lineage.
-- [[Software-Archaeology-Lineage]] §4 — Baldwin & Clark ([[1.0.0 P-41 baldwin-clark-design-rules-deep-2024]]) is the empirical-pace-of-innovation citation that motivates why design-rule partition is a per-run diagnostic, not a one-shot pre-condition.
+- [[METHODOLOGY]] §PRIM-19 — Baldwin & Clark ([[1.0.0 P-41]]) plus the 2024 retrospective are the modularity-theory anchor for the Design Rule Hierarchy Partitioning step in the Archaeologist agent's stage.
+- [[primitives/INDEX]] — [[1.0.0 PRIM-19]] status entry names Baldwin &amp; Clark ([[1.0.0 P-34]]) and Kazman &amp; Cai ([[1.0.0 P-20]]) as the two-hop modularity lineage.
+- [[Software-Archaeology-Lineage]] §4 — Baldwin & Clark ([[1.0.0 P-41]]) is the empirical-pace-of-innovation citation that motivates why design-rule partition is a per-run diagnostic, not a one-shot pre-condition.

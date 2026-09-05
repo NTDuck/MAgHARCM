@@ -52,6 +52,6 @@ The paper's central claim is that *mutation testing is the strongest available f
 
 ## Backlinks
 
-- [[METHODOLOGY]] §PRIM-13 — [[1.0.0 P-48 jia-harman-mutation-2011]] Jia & Harman is the canonical academic anchor for the Adversarial Test-Weakening Guard; complements [[P-25]] (AdvTestGen) for the modern tool lineage.
+- [[METHODOLOGY]] §PRIM-13 — [[1.0.0 P-48]] Jia & Harman is the canonical academic anchor for the Adversarial Test-Weakening Guard; complements [[P-25]] (AdvTestGen) for the modern tool lineage.
 - [[primitives/INDEX]] — [[1.0.0 PRIM-13]] status entry now references [[P-48]] alongside [[P-25]] (AdvTestGen) and ISSTA mutation-testing lineage.
 - [[Software-Archaeology-Lineage]] §4 — mutation-based adversarial validation is the quality-assurance technique that PRIM-13's no-weakening guard instantiates and that Stage 5 of the modernization cycle consumes.
