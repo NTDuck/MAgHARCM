@@ -64,4 +64,8 @@ All 31 primitives are compiled into the codebase, preserving architectural integ
 - Indexed 31 primitives; all 31 are implemented in `internal/agents/*.go`.
 - Reconciled backlinks to use `[[x.y.z P-NN]]` form (single-versioning convention).
 - Added new anchors P-58..P-65 (Qwen2.5-Coder, Digital Apollo, Bisbal, RedCode, Decomposed Prompting, Multi-Agent Survey, EAGLE, PAL) to relevant primitive rows.
+
+## Sprint 2026-09-12 Vault Sync Audit
+
+- Indexed 6 new anchor papers (P-78 EAGLE-3, P-79 Wilde-Scully Software Reconnaissance, P-80 StreamingLLM, P-81 Gorilla, P-82 Pahins-Stegherr-Steinhauser UNVERIFIED, P-83 code-specialised self-consistency) into relevant primitive rows.
 - PR backlog (low-risk follow-ups): re-tag Yamaguchi (PRIM-9) and Nii (PRIM-17) backlinks once their standalone paper notes are materialised.
