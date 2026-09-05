@@ -147,7 +147,7 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *State) (*State, error) 
 	logger.LogAgent("Validator", "Running build and test validation on target `%s` (Iteration %d/%d)",
 		state.Task.TargetDir, state.Iteration, state.MaxIterations)
 	report := ValidationReport{
-		ArtifactSchemaVersion: CurrentSchemaVersion,
+		ArtifactSchemaVersion: compiletime.CurrentSchemaVersion,
 		IterationStart:        iterStart,
 	}
 

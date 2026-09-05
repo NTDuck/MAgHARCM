@@ -12,6 +12,7 @@ package agents
 import (
 	"context"
 
+	"MAgHARCM/internal/compiletime"
 	"MAgHARCM/internal/logger"
 )
 
@@ -64,34 +65,34 @@ func (r *Recruiter) Recruit(ctx context.Context, profile Profile, lastReport Val
 
 	switch {
 	case !lastReport.CompilationSuccess:
-		logger.LogStep("recruiter: compilation failed → re-run validator")
+		logger.LogStep(compiletime.LogScopeRecruiter+": compilation failed → re-run validator")
 		return RecruitmentPlan{
-			Tools:     []string{"validator", "diagnostics"},
-			Agents:    []string{"validator"},
+			Tools:     []string{compiletime.ToolValidator, compiletime.ToolDiagnostics},
+			Agents:    []string{compiletime.AgentValidator},
 			Rationale: "Compilation failed on the prior pass; re-run the validator to surface concrete errors before any further translation.",
 		}, nil
 
 	case lastReport.PlateauDetected:
-		logger.LogStep("recruiter: plateau detected → recruit_translator_v2")
+		logger.LogStep(compiletime.LogScopeRecruiter + ": plateau detected → recruit_translator_v2")
 		return RecruitmentPlan{
-			Tools:     []string{"chunked_translator", "recruit_translator_v2", "plateau_breaker"},
-			Agents:    []string{"chunked_translator"},
+			Tools:     []string{compiletime.ToolChunkedTranslator, compiletime.AgentRecruitTranslatorV2, compiletime.AgentPlateauBreaker},
+			Agents:    []string{compiletime.ToolChunkedTranslator},
 			Rationale: "Plateau detected; re-run the chunked translator with the recruit_translator_v2 flavour to escape the local optimum.",
 		}, nil
 
 	case lastReport.AdversarialWeakeningDetected:
-		logger.LogStep("recruiter: adversarial weakening → re-run role-flip gate")
+		logger.LogStep(compiletime.LogScopeRecruiter + ": adversarial weakening → re-run role-flip gate")
 		return RecruitmentPlan{
-			Tools:     []string{"roleflip_gate", "adversarial_suite"},
-			Agents:    []string{"roleflip"},
+			Tools:     []string{compiletime.AgentRoleFlip + "_gate", compiletime.AgentAdversarialSuite},
+			Agents:    []string{compiletime.AgentRoleFlip},
 			Rationale: "Adversarial weakening detected; re-run the role-flip gate to collect compensating evidence before resuming translation.",
 		}, nil
 
 	default:
-		logger.LogStep("recruiter: standard pipeline")
+		logger.LogStep(compiletime.LogScopeRecruiter + ": standard pipeline")
 		return RecruitmentPlan{
-			Tools:     []string{"chunked_translator", "validator", "verifier"},
-			Agents:    []string{"chunked_translator", "validator", "verdict_panel"},
+			Tools:     []string{compiletime.ToolChunkedTranslator, compiletime.ToolValidator, "verifier"},
+			Agents:    []string{compiletime.ToolChunkedTranslator, compiletime.ToolValidator, compiletime.AgentVerdictPanel},
 			Rationale: "Standard pipeline: chunked translator followed by validator and verdict panel.",
 		}, nil
 	}

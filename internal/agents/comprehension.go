@@ -1,17 +1,19 @@
 package agents
 
-import (
-	"context"
-	"path/filepath"
-	"sort"
-	"strings"
-)
-
 // Backlink: [[1.0.0 PRIM-22]] Four Phases of Comprehension (Foltz-2023).
 // Applies the DR. JONES cognitive model:
 // Decomposition, Recognition, Organization, Navigation, Explanation, Search.
 // Formulates empirical traversal: linear traversal preferred, recency bias,
 // breadth before depth, and hotspot concentration.
+
+import (
+	"context"
+	"path/filepath"
+	"slices"
+	"strings"
+
+	"MAgHARCM/internal/compiletime"
+)
 
 // DRJonesPhases represents the cognitive steps during code comprehension.
 type DRJonesPhases struct {
@@ -42,19 +44,19 @@ func (c *ComprehensionPipeline) Comprehend(ctx context.Context, files []string, 
 	}
 
 	copy(phases.Decomposition, files)
-	sort.Strings(phases.Decomposition)
+	slices.Sort(phases.Decomposition)
 
 	// Recognition: scan imports and common signatures
 	seenPatterns := make(map[string]bool)
 	for _, content := range fileContents {
 		if strings.Contains(content, "import") || strings.Contains(content, "#include") {
-			if strings.Contains(content, "math") && !seenPatterns["Math/Numerics Library"] {
-				seenPatterns["Math/Numerics Library"] = true
-				phases.Recognition = append(phases.Recognition, "Math/Numerics Library")
+			if strings.Contains(content, "math") && !seenPatterns[compiletime.ComprehensionRecognitionMath] {
+				seenPatterns[compiletime.ComprehensionRecognitionMath] = true
+				phases.Recognition = append(phases.Recognition, compiletime.ComprehensionRecognitionMath)
 			}
-			if strings.Contains(content, "test") && !seenPatterns["Testing Framework"] {
-				seenPatterns["Testing Framework"] = true
-				phases.Recognition = append(phases.Recognition, "Testing Framework")
+			if strings.Contains(content, "test") && !seenPatterns[compiletime.ComprehensionRecognitionTesting] {
+				seenPatterns[compiletime.ComprehensionRecognitionTesting] = true
+				phases.Recognition = append(phases.Recognition, compiletime.ComprehensionRecognitionTesting)
 			}
 		}
 	}
@@ -67,13 +69,13 @@ func (c *ComprehensionPipeline) Comprehend(ctx context.Context, files []string, 
 
 	// Navigation: breadth before depth (linear traversal preferred)
 	copy(phases.Navigation, phases.Decomposition)
-	sort.Slice(phases.Navigation, func(i, j int) bool {
-		depthI := strings.Count(phases.Navigation[i], "/")
-		depthJ := strings.Count(phases.Navigation[j], "/")
-		if depthI != depthJ {
-			return depthI < depthJ
+	slices.SortFunc(phases.Navigation, func(a, b string) int {
+		depthA := strings.Count(a, "/")
+		depthB := strings.Count(b, "/")
+		if depthA != depthB {
+			return depthA - depthB
 		}
-		return phases.Navigation[i] < phases.Navigation[j]
+		return strings.Compare(a, b)
 	})
 
 	// Search anchors: top-level files
@@ -83,7 +85,7 @@ func (c *ComprehensionPipeline) Comprehend(ctx context.Context, files []string, 
 		}
 	}
 
-	phases.Explanation = "Decomposed into structural units with breadth-first linear traversal ordering."
+	phases.Explanation = compiletime.ComprehensionExplanationDefault
 
 	return phases
 }

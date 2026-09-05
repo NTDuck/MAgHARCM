@@ -5,8 +5,6 @@ import (
 )
 
 
-// CurrentSchemaVersion is the schema version stamped on every role artifact.
-const CurrentSchemaVersion = compiletime.CurrentSchemaVersion
 
 // SchemaVersioned is implemented by every artifact that carries a SchemaVersion field.
 type SchemaVersioned interface {

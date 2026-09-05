@@ -61,6 +61,10 @@ func (c *ConceptAssigner) AssignConcepts(ctx context.Context, fileContents map[s
 			}
 		}
 	}
+	report := &ConceptAssignmentReport{
+		Concepts: make([]ConceptBinding, 0, len(conceptLocations)),
+	}
+
 	for concept, locs := range conceptLocations {
 		// Deduplicate locations by FilePath
 		seen := make(map[string]bool)
@@ -73,15 +77,14 @@ func (c *ConceptAssigner) AssignConcepts(ctx context.Context, fileContents map[s
 		}
 		report.Concepts = append(report.Concepts, ConceptBinding{
 			Concept:     concept,
-			Description: "Domain concept located through lexical and structural identifier clustering",
+			Description: compiletime.ConceptDescriptionDefault,
 			Locations:   deduped,
 		})
 	}
 
-	sort.Slice(report.Concepts, func(i, j int) bool {
-		return report.Concepts[i].Concept < report.Concepts[j].Concept
+	slices.SortFunc(report.Concepts, func(a, b ConceptBinding) int {
+		return strings.Compare(a.Concept, b.Concept)
 	})
-
 	return report
 }
 
