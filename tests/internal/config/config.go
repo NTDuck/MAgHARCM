@@ -16,7 +16,7 @@ func TestConfigDefaults(t *testing.T) {
 	} {
 		os.Unsetenv(k)
 	}
-	cfg := config.Defaults()
+	cfg := config.Zero()
 
 	if cfg.OllamaBaseURL != "" {
 		t.Errorf("ollama URL: got %q want empty", cfg.OllamaBaseURL)

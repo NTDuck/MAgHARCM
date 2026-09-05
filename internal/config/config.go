@@ -24,8 +24,8 @@ type Config struct {
 	LSPProvider    string
 }
 
-// Defaults returns a zero-valued *Config for use in tests only. Production
+// Zero returns a zero-valued *Config for use in tests only. Production
 // code MUST obtain *Config via LoadYAML / ParseYAML and then call Require.
-func Defaults() *Config {
+func Zero() *Config {
 	return &Config{}
 }

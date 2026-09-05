@@ -23,6 +23,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
@@ -324,14 +325,14 @@ func SetField(cfg *config.Config, key, val string) error {
 	case "ollama_url", "ollama":
 		cfg.OllamaBaseURL = val
 	case "max_iterations", "iterations":
-		n, err := parsePositiveInt(val)
-		if err != nil {
-			return fmt.Errorf("max_iterations must be a positive integer")
-		}
-		cfg.MaxIterations = n
+	n, err := strconv.Atoi(val)
+	if err != nil || n <= 0 {
+		return fmt.Errorf("max_iterations must be a positive integer")
+	}
+	cfg.MaxIterations = n
 	case "timeout_seconds", "timeout":
-		n, err := parsePositiveInt(val)
-		if err != nil {
+		n, err := strconv.Atoi(val)
+		if err != nil || n <= 0 {
 			return fmt.Errorf("timeout_seconds must be a positive integer")
 		}
 		cfg.Timeout = time.Duration(n) * time.Second
@@ -433,7 +434,7 @@ func HandleSlash(line string, cfg *config.Config, current Phase, state *ReplStat
 		return PhaseCollect, true, nil
 
 	case "/show":
-		logger.LogStep("%s\n%s", dumpYAML(cfg), RenderConfigTable(cfg))
+		logger.LogStep("%s", RenderConfigTable(cfg))
 		return current, true, nil
 
 	case "/save":
@@ -525,22 +526,6 @@ func runPhase2(cfg config.Config) error {
 	return nil
 }
 
-// dumpYAML is a human-readable summary, not the canonical YAML.
-func dumpYAML(cfg *config.Config) string {
-	var b strings.Builder
-	fmt.Fprintf(&b, "source_dir        %s\n", cfg.SourceDir)
-	fmt.Fprintf(&b, "source_language   %s\n", cfg.SourceLang)
-	fmt.Fprintf(&b, "target_dir        %s\n", cfg.TargetDir)
-	fmt.Fprintf(&b, "target_language   %s\n", cfg.TargetLang)
-	fmt.Fprintf(&b, "toolchain         %s\n", cfg.Toolchain)
-	fmt.Fprintf(&b, "reasoning_model   %s\n", cfg.ReasoningModel)
-	fmt.Fprintf(&b, "coding_model      %s\n", cfg.CodingModel)
-	fmt.Fprintf(&b, "ollama_url        %s\n", cfg.OllamaBaseURL)
-	fmt.Fprintf(&b, "max_iterations    %d\n", cfg.MaxIterations)
-	fmt.Fprintf(&b, "timeout_seconds   %d\n", int(cfg.Timeout.Seconds()))
-	fmt.Fprintf(&b, "lsp_provider      %s\n", cfg.LSPProvider)
-	return b.String()
-}
 
 // RenderConfigTable formats the in-memory configuration as an idiomatic Charm table.
 func RenderConfigTable(cfg *config.Config) string {
@@ -599,20 +584,6 @@ func samplesList() string {
 	return strings.Join(matches, "\n")
 }
 
-// parsePositiveInt parses a positive int string.
-func parsePositiveInt(s string) (int, error) {
-	n := 0
-	for _, c := range s {
-		if c < '0' || c > '9' {
-			return 0, fmt.Errorf("not an integer: %q", s)
-		}
-		n = n*10 + int(c-'0')
-	}
-	if n <= 0 {
-		return 0, fmt.Errorf("not positive: %q", s)
-	}
-	return n, nil
-}
 
 const Phase1Help = `Phase 1 fields (type a value, or hit enter to accept the default):
   source_dir       directory that holds the source code

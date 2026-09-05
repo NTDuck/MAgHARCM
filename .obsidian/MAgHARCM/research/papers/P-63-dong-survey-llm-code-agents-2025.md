@@ -19,7 +19,7 @@ The Dong et al. 2025 survey is the methodologically-oriented sibling to [[1.0.0 
 3. **Self-negotiation circular.** Multiple agents iteratively critique each other's output until convergence. Example: Self-Refine (Saunders et al. 2022), Role-Flip (MAgHARCM's reviewer).
 4. **Self-evolving.** Agents modify their own workflow based on observed outcomes. Example: AgentVerse (Chen et al. 2023, [[1.0.0 PRIM-29]] anchor).
 
-The survey also maps every canonical role (programmer, reviewer, tester, architect, project manager, QA-checker) onto the workflow families and notes that **multi-agent workflows outperform single-agent workflows** on repository-scale tasks because (a) context budget is partitioned per role, (b) intermediate artifacts are inspectable, and (c) the blackboard-style shared state ([1.0.0 PRIM-17]] MAgHARCM's `compiletime.State`) provides a writable, readable, scalable global context space.
+The survey also maps every canonical role (programmer, reviewer, tester, architect, project manager, QA-checker) onto the workflow families and notes that **multi-agent workflows outperform single-agent workflows** on repository-scale tasks because (a) context budget is partitioned per role, (b) intermediate artifacts are inspectable, and (c) the blackboard-style shared state ([[1.0.0 PRIM-17]] MAgHARCM's `compiletime.State`) provides a writable, readable, scalable global context space.
 
 ## Findings Relevant to MAgHARCM
 

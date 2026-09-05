@@ -1,6 +1,6 @@
 ---
 title: Primitives Index
-backlink: "[[2.0.0 Primitives]]"
+backlink: "[[2.0.0 Primitives Index]]"
 tags: [primitives, catalog, status, [[1.0.0 PRIM-1]]..[[1.0.0 PRIM-31]]]
 ---
 

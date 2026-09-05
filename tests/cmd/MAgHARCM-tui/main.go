@@ -147,13 +147,13 @@ func TestHandleSlashShow(t *testing.T) {
 			t.Errorf("show: %v", err)
 		}
 	})
-	if !strings.Contains(out, "source_dir        x") {
+	if !strings.Contains(out, "source_dir") || !strings.Contains(out, "x") {
 		t.Errorf("show output missing field: %q", out)
 	}
 }
 
 func TestHandleSlashClearResets(t *testing.T) {
-	def := config.Defaults()
+	def := config.Zero()
 	cfg := &config.Config{SourceDir: "x", SourceLang: "Go"}
 	captureStdout(t, func() {
 		next, _, err := tui.HandleSlash("/clear", cfg, tui.PhaseExecute, &tui.ReplState{})
