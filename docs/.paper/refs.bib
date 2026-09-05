@@ -1195,3 +1195,54 @@
   eprint    = {2308.12950},
   note      = {Meta AI / FAIR, Aug 2023 (v3 31 Jan 2024); 7B/13B/34B code-specialised Llama 2 variants; 100K-token context via RoPE scaling; CodeLlama-34B-Instruct at 48.8\% HumanEval at release; licensed under Llama 2 Community License; the Meta-side code-SLM baseline for MAgHARCM's evaluation fleet.}
 }
+@article{p96_kojima_zsr_2022,
+  title     = {{Large Language Models are Zero-Shot Reasoners}},
+  author    = {Kojima, Takeshi and Gu, Shixiang Shane and Reid, Machel and Matsuo, Yutaka and Iwasawa, Yusuke},
+  journal   = {arXiv preprint arXiv:2205.11916},
+  year      = {2022},
+  eprint    = {2205.11916},
+  note      = {The University of Tokyo, Tohoku University, Google Research; NeurIPS 2022 (arXiv v1 24 May 2022, v2 25 Jan 2023 with appendix); demonstrates that appending "Let's think step by step." to a zero-shot prompt elicits chain-of-thought reasoning on Instruct-GPT3 / PaLM 540B without any worked exemplars — the zero-shot counterpart of P-90; introduces the two-stage generate-then-extract ("Therefore, the answer is") pattern; scale-dependent (sub-30B gains are small/unreliable); composes cleanly with P-52 self-consistency. The SLM-era cheap-CoT anchor for MAgHARCM's PRIM-22 / PRIM-23 deployment budget on >=30B SLMs.}
+@inproceedings{p97_welleck_self_correct_2024,
+  title     = {{Generating Sequences by Learning to Self-Correct}},
+  author    = {Welleck, Sean and Lu, Ximing and Raffel, Marc},
+  booktitle = {Proceedings of the 41st International Conference on Machine Learning (ICML 2024)},
+  year      = {2024},
+  eprint    = {2211.00053},
+  note      = {Carnegie Mellon University; trains the base LLM itself to iteratively refine its own outputs via a self-correction fine-tuning objective (paired edit data), in contrast to inference-time verifier-guided search (PRM/ORM best-of-N); demonstrates that learned self-correction can match or exceed a verifier-search baseline on code and translation while removing the cost of running a separate verifier at every decode step; the SLM-era cheap self-correction anchor for MAgHARCM.}
+}
+
+@article{p100_khot_decomposed_2022,
+  title     = {Decomposed Prompting: A Modular Approach for Solving Complex Tasks},
+  author    = {Khot, Tushar and Trivedi, Harsh and Finlayson, Matthew and Fu, Yao and Richardson, Kyle and Clark, Peter and Sabharwal, Ashish},
+  journal   = {arXiv preprint arXiv:2210.02406},
+  year      = {2022},
+  eprint    = {2210.02406},
+  note      = {Allen Institute for AI (AI2) and University of Washington; ICLR 2023 (arXiv v1 5 Oct 2022); the SLM multi-agent re-anchor of this paper (cf. p62\_decomposed\_prompting) framing DP as the theoretical proof that SLM multi-agent systems are decomposed-prompting deployments: one short typed prompt per agent module, typed I/O between agents, deterministic orchestrator routing typed artifacts. Anchors MAgHARCM's PRIM-22 four-phase comprehension specialist-module layout and PRIM-24 SOP-anchored role-artifact typed-IO schema; replaces in-prompt CoT (P-90) for SLM-era budget reasons.}
+}
+
+@article{p98_brown_llm_monkeys_2024,
+  title     = {{Large Language Monkeys}: Scaling Inference Compute with Repeated Sampling},
+  author    = {Brown, Bradley and Juravsky, Jordan and Ehrlich, Ryan and Clark, Ronald and Rezende LeQuesne, Quoc and Mohan, Anshula and Pappu, Alicia},
+  journal   = {arXiv preprint arXiv:2407.21787},
+  year      = {2024},
+  eprint    = {2407.21787},
+  note      = {Stanford University; shows that repeated sampling + a verifier competes with scaling the base model on code and coding-adjacent tasks at matched inference FLOPs; accuracy rises roughly logarithmically in the number of samples N, concentrated on middle-difficulty tasks; verifier (not sampler) drives the gains — unit-test, embedding-similarity, and learned reward-model verifiers are compared; the 7B-class SLM shows the largest sampling headroom. The repeated-sampling + verifier anchor for MAgHARCM's PRIM-7 verdict panel and PRIM-21 sampling-budget routing.}
+}
+
+@inproceedings{p99_suzgun_bigbench_cot_2022,
+  title     = {{Challenging BIG-Bench Tasks and Whether Chain-of-Thought Can Solve Them}},
+  author    = {Suzgun, Mirac and Scales, Nathan and Sch{\"a}rli, Nicolas and Gehrmann, Sebastian and Tay, Yi and Chung, Hyung Won and Chen, Qi and Gao, Jianfeng and Han, Barret and Hart, Jonathan and Hashimoto, Tatsunori and Johnson, Rebecca and Madaan, Aman and Mishra, Prabhakar and Raghunathan, Adithya and Rockt{\"a}schel, Tim and van den Driessche, George and Welbl, Johannes and Wieting, Craig and Wei, Jason and Wu, Yonghui and Yasunaga, Michihiro and Zhou, Denny},
+  booktitle = {Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (ACL 2023), Volume 1: Long Papers},
+  year      = {2023},
+  eprint    = {2210.09261},
+  note      = {Stanford / Google Research / Brown University / T{\"u}bingen / Cohere AI; defines BIG-Bench Hard (BBH), a curated subset of 23 tasks from the 204-task BIG-Bench benchmark that defeated LLMs under standard prompting but were solvable by most humans; demonstrates that per-task chain-of-thought prompting closes the human-vs-model gap on 17 of 23 tasks for PaLM 540B and code-davinci-002; catalogues a still-hard sub-class (tracking shuffled objects, Dyck languages, formal deduction, multi-step arithmetic) where CoT helps but does not close the gap; self-consistency ablation (N=21) composes cleanly with BBH per-task exemplars. The SLM-era reasoning-envelope anchor for MAgHARCM's PRIM-22 / PRIM-23 routing and PRIM-7 verdict-panel regression corpus.}
+}
+
+@inproceedings{p101_zhou_l2m_2023,
+  title     = {{Least-to-Most Prompting Enables Complex Reasoning in Large Language Models}},
+  author    = {Zhou, Denny and Schuurmans, Dale and Li, Xuechen and Chi, Ed H. and Wang, S. Z. and Zhou, Denny},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2023},
+  eprint    = {2205.10625},
+  note      = {Google Research / UC Berkeley / UNC; introduces the two-stage sequential-decomposition prompt: (1) emit ordered subproblem list, (2) solve each subproblem conditioned on all prior subproblem answers (chained-answer propagation); on GPT-3 code-davinci-002 it lifts SCAN compositional-split accuracy from ~16\% (standard prompting) to ~99.7\% and GSM8K from ~49.5\% (CoT) to ~62.4\%; strict generalization of P-90 CoT in the single-subproblem degenerate case; distinct from P-62 Decomposed Prompting (independent modular prompts) in that answers are prefix-conditioned, not sampled independently; the SLM-era chained-decomposition anchor for MAgHARCM's PRIM-1 reverse-topological planner and PRIM-23 chunked translation.}
+}
