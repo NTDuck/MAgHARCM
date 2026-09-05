@@ -2,7 +2,7 @@
 title: MAgHARCM Methodology
 backlink: "[[2.0.0 Methodology]]"
 tags: [methodology, architecture, pipeline, "[[2.0.0 MAgHARCM]]", "[[1.0.0 PRIM-31]]", slm]
-last_updated: 2026-09-19
+last_updated: 2026-09-20
 ---
 
 # [[2.0.0 MAgHARCM Methodology]]
@@ -172,6 +172,7 @@ Wave 9 anchors (verified):
 ## 9. Last Updated
 
 - **2026-09-19** — Sprint 2026-09-19: Ponytail inline sweep (HIGH-1..HIGH-2, MED-1) — canonical configs/agents.yml now lists `lsp.provider: abcoder-mcp`; 3 *Default* constants renamed to *Placeholder to align with the no-fallback rule; tree-sitter boundary comment added at internal/languages/extractor.go:14. Primitive-completeness scout verified 31/31 INDEX rows map to implementation files; 8-agent graph wired; zero fmt.Print*/log.Print*/raw panic/os.Stdout in production code; 120 fmt.Sprintf/Fprintf are string construction (not I/O). Wave-11 candidates identified (EAGLE-3, GraphCoder, MemoryBank-E, TinyRM, SWE-bench Verified 2025) but not fired: no new SLM-era mechanism requires anchoring.
+- **2026-09-20** — Sprint 2026-09-20: Audit-only sprint — no code or vault edits required. Re-verified all 12 directive items still satisfied at `8807b5b` (no fmt.Print*, abcoder-mcp default, 8-agent graph, try-and-fail strategy registry, state.go centralised, Charm TUI, binary compilation status, Must pattern, clear unit boundaries, no hard-coded magic values, STE100 messaging, locality of behaviour). Wave-11 continued deferral: 5 candidates already triaged, none introduce a new SLM-era mechanism that requires an anchor. All gates green (`go build`, `go vet`, `go test ./...`). Single changelog commit closes the sprint.
 - **2026-09-18** — Sprint 2026-09-18: Wave-10 SLM-era anchors (P-102..P-107) persisted; 5 verified new (P-102 SmallCode, P-103 AgentModernize arXiv 2026, P-104 S*, P-105 ChunkKV, P-106 BFCL) + 1 re-anchor slot (P-107 → P-100). Added Wave-10 SLM-era anchors table (10 rows) + Wave-10 anchors list + Wave-9 anchors list. Corrected P-103 venue (arXiv:2605.17535, NOT ICSE 2025). All 7 directive items already verified compliant at 0c1aed5 (no fmt.Print*, abcoder-mcp default, 8-agent graph, try-and-fail strategy registry, state.go centralised, Charm TUI, binary compilation status).
 - **2026-09-17** — Sprint 2026-09-17: Ste100 messaging sweep verified clean (zero marketing jargon in user-facing messages; hedge-language only in code comments describing intent). Externalities audit verified comprehensive (yaml.v3, charm stack, abcoder-mcp, container/ring, filepath, env, flag, json). ADR-V-001 sweep reverted initial over-aggressive sed sweep; prose parentheticals `(PRIM-NN)` / `(P-NN)` retained as standard academic-writing convention. No version-slot drift detected. P-06 re-verified absent (closest analog: RepoTransBench = P-09). All gates green.
 - **2026-09-16** — Sprint 2026-09-16: Ponytail inline audit + ADR-C-014 locality documentation strengthened via producer-file backlink headers. Dead Charm `errorStyle` removed from `internal/tui/tui.go`. Wave-10 deferred: wave-9 (P-96..P-101) saturated the reasoning-anchors set; next wave launches when new SLM-era mechanisms require anchors. Method entry-point unchanged from Sprint 2026-09-15.

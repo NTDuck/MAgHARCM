@@ -87,4 +87,9 @@ All 31 primitives are compiled into the codebase, preserving architectural integ
 - Try-and-fail strategy registry confirmed; SelectMigrationStrategy replaced by Registry.TryInOrder.
 - Renamed 3 *Default* constants to *Placeholder to align naming with no-fallback rule: TranslatedPackagePlaceholder, ProjectDirPlaceholder, ConceptDescriptionPlaceholder.
 - configs/agents.yml now lists `lsp.provider: abcoder-mcp` as canonical example (abcoder MCP default surfaced in docs).
-- Wave-11 deferred: 5 candidates identified (EAGLE-3, GraphCoder/CodeGraphRAG, MemoryBank-E, TinyRM, SWE-bench Verified 2025) but no new SLM-era mechanism requires an anchor yet.
+## Sprint 2026-09-20 Vault Sync Audit
+
+- Audit-only sprint: re-grep vault + re-audit codebase. Zero parens-style version mismatches, zero HIGH/MED findings.
+- All 31 primitives still map to implementation files in `internal/agents/` (35 files = 31 impl + 4 test files + 0 orphan).
+- 8-agent graph still wired; Charm TUI idioms still intact; abcoder-mcp default still in `configs/agents.yml`.
+- Wave-11 continued deferral: 5 candidates (EAGLE-3, GraphCoder, MemoryBank-E, TinyRM, SWE-bench Verified 2025) — none introduce a new SLM-era mechanism that requires anchoring.
