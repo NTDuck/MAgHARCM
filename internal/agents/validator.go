@@ -91,7 +91,7 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *compiletime.State) (*co
 	defer v.checkpoint(state)
 	state.Iteration++
 	iterStart := time.Now()
-	logger.LogAgent("Validator", "Running build and test validation on target `%s` (Iteration %d/%d)",
+	logger.LogAgent("Validator", "Running build and test validation on target `%s`, iteration %d of %d",
 		state.Task.TargetDir, state.Iteration, state.MaxIterations)
 	report := compiletime.ValidationReport{
 		ArtifactSchemaVersion: compiletime.CurrentSchemaVersion,
@@ -171,10 +171,10 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *compiletime.State) (*co
 	}
 	report.IterationWallMs = time.Since(iterStart).Milliseconds()
 	state.ValidationReport = report
-	logger.LogStep("ITER[%d] comp=%v tests=%d/%d (%.1f%%) wall=%dms per-file=%d",
+	logger.LogStep("ITER[%d] comp=%v tests=%d/%d pass-rate=%.1f%% wall=%dms per-file=%d",
 		state.Iteration, report.CompilationSuccess, report.PassedTests, report.TotalTests, report.TestPassRate,
 		report.IterationWallMs, len(report.PerFile))
-	logger.LogStep("ITER[%d] real_tests=%d min=%d (vacuous=%v)", state.Iteration, report.RealTests, report.MinRealTests, report.RealTests == 0)
+	logger.LogStep("ITER[%d] real_tests=%d min=%d vacuous=%t", state.Iteration, report.RealTests, report.MinRealTests, report.RealTests == 0)
 	return state, nil
 }
 
@@ -384,7 +384,7 @@ func (v *ValidatorAgent) generateAdditionalTests(ctx context.Context, state *com
 				testPath := filepath.Join(state.Task.TargetDir, relPath)
 				_ = os.WriteFile(testPath, []byte(cleaned), 0644)
 				state.TranslatedProject.Files[relPath] = cleaned
-				logger.LogTool("write_file", "Updated tests in `%s` (%d bytes)", relPath, len(cleaned))
+				logger.LogTool("write_file", "Updated tests in `%s`, %d bytes", relPath, len(cleaned))
 			}
 		}
 	}
@@ -538,7 +538,7 @@ func (v *ValidatorAgent) runOptionalChecks(ctx context.Context, state *compileti
 			Verdict: verdict,
 			Detail:  detail,
 		})
-		logger.LogStep("OptionalCheck %s -> %s (%s)", check.Name(), verdict, truncateForLog(detail, 120))
+		logger.LogStep("OptionalCheck %s -> %s; %s", check.Name(), verdict, truncateForLog(detail, 120))
 	}
 	return results
 }

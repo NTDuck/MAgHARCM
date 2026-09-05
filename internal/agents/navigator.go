@@ -120,7 +120,7 @@ func (n *Navigator) LookupSymbol(ctx context.Context, symbol, filePath string) S
 		res.Hover = hover
 	}
 
-	logger.LogTool("navigator", "SymbolResolution(%q): defined=%v refs=%d hover=%v",
+	logger.LogTool("navigator", "SymbolResolution name=%q defined=%v refs=%d hover=%v",
 		symbol, res.Definition != nil, RefCount(res.References), res.Hover != nil)
 	return res
 }
@@ -195,7 +195,7 @@ func (n *NavigatorAgent) Run(ctx context.Context, state *compiletime.State) (*co
 		return nil, nil
 	}
 	if n == nil || n.Navigator == nil || n.Navigator.Provider == nil {
-		logger.LogStep("navigator: disabled (no provider); forwarding state unchanged")
+		logger.LogStep("navigator: disabled, no provider; forwarding state unchanged")
 		return state, nil
 	}
 
@@ -210,7 +210,7 @@ func (n *NavigatorAgent) Run(ctx context.Context, state *compiletime.State) (*co
 		return state, nil
 	}
 
-	logger.LogStep("navigator: resolving %d symbol(s) (capped at %d)",
+	logger.LogStep("navigator: resolving %d symbols, capped at %d",
 		len(state.PlanningOutput.NameMapping), maxNavigatorLookups)
 
 	// Default file path: derived from the task source dir. The LSP provider

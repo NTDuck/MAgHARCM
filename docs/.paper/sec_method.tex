@@ -48,6 +48,8 @@ agents analyse $P_s$ and generate a dependency-aware implementation
 plan; the Translator, RoleFlipReviewer, Validator, VerdictPanel, and
 Recruiter agents execute an iterative translate--review--validate--
 verdict--recruit--repair loop to produce $P_t$.
+The pipeline design follows the broader multi-agent orchestration pattern
+surveyed by~\cite{p63_multi_agent_survey}.
 
 The \emph{Analyzer Agent} performs extensive analysis of $P_s$. It walks
 the source tree through MCP tools and produces a report that
@@ -246,6 +248,9 @@ Kazman~\cite{p51_kazman_drspaces}. It produces an
     \item \emph{Design Rule Hierarchy Partitioning}: categorizes elements into L1 design-rule interfaces, L2 subsystems, and L3 concrete leaves, flagging modularity violations where L1 interfaces depend on L3 leaves (PRIM-19).
     \item \emph{Concept Assignment \& Redocumentation}: clusters lexical tokens into domain concept bindings mapped to physical file paths (PRIM-20).
 \end{enumerate}
+The archaeology pass is informed by long-running engineering case
+studies of mission-critical software evolution, such as the Digital
+Apollo account~\cite{p59_digital_apollo_case}.
 
 \subsection{Analyzer Agent}
 \label{sec:method_analyzer}
@@ -288,6 +293,9 @@ repository profile. Strategies are listed in try-and-fail order: the
 registry retries the next strategy if the active one fails, before
 falling back to a final always-accept entry. Adding a strategy is a
 one-line append to \texttt{NewDefaultRegistry}.
+This cascading-fallback structure mirrors the migration strategy
+taxonomy proposed for legacy system
+modernisation~\cite{p60_bisbal_cascading_fallback}.
 
 \begin{table}[!t]
 \centering
@@ -308,6 +316,17 @@ one-line append to \texttt{NewDefaultRegistry}.
 in order; each strategy exposes a predicate and an attempt method.}
 \label{tab:strategies}
 \end{table}
+
+\subsection{Qwen2.5-Coder SLM Anchor (PRIM-22, PRIM-23, PRIM-31)}
+\label{sec:method_qwen25coder_anchor}
+
+MAgHARCM is tuned for the Qwen2.5-Coder family of coding SLMs at the
+7B, 14B, and 32B scales~\cite{p58_hui_qwen25coder_2024}. Bounded
+fragment context ($\le 4\,\text{KB}$), reverse-topological scheduling,
+and the role-flipped reviewer are calibrated so that the prompt
+window, scratch reasoning budget, and instruction-following fidelity
+of these Qwen2.5-Coder checkpoints can drive the loop without the
+full-thinker overhead of larger general-purpose models.
 
 \subsection{Planning Agent}
 \label{sec:method_planning}
@@ -416,6 +435,11 @@ $F_s$ and $T_s$ into $F_t$ and $T_t$ while preserving functional
 equivalence. When the Validator reports failures, the Translator enters
 repair mode and applies targeted fixes based on the validation report.
 The Translator operates in four modes.
+The four-mode structure follows a decomposed prompting
+style~\cite{p62_decomposed_prompting}, and the Translator may offload
+arithmetic and symbolic computation to a program-aided code-execution
+pass~\cite{p65_gao_pal_2022} when a fragment requires deterministic
+evaluation.
 
 \paragraph{(1) Context Integration.}
 The agent loads the Implementation Plan, the Target Project Design
@@ -532,6 +556,11 @@ When validation fails during iterative repair, the Verdict Panel Agent
 to evaluate functional equivalence between source and target fragments
 (PRIM-7~\cite{p08_matchfixagent}). The consensus decision (agreement
 status and structured disagreements) guides subsequent repair iterations.
+Vulnerability-aware fragments additionally cross-reference the
+RedCode benchmark~\cite{p61_redcode}, and latency-sensitive
+consensus rounds may delegate token-level decoding to a
+speculative-decoding helper following the EAGLE line of
+work~\cite{p64_eagle}.
 
 \subsection{Recruiter Agent}
 \label{sec:method_recruiter}

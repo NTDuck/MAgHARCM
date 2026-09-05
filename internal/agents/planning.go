@@ -200,7 +200,7 @@ func (p *PlanningAgent) writeSkeletonFiles(targetDir string, skeletonFiles map[s
 		if err := os.WriteFile(fullPath, []byte(content), 0644); err != nil {
 			return fmt.Errorf("failed to write skeleton file %s: %w", fullPath, err)
 		}
-		logger.LogTool("write_file", "Wrote skeleton to `%s` (%d bytes)", relPath, len(content))
+		logger.LogTool("write_file", "Wrote skeleton to `%s`, %d bytes", relPath, len(content))
 	}
 	return nil
 }

@@ -175,14 +175,14 @@ func (t *TranslatorAgent) RunChunked(ctx context.Context, state *compiletime.Sta
 	bases := make([]string, 0, len(grouped))
 	for base := range grouped {
 		if _, ok := idx.content[base]; !ok {
-			logger.LogWarning("Skipping group for unknown source file %q (%d fragments)", base, len(grouped[base]))
+		logger.LogWarning("Skipping group for unknown source file %q with %d fragments", base, len(grouped[base]))
 			continue
 		}
 		bases = append(bases, base)
 	}
 	sort.Strings(bases)
 
-	logger.LogStep("Chunked translation: %d fragments across %d source file(s), package=%s", len(fragments), len(bases), packageName)
+	logger.LogStep("Chunked translation: %d fragments across %d source files, package=%s", len(fragments), len(bases), packageName)
 
 	for i, base := range bases {
 		fileFrags := grouped[base]
@@ -201,7 +201,7 @@ func (t *TranslatorAgent) RunChunked(ctx context.Context, state *compiletime.Sta
 			}
 			srcBlock := sb.String()
 			priorSummary := buildPriorModulesSummary(state.TranslatedProject.Files)
-			logger.LogStep("Chunked translation: source %d/%d %s (sub %d/%d, %d fragment(s))", i+1, len(bases), base, scIdx+1, len(subChunks), len(subFrags))
+			logger.LogStep("Chunked translation: source %d/%d %s; sub-chunk %d/%d, %d fragments", i+1, len(bases), base, scIdx+1, len(subChunks), len(subFrags))
 			emitted, err := t.translateFragment(ctx, state, packageName, srcBlock, priorSummary)
 			if err != nil {
 				return nil, fmt.Errorf("chunked translation failed for source file %q sub-chunk %d: %w", base, scIdx, err)

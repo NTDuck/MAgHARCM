@@ -87,7 +87,7 @@ func (t *ImplAgnosticTester) RunIOTests(ctx context.Context, targetBinary string
 		if !outputsEqual(stdout, v.ExpectedOutputs) || exitCode != v.ExpectedExitCode {
 			res.FailCount++
 			res.Failures = append(res.Failures, v.Name)
-			logger.LogValidation("impl_agnostic: vector %q failed (exit=%d want=%d)", v.Name, exitCode, v.ExpectedExitCode)
+			logger.LogValidation("impl_agnostic: vector %q failed: exit=%d want=%d", v.Name, exitCode, v.ExpectedExitCode)
 			continue
 		}
 

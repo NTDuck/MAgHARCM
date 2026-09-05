@@ -49,7 +49,7 @@ func NewAnalyzerAgent(m model.BaseChatModel) *AnalyzerAgent {
 
 // Run executes the 3-phase analysis workflow and returns updated state.
 func (a *AnalyzerAgent) Run(ctx context.Context, state *compiletime.State) (*compiletime.State, error) {
-	logger.LogAgent("Analyzer", "Starting source project analysis: `%s` (`%s` -> `%s`)",
+	logger.LogAgent("Analyzer", "Starting source project analysis: source=%s srcLang=%s tgtLang=%s",
 		state.Task.SourceDir, state.Task.SourceLang, state.Task.TargetLang)
 
 	treeStr, files, err := a.discoverSourceFiles(state.Task.SourceDir)
@@ -92,7 +92,7 @@ func (a *AnalyzerAgent) Run(ctx context.Context, state *compiletime.State) (*com
 		return nil, err
 	}
 	a.populateAnalyzerOutput(state, rawDoc, string(kind), rationale)
-	logger.LogAgent("Analyzer", "Analysis complete: strategy=%s (%s), Research, Library Analysis, and Target Design generated",
+	logger.LogAgent("Analyzer", "Analysis complete: strategy=%s rationale=%s; Research, Library Analysis, and Target Design generated",
 		kind, rationale)
 	return state, nil
 }

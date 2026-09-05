@@ -95,7 +95,7 @@ func (m *FeatureMapper) Map(ctx context.Context, sourceLang, sourceFeat string) 
 			continue
 		}
 		if strings.ToLower(parts[0]) == lang && strings.ToLower(parts[1]) == feat {
-			logger.LogStep("feature_mapper: matched %s:%s -> %s (%s, conf=%.2f)",
+			logger.LogStep("feature_mapper: matched %s:%s -> %s kind=%s conf=%.2f",
 				lang, feat, mp.Target, mp.Kind, mp.Confidence)
 			return mp, nil
 		}
@@ -149,7 +149,7 @@ func (m *FeatureMapper) Validate(ctx context.Context, sourceSym, targetSym strin
 		}, nil
 	}
 	if srcKind != tgtKind {
-		logger.LogWarning("feature_mapper: kind mismatch source=%s(%s) target=%s(%s)",
+		logger.LogWarning("feature_mapper: kind mismatch source=%s kind=%s target=%s kind=%s",
 			sourceSym, srcKind, targetSym, tgtKind)
 		return ValidationResult{
 			Match: false,

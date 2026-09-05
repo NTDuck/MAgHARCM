@@ -42,7 +42,7 @@ func Run(ctx context.Context, cfg *config.Config) (*compiletime.State, error) {
 		LSPProvider: cfg.LSPProvider,
 	}
 
-	logger.LogStep("Run: source=%s (%s) -> target=%s (%s) toolchain=%s",
+	logger.LogStep("Run: source=%s srcLang=%s target=%s tgtLang=%s toolchain=%s",
 		task.SourceDir, task.SourceLang, task.TargetDir, task.TargetLang, task.Toolchain)
 
 	runID := checkpoint.RunIDForSourceDir(task.SourceDir)
@@ -76,7 +76,7 @@ func Run(ctx context.Context, cfg *config.Config) (*compiletime.State, error) {
 		return nil, fmt.Errorf("initialize Ollama models: %w", err)
 	}
 
-	logger.LogStep("Build 8-agent Eino Graph (Archaeologist, Analyzer, Planner, Translator, Reviewer, Validator, VerdictPanel, Recruiter)")
+	logger.LogStep("Build 8-agent Eino Graph: Archaeologist, Analyzer, Planner, Translator, Reviewer, Validator, VerdictPanel, Recruiter")
 	magharcmGraph, err := graph.NewMAgHARCMGraph(ctx, models, runID)
 	if err != nil {
 		return nil, fmt.Errorf("construct graph: %w", err)
@@ -106,7 +106,7 @@ func Run(ctx context.Context, cfg *config.Config) (*compiletime.State, error) {
 			AdversarialWeakeningDetected: false,
 		}
 		if plan, err := recruiter.Recruit(ctx, agents.Profile{}, summary); err == nil {
-			logger.LogAgent("Recruiter", "Plan for next iteration: %s (tools: %v, agents: %v)",
+			logger.LogAgent("Recruiter", "Plan for next iteration: %s tools=%v agents=%v",
 				plan.Rationale, plan.Tools, plan.Agents)
 		}
 	}

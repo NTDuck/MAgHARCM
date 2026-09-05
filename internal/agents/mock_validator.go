@@ -165,7 +165,7 @@ func (mv *MockValidator) ValidateInIsolation(ctx context.Context, module string,
 	if report.Passed {
 		logger.LogValidation("mock validator: module %q passed isolation against %d stubs", module, len(report.MocksGenerated))
 	} else {
-		logger.LogWarning("mock validator: module %q failed isolation (%d errors)", module, len(report.Errors))
+		logger.LogWarning("mock validator: module %q failed isolation, %d errors", module, len(report.Errors))
 	}
 
 	return report, nil

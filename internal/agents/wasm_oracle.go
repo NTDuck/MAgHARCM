@@ -81,7 +81,7 @@ func (o *WasmOracle) Compare(ctx context.Context, sourceWasmPath, targetBinaryPa
 		}
 	}
 	result.Agree = len(result.Mismatches) == 0
-	logger.LogValidation("wasm oracle: %d input(s), %d mismatch(es), agree=%t", len(inputs), len(result.Mismatches), result.Agree)
+	logger.LogValidation("wasm oracle: inputs=%d mismatches=%d agree=%t", len(inputs), len(result.Mismatches), result.Agree)
 	return result, nil
 }
 

@@ -54,7 +54,7 @@ func (t *TranslatorAgent) Run(ctx context.Context, state *compiletime.State) (*c
 	}
 
 	if state.Iteration > 0 && !state.ValidationReport.IsAllSuccess() {
-		logger.LogAgent("Translator", "Repair Mode (Iteration %d/%d): Diagnosing validation errors and fixing code",
+		logger.LogAgent("Translator", "Repair Mode iteration %d of %d: Diagnosing validation errors and fixing code",
 			state.Iteration, state.MaxIterations)
 		return t.repair(ctx, state)
 	}
@@ -67,7 +67,7 @@ func (t *TranslatorAgent) Run(ctx context.Context, state *compiletime.State) (*c
 		return state, nil
 	}
 
-	logger.LogAgent("Translator", "Initial Translation Mode: Implementing Part A (Source) and Part B (Tests)")
+	logger.LogAgent("Translator", "Initial Translation Mode: Implementing Part A Source and Part B Tests")
 	return t.translate(ctx, state)
 }
 
@@ -248,7 +248,7 @@ func (t *TranslatorAgent) syncFilesToDisk(targetDir string, files map[string]str
 			return fmt.Errorf("failed to write translated file %s: %w", fullPath, err)
 		}
 		state.TranslatedProject.Files[relPath] = clean
-		logger.LogTool("write_file", "Wrote `%s` to `%s` (%d bytes)", relPath, targetDir, len(content))
+		logger.LogTool("write_file", "Wrote `%s` to `%s`, %d bytes", relPath, targetDir, len(content))
 	}
 	return nil
 }

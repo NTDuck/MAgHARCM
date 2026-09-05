@@ -103,7 +103,7 @@ func (in *IterativeNavigator) Lookup(ctx context.Context, symbol string) (Iterat
 	}
 
 	if body, ok := in.indexedBody(symbol); ok {
-		logger.LogStep("iter_retrieval: hit %q from index (%d bytes)", symbol, len(body))
+		logger.LogStep("iter_retrieval: hit %q from index, %d bytes", symbol, len(body))
 		return IterativeResolution{
 			Symbol:    symbol,
 			Body:      body,

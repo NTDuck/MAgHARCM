@@ -185,7 +185,7 @@ func aggregateVerdict(opinions []JudgeOpinion) Verdict {
 		}
 	}
 
-	logger.LogValidation("verdict panel: %d/%d equivalent votes (majority=%d, agree=%t)",
+	logger.LogValidation("verdict panel: %d/%d equivalent votes, majority=%d agree=%t",
 		equivalentCount, len(opinions), majority, agree)
 
 	return Verdict{

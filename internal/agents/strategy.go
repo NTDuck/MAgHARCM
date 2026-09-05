@@ -63,13 +63,13 @@ func (r *Registry) TryInOrder(ctx context.Context, p Profile) (StrategyKind, err
 			continue
 		}
 		if err := s.Attempt(ctx, p); err != nil {
-			logger.LogAgent(compiletime.LogScopeAnalyzer, "Strategy %s declined for profile (files=%d, loc=%d, tests=%v): %v",
-				s.Kind(), p.FileCount, p.LoC, p.HasTests, err)
+		logger.LogAgent(compiletime.LogScopeAnalyzer, "Strategy %s declined for profile: files=%d loc=%d tests=%v err=%v",
+			s.Kind(), p.FileCount, p.LoC, p.HasTests, err)
 			continue
 		}
 		return s.Kind(), nil
 	}
-	return "", fmt.Errorf("no migration strategy matched profile (files=%d, loc=%d, tests=%v)",
+	return "", fmt.Errorf("no migration strategy matched profile: files=%d loc=%d tests=%v",
 		p.FileCount, p.LoC, p.HasTests)
 }
 

@@ -163,7 +163,7 @@ func NewMAgHARCMGraph(ctx context.Context, models *llm.Models, runID string) (*M
 			}
 			plan, err := recruiterAgent.Recruit(ctx, agents.Profile{}, summary)
 			if err == nil {
-				logger.LogAgent("Recruiter", "Adaptive plan for repair: %s (tools: %v)", plan.Rationale, plan.Tools)
+				logger.LogAgent("Recruiter", "Adaptive plan for repair: %s tools=%v", plan.Rationale, plan.Tools)
 			}
 		}
 		return state, nil
@@ -205,7 +205,7 @@ func NewMAgHARCMGraph(ctx context.Context, models *llm.Models, runID string) (*M
 					state.IsComplete, state.ValidationReport.IsAllSuccess(), state.Iteration, state.MaxIterations)
 				return compose.END, nil
 			}
-			logger.LogStep("Validation incomplete; routing to verdict panel and recruiter for repair (iteration %d/%d)",
+			logger.LogStep("Validation incomplete; routing to verdict panel and recruiter for repair, iteration %d of %d",
 				state.Iteration, state.MaxIterations)
 			return "verdict_panel", nil
 		},
