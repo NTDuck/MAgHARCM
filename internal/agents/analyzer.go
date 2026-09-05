@@ -25,64 +25,23 @@ type AnalyzerAgent struct {
 	SpecMiner            *SpecMiner
 	AnalyzerSpecMinerConfig AnalyzerSpecMinerConfig
 }
-
 // DocumentWrapper keeps both structured data and markdown representation.
-type DocumentWrapper[T any] struct {
-	ArtifactSchemaVersion string `json:"schema_version"`
-	Data                  T      `json:"data"`
-	RawMarkdown           string `json:"raw_markdown"`
-}
-
-func (d DocumentWrapper[T]) SchemaVersion() string { return d.ArtifactSchemaVersion }
+type DocumentWrapper[T any] = compiletime.DocumentWrapper[T]
 
 // SourceProjectResearch represents the research document produced by AnalyzerAgent.
-type SourceProjectResearch struct {
-	Overview           string   `json:"overview"`
-	DirectoryStructure string   `json:"directory_structure"`
-	StructsInterfaces  string   `json:"structs_and_interfaces"`
-	DataModels         string   `json:"data_models"`
-	ErrorHandling      string   `json:"error_handling"`
-	Dependencies       []string `json:"dependencies"`
-	MigrationStrategy  string   `json:"migration_strategy,omitempty"`
-	StrategyRationale  string   `json:"strategy_rationale,omitempty"`
-	RawDocument        string   `json:"raw_document"`
-}
+type SourceProjectResearch = compiletime.SourceProjectResearch
 
 // ThirdPartyLibraryAnalysis represents the library analysis document produced by AnalyzerAgent.
-type ThirdPartyLibraryAnalysis struct {
-	Libraries   []LibraryMapping `json:"libraries"`
-	RawDocument string           `json:"raw_document"`
-}
+type ThirdPartyLibraryAnalysis = compiletime.ThirdPartyLibraryAnalysis
 
 // LibraryMapping details how a source library maps to a target library.
-type LibraryMapping struct {
-	SourceLibrary   string `json:"source_library"`
-	TargetLibrary   string `json:"target_library"`
-	Overview        string `json:"overview"`
-	Usage           string `json:"usage"`
-	Recommendations string `json:"recommendations"`
-}
+type LibraryMapping = compiletime.LibraryMapping
 
 // TargetProjectDesign represents the design document produced by AnalyzerAgent.
-type TargetProjectDesign struct {
-	Overview                string   `json:"overview"`
-	TranslationRequirements string   `json:"translation_requirements"`
-	SourceFilesToTranslate  []string `json:"source_files_to_translate"`
-	ModuleStructure         string   `json:"module_structure"`
-	ErrorHandling           string   `json:"error_handling"`
-	ThirdPartyLibraries     []string `json:"third_party_libraries"`
-	RawDocument             string   `json:"raw_document"`
-}
+type TargetProjectDesign = compiletime.TargetProjectDesign
 
 // AnalyzerOutput aggregates research, library mapping, and architectural design documents.
-type AnalyzerOutput struct {
-	ArtifactSchemaVersion string                                     `json:"schema_version"`
-	Research              DocumentWrapper[SourceProjectResearch]     `json:"research"`
-	Library               DocumentWrapper[ThirdPartyLibraryAnalysis] `json:"library"`
-	Design                DocumentWrapper[TargetProjectDesign]       `json:"design"`
-}
-
-func (a AnalyzerOutput) SchemaVersion() string { return a.ArtifactSchemaVersion }
+type AnalyzerOutput = compiletime.AnalyzerOutput
 
 // AnalyzerSpecMinerConfig captures the inputs SpecMiner needs at analyzer
 // time. SourceBinary is the compiled source artifact path; Inputs are the

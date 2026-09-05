@@ -20,75 +20,13 @@ import (
 )
 
 // FileStatus records the build/test outcome of an individual file.
-type FileStatus struct {
-	Path      string `json:"path"`
-	Kind      string `json:"kind"` // "source" or "test"
-	Compiles  bool   `json:"compiles"`
-	TestPass  bool   `json:"test_pass"`
-	LineCount int    `json:"line_count"`
-	Error     string `json:"error,omitempty"`
-}
+type FileStatus = compiletime.FileStatus
 
 // OptionalCheckResult is the persisted shape of an auxiliary validator primitive outcome.
-type OptionalCheckResult struct {
-	Name    string `json:"name"`
-	Verdict string `json:"verdict"`
-	Detail  string `json:"detail,omitempty"`
-}
+type OptionalCheckResult = compiletime.OptionalCheckResult
 
 // ValidationReport is the structured report produced by the validator agent.
-type ValidationReport struct {
-	ArtifactSchemaVersion        string                `json:"schema_version"`
-	AllSuccess                   bool                  `json:"all_success"`
-	CompilationSuccess           bool                  `json:"compilation_success"`
-	TestPassRate                 float64               `json:"test_pass_rate"`
-	TotalTests                   int                   `json:"total_tests"`
-	PassedTests                  int                   `json:"passed_tests"`
-	FailedTests                  int                   `json:"failed_tests"`
-	RealTests                    int                   `json:"real_tests"`
-	MinRealTests                 int                   `json:"min_real_tests"`
-	CompilationErrors            []string              `json:"compilation_errors"`
-	TestFailures                 []string              `json:"test_failures"`
-	UncoveredFunctions           []string              `json:"uncovered_functions"`
-	CoverageGapReport            string                `json:"coverage_gap_report"`
-	Diagnostics                  string                `json:"diagnostics"`
-	PerFile                      []FileStatus          `json:"per_file"`
-	IterationStart               time.Time             `json:"iteration_start,omitempty"`
-	IterationWallMs              int64                 `json:"iteration_wall_ms,omitempty"`
-	RemedyIterations             int                   `json:"remedy_iterations,omitempty"`
-	PlateauDetected              bool                  `json:"plateau_detected,omitempty"`
-	AdversarialWeakeningDetected bool                  `json:"adversarial_weakening_detected,omitempty"`
-	WeakeningReasons             []string              `json:"weakening_reasons,omitempty"`
-	ASTSyntaxErrors              []string              `json:"ast_syntax_errors,omitempty"`
-	OptionalCheckResults         []OptionalCheckResult `json:"optional_check_results,omitempty"`
-}
-
-func (v ValidationReport) SchemaVersion() string { return v.ArtifactSchemaVersion }
-
-func (v ValidationReport) IsAllSuccess() bool {
-	return v.AllSuccess && v.CompilationSuccess && v.FailedTests == 0 && len(v.CompilationErrors) == 0 &&
-		(!v.AdversarialWeakeningDetected) &&
-		(v.TotalTests == 0 || v.PassedTests > 0) &&
-		v.RealTests >= v.MinRealTests
-}
-
-// CompilationStatus returns the binary per-project compilation status (PASS or FAIL).
-func (v ValidationReport) CompilationStatus() compiletime.CompilationStatus {
-	if v.CompilationSuccess {
-		return compiletime.CompilationStatusPass
-	}
-	return compiletime.CompilationStatusFail
-}
-
-func (v ValidationReport) String() string {
-	if v.IsAllSuccess() {
-		return fmt.Sprintf("Validation SUCCESS: compilation=%s, passed=%d/%d (%.1f%%), real_tests=%d (min=%d)",
-			v.CompilationStatus(), v.PassedTests, v.TotalTests, v.TestPassRate, v.RealTests, v.MinRealTests)
-	}
-	return fmt.Sprintf("Validation INCOMPLETE: compilation=%s, passed=%d/%d (%.1f%%), compile_errs=%d, test_fails=%d, uncovered=%d\nDiagnostics:\n%s",
-		v.CompilationStatus(), v.PassedTests, v.TotalTests, v.TestPassRate, len(v.CompilationErrors), len(v.TestFailures), len(v.UncoveredFunctions), v.Diagnostics)
-}
-
+type ValidationReport = compiletime.ValidationReport
 // ValidatorAgent executes build and test suites, detects coverage gaps, and triggers test synthesis.
 type ValidatorAgent struct {
 	Model model.BaseChatModel

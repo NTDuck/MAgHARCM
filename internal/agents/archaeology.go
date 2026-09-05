@@ -19,23 +19,16 @@ import (
 	"strings"
 	"time"
 
-	"MAgHARCM/internal/logger"
+	"MAgHARCM/internal/compiletime"
+ 	"MAgHARCM/internal/logger"
 )
 
 const churnHotspotLimit = 25
 
-type NamingFinding struct {
-	Style, File, Token, Suggestion string
-	Line                            int
-}
+type NamingFinding = compiletime.NamingFinding
 
-type ArchaeologyReport struct {
-	BoundaryMap         []string
-	TimeCapsuleCommands []string
-	ChurnHotspots       []string
-	NamingForensics     []NamingFinding
-	ConceptMap          map[string][]string
-}
+// ArchaeologyReport is the structured output of the archaeologist agent.
+type ArchaeologyReport = compiletime.ArchaeologyReport
 
 type Archaeologist struct{}
 
@@ -52,7 +45,7 @@ func (a *Archaeologist) Investigate(ctx context.Context, sourceDir string) (Arch
 	n, _ := a.ForensicNaming(ctx, sourceDir)
 	m, _ := a.MapConcepts(ctx, sourceDir)
 	logger.LogStep("archaeology: %d/%d/%d/%d/%d", len(b), len(t), len(c), len(n), len(m))
-	return ArchaeologyReport{b, t, c, n, m}, nil
+	return ArchaeologyReport{BoundaryMap: b, TimeCapsuleCommands: t, ChurnHotspots: c, NamingForensics: n, ConceptMap: m}, nil
 }
 
 // ExtractBoundaries reports module, file and function boundaries.

@@ -11,7 +11,7 @@ import (
 
 	"github.com/cloudwego/eino/components/model"
 	"github.com/cloudwego/eino/schema"
-
+	"MAgHARCM/internal/compiletime"
 	"MAgHARCM/internal/logger"
 	"MAgHARCM/internal/tools"
 )
@@ -29,12 +29,7 @@ type TranslatorAgent struct {
 }
 
 // TranslatedProject contains the files written or edited in the target repository.
-type TranslatedProject struct {
-	ArtifactSchemaVersion string            `json:"schema_version"`
-	Files                 map[string]string `json:"files"` // relative_path -> code_content
-}
-
-func (t TranslatedProject) SchemaVersion() string { return t.ArtifactSchemaVersion }
+type TranslatedProject = compiletime.TranslatedProject
 
 // NewTranslatorAgent creates a TranslatorAgent instance. runID enables
 // per-run checkpoint persistence; pass "" to disable checkpointing.
