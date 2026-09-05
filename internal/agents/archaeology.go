@@ -270,9 +270,10 @@ func walkSources(ctx context.Context, root string, fn func(path string, lines []
 	_ = filepath.WalkDir(root, func(path string, d os.DirEntry, err error) error {
 		if err != nil || d.IsDir() {
 			if d != nil && d.IsDir() {
-				switch d.Name() {
-				case ".git", ".artifacts", "node_modules", "target", "vendor", "dist", "build", "testdata":
-					return filepath.SkipDir
+				for _, skip := range compiletime.ArchaeologySkipDirs {
+					if d.Name() == skip {
+						return filepath.SkipDir
+					}
 				}
 			}
 			return nil

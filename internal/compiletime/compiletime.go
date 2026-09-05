@@ -206,6 +206,39 @@ const CheckpointExt = ".json"
 // DefaultRunID is the run identifier used when no source directory is
 // available (e.g. tests, ad-hoc invocations).
 const DefaultRunID = "default"
+// -------------------------------------------------------------------------
+// Source Walker — Directory Skip List (PRIM-14 Archaeologist)
+// -------------------------------------------------------------------------
+
+// ArchaeologySkipDirs are directory names the Archaeologist's source
+// walker must skip. Centralised so the runner, validator, and TUI all
+// reference the same vocabulary. ADR-C-005: hardcoded-by-necessity values
+// live in compiletime, not in agent modules.
+var ArchaeologySkipDirs = []string{".git", ".artifacts", "node_modules", "target", "vendor", "dist", "build", "testdata"}
+// -------------------------------------------------------------------------
+// SLM Prompt Contracts (PRIM for 4B–30B / 4B-30B-class models)
+// -------------------------------------------------------------------------
+//
+// Backlink: research/P-50-..-P-53 (forthcoming Sprint 2026-09-07) and
+// ADR-C-014. These contracts encode the SLM-aware prompt directives so
+// every agent's system prompt emits the same preamble regardless of which
+// prompt template the agent loads.
+
+// SLMPromptContractPreamble is the directive block prepended to every
+// agent prompt template. It targets 4B–30B / 4B-30B-class models (Qwen2.5-Coder,
+// Phi-3, StarCoder2, …) and enforces the SLM-aware output contract:
+// no conversational preamble, no markdown code-block fences outside the
+// requested artifacts, and stop at the closing delimiter. ADR-C-007.
+const SLMPromptContractPreamble = `You are a strict code-translation agent running on a SMALL LANGUAGE MODEL (4B-30B parameters).
+Follow every rule below. Do not add conversational text.
+
+RULES:
+1. NEVER start with polite preamble ("Sure", "Here is", "Of course"). Begin the response with the FIRST required artifact.
+2. NEVER include markdown code-block fences around artifacts unless the schema explicitly requests fenced code.
+3. Emit ONLY the requested artifacts in the order specified. No trailing commentary.
+4. If a field is unknown, emit the literal token ` + "`" + ErrorUnknown + "`" + ` — never omit.
+5. Stop generation after the closing delimiter of the LAST requested artifact.
+`
 
 // -------------------------------------------------------------------------
 // Spec Lifecycle (PRIM-16)

@@ -6,6 +6,8 @@ import (
 	"bytes"
 	"fmt"
 	"text/template"
+
+	"MAgHARCM/internal/compiletime"
 )
 
 const AnalyzerPromptTemplate = `You are the Analyzer Agent in the multi-agent repository-level translation workflow.
@@ -213,6 +215,10 @@ FILE: {{.TestFileRelPath}}
 ` + "```"
 
 // renderPromptTemplate parses and executes a prompt template string with data.
+// RenderPromptTemplate parses and executes a prompt template string with
+// data, prepending the SLM-aware prompt contract preamble (PRIM for
+// 4B-30B-class models; ADR-C-007). The preamble is centralised in
+// compiletime so every agent's prompt receives the same directive set.
 func RenderPromptTemplate(name, tmplStr string, data any) (string, error) {
 	tmpl, err := template.New(name).Parse(tmplStr)
 	if err != nil {
@@ -220,6 +226,7 @@ func RenderPromptTemplate(name, tmplStr string, data any) (string, error) {
 	}
 
 	var buf bytes.Buffer
+	buf.WriteString(compiletime.SLMPromptContractPreamble)
 	if err := tmpl.Execute(&buf, data); err != nil {
 		return "", fmt.Errorf("failed to execute prompt template %s: %w", name, err)
 	}
