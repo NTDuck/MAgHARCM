@@ -48,4 +48,4 @@ This paper is the canonical hop-1 citation for [[PRIM-22]] (Four Phases of Compr
 
 - [[METHODOLOGY]] §PRIM-22 — [[1.0.0 P-40]] Foltz DR.JONES is the cognitive-model anchor for the Comprehension pipeline node in the Archaeologist agent's stage.
 - [[primitives/INDEX]] — [[1.0.0 PRIM-22]] status entry names [[Foltz-2023]] DR. JONES Model as the lineage source.
-- [[Software-Archaeology-Lineage]] §4 — [[1.0.0 P-40]] Foltz DR.JONES is the modern cognitive-traversal citation that complements [[NEEDS-LINK Rajlich-1997]] concept-locator analysis in the two-hop archaeology synthesis.
+- [[Software-Archaeology-Lineage]] §4 — [[1.0.0 P-40]] Foltz DR.JONES is the modern cognitive-traversal citation that complements [[1.0.0 P-74]] Biggerstaff concept-assignment analysis in the two-hop archaeology synthesis.

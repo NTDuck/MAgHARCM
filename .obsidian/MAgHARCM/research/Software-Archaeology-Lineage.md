@@ -78,7 +78,7 @@ The MAgHARCM pipeline grounds modern agentic reasoning in 45+ years of rigorous 
   - *Application in MAgHARCM*: Establishes the taxonomy for `[[1.0.0 PRIM-14]]` (Archaeology) and `[[1.0.0 PRIM-20]]` (Concept Assignment and Redocumentation).
 
 ### 2.3. Program Comprehension & Concept Assignment
-- **Vaclav [[NEEDS-LINK Rajlich-1997]] (1997) & Keith Bennett ([[NEEDS-LINK Bennett-2000]]) — *Concept Assignment & Staged Lifecycle***:
+- **Ted J. Biggerstaff, Bharat G. Mitbander & Dallas E. Webster (1993) ([[1.0.0 P-74]]) & Keith H. Bennett (1995) ([[1.0.0 P-75]]) & Bennett & Rajlich (2000) ([[1.0.0 P-76]]) — *Concept Assignment & Legacy Coping***:
   - *Core Insight*: Defined the concept locator methodology. Software maintenance requires mapping human-oriented domain concepts to specific computational locations (AST subtrees, classes, functions).
   - *Application in MAgHARCM*: Realized in `[[1.0.0 PRIM-20]]` (Concept Assignment and Redocumentation), where the archaeologist maps lexical identifiers and call clusters to semantic domain roles.
 

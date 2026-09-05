@@ -42,7 +42,7 @@ Multi-SWE-bench extends the original SWE-bench (Jimenez et al. 2024, Python-only
 - Wang et al. (2024) — OpenHands (CodeAct-style multi-turn agent; cited as the third evaluation scaffold).
 - OpenAI et al. (2024) — GPT-4 technical report (referenced for GPT-4-class baseline scores).
 - Liu et al. (2024) — DeepSeek-V2 (referenced for the DeepSeek-Coder-V2-Lite baseline).
-- [[NEEDS-LINK Anthropic-2024-Claude35Sonnet]] — Claude 3.5 Sonnet system card (referenced for closed-model baseline scores).
+- Anthropic (2024) — Claude 3.5 Sonnet system card (referenced for closed-model baseline scores); cross-link [[1.0.0 P-38]] (Anthropic sycophancy) for the related alignment-evaluation framework.
 
 ## 4. Hop-2 References (papers-cited-by-hop-1)
 

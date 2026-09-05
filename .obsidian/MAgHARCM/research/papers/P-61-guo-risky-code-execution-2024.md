@@ -36,8 +36,8 @@ The benchmark reveals four empirical findings that directly inform verifier-of-v
 
 ### Hop-1
 - Leviathan, Y., Kalman, M., Matias, Y. (2023). See [[1.0.0 P-57]] — lossless accept-reject discipline.
-- [[NEEDS-LINK Anthropic-2025]] See [[1.0.0 P-38]] — sycophancy baseline.
-- [[NEEDS-LINK OpenAI-2024-CodexRedTeam]] *Codex red-team report*. (cited inline).
+- Anthropic (2025) — Sycophancy evaluation. See [[1.0.0 P-38]] for the baseline paper; cf. [[1.0.0 P-69]] for the 2025 update and [[1.0.0 P-77]] for the OpenAI 2024 red-teaming methodology that complements this line.
+- OpenAI (2024) — *Advancing Red Teaming with People and AI*. See [[1.0.0 P-77]]. (cited inline as the Codex-red-team analogue; OpenAI did not publish a Codex-specific red-team report.)
 - Perry, N., et al. (2023). *Do Users Write More Insecure Code with AI Assistants?* ACM CCS 2023.
 
 ### Hop-2

@@ -22,7 +22,7 @@ Baldwin and Clark ([[1.0.0 P-41]]) extend the modularity thesis of [[P-34]] by l
 
 The 2024 retrospective, distilled in Fleming & Baldwin's current writing on modular designs, applies the same design-rule lens to software-archaeology contexts. A legacy codebase is a layered design-rule space whose L1 rules (interfaces, type contracts, build invariants) constrain the L3 leaves. As with physical products, software L1 stability is the precondition for parallel translation work; erosion of L1 rules is the precondition for translation failure.
 
-A second applied strand, Baldwin & Clark ([[NEEDS-LINK Baldwin-Clark-2016-Money]]) on the origins of money, treats monetary design rules as a modular interface that lets heterogeneous counterparties transact without bilateral negotiation. The same argument applies to internal API surfaces in legacy systems: a stable interface is a transaction medium for independent contributors, and its erosion is a hidden tax on coordination.
+A second applied strand appears in Baldwin's 2008 work on modular organisations ([[1.0.0 P-70]] §6, "Where do Transactions Come From?") and in the 2014 Colfer & Baldwin study of the mirroring hypothesis ([[1.0.0 P-70]] hop-2). A monetary system is treated as a modular interface that lets heterogeneous counterparties transact without bilateral negotiation; the same argument applies to internal API surfaces in legacy systems: a stable interface is a transaction medium for independent contributors, and its erosion is a hidden tax on coordination.
 
 ## Relevance to MAgHARCM
 
