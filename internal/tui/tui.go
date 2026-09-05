@@ -70,9 +70,6 @@ var (
 			Foreground(lipgloss.Color("#82E0AA")).
 			Italic(true)
 
-	errorStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#E74C3C")).
-			Bold(true)
 )
 
 // Phase identifies which screen of the REPL is active.

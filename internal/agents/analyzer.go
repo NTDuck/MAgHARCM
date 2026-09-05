@@ -11,6 +11,10 @@ import (
 	"MAgHARCM/internal/logger"
 	"MAgHARCM/internal/tools"
 )
+// Canonical artifact types live in internal/compiletime/state.go (cycle-free
+// leaf package; agents → compiletime). This file owns the analyzer algorithm
+// and re-exports the artifact types as type aliases for ergonomic use.
+// Backlink: [[1.0.0 PRIM-4]] SpecMiner Dyn-Inferred Requirements (see body).
 
 // Type aliases (cycle-free Locality of Behaviour).
 // Producer files declare the algorithms; canonical artifact types
