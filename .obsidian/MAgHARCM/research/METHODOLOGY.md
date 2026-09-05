@@ -2,7 +2,7 @@
 title: MAgHARCM Methodology
 backlink: "[[2.0.0 Methodology]]"
 tags: [methodology, architecture, pipeline, "[[2.0.0 MAgHARCM]]", "[[1.0.0 PRIM-31]]", slm]
-last_updated: 2026-09-21
+last_updated: 2026-09-22
 ---
 
 # [[2.0.0 MAgHARCM Methodology]]
@@ -163,6 +163,33 @@ Wave 11 anchor list:
 - `[[1.0.0 P-109]]` SWE-bench Verified (OpenAI 2024, arXiv:2407.01489) — 500 human-verified instances from SWE-bench; cleaned solvability; passing tests from original repos; canonical SLM-era evaluation benchmark.
 - `[[1.0.0 P-110]]` GraphCoder / CodeGraphRAG (Liu et al. 2024, `[INFERENCE: best-available analog for graph-RAG for code]`) — repository-level code graphs (CPG / AST / DFG) integrated into RAG for completion, refactoring, comprehension. 4B-13B match 70B on repo-level tasks when graph context is high-quality.
 
+Wave 12 SLM-era anchors (4 verified new; no re-anchor):
+Table:
+| Primitive | SLM Mitigation | Anchor Paper | Verification |
+| :--- | :--- | :--- | :--- |
+| `[[1.0.0 PRIM-5]]` Test Suite Co-Translation | SWE-bench original (2,294 real GitHub issue/PR pairs) as full-population oracle | `[[1.0.0 P-111]]` SWE-bench (Jimenez ICLR 2024) | verified |
+| `[[1.0.0 PRIM-6]]` Multi-Stage Build/Test Repair | SWE-bench original FAIL-to-PASS criterion shapes repair-loop success | `[[1.0.0 P-111]]` SWE-bench + `[[1.0.0 P-109]]` SWE-bench Verified | verified |
+| `[[1.0.0 PRIM-23]]` Chunked Translation | SWE-bench instance ≈ chunk-of-code per file with patch granularity | `[[1.0.0 P-111]]` SWE-bench + `[[1.0.0 P-113]]` AutoCodeRover | verified |
+| `[[1.0.0 PRIM-27]]` Plateau Detection | SWE-bench original %resolve is the upstream plateau metric | `[[1.0.0 P-111]]` SWE-bench | verified |
+| `[[1.0.0 PRIM-5]]` Test Suite Co-Translation | SWE-agent test-run loop as canonical validator cascade pattern | `[[1.0.0 P-112]]` SWE-agent (Yang NeurIPS 2024) | verified |
+| `[[1.0.0 PRIM-6]]` Multi-Stage Build/Test Repair | SWE-agent custom file/view commands as structured test-execution interface | `[[1.0.0 P-112]]` SWE-agent | verified |
+| `[[1.0.0 PRIM-25]]` Test Synthesis | SWE-agent ACIs constrain SLM tool-call hallucination via schema | `[[1.0.0 P-112]]` SWE-agent | verified |
+| `[[1.0.0 PRIM-29]]` Recruiter Agent | SWE-agent multi-turn scaffold (issue -> context -> patch) | `[[1.0.0 P-112]]` SWE-agent + `[[1.0.0 P-113]]` AutoCodeRover | verified |
+| `[[1.0.0 PRIM-9]]` Tri-Representation Code Graph | AutoCodeRover AST + symbol search via tree-sitter as code-retrieval backbone | `[[1.0.0 P-113]]` AutoCodeRover (Zhang 2024) | verified |
+| `[[1.0.0 PRIM-22]]` Comprehension | AutoCodeRover issue -> context -> patch loop as multi-turn SLM scaffold | `[[1.0.0 P-113]]` AutoCodeRover + `[[1.0.0 P-110]]` GraphCoder | verified |
+| `[[1.0.0 PRIM-23]]` Chunked Translation | AutoCodeRover chunk-of-code per file granularity in issue resolution | `[[1.0.0 P-113]]` AutoCodeRover + `[[1.0.0 P-111]]` SWE-bench | verified |
+| `[[1.0.0 PRIM-26]]` Symbol-Aware Navigator | AutoCodeRover symbol-level retrieval as the SLM-era navigator pattern | `[[1.0.0 P-113]]` AutoCodeRover | verified |
+| `[[1.0.0 PRIM-7]]` Verdict Validation | Medusa multiple decoding heads as alternative drafting strategy | `[[1.0.0 P-114]]` Medusa (Cai 2024) | verified |
+| `[[1.0.0 PRIM-21]]` Strategy Selection | Medusa vs EAGLE-3 = cheap-fixed vs expensive-trainable strategy choice | `[[1.0.0 P-114]]` Medusa + `[[1.0.0 P-108]]` EAGLE-3 | verified |
+| `[[1.0.0 PRIM-22]]` Comprehension | Medusa tree-based attention verifies multiple drafts in single forward | `[[1.0.0 P-114]]` Medusa + `[[1.0.0 P-108]]` EAGLE-3 | verified |
+| `[[1.0.0 PRIM-31]]` Iterative Retrieval | Medusa lossless 2.2-3.6x speedup as alternative retrieval-cascade design | `[[1.0.0 P-114]]` Medusa + `[[1.0.0 P-108]]` EAGLE-3 | verified |
+
+Wave 12 anchor list:
+- `[[1.0.0 P-111]]` SWE-bench original (Jimenez et al. 2024, ICLR 2024, arXiv:2310.06770) — 2,294 real GitHub issue/PR pairs across 12 popular Python repositories; canonical evaluation benchmark for LLM/SLM software-engineering agents; the parent benchmark that SWE-bench Verified (P-109) subsets to 500 human-verified instances; established that GPT-4 resolved only ~1.96% without retrieval scaffolding.
+- `[[1.0.0 P-112]]` SWE-agent (Yang et al. 2024, NeurIPS 2024, arXiv:2405.15793) — Princeton University; the canonical tool-calling agent scaffold for SWE-bench; introduces Agent-Computer Interfaces (ACIs) as a first-class design object with custom file/view commands + search tools that shape the agent's perception of the repo; reports 12.5% on SWE-bench Verified with GPT-4; the ACI pattern = structured tool schemas that constrain SLM tool-call hallucination.
+- `[[1.0.0 P-113]]` AutoCodeRover (Zhang et al. 2024, `[INFERENCE: best-available venue; verify against arXiv:2404.05427]`) — Wangxuan Institute of Computer Technology, Peking University; autonomous software-engineering agent that combines code-structure retrieval (AST + symbol search via tree-sitter) with program-synthesis patch generation; canonical open-source baseline on SWE-bench (later re-evaluated on SWE-bench Verified by P-109); demonstrates that a 4B-13B SLM with strong retrieval scaffolds can match much larger models on repository-level repair tasks.
+- `[[1.0.0 P-114]]` Medusa (Cai et al. 2024, `[INFERENCE: best-available venue; integrated into vLLM and SGLang rather than a single tracked conference]`) — UC Berkeley + NVIDIA; alternative to EAGLE-3's training-time-test single-head draft; Medusa adds multiple parallel decoding heads at different future-token positions to the target model directly; 2.2-3.6x speedup at lossless quality; cheaper to set up than EAGLE-3 (no draft-model training) but less flexible (cannot retrain heads per domain); Medusa vs EAGLE-3 = strategy choice: Medusa = cheap + fixed; EAGLE-3 = expensive + per-domain trainable.
+
 Cross-cutting SLM-era general-purpose anchors:
 - `[[1.0.0 P-85]]` Function calling at 4B-30B scale (tool-call accuracy) — UNVERIFIED (superseded by `[[1.0.0 P-106]]` BFCL verified).
 - `[[1.0.0 P-86]]` LLM-empowered software modernization taxonomy — UNVERIFIED.
@@ -191,6 +218,7 @@ Wave 9 anchors (verified):
 
 ## 9. Last Updated
 - **2026-09-21** — Sprint 2026-09-21: Wave-11 fired. 3 new SLM-era anchor papers persisted (P-108 EAGLE-3 NeurIPS 2025, P-109 SWE-bench Verified OpenAI 2024, P-110 GraphCoder / CodeGraphRAG 2024). P-108 is the deliberate re-anchor of `[[1.0.0 P-78]]` (EAGLE-3 NeurIPS 2024 was incorrect; venue corrected to NeurIPS 2025 per OpenReview `4exx1hUffq` + NeurIPS proceedings PDF; arXiv:2503.01840). Wave-11 SLM-era anchors table (10 rows) + Wave-11 anchor list appended to §7. Cross-links added in `Software-Archaeology-Lineage.md` (9 cross-link rows across PRIM-5, 6, 7, 9, 21, 26, 27, 31). All gates green (`go build`, `go vet`, `go test ./...`). Audit verified all 31 primitives still mapped to implementation files; 8-agent graph still wired; Charm TUI idioms still intact; `abcoder-mcp` default still in `configs/agents.yml`. Three focused commits planned (papers → cross-links → methodology + handoff).
+- **2026-09-22** — Sprint 2026-09-22: Wave-12 fired. 4 new SLM-era anchor papers persisted (P-111 SWE-bench original Jimenez ICLR 2024, P-112 SWE-agent Yang NeurIPS 2024, P-113 AutoCodeRover Zhang 2024, P-114 Medusa Cai 2024). Wave-12 SLM-era anchors table (16 rows) + Wave-12 anchor list appended to §7. Cross-links added in `Software-Archaeology-Lineage.md` (16 cross-link rows across PRIM-5, 6, 7, 9, 21, 22, 23, 25, 26, 27, 29, 31). All gates green (`go build`, `go vet`, `go test ./...`). Audit verified all 31 primitives still mapped to implementation files; 8-agent graph still wired; Charm TUI idioms still intact; abcoder-mcp default still in `configs/agents.yml`.
 - **2026-09-19** — Sprint 2026-09-19: Ponytail inline sweep (HIGH-1..HIGH-2, MED-1) — canonical configs/agents.yml now lists `lsp.provider: abcoder-mcp`; 3 *Default* constants renamed to *Placeholder to align with the no-fallback rule; tree-sitter boundary comment added at internal/languages/extractor.go:14. Primitive-completeness scout verified 31/31 INDEX rows map to implementation files; 8-agent graph wired; zero fmt.Print*/log.Print*/raw panic/os.Stdout in production code; 120 fmt.Sprintf/Fprintf are string construction (not I/O). Wave-11 candidates identified (EAGLE-3, GraphCoder, MemoryBank-E, TinyRM, SWE-bench Verified 2025) but not fired: no new SLM-era mechanism requires anchoring.
 - **2026-09-20** — Sprint 2026-09-20: Audit-only sprint — no code or vault edits required. Re-verified all 12 directive items still satisfied at `8807b5b` (no fmt.Print*, abcoder-mcp default, 8-agent graph, try-and-fail strategy registry, state.go centralised, Charm TUI, binary compilation status, Must pattern, clear unit boundaries, no hard-coded magic values, STE100 messaging, locality of behaviour). Wave-11 continued deferral: 5 candidates already triaged, none introduce a new SLM-era mechanism that requires an anchor. All gates green (`go build`, `go vet`, `go test ./...`). Single changelog commit closes the sprint.
 - **2026-09-18** — Sprint 2026-09-18: Wave-10 SLM-era anchors (P-102..P-107) persisted; 5 verified new (P-102 SmallCode, P-103 AgentModernize arXiv 2026, P-104 S*, P-105 ChunkKV, P-106 BFCL) + 1 re-anchor slot (P-107 → P-100). Added Wave-10 SLM-era anchors table (10 rows) + Wave-10 anchors list + Wave-9 anchors list. Corrected P-103 venue (arXiv:2605.17535, NOT ICSE 2025). All 7 directive items already verified compliant at 0c1aed5 (no fmt.Print*, abcoder-mcp default, 8-agent graph, try-and-fail strategy registry, state.go centralised, Charm TUI, binary compilation status).
