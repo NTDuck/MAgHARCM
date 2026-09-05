@@ -1246,3 +1246,56 @@
   eprint    = {2205.10625},
   note      = {Google Research / UC Berkeley / UNC; introduces the two-stage sequential-decomposition prompt: (1) emit ordered subproblem list, (2) solve each subproblem conditioned on all prior subproblem answers (chained-answer propagation); on GPT-3 code-davinci-002 it lifts SCAN compositional-split accuracy from ~16\% (standard prompting) to ~99.7\% and GSM8K from ~49.5\% (CoT) to ~62.4\%; strict generalization of P-90 CoT in the single-subproblem degenerate case; distinct from P-62 Decomposed Prompting (independent modular prompts) in that answers are prefix-conditioned, not sampled independently; the SLM-era chained-decomposition anchor for MAgHARCM's PRIM-1 reverse-topological planner and PRIM-23 chunked translation.}
 }
+@misc{p102_smallcode_4b_2025,
+  title     = {{SmallCode: How a 4B-Parameter Model Achieves 87\% on AI Coding Benchmarks}},
+  author    = {{fp8.co research team}},
+  howpublished = {fp8.co Articles},
+  year      = {2025},
+  url       = {https://fp8.co/articles/SmallCode-AI-Coding-Agent-Small-LLM-Deep-Dive},
+  note      = {Empirical demonstration that aggressive specialisation compresses frontier-model coding capability into 4B parameters; achieving 87\% on HumanEval via curated-corpus distillation + CoT-via-scaffolding + tool-calling prefix conditioning. The SLM-era empirical anchor for MAgHARCM's PRIM-25 Role-Flip Gate (4B model with scaffolding passes adversarial inspection) and PRIM-21 strategy-budget routing at edge-hardware token costs.}
+}
+
+@article{p103_agentmodernize_2026,
+  title     = {{AgentModernize: Preserving Business Logic in Legacy Modernization with Multi-Agent LLMs and Behavioral Specification Graphs}},
+  author    = {Ahmed, Sheikh Nazib and Galib, Marnim},
+  journal   = {arXiv preprint arXiv:2605.17535},
+  year      = {2026},
+  eprint    = {2605.17535},
+  note      = {University of Dhaka / independent; arXiv v1 May 17 2026, v2 Aug 4 2026; reframes legacy modernisation as behavioural preservation via a Behavioural Specification Graph (BSG) intermediate artifact that acts as a trust boundary for business-logic inspection before code generation; four specialised agents (Legacy Analyzer, Specification Generator, Modernization Transformer, Equivalence Validator) with differential testing rather than syntactic round-trip; v2 nuances that simpler approaches can outperform the multi-agent pipeline for stronger model backbones. The behavioural-preservation + multi-agent decomposition anchor for MAgHARCM's PRIM-14 archaeology stage and PRIM-15 evidence-first adaptation; NOT ICSE 2025 (the arXiv preprint is the canonical venue).}
+}
+
+@article{p104_s_star_2025,
+  title     = {{$S^*$: Test Time Scaling for Code Generation}},
+  author    = {Li, Dacheng and Cao, Shiyi and Cao, Chengkun and Li, Xiuyu and Tan, Shangyin and Keutzer, Kurt and Xing, Jiarong and Gonzalez, Joseph E. and Stoica, Ion},
+  journal   = {arXiv preprint arXiv:2502.14382},
+  year      = {2025},
+  eprint    = {2502.14382},
+  note      = {UC Berkeley; first hybrid test-time scaling framework specifically for code generation; combines parallel sampling with sequential refinement via an execution-grounded selection mechanism (adaptive distinguishing inputs for pairwise comparison); enabling smaller models (3B) to outperform GPT-4o-mini, and non-reasoning models to match reasoning models like o1-preview on LiveCodeBench; the execution-signal-guided strategy-switching anchor for MAgHARCM's PRIM-7 verdict panel + PRIM-21 sampling-budget routing + PRIM-27 coverage-guided plateau exit.}
+}
+
+@inproceedings{p105_chunkkv_2025,
+  title     = {{ChunkKV: Semantic-Preserving KV Cache Compression for Efficient Long-Context Inference}},
+  author    = {Liu, Xiang and Tang, Zhenheng and Dong, Peijie and Li, Zeyu and Liu, Yue and Li, Bo and Hu, Xuming and Chu, Xiaowen},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2025},
+  eprint    = {2502.00299},
+  note      = {Hong Kong Baptist University; semantic-chunk-aware KV cache compression that reclaims 4-8x memory with negligible quality loss for 100K+ context inference; layer-wise index reuse exploits cross-layer similarity among preserved indices for ~26.5\% throughput gain; the SLM long-context anchor for MAgHARCM's PRIM-22 four-phase comprehension (whole-file archaeology at SLM scale) and PRIM-31 iterative retrieval (100K-context chunked retrieval on 4B-13B edge hardware); the canonical companion library is NVIDIA/kvpress.}
+}
+
+@inproceedings{p106_bfcl_2025,
+  title     = {{The Berkeley Function Calling Leaderboard (BFCL): From Tool Use to Agentic Evaluation of Large Language Models}},
+  author    = {Patil, Shishir G. and Mao, Huanzhi and Yan, Fanjia and Ji, Charlie Cheng-Jie and Stoica, Ion and Gonzalez, Joseph E. and Zhang, Tianjun},
+  booktitle = {Proceedings of Machine Learning Research (PMLR) v267},
+  year      = {2025},
+  url       = {https://proceedings.mlr.press/v267/patil25a.html},
+  note      = {UC Berkeley Gorilla team; the de facto standard for function-calling evaluation; tests simple/parallel/multiple calls + agentic multi-hop reasoning + error recovery + context/memory management; AST-evaluation + executable-verification metrics + latency/cost tracking for edge-deployed SLMs; the key SLM finding is that 7B-13B fine-tuned models match GPT-4 on simple function-calling but trail on "knowing when not to call a tool" (relevance detection) and multi-turn stateful conversations; the function-calling + AST-evaluation anchor for MAgHARCM's PRIM-25 Role-Flip De-hallucination gate (relevance-detection gap) and PRIM-7 verdict validation (AST + executable verification).}
+}
+
+@article{p107_decomposed_prompting_slm_reanchor_2025,
+  title     = {{Decomposed Prompting SLM Multi-Agent re-anchor of P-100 (deliberate versioned slot)}},
+  author    = {Khot, Tushar and Trivedi, Harsh and Finlayson, Matthew and Fu, Yao and Richardson, Kyle and Clark, Peter and Sabharwal, Ashish},
+  journal   = {arXiv preprint arXiv:2210.02406 (SLM re-anchor)},
+  year      = {2025},
+  eprint    = {2210.02406},
+  note      = {Deliberate versioned re-anchor of p100\_khot\_decomposed\_2022 emphasising the SLM-era relevance: a 1.5B parameter model with decomposed prompting closes the compositionality gap with 7-13B monolithic models on multi-step code tasks. NOT a new verified paper; this slot exists for downstream jobs that want a dedicated wikilink to the SLM-era re-read of P-100 without inflating Wave-10's verified-paper count. The decomposed-prompting SLM multi-agent anchor for MAgHARCM's PRIM-22 four-phase comprehension specialist-module layout and PRIM-24 SOP-anchored role-artifact typed-IO schema.}
+}

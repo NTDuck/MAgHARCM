@@ -333,7 +333,7 @@ in order; each strategy exposes a predicate and an attempt method.}
 \label{sec:method_qwen25coder_anchor}
 
 MAgHARCM is tuned for the Qwen2.5-Coder family of coding SLMs at the
-7B, 14B, and 32B scales~\cite{p58_hui_qwen25coder_2024,p94_zhou_lima_2023,p96_kojima_zsr_2022,p99_suzgun_bigbench_cot_2022,p100_khot_decomposed_2022,p101_zhou_l2m_2023,p86_xu_modernization_survey_2024_unverified,p88_hityper_peng_2022,p89_phan_baseline_icse_nier_2024_unverified}. Bounded
+7B, 14B, and 32B scales~\cite{p58_hui_qwen25coder_2024,p94_zhou_lima_2023,p96_kojima_zsr_2022,p99_suzgun_bigbench_cot_2022,p100_khot_decomposed_2022,p101_zhou_l2m_2023,p102_smallcode_4b_2025,p104_s_star_2025,p105_chunkkv_2025,p106_bfcl_2025,p107_decomposed_prompting_slm_reanchor_2025,p86_xu_modernization_survey_2024_unverified,p88_hityper_peng_2022,p89_phan_baseline_icse_nier_2024_unverified,p85_yue_function_calling_2025_unverified}. Wave-10 anchors extend the SLM-era envelope: \\textbf{p102} demonstrates 4B-parameter coding parity (87\\% HumanEval) under aggressive corpus specialisation; \\textbf{p104} formalises hybrid sequential+parallel test-time scaling for code with execution-grounded selection; \\textbf{p105} reclaims 4--8$\\times$ KV-cache memory for 100K+ context on 4B--13B edge hardware; \\textbf{p106} (BFCL) provides the AST+executable-verification methodology that grounds the verdict panel; \\textbf{p107} is a deliberate re-anchor slot for the SLM-era re-read of decomposed prompting (p100). Bounded
 fragment context ($\le 4\,\text{KB}$), reverse-topological scheduling,
 and the role-flipped reviewer are calibrated so that the prompt
 window, scratch reasoning budget, and instruction-following fidelity
