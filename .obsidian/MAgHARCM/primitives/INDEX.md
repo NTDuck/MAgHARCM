@@ -100,3 +100,12 @@ All 31 primitives are compiled into the codebase, preserving architectural integ
 - Cross-linked P-108 into PRIM-7, PRIM-21, PRIM-31; P-109 into PRIM-5, PRIM-6, PRIM-27; P-110 into PRIM-9, PRIM-26, PRIM-31.
 - Re-verified 31/31 primitives still map to implementation files in `internal/agents/` (35 files = 31 impl + 4 test files + 0 orphan).
 - Wave-11 trigger fired: new SLM-era mechanism (EAGLE-3 training-time-test draft model = 4B-target SLM speculative decoding path).
+
+## Sprint 2026-09-22 Vault Sync Audit
+
+- Indexed 4 wave-12 deep-research papers (hop-1 of wave-11 anchors): P-111 SWE-bench original (Jimenez ICLR 2024), P-112 SWE-agent (Yang 2024), P-113 AutoCodeRover (Zhang 2024), P-114 Medusa (Cai 2024).
+- P-111 + P-112 + P-109 form the canonical SWE-bench evaluation lineage (original → Verified → tool-calling agent scaffold).
+- P-113 anchors PRIM-9 + PRIM-26 (code-graph + symbol-navigator primitives) with the AutoCodeRover retrieval+synthesis pattern.
+- P-114 anchors PRIM-7 + PRIM-21 + PRIM-22 + PRIM-31 (verdict + strategy + comprehension + retrieval) as the alternative drafting strategy to EAGLE-3.
+- Cross-linked 16 rows in Software-Archaeology-Lineage.md.
+- 31/31 primitives still mapped to implementation files; 8-agent graph still wired; Charm TUI idioms still intact; abcoder-mcp default still in configs/agents.yml.
