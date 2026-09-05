@@ -28,7 +28,7 @@ All historical split sources of truth have been reconciled:
 | 2 | `analyzer` | `[[1.0.0 PRIM-4]]`, `10`, `15`, `21` | Source structure mapping, third-party crate mapping, try-and-fail strategy selection |
 | 3 | `planning` | `[[1.0.0 PRIM-1]]`, `2`, `3`, `16`, `30` | Reverse-topological DAG linearization, skeleton generation, implementation plan |
 | 4 | `translator` | `[[1.0.0 PRIM-23]]`, `26`, `31` | Topological chunked translation, dynamic iterative fragment re-indexing |
-| 5 | `reviewer` | `[[1.0.0 PRIM-25]]` | Role-flipped communicative review gate, sycophancy rejection |
+| 5 | `roleflip` | `[[1.0.0 PRIM-25]]` | Role-flipped communicative review gate, sycophancy rejection |
 | 6 | `validator` | `[[1.0.0 PRIM-5]]`, `6`, `13`, `27` | Build & test execution, adversarial test-weakening guard, CodaMOSA plateau detection |
 | 7 | `verdict_panel`| `[[1.0.0 PRIM-7]]`, `8`, `11`, `12` | Multi-agent majority consensus on semantic equivalence |
 | 8 | `recruiter` | `[[1.0.0 PRIM-29]]` | Dynamic iteration adaptation, tool/agent recruitment, strategy failover trigger |

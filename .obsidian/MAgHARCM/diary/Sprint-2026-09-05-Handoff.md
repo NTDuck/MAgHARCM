@@ -73,7 +73,7 @@ Each paper follows the standard schema: frontmatter with `title`, `bibkey`, `tag
 ## 4. Open Work / Follow-Ups
 
 1. **`internal/agents/state.go` move.** Per the user's directive, `State` and intermediate role artifacts should eventually move out of `internal/agents/state.go` to their producer modules (Locality of Behaviour). Currently `State` holds `AnalyzerOutput`, `PlanningOutput`, `TranslatedProject`, `ValidationReport`, `SpecMinerInvariants`, `ArchaeologyReport`. The cleanest move splits these into per-agent output structs owned by the agent that produces them, with `State` reduced to a slim bag of pointers + iteration counters. This is a structural refactor — touches graph wiring + runner state threading — and was deferred from this sprint.
-2. **`ABCoderMCPProvider` rename.** Renaming to `ABCoderMcpProvider` and propagating is a low-risk rename across configs + imports. Deferred.
+2. **`ABCoderMCPProvider` rename.** ✅ Completed — `internal/tools/lsp_provider.go` and all callers now use `ABCoderMcpProvider` throughout.
 3. **TUI migration to Bubble Tea stack.** The current TUI uses ad-hoc rendering. Migration to Bubble Tea + Bubbles + Lip Gloss + Glamour is a substantial new-feature sprint.
 4. **Per-project compilation rate vs pass-rate.** Per user directive: project compilation status is strictly binary (Pass/Fail) — no partial pass rate per file. This is already enforced; needs documentation update only.
 5. **`fmt.Print*` audit.** All `fmt.Print*` should be replaced with `logger.*` calls. The graph + runner code is partially migrated; remaining `fmt.Print*` calls in non-agent modules still need a sweep.

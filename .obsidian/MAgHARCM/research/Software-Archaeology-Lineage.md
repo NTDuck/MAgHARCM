@@ -136,12 +136,12 @@ The MAgHARCM pipeline grounds modern agentic reasoning in 45+ years of rigorous 
 | `[[1.0.0 PRIM-10]]` | Feature-Mapping Validation | Oxidizer [[P-05]], RustRepoTrans; [[P-43]] FODA (Kang 1990) | Language Idiom Mapping (Czarnecki) | `internal/agents/feature_mapping.go` |
 | `[[1.0.0 PRIM-11]]` | Implementation-Agnostic Test | RepoMod-Bench [[P-11]] | Black-Box Specification Testing | `internal/agents/impl_agnostic.go` |
 | `[[1.0.0 PRIM-12]]` | Wasm Reference Oracle | VERT [[P-12]] | Differential Execution Oracles (McKeeman) | `internal/agents/wasm_oracle.go` |
-| `[[1.0.0 PRIM-13]]` | Adversarial Test Guard | AdvTestGen [[P-25]] | Mutation Testing & Assertion Invariants | `internal/agents/validator.go` |
-| `[[1.0.0 PRIM-14]]` | Software-Archaeology Stage | pp-besm, AgentPatterns.ai | Chikofsky & Cross (1990) Reverse Eng | `internal/agents/archaeology.go` |
+| `[[1.0.0 PRIM-13]]` | Adversarial Test Guard | AdvTestGen [[P-25]] | Mutation Testing & Assertion Invariants, [[P-48]] Jia & Harman (2011) Mutation Survey | `internal/agents/validator.go` |
+| `[[1.0.0 PRIM-14]]` | Software-Archaeology Stage | pp-besm, AgentPatterns.ai | Chikofsky & Cross (1990) Reverse Eng, [[P-46]] Seacord et al. (2003) Modernizing Legacy Systems | `internal/agents/archaeology.go` |
 | `[[1.0.0 PRIM-15]]` | Evidence-First Adaptation | Reeper [[P-16]] | Cleanroom Software Engineering (Mills) | `internal/agents/evidence_adaptation.go` |
 | `[[1.0.0 PRIM-16]]` | Spec-Driven Dev Lifecycle | spec-kit [[P-17]] | Design-by-Contract (Meyer 1988) | `internal/agents/spec_lifecycle.go` |
 | `[[1.0.0 PRIM-17]]` | Asynchronous SE Blackboard | CAID [[P-18]]; [[P-44]] Corkill (1991) | Blackboard Architecture (Nii 1986) | `internal/agents/blackboard.go` |
-| `[[1.0.0 PRIM-18]]` | Jaccard-Coupling Recovery | MSR4SA [[P-19]] | Mining Software Repositories (Hassan) | `internal/agents/jaccard_coupling.go` |
+| `[[1.0.0 PRIM-18]]` | Jaccard-Coupling Recovery | MSR4SA [[P-19]] | Mining Software Repositories (Hassan), [[P-47]] Gall Hajek Jazayeri (1998) Logical Coupling | `internal/agents/jaccard_coupling.go` |
 | `[[1.0.0 PRIM-19]]` | Design Rule Hierarchy Part | Kazman et al. [[P-20]], Baldwin-Clark | Baldwin & Clark (2000) Modularity, [[P-41]] 2024 retrospective, [[P-42]] MacCormack (2006) DSM | `internal/agents/design_rule_hierarchy.go` |
 | `[[1.0.0 PRIM-20]]` | Concept Assignment & Redoc | Rajlich (1997) [[P-28]] | Concept Assignment (Biggerstaff 1993) | `internal/agents/concept_assignment.go` |
 | `[[1.0.0 PRIM-21]]` | Migration Strategy Selection | Müller et al. [[P-06]] | Legacy Migration Frameworks (Müller) | `internal/agents/strategy.go` |
@@ -152,7 +152,7 @@ The MAgHARCM pipeline grounds modern agentic reasoning in 45+ years of rigorous 
 | `[[1.0.0 PRIM-26]]` | Symbol-Aware Navigator | HyperAgent [[P-13]], ABCoder | Targeted Context Retrieval | `internal/agents/navigator.go` |
 | `[[1.0.0 PRIM-27]]` | Coverage-Guided Plateau Det | CodaMOSA [[P-23]] | Search-Based Software Testing (Harman) | `internal/agents/plateau.go` |
 | `[[1.0.0 PRIM-28]]` | Conversable Checkpoints | AutoGen [[P-26]] | State-Snapshotting & Resumption | `internal/agents/checkpoint.go` |
-| `[[1.0.0 PRIM-29]]` | Recruitment-Adaptive Plan | AgentVerse [[P-26]]; controller-expert [[P-39]] (HuggingGPT / Jarvis) | Dynamic Team Organization | `internal/agents/recruit.go` |
+| `[[1.0.0 PRIM-29]]` | Recruitment-Adaptive Plan | AgentVerse [[P-26]]; controller-expert [[P-39]] (HuggingGPT / Jarvis) | Dynamic Team Organization, [[P-49]] Shehory & Kraus (1998) Coalition Formation | `internal/agents/recruit.go` |
 | `[[1.0.0 PRIM-30]]` | Source-to-Target Manifest | Syzygy [[P-14]], JavaC2Rust | Dependency Graph Transpilation | `internal/agents/manifest_rewriter.go` |
 | `[[1.0.0 PRIM-31]]` | Iterative Retrieval Refine | RepoCoder [[P-13]] | Dynamic Feedback Retrieval-Augmented Gen | `internal/agents/iter_retrieval.go` |
 
