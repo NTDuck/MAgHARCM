@@ -1362,3 +1362,38 @@
   eprint    = {2401.10774},
   note      = {UC Berkeley + NVIDIA; an alternative to EAGLE-3's training-time-test single-head draft; Medusa adds multiple parallel decoding heads at different future-token positions to the target model directly; each head predicts token t+k independently; uses tree-based attention to verify multiple drafts in a single forward pass; 2.2-3.6x speedup at lossless quality; cheaper to set up than EAGLE-3 (no draft-model training) but less flexible (cannot retrain heads per domain); Medusa vs EAGLE-3 = strategy choice: Medusa = cheap + fixed; EAGLE-3 = expensive + per-domain trainable. Anchors PRIM-7, PRIM-21, PRIM-22, PRIM-31.}
 }
+
+@inproceedings{p115_wang_openhands_2024,
+  title     = {{OpenHands: An Open Platform for AI Software Developers as Generalist Agents}},
+  author    = {Wang, Xingyao and Li, Yifan and others},
+  booktitle = {arXiv preprint (NeurIPS 2024 Datasets and Benchmarks Track; [INFERENCE: best-available venue; verify against arXiv:2407.16741])},
+  year      = {2024},
+  eprint    = {2407.16741},
+  note      = {Princeton University + others; all-hands LLM agent platform that unified CodeAct + SWE-agent scaffolding into an open-source production system; introduces the CodeAct agent action format (single multi-turn tool-call message stream) that simplifies the SWE-agent ACI pattern; reports competitive performance on SWE-bench Verified, HumanEval, and WebArena; demonstrates that an open-source agent platform can match closed-source agent products. Anchors PRIM-22, PRIM-25, PRIM-29, PRIM-31.}
+}
+
+@misc{p116_gauthier_aider_2024,
+  title     = {{Aider: AI Pair Programming in Your Terminal}},
+  author    = {Gauthier, Paul},
+  booktitle = {practitioner tech-report; not formally peer-reviewed},
+  year      = {2024},
+  note      = {[INFERENCE: practitioner tech-report; not formally peer-reviewed]. Aider is a repo-map + diff-based LLM/SLM coding assistant for terminal use; introduces the "repo map" feature (tree-sitter-derived symbol index with call-graph + definition + reference edges) as a first-class prompt component; benchmarks on SWE-bench Lite demonstrate competitive SLM-era performance with Claude 3.5 Sonnet, GPT-4o, DeepSeek-Coder-V2; the diff-based output format minimises hallucinated file content. Anchors PRIM-9, PRIM-22, PRIM-26, PRIM-31.}
+}
+
+@inproceedings{p117_zhang_repocoder_2023,
+  title     = {{RepoCoder: Repository-Level Code Completion Through Iterative Retrieval and Multi-Prompt Fusion}},
+  author    = {Zhang, Feng and Chen, Bowen and others},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2023},
+  eprint    = {2303.12570},
+  note      = {Repository-level code completion via iterative retrieval-augmented generation; the canonical "retrieve similar code, regenerate completion" loop; demonstrates that small models with strong repository retrieval match much larger models on long-context completion; multi-prompt fusion combines the previous-generation completion with the retrieved context for the next-generation prompt. Anchors PRIM-9, PRIM-22, PRIM-26, PRIM-31.}
+}
+
+@misc{p118_jimenez_swebench_lite_2024,
+  title     = {{SWE-bench Lite: A Leaner Benchmark for Repository-Level Code Repair (Princeton NLP benchmark release)}},
+  author    = {Jimenez, Carlos E. and others},
+  booktitle = {Princeton NLP SWE-bench Lite release},
+  year      = {2024},
+  eprint    = {2410.18982},
+  note      = {[INFERENCE: verify against arXiv:2410.18982; the canonical SWE-bench Lite benchmark page (swebench.com/lite.html) does not link to an arXiv preprint of its own; the swebench.com BibTeX cites the original Jimenez et al. ICLR 2024 paper (arXiv:2310.06770). Treat SWE-bench Lite as a Princeton NLP benchmark release from late 2024 that accompanies the original SWE-bench paper]. 300-instance curated subset of SWE-bench original (P-111) for faster iteration; preserves solvability and test-suite structure; enables iteration budgets that the full 2,294-instance benchmark cannot. Anchors PRIM-5, PRIM-6, PRIM-22, PRIM-27.}
+}

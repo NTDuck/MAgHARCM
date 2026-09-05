@@ -109,3 +109,12 @@ All 31 primitives are compiled into the codebase, preserving architectural integ
 - P-114 anchors PRIM-7 + PRIM-21 + PRIM-22 + PRIM-31 (verdict + strategy + comprehension + retrieval) as the alternative drafting strategy to EAGLE-3.
 - Cross-linked 16 rows in Software-Archaeology-Lineage.md.
 - 31/31 primitives still mapped to implementation files; 8-agent graph still wired; Charm TUI idioms still intact; abcoder-mcp default still in configs/agents.yml.
+
+## Sprint 2026-09-23 Vault Sync Audit
+
+- Indexed 4 wave-13 deep-research papers: P-115 OpenHands/CodeAct (Wang 2024), P-116 Aider (Gauthier 2024-2025), P-117 RepoCoder (Zhang ICLR 2023), P-118 SWE-bench Lite (Jimenez 2024).
+- P-115 + P-112 + P-113 + P-116 form the canonical "agent scaffold" cluster for SWE-bench-style issue resolution.
+- P-117 + P-110 + P-113 form the canonical "repository-level retrieval-augmented completion" cluster.
+- P-118 narrows the SWE-bench evaluation target from 2,294 (P-111) to a 300-instance leaner subset for faster SLM-era iteration.
+- Cross-linked 16 rows in Software-Archaeology-Lineage.md.
+- 31/31 primitives still mapped to implementation files; 8-agent graph still wired; Charm TUI idioms still intact; abcoder-mcp default still in configs/agents.yml.

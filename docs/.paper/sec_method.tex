@@ -468,7 +468,7 @@ summary ($\le 4\,\text{KB}$) of emitted module paths and exported
 signatures so that newly generated modules import and reuse already
 emitted types consistently. The navigator's subgraph ranking follows
 graph-RAG principles that surface high-quality graph context over
-the existing code-property-graph~\cite{p110_graphcoder_2024,p113_zhang_autocoderover_2024}, raising small-model (4B--13B) comprehension to large-model parity on repo-level tasks. This design specifically addresses
+the existing code-property-graph~\cite{p110_graphcoder_2024,p113_zhang_autocoderover_2024,p116_gauthier_aider_2024,p117_zhang_repocoder_2023}, raising small-model (4B--13B) comprehension to large-model parity on repo-level tasks. This design specifically addresses
 challenge 2: long-horizon agents lose high-level goals without an
 explicit plan and degrade as interaction history grows unbounded; the
 bounded context per fragment prevents both failure modes on small
@@ -529,7 +529,7 @@ adversarial test-weakening guard (halts with a \textsc{Weakened}
 signal if the assertion count decreases across iterations), and the
 coverage plateau detector (a CodaMOSA-style stagnation heuristic on
 the test pass rate; plateau remedies run inside the validator before
-the loop exits). Failure modes are aligned with the human-verified solvability taxonomy of~\cite{p109_swebench_verified_2024,p111_jimenez_swebench_2024}, with the canonical tool-calling agent scaffold and test-run loop~\cite{p112_yang_sweagent_2024}, where the oracle benchmark pins down which failure traces are spurious and which are real regressions.
+the loop exits). Failure modes are aligned with the human-verified solvability taxonomy of~\cite{p109_swebench_verified_2024,p111_jimenez_swebench_2024,p118_jimenez_swebench_lite_2024}, with the canonical tool-calling agent scaffold and test-run loop~\cite{p112_yang_sweagent_2024}, where the oracle benchmark pins down which failure traces are spurious and which are real regressions.
 
 \paragraph{(2) Coverage-Guided Test Generation.}
 To fully validate the translated modules, the agent performs a
@@ -587,7 +587,7 @@ the methodological precedent for MAgHARCM's verifier-of-verifier pattern.
 The Recruiter Agent (§\ref{sec:method_recruiter}) evaluates runtime
 validation signals (compilation status, test pass rate, coverage plateau,
 and test weakening) to adapt the pipeline dynamically
-(PRIM-29~\cite{p26_agentverse,p112_yang_sweagent_2024}). When repair iterations stall or
+(PRIM-29~\cite{p26_agentverse,p112_yang_sweagent_2024,p115_wang_openhands_2024}). When repair iterations stall or
 plateau, the Recruiter triggers incremental try-and-fail strategy
 failover, switching from the current migration strategy to the next
 viable strategy in the registry.

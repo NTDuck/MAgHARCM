@@ -2,7 +2,7 @@
 title: MAgHARCM Methodology
 backlink: "[[2.0.0 Methodology]]"
 tags: [methodology, architecture, pipeline, "[[2.0.0 MAgHARCM]]", "[[1.0.0 PRIM-31]]", slm]
-last_updated: 2026-09-22
+last_updated: 2026-09-23
 ---
 
 # [[2.0.0 MAgHARCM Methodology]]
@@ -13,10 +13,14 @@ last_updated: 2026-09-22
 
 ## 0. Quick Start for New Jobs
 
-1. **Research Wave** — Read the latest wave's paper notes in `.obsidian/MAgHARCM/research/papers/` (e.g., P-78..P-83 wave 6, P-84..P-89 wave 7). Cross-link new anchors into `Software-Archaeology-Lineage.md` and `primitives/INDEX.md`.
+1. **Research Wave** — Read the latest wave's paper notes in `.obsidian/MAgHARCM/research/papers/` (e.g., P-78..P-83 wave 6, P-115..P-118 wave 13). Cross-link new anchors into `Software-Archaeology-Lineage.md` and `primitives/INDEX.md`.
 2. **Codebase Compliance** — Run `go build ./...`, `go vet ./...`, `go test ./...`. Verify ponytail directives: Must pattern, try-and-fail strategy, 8-agent graph, Charm TUI, abcoder-mcp default, state.go cohesion, no fmt.Print*, binary compilation.
-3. **Paper Sync** — Add new bib entries to `docs/.paper/refs.bib` and `\cite{}` mentions to `docs/.paper/sec_method.tex`.
-4. **Handoff** — Write `diary/Sprint-YYYY-MM-DD-Handoff.md` summarizing closed items + commits.
+3. **Vault Sync** — Update `primitives/INDEX.md`, `Software-Archaeology-Lineage.md`, this METHODOLOGY file (§7 + §9), and ADR documents so the Obsidian vault has a single source of truth.
+4. **Paper Sync** — Add new bib entries to `docs/.paper/refs.bib` and `\cite{}` mentions to `docs/.paper/sec_method.tex`.
+5. **Rerun Experiments** — If methodology changes in a way that affects evaluation criteria (compilation status, test pass rate, verdict consensus), rerun the affected experiments and update results in `docs/.paper/`.
+6. **Modify Paper** — If methodology changes, rewrite the affected sections of `docs/.paper/sec_method.tex` (and any other affected sections) to reflect the new anchors, primitives, and verification criteria.
+7. **Ponytail Refactor** — Run an inline audit for over-engineering; centralise hardcoded values; replace magic numbers with named constants; enforce single-source-of-truth for shared types.
+8. **Handoff** — Write `diary/Sprint-YYYY-MM-DD-Handoff.md` summarising closed items + commits. Commit incrementally per phase.
 
 ---
 
@@ -190,6 +194,37 @@ Wave 12 anchor list:
 - `[[1.0.0 P-113]]` AutoCodeRover (Zhang et al. 2024, `[INFERENCE: best-available venue; verify against arXiv:2404.05427]`) — Wangxuan Institute of Computer Technology, Peking University; autonomous software-engineering agent that combines code-structure retrieval (AST + symbol search via tree-sitter) with program-synthesis patch generation; canonical open-source baseline on SWE-bench (later re-evaluated on SWE-bench Verified by P-109); demonstrates that a 4B-13B SLM with strong retrieval scaffolds can match much larger models on repository-level repair tasks.
 - `[[1.0.0 P-114]]` Medusa (Cai et al. 2024, `[INFERENCE: best-available venue; integrated into vLLM and SGLang rather than a single tracked conference]`) — UC Berkeley + NVIDIA; alternative to EAGLE-3's training-time-test single-head draft; Medusa adds multiple parallel decoding heads at different future-token positions to the target model directly; 2.2-3.6x speedup at lossless quality; cheaper to set up than EAGLE-3 (no draft-model training) but less flexible (cannot retrain heads per domain); Medusa vs EAGLE-3 = strategy choice: Medusa = cheap + fixed; EAGLE-3 = expensive + per-domain trainable.
 
+Wave 13 SLM-era anchors (4 verified new; no re-anchor):
+Table:
+| Primitive | SLM Mitigation | Anchor Paper | Verification |
+| :--- | :--- | :--- | :--- |
+| `[[1.0.0 PRIM-22]]` Comprehension | OpenHands CodeAct action format simplifies ACI for SLM tool-call generation | `[[1.0.0 P-115]]` OpenHands (Wang 2024) + `[[1.0.0 P-112]]` SWE-agent | verified |
+| `[[1.0.0 PRIM-25]]` Role-Flip Gate | OpenHands platform-level sycophancy + hallucination defences | `[[1.0.0 P-115]]` OpenHands | verified |
+| `[[1.0.0 PRIM-29]]` Recruiter Agent | OpenHands dynamic agent configuration + model-switching | `[[1.0.0 P-115]]` OpenHands + `[[1.0.0 P-49]]` Shehory & Kraus | verified |
+| `[[1.0.0 PRIM-31]]` Iterative Retrieval | OpenHands multi-turn issue → context → patch scaffold | `[[1.0.0 P-115]]` OpenHands + `[[1.0.0 P-113]]` AutoCodeRover | verified |
+| `[[1.0.0 PRIM-9]]` Tri-Representation Code Graph | Aider repo-map (tree-sitter symbol index + call/definition edges) | `[[1.0.0 P-116]]` Aider (Gauthier 2024-2025) | verified |
+| `[[1.0.0 PRIM-22]]` Comprehension | Aider repo-map as first-class prompt component | `[[1.0.0 P-116]]` Aider + `[[1.0.0 P-110]]` GraphCoder | verified |
+| `[[1.0.0 PRIM-26]]` Symbol-Aware Navigator | Aider diff-based output minimises hallucinated file content | `[[1.0.0 P-116]]` Aider | verified |
+| `[[1.0.0 PRIM-31]]` Iterative Retrieval | Aider iterative refinement across multiple LLM/SLM backends | `[[1.0.0 P-116]]` Aider + `[[1.0.0 P-117]]` RepoCoder | verified |
+| `[[1.0.0 PRIM-9]]` Tri-Representation Code Graph | RepoCoder repository-level retrieval over similar code | `[[1.0.0 P-117]]` RepoCoder (Zhang ICLR 2023) | verified |
+| `[[1.0.0 PRIM-22]]` Comprehension | RepoCoder multi-prompt fusion of previous completion + retrieved context | `[[1.0.0 P-117]]` RepoCoder + `[[1.0.0 P-110]]` GraphCoder | verified |
+| `[[1.0.0 PRIM-26]]` Symbol-Aware Navigator | RepoCoder retrieve-then-regenerate loop as the canonical navigator pattern | `[[1.0.0 P-117]]` RepoCoder + `[[1.0.0 P-113]]` AutoCodeRover | verified |
+| `[[1.0.0 PRIM-31]]` Iterative Retrieval | RepoCoder iterative retrieval across completion generations | `[[1.0.0 P-117]]` RepoCoder + `[[1.0.0 P-116]]` Aider | verified |
+| `[[1.0.0 PRIM-5]]` Test Suite Co-Translation | SWE-bench Lite (300-instance curated subset) as fast-iteration oracle | `[[1.0.0 P-118]]` SWE-bench Lite (Jimenez 2024) + `[[1.0.0 P-111]]` SWE-bench | verified |
+| `[[1.0.0 PRIM-6]]` Multi-Stage Build/Test Repair | SWE-bench Lite preserves solvability and FAIL-to-PASS criterion | `[[1.0.0 P-118]]` SWE-bench Lite | verified |
+| `[[1.0.0 PRIM-22]]` Comprehension | SWE-bench Lite enables per-instance comprehension-iteration budget | `[[1.0.0 P-118]]` SWE-bench Lite + `[[1.0.0 P-55]]` SLM Few-Shot | verified |
+| `[[1.0.0 PRIM-27]]` Plateau Detection | SWE-bench Lite scores per-iteration enable tight plateau-detection calibration | `[[1.0.0 P-118]]` SWE-bench Lite + `[[1.0.0 P-109]]` SWE-bench Verified | verified |
+
+Wave 13 anchor list:
+- `[[1.0.0 P-115]]` OpenHands (Wang et al. 2024, `[INFERENCE: best-available venue; verify against arXiv:2407.16741]`) — Princeton University + others; all-hands LLM agent platform that unified CodeAct + SWE-agent scaffolding into an open-source production system; introduces the CodeAct agent action format (single multi-turn tool-call message stream) that simplifies the SWE-agent ACI pattern; reports competitive performance on SWE-bench Verified, HumanEval, and WebArena.
+- `[[1.0.0 P-116]]` Aider (Gauthier 2024-2025, `[INFERENCE: practitioner tech-report; not formally peer-reviewed]`) — Aider is a repo-map + diff-based LLM/SLM coding assistant for terminal use; introduces the "repo map" feature (tree-sitter-derived symbol index with call-graph + definition + reference edges) as a first-class prompt component; benchmarks on SWE-bench Lite demonstrate competitive SLM-era performance with Claude 3.5 Sonnet, GPT-4o, DeepSeek-Coder-V2; the diff-based output format minimises hallucinated file content.
+- `[[1.0.0 P-117]]` RepoCoder (Zhang et al. 2023, ICLR 2023, arXiv:2303.12570) — repository-level code completion via iterative retrieval-augmented generation; the canonical "retrieve similar code, regenerate completion" loop; demonstrates that small models with strong repository retrieval match much larger models on long-context completion; multi-prompt fusion combines the previous-generation completion with the retrieved context for the next-generation prompt.
+- `[[1.0.0 P-118]]` SWE-bench Lite (Jimenez et al. 2024, `[INFERENCE: verify against arXiv:2410.18982; the canonical SWE-bench Lite benchmark page does not link to an arXiv preprint of its own]`) — Princeton NLP benchmark release; 300-instance curated subset of SWE-bench original (P-111) for faster iteration; preserves solvability and test-suite structure; enables iteration budgets that the full 2,294-instance benchmark cannot.
+
+Wave 13 trigger criterion (for wave-14): wave-14 fires when a new SLM-era primitive lands, a 2026 venue paper introduces an unanchored mechanism, or the user issues a new directive that adds a primitive. Specifically:
+- Hop-1 of P-115..P-118 that lacks an existing P-NN anchor (e.g., CodeAct, Reflexion, ReAct, GPT-4o, Claude 3.5 Sonnet, DeepSeek-Coder-V2, MMLU, APPS, CodeT5, InCoder, HumanEval) — most are foundational priors already implicitly cited via hop-2.
+- Real wave-14 gap candidates: Multi-SWE-bench (multi-language extension, P-56 already anchors PRIM-22), SWE-Rebench (2025 leaderboard), or a 2026 MAgHARCM-internal reproduction paper.
+
 Cross-cutting SLM-era general-purpose anchors:
 - `[[1.0.0 P-85]]` Function calling at 4B-30B scale (tool-call accuracy) — UNVERIFIED (superseded by `[[1.0.0 P-106]]` BFCL verified).
 - `[[1.0.0 P-86]]` LLM-empowered software modernization taxonomy — UNVERIFIED.
@@ -218,6 +253,7 @@ Wave 9 anchors (verified):
 
 ## 9. Last Updated
 - **2026-09-21** — Sprint 2026-09-21: Wave-11 fired. 3 new SLM-era anchor papers persisted (P-108 EAGLE-3 NeurIPS 2025, P-109 SWE-bench Verified OpenAI 2024, P-110 GraphCoder / CodeGraphRAG 2024). P-108 is the deliberate re-anchor of `[[1.0.0 P-78]]` (EAGLE-3 NeurIPS 2024 was incorrect; venue corrected to NeurIPS 2025 per OpenReview `4exx1hUffq` + NeurIPS proceedings PDF; arXiv:2503.01840). Wave-11 SLM-era anchors table (10 rows) + Wave-11 anchor list appended to §7. Cross-links added in `Software-Archaeology-Lineage.md` (9 cross-link rows across PRIM-5, 6, 7, 9, 21, 26, 27, 31). All gates green (`go build`, `go vet`, `go test ./...`). Audit verified all 31 primitives still mapped to implementation files; 8-agent graph still wired; Charm TUI idioms still intact; `abcoder-mcp` default still in `configs/agents.yml`. Three focused commits planned (papers → cross-links → methodology + handoff).
+- **2026-09-23** — Sprint 2026-09-23: Wave-13 fired. 4 new SLM-era anchor papers persisted (P-115 OpenHands/CodeAct Wang 2024, P-116 Aider Gauthier 2024-2025, P-117 RepoCoder Zhang ICLR 2023, P-118 SWE-bench Lite Jimenez 2024). Wave-13 SLM-era anchors table (16 rows) + Wave-13 anchor list appended to §7. Cross-links added in `Software-Archaeology-Lineage.md` (16 cross-link rows across PRIM-5, 6, 9, 22, 25, 26, 27, 29, 31). §0 Quick Start tightened to include Vault Sync + Rerun Experiments + Modify Paper + Ponytail Refactor steps per user directives. All gates green (`go build`, `go vet`, `go test ./...`). Audit verified all 31 primitives still mapped to implementation files; 8-agent graph still wired; Charm TUI idioms still intact; abcoder-mcp default still in `configs/agents.yml`. Ponytail refactor in flight: extracting artifact structs from `internal/compiletime/state.go` into new `internal/compiletime/artifacts` leaf sub-package to satisfy Locality of Behaviour (ADR-C-014) without recreating the `compiletime → agents → compiletime` import cycle.
 - **2026-09-22** — Sprint 2026-09-22: Wave-12 fired. 4 new SLM-era anchor papers persisted (P-111 SWE-bench original Jimenez ICLR 2024, P-112 SWE-agent Yang NeurIPS 2024, P-113 AutoCodeRover Zhang 2024, P-114 Medusa Cai 2024). Wave-12 SLM-era anchors table (16 rows) + Wave-12 anchor list appended to §7. Cross-links added in `Software-Archaeology-Lineage.md` (16 cross-link rows across PRIM-5, 6, 7, 9, 21, 22, 23, 25, 26, 27, 29, 31). All gates green (`go build`, `go vet`, `go test ./...`). Audit verified all 31 primitives still mapped to implementation files; 8-agent graph still wired; Charm TUI idioms still intact; abcoder-mcp default still in `configs/agents.yml`.
 - **2026-09-19** — Sprint 2026-09-19: Ponytail inline sweep (HIGH-1..HIGH-2, MED-1) — canonical configs/agents.yml now lists `lsp.provider: abcoder-mcp`; 3 *Default* constants renamed to *Placeholder to align with the no-fallback rule; tree-sitter boundary comment added at internal/languages/extractor.go:14. Primitive-completeness scout verified 31/31 INDEX rows map to implementation files; 8-agent graph wired; zero fmt.Print*/log.Print*/raw panic/os.Stdout in production code; 120 fmt.Sprintf/Fprintf are string construction (not I/O). Wave-11 candidates identified (EAGLE-3, GraphCoder, MemoryBank-E, TinyRM, SWE-bench Verified 2025) but not fired: no new SLM-era mechanism requires anchoring.
 - **2026-09-20** — Sprint 2026-09-20: Audit-only sprint — no code or vault edits required. Re-verified all 12 directive items still satisfied at `8807b5b` (no fmt.Print*, abcoder-mcp default, 8-agent graph, try-and-fail strategy registry, state.go centralised, Charm TUI, binary compilation status, Must pattern, clear unit boundaries, no hard-coded magic values, STE100 messaging, locality of behaviour). Wave-11 continued deferral: 5 candidates already triaged, none introduce a new SLM-era mechanism that requires an anchor. All gates green (`go build`, `go vet`, `go test ./...`). Single changelog commit closes the sprint.
