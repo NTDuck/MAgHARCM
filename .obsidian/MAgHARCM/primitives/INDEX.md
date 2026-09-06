@@ -84,7 +84,7 @@ All 31 primitives are compiled into the codebase, preserving architectural integ
 
 - All 31 primitives verified to have implementation files in internal/agents/ (35 files = 31 impl + 4 test files + 0 orphan).
 - Ponytail sweep: zero fmt.Print* / log.Print* / raw panic / os.Stdout in production code; all fmt.* uses are Sprintf/Fprintf to buffers (string construction, not I/O).
-- 8-agent graph verified: Archaeologist, Analyzer, Planning, Translator, RoleFlipGate, Validator, VerdictPanel, Recruiter.
+- 8-agent graph verified: Archaeologist, Analyzer, Planning, Translator, reviewer (RoleFlipGate), Validator, VerdictPanel, Recruiter. See Architecture.md §4 for the canonical statement.
 - Try-and-fail strategy registry confirmed; SelectMigrationStrategy replaced by Registry.TryInOrder.
 - Renamed 3 *Default* constants to *Placeholder to align naming with no-fallback rule: TranslatedPackagePlaceholder, ProjectDirPlaceholder, ConceptDescriptionPlaceholder.
 - configs/agents.yml now lists `lsp.provider: abcoder-mcp` as canonical example (abcoder MCP default surfaced in docs).
