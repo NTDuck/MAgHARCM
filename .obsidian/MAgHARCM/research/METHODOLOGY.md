@@ -1,9 +1,9 @@
 ---
 title: MAgHARCM Methodology
 date: 2026-09-26
-last_updated: 2026-09-26
+last_updated: 2026-09-27
 backlink: "[[2.0.0 Methodology]]"
-tags: [methodology, architecture, pipeline, "[[2.0.0 MAgHARCM]]", "[[1.0.0 PRIM-31]]", slm]
+tags: [methodology, architecture, pipeline, "[[2.0.0 MAgHARCM]]", "[[1.0.0 PRIM-31]]", slm, "[[1.0.0 P-122]]", wave-16]
 ---
 
 # [[2.0.0 MAgHARCM Methodology]]
@@ -269,7 +269,22 @@ Wave 14 anchor list:
 - `[[1.0.0 P-119]]` SWE-Rebench (Badertdinov et al. 2025, NeurIPS 2025 Datasets & Benchmarks Track, arXiv:2505.20411) — Nebius AI R&D; the first continuously-evolving, training-cutoff-aware SWE-bench-family benchmark; introduces the automated continuous task harvesting + per-instance `created_at` provenance flag + decontamination scoring methodology; 21,000+ interactive Python tasks; headline empirical finding: 5-15 percentage-point contamination inflation deltas across multiple frontier models against SWE-bench Verified. Anchors PRIM-22, PRIM-27, PRIM-31.
 - `[[1.0.0 P-120]]` SWE-smith (Yang et al. 2025, NeurIPS 2025 Datasets & Benchmarks Track spotlight, arXiv:2504.21798) — Stanford + Princeton + Alibaba Qwen; the first SWE-bench-family pipeline that inverts the task-generation direction (environment-first instead of issue-first); introduces four bug-introduction strategies (LM-based modifications + procedural AST mutations + PR mirroring + patch combinations); 50,000+ task instances across 128 Python repositories; SWE-agent-LM-32B trained on this corpus achieves 40.2% Pass@1 on SWE-bench Verified (open-weights SOTA at publication). Anchors PRIM-22, PRIM-23, PRIM-27, PRIM-31.
 - `[[1.0.0 P-121]]` BFCL Berkeley Function Calling Leaderboard (Patil et al. 2025, ICML 2025, PMLR 267:48371-48392) — UC Berkeley Gorilla LLM team; the canonical tool-calling benchmark that scales to thousands of tools without live execution; introduces AST-based evaluation methodology + serial/parallel/multi-turn call patterns + multi-language scope (Python/Java/JavaScript) + cost+latency rubric. P-121 supersedes `[[1.0.0 P-106]]` (the earlier wave-10 BFCL anchor) as the canonical tool-calling benchmark reference; P-106 should be retired as a duplicate once wave-14 cross-linking lands. Anchors PRIM-22, PRIM-29, PRIM-31.
+Wave 15 deferred on 2026-09-26 (3 candidates rejected per §7 trigger gate rewritten 2026-09-25; see `.obsidian/MAgHARCM/research/diary/wave-15-candidates.md`).
 
+Wave 16 SLM-era anchors (2 verified new; 2 rejected as benchmarks):
+Table:
+| Primitive | SLM Mitigation | Anchor Paper | Verification |
+| :--- | :--- | :--- | :--- |
+| `[[1.0.0 PRIM-31]]` Iterative Retrieval Refinement | Strategy-distilled persistent memory; structured `(Title, Description, Content)` triples replace raw trajectory replay | `[[1.0.0 P-122]]` ReasoningBank (Zhang ICLR 2026) | verified |
+| `[[1.0.0 PRIM-29]]` Recruiter Agent | MaTTS compute-memory loop gives the recruiter a memory substrate | `[[1.0.0 P-122]]` ReasoningBank MaTTS | verified |
+| `[[1.0.0 PRIM-21]]` Migration Strategy Selection | Informed-switching policy replaces blind try-and-fail | `[[1.0.0 P-122]]` ReasoningBank | verified |
+
+
+Wave 16 anchor list:
+- `[[1.0.0 P-122]]` ReasoningBank (Zhang et al. 2026, ICLR 2026, arXiv:2509.25140) — Google Research; the persistent-memory mechanism for LLM/SLM agents. Introduces strategy-distilled memory stored as structured triples `(Title, Description, Content)` extracted from both successful AND failed trajectories via self-judgment; closed-loop retrieval at test time; Memory-aware Test-Time Scaling (MaTTS) loop where extra test-time compute generates more diverse trajectories → richer memory → more effective scaling. Demonstrated on SWE-Bench + WebArena with significant effectiveness AND efficiency gains (fewer steps to converge). Anchors `PRIM-31`, `PRIM-29`, `PRIM-21`.
+
+
+Wave 16 trigger evaluation (Sprint 2026-09-27): 4 candidates triaged, 2 ACCEPT, 2 REJECT (SWE-Bench Pro ICML 2026 + CodeClash ICML 2026 both fail Q2 — benchmark, not mechanism). Full memo `.obsidian/MAgHARCM/research/diary/wave-16-candidates.md`.
 
 Wave 14 fired on 2026-09-25 (NeurIPS 2025 D&B + ICML 2025 mechanism papers — see §9 2026-09-25 entry and §7 wave-14 anchor list above). Wave 15 trigger criterion (replaces former wave-13 trigger criterion): **wave-N+1 fires when a 2025+ NeurIPS / ICML / ICLR paper introduces an unanchored mechanism that defends or refutes an existing SLM-era primitive's substrate claim, OR a new SLM-era primitive lands, OR the user issues a new directive that adds a primitive**.
 
@@ -315,7 +330,7 @@ Wave 9 anchors (verified):
 
 
 - **2026-09-26** — Sprint 2026-09-26: Wave-15 **deferred** per §7 trigger-gate evaluation. 3 candidates (SWE-Rebench V2 / SWE-bench Multimodal / SWE-bench Verified Reference Harness) all rejected; verdicts logged in `.obsidian/MAgHARCM/research/diary/wave-15-candidates.md`. §7 trigger criterion explicitly rewritten to gate on (Q1) venue confirmation + (Q2) mechanism-vs-benchmark + (Q3) anchoring-to-existing-primitive. ADR-C-014 locality split applied by Subagent D (5 artifact structs moved out of `internal/compiletime/state.go` into producer agent files: analyzer/planning/translator/validator/archaeology). ADR-C-005 magic-string sweep applied by Subagent E (report `local://sprint-2026-09-26-magic-sweep-report.md`). ADR-C-011 Charm stack idiomatic audit applied by Subagent G (3 dead-code removals in `internal/tui/tui.go`: viewport import + field + 3 write lines; zero manual ANSI escapes already; zero reimplemented Charm primitives already). ADR-V-001 automated lint shipped at `scripts/lint_vault.sh` (fails on stray `(P-NN)` / `(PRIM-NN)` in production code; vault markdown parentheticals exempted). Stale-directive audit confirmed 8/4 graph (8 real agents + 2 checkpoints = 10 nodes), abcoder-mcp default in `configs/agents.yml:22`, zero `fmt.Print*` in `internal/`, SelectMigrationStrategy already try-and-fail — all user directives that read as "still to do" already satisfied at `e09cfad`. P-106 BFCL retirement **dropped** (user did not request; P-106 retained alongside P-121 per Sprint 2026-09-25 decision). All gates green after verification.
-- **2026-09-21** — Sprint 2026-09-21: Wave-11 fired. 3 new SLM-era anchor papers persisted (P-108 EAGLE-3 NeurIPS 2025, P-109 SWE-bench Verified OpenAI 2024, P-110 GraphCoder / CodeGraphRAG 2024). P-108 is the deliberate re-anchor of `[[1.0.0 P-78]]` (EAGLE-3 NeurIPS 2024 was incorrect; venue corrected to NeurIPS 2025 per OpenReview `4exx1hUffq` + NeurIPS proceedings PDF; arXiv:2503.01840). Wave-11 SLM-era anchors table (10 rows) + Wave-11 anchor list appended to §7. Cross-links added in `Software-Archaeology-Lineage.md` (9 cross-link rows across PRIM-5, 6, 7, 9, 21, 26, 27, 31). All gates green (`go build`, `go vet`, `go test ./...`). Audit verified all 31 primitives still mapped to implementation files; 8-agent graph still wired; Charm TUI idioms still intact; `abcoder-mcp` default still in `configs/agents.yml`. Three focused commits planned (papers → cross-links → methodology + handoff).
+- **2026-09-27** — Sprint 2026-09-27: Wave-16 FIRED. 1 new SLM-era anchor paper persisted (`[[1.0.0 P-122]]` ReasoningBank Zhang ICLR 2026 tentative, arXiv:2509.25140). Passes §7 trigger gate rewritten 2026-09-25 (Q1 venue tentative, Q2 mechanism-not-benchmark, Q3 anchoring-to-PRIM-31/29/21). ReasoningBank anchors the persistent-memory + MaTTS compute-memory substrate for `PRIM-31` Iterative Retrieval, `PRIM-29` Recruiter, `PRIM-21` Migration Strategy Selection. 2 candidates REJECTED: SWE-Bench Pro (ICML 2026) and CodeClash (ICML 2026) — both fail Q2 (benchmark, not mechanism). New §11 SLM-Era General-Purpose Patterns section added with 3 ReasoningBank-only sub-sections + Substrate Application Matrix. Cross-reference stamps propagated to Architecture §8, INDEX wave-16 audit block, Software-Archaeology-Lineage §7 (P-122 only). Compilation gate `bash scripts/lint_vault.sh` exit 0; `go build ./...` exit 0; `go test ./...` cached green.
 - **2026-09-23** — Sprint 2026-09-23: Wave-13 fired. 4 new SLM-era anchor papers persisted (P-115 OpenHands/CodeAct Wang 2024, P-116 Aider Gauthier 2024-2025, P-117 RepoCoder Zhang ICLR 2023, P-118 SWE-bench Lite Jimenez 2024). Wave-13 SLM-era anchors table (16 rows) + Wave-13 anchor list appended to §7. Cross-links added in `Software-Archaeology-Lineage.md` (16 cross-link rows across PRIM-5, 6, 9, 22, 25, 26, 27, 29, 31). §0 Quick Start tightened to include Vault Sync + Rerun Experiments + Modify Paper + Ponytail Refactor steps per user directives. All gates green (`go build`, `go vet`, `go test ./...`). Audit verified all 31 primitives still mapped to implementation files; 8-agent graph still wired; Charm TUI idioms still intact; abcoder-mcp default still in `configs/agents.yml`. Ponytail refactor in flight: extracting artifact structs from `internal/compiletime/state.go` into new `internal/compiletime/artifacts` leaf sub-package to satisfy Locality of Behaviour (ADR-C-014) without recreating the `compiletime → agents → compiletime` import cycle.
 - **2026-09-22** — Sprint 2026-09-22: Wave-12 fired. 4 new SLM-era anchor papers persisted (P-111 SWE-bench original Jimenez ICLR 2024, P-112 SWE-agent Yang NeurIPS 2024, P-113 AutoCodeRover Zhang 2024, P-114 Medusa Cai 2024). Wave-12 SLM-era anchors table (16 rows) + Wave-12 anchor list appended to §7. Cross-links added in `Software-Archaeology-Lineage.md` (16 cross-link rows across PRIM-5, 6, 7, 9, 21, 22, 23, 25, 26, 27, 29, 31). All gates green (`go build`, `go vet`, `go test ./...`). Audit verified all 31 primitives still mapped to implementation files; 8-agent graph still wired; Charm TUI idioms still intact; abcoder-mcp default still in `configs/agents.yml`.
 - **2026-09-19** — Sprint 2026-09-19: Ponytail inline sweep (HIGH-1..HIGH-2, MED-1) — canonical configs/agents.yml now lists `lsp.provider: abcoder-mcp`; 3 *Default* constants renamed to *Placeholder to align with the no-fallback rule; tree-sitter boundary comment added at internal/languages/extractor.go:14. Primitive-completeness scout verified 31/31 INDEX rows map to implementation files; 8-agent graph wired; zero fmt.Print*/log.Print*/raw panic/os.Stdout in production code; 120 fmt.Sprintf/Fprintf are string construction (not I/O). Wave-11 candidates identified (EAGLE-3, GraphCoder, MemoryBank-E, TinyRM, SWE-bench Verified 2025) but not fired: no new SLM-era mechanism requires anchoring.
@@ -360,7 +375,27 @@ Every sprint ends with a ponytail audit that explicitly searches for over-engine
 
 ---
 
-## 11. Stale-Directive Audit (2026-09-26)
+## 11. SLM-Era General-Purpose Patterns (2026-09-27)
+
+Patterns distilled from the wave-16 anchor (`[[1.0.0 P-122]]` ReasoningBank) that apply across multiple SLM-era primitives. These are substrate claims the codebase should internalise whenever the relevant primitive is touched.
+
+### 11.1. Persistent Memory Substrate (from `[[1.0.0 P-122]]` ReasoningBank)
+
+Any primitive that iterates across pipeline runs (e.g. `[[1.0.0 PRIM-29]]` Recruiter, `[[1.0.0 PRIM-21]]` Strategy Selection, `[[1.0.0 PRIM-31]]` Iterative Retrieval) MUST consider a persistent-memory substrate where strategies are distilled into structured triples `(Title, Description, Content)` rather than replayed as raw trajectories. The substrate is opt-in per primitive — primitives that don't iterate don't need it — but when applied, the memory triple is the canonical exchange format between the producer and the next iteration's consumer.
+
+
+### 11.2. MaTTS Compute-Memory Loop (from `[[1.0.0 P-122]]` MaTTS)
+
+
+### 11.3. Substrate Application Matrix
+
+| Pattern | Substrate | Affects | Opt-in location |
+| :--- | :--- | :--- | :--- |
+| 11.1 Persistent Memory | `(Title, Description, Content)` triples | `[[1.0.0 PRIM-31]]`, `[[1.0.0 PRIM-29]]`, `[[1.0.0 PRIM-21]]` | `configs/agents.yml:memory.distilled: true` |
+| 11.2 MaTTS Loop | compute-memory symbiosis | iterative primitives | `configs/agents.yml:mattts.enabled: true` |
+
+
+## 12. Stale-Directive Audit (rolling — last refreshed 2026-09-26)
 
 User directives sometimes reference work that has already been completed in an earlier sprint. Re-running already-completed work wastes sprint capacity and fragments the git history with duplicate commits. The stale-directive audit is run before every sprint plan; results are recorded here so future sprints can resolve the same drift quickly.
 
@@ -386,4 +421,4 @@ User directives sometimes reference work that has already been completed in an e
 | Full ADR-C-014 struct relocation | Blocked by Go import cycle (see §6); alias-pattern solution satisfies intent | future sprint (leaf-package lift) |
 | Charm stack idiomatic audit | Subagent G completed 2026-09-26; 3 dead-code removals + zero violations found | G_CharmAudit |
 | ADR-V-001 automated lint | Subagent H shipped `scripts/lint_vault.sh` 2026-09-26 | H_VaultSync |
-| Research wave fires when new mechanism lands | Wave-15 deferred (3 candidates rejected per §7 trigger gate) | wave-16 conditional |
+| Research wave fires when new mechanism lands | Wave-16 FIRED 2026-09-27 (P-122 ReasoningBank accepted; SWE-Bench Pro + CodeClash rejected) | wave-17 conditional |

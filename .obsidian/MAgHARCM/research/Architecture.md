@@ -1,8 +1,8 @@
 ---
 title: MAgHARCM Architecture
 backlink: [[2.0.0 Architecture]]
-last_updated: 2026-09-26
-tags: [architecture, package-graph, [[2.0.0 MAgHARCM]]]
+last_updated: 2026-09-27
+tags: [architecture, package-graph, [[2.0.0 MAgHARCM]], "[[1.0.0 P-122]]", wave-16]
 ---
 
 # [[2.0.0 MAgHARCM Architecture]]
@@ -162,16 +162,41 @@ ADR-C-014 requires per-agent artifact structs (`AnalyzerOutput`, `PlanningOutput
 
 ---
 
-## 7. Vault Sync Audit — Sprint 2026-09-26
-
+## 7. Vault Sync Audit — Sprint 2026-09-27 (cumulative)
 Mirrors `.obsidian/MAgHARCM/primitives/INDEX.md` Sprint 2026-09-26 audit block.
 
-- **Wave-15 status**: deferred. Three candidates (P-122 SWE-Rebench V2, P-123 SWE-bench Multimodal, P-124 SWE-bench Verified Reference Harness) failed the §7 trigger gate rewritten 2026-09-25 (each fails "2025+ NeurIPS/ICML/ICLR venue paper introducing unanchored mechanism that defends/refutes an SLM-era primitive substrate claim"). Full rationale in `.obsidian/MAgHARCM/research/diary/wave-15-candidates.md`. **No `P-NN` anchor added this sprint.**
+- **Wave-15 status**: deferred on 2026-09-26 (3 candidates rejected per §7 trigger gate). Full rationale in `.obsidian/MAgHARCM/research/diary/wave-15-candidates.md`.
+- **Wave-16 status**: FIRED 2026-09-27. 3 candidates triaged; 1 ACCEPT (P-122 ReasoningBank ICLR 2026 tentative) + 2 REJECT (SWE-Bench Pro ICML 2026 + CodeClash ICML 2026 — both fail Q2 mechanism-vs-benchmark gate). Full rationale in `.obsidian/MAgHARCM/research/diary/wave-16-candidates.md`. 1 new SLM-era anchor persisted; 1 new paper note added (`.obsidian/MAgHARCM/research/papers/P-122-reasoningbank-iclr-2026.md`).
 - **ADR-C-014 status**: locality split applied by Subagent D. The producer-file alias pattern (`internal/agents/<file>.go` declares the struct, `internal/compiletime/state.go` declares `type X = agents.X`) remains the durable constraint after the third relocation attempt (commit `89904f6` + Sprint 2026-09-26 sub-agent D abort) hit the same hard cycle blocker.
 - **ADR-C-005 status**: magic-string sweep applied by Subagent E. `internal/consts/consts.go` is the canonical home for hardcoded-by-necessity values; the Sprint 2026-09-26 sweep swept residual string-literal sentinels from agent files into `compiletime/`.
 - **ADR-C-011 status**: Charm stack audit applied by Subagent G. `internal/tui/tui.go` (613 lines after edits) confirmed idiomatic across `bubbletea` / `bubbles/spinner` / `bubbles/table` / `bubbles/textinput` / `lipgloss` / `glamour`. The dead `viewport` import (constructed but never `.View()`-ed) was removed. Full report in `.obsidian/MAgHARCM/diary/sprint-2026-09-26-charm-audit.md`.
 - **ADR-V-001 status**: `scripts/lint_vault.sh` shipped by this subagent. Asymmetric enforcement: `FORBIDDEN` (exit 1) for `internal/` `(P-NN)` outside backticks; `STRAY` (report-only) for `.obsidian/MAgHARCM/` `(PRIM-NN)` per Sprint 2026-09-17 prose-convention decision (prose parentheticals retained as standard academic-writing convention). Documented in `.obsidian/MAgHARCM/architecture/ADR-2026-09-26-Vault-Lint-Extension.md`.
 - **P-106 status**: `P-106 BFCL` retire task deferred to Sprint 2026-09-27. Sprint 2026-09-26 subagent F was cancelled; the duplicate anchor (P-121 supersedes P-106 as the canonical tool-calling benchmark reference) will be retired in a follow-up sweep.
-- **Parity check**: 31/31/31 unchanged — 31 primitives listed in `.obsidian/MAgHARCM/primitives/INDEX.md`, 31 rows in `.obsidian/MAgHARCM/research/Software-Archaeology-Lineage.md`, 31 implementation files in `internal/agents/*.go` (35 files = 31 impl + 4 test files + 0 orphan).
+
+## 8. Wave-16 SLM-Era Architectural Implications (2026-09-27)
+
+Wave-16 fired 2026-09-27 (`[[1.0.0 P-122]]` ReasoningBank accepted, tentative ICLR 2026). One architectural shift implied; opt-in via YAML config to preserve backward compatibility.
+
+### 8.1 Persistent-Memory Substrate (P-122)
+
+Three iterative primitives acquire a persistent-memory substrate when `configs/agents.yml:memory.distilled: true`:
+- **`[[1.0.0 PRIM-31]]` Iterative Retrieval** — feedback-driven refinement is augmented with strategy-distilled `(Title, Description, Content)` triples persisted across iterations.
+- **`[[1.0.0 PRIM-29]]` Recruiter Agent** — `RecruitmentPlan` output becomes a structured triple; MaTTS compute-memory loop applies.
+- **`[[1.0.0 PRIM-21]]` Migration Strategy Selection** — strategy-by-profile rewards persist; blind try-and-fail becomes informed switching.
+
+The persistent-memory substrate is a leaf package `internal/memorystore/` (forthcoming — sprint 2026-09-28+); the primitives consume it via a typed `MemoryTriple` interface. No graph re-wiring required.
+
+
+
+### 8.2 Backward Compatibility
+
+Both shifts are opt-in. Existing users with `configs/agents.yml` default keys continue to get blind try-and-fail + feedback-driven retrieval (the Sprint 2026-09-26 baseline). New YAML keys added; no breaking changes.
+
+### 8.3 Parity Check (post-wave-16, 2026-09-27)
+
+- **Parity**: 31/31/31 unchanged — 31 primitives listed in `.obsidian/MAgHARCM/primitives/INDEX.md`, 31 rows in `.obsidian/MAgHARCM/research/Software-Archaeology-Lineage.md`, 31 implementation files in `internal/agents/*.go` (35 files = 31 impl + 4 test files + 0 orphan).
+- **Wave-16 anchors**: 1 added (P-122). Total vault paper notes: 122 (121 prior + P-122).
+- **Cross-links**: propagated in `Software-Archaeology-Lineage.md` (sprint 2026-09-27 close).
 
 ---
+

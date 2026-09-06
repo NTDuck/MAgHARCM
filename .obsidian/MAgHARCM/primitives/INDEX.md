@@ -1,10 +1,9 @@
 ---
 title: Primitives Index
 backlink: "[[2.0.0 Primitives Index]]"
-last_updated: 2026-09-26
-tags: [primitives, catalog, status, [[1.0.0 PRIM-1]]..[[1.0.0 PRIM-31]]]
+last_updated: 2026-09-27
+tags: [primitives, catalog, status, [[1.0.0 PRIM-1]]..[[1.0.0 PRIM-31]], "[[1.0.0 P-122]]", wave-16]
 ---
-
 # [[2.0.0 Primitives Index]]
 
 A primitive is a small, named, reusable capability within the MAgHARCM pipeline.
@@ -41,7 +40,7 @@ Status legend:
 | `[[1.0.0 PRIM-18]]` | Jaccard-Coupling Architecture Recovery | `internal/agents/jaccard_coupling.go` | [[MSR4SA-2017]], Hassan MSR, [[1.0.0 P-47]] Gall Hajek Jazayeri, [[1.0.0 P-59]] Digital Apollo | implemented |
 | `[[1.0.0 PRIM-19]]` | Design Rule Hierarchy Partitioning | `internal/agents/design_rule_hierarchy.go` | [[Kazman-2017]], Baldwin & Clark, [[1.0.0 P-42]] DSM, [[1.0.0 P-59]] Digital Apollo | implemented |
 | `[[1.0.0 PRIM-20]]` | Concept Assignment and Redocumentation | `internal/agents/concept_assignment.go` | [[Rajlich-1997]], Biggerstaff, [[1.0.0 P-59]] Digital Apollo | implemented |
-| `[[1.0.0 PRIM-21]]` | Migration Strategy Selection | `internal/agents/strategy.go::Registry.TryInOrder` | [[1.0.0 P-35]] Müller 5 Strategies, [[1.0.0 P-57]] Speculative Decoding, [[1.0.0 P-60]] Bisbal Cascading Fallback, [[1.0.0 P-84]] s1 test-time scaling, [[1.0.0 P-91]] Snell test-time compute allocation, [[1.0.0 P-98]] Large Language Monkeys, [[1.0.0 P-108]] EAGLE-3 speculative decoding (SLM draft model) | implemented |
+| `[[1.0.0 PRIM-21]]` | Migration Strategy Selection | `internal/agents/strategy.go::Registry.TryInOrder` | [[1.0.0 P-35]] Müller 5 Strategies, [[1.0.0 P-57]] Speculative Decoding, [[1.0.0 P-60]] Bisbal Cascading Fallback, [[1.0.0 P-84]] s1 test-time scaling, [[1.0.0 P-91]] Snell test-time compute allocation, [[1.0.0 P-98]] Large Language Monkeys, [[1.0.0 P-108]] EAGLE-3 speculative decoding (SLM draft model), [[1.0.0 P-122]] ReasoningBank strategy-distilled persistent memory (wave-16) | implemented |
 | `[[1.0.0 PRIM-22]]` | Four Phases of Comprehension | `internal/agents/comprehension.go` | [[1.0.0 P-40]] DR. JONES Model, [[1.0.0 P-54]] Phi-3, [[1.0.0 P-55]] SLM Few-Shot, [[1.0.0 P-56]] Multi-SWE-bench, [[1.0.0 P-58]] Qwen2.5-Coder, [[1.0.0 P-62]] Decomposed Prompting, [[1.0.0 P-80]] StreamingLLM, [[1.0.0 P-90]] Wei CoT, [[1.0.0 P-94]] LIMA curation, [[1.0.0 P-96]] Zero-Shot CoT, [[1.0.0 P-99]] BIG-Bench Hard, [[1.0.0 P-100]] Decomposed Prompting (SLM multi-agent), [[1.0.0 P-110]] GraphCoder / CodeGraphRAG | implemented |
 | `[[1.0.0 PRIM-23]]` | Chunked Translation | `internal/agents/chunked_translator.go` | [[ChatDev-2023]], [[MetaGPT-2023]], [[1.0.0 P-58]] Qwen2.5-Coder, [[1.0.0 P-62]] Decomposed Prompting, [[1.0.0 P-65]] PAL, [[1.0.0 P-101]] Least-to-Most Prompting | implemented |
 | `[[1.0.0 PRIM-24]]` | SOP-Anchored Role-Artifact Schema | `internal/compiletime/compiletime.go`, `internal/agents/state.go` | [[MetaGPT-2023]] SOP Contracts, [[1.0.0 P-45]] Curtis-Kellner-Over, [[1.0.0 P-55]] SLM Few-Shot, [[1.0.0 P-62]] Decomposed Prompting, [[1.0.0 P-63]] Multi-Agent Survey, [[1.0.0 P-93]] DPO alignment, [[1.0.0 P-95]] Code Llama instruction tuning, [[1.0.0 P-100]] Decomposed Prompting (SLM multi-agent) | implemented |
@@ -49,9 +48,9 @@ Status legend:
 | `[[1.0.0 PRIM-26]]` | Symbol-Aware Navigator | `internal/agents/navigator.go` | [[HyperAgent-2024]], ABCoder, [[1.0.0 P-50]] Code-Gen Survey, [[1.0.0 P-58]] Qwen2.5-Coder, [[1.0.0 P-110]] GraphCoder / CodeGraphRAG | implemented |
 | `[[1.0.0 PRIM-27]]` | Coverage-Guided Plateau Detection | `internal/agents/plateau.go` | [[CodaMOSA-2023]], Harman SBST, [[1.0.0 P-109]] SWE-bench Verified | implemented |
 | `[[1.0.0 PRIM-28]]` | Conversable State Checkpoints & Interrupts | `internal/agents/checkpoint.go` | [[AutoGen-2023]], Snapshotting, [[1.0.0 P-59]] Digital Apollo | implemented |
-| `[[1.0.0 PRIM-29]]` | Recruitment-Adaptive Planning | `internal/agents/recruit.go` | [[AgentVerse-2023]], Dynamic Org, [[1.0.0 P-49]] Shehory & Kraus Coalition Formation, [[1.0.0 P-63]] Multi-Agent Survey | implemented |
+| `[[1.0.0 PRIM-29]]` | Recruitment-Adaptive Planning | `internal/agents/recruit.go` | [[AgentVerse-2023]], Dynamic Org, [[1.0.0 P-49]] Shehory & Kraus Coalition Formation, [[1.0.0 P-63]] Multi-Agent Survey, [[1.0.0 P-122]] ReasoningBank MaTTS compute-memory loop (wave-16) | implemented |
 | `[[1.0.0 PRIM-30]]` | Source-to-Target Manifest Rewriter | `internal/agents/manifest_rewriter.go` | [[Syzygy-2024]], JavaC2Rust | implemented |
-| `[[1.0.0 PRIM-31]]` | Iterative Retrieval Refinement | `internal/agents/iter_retrieval.go` | [[RepoCoder-2024]], Dynamic Context, [[1.0.0 P-56]] Multi-SWE-bench, [[1.0.0 P-57]] Speculative Decoding, [[1.0.0 P-58]] Qwen2.5-Coder, [[1.0.0 P-62]] Decomposed Prompting, [[1.0.0 P-108]] EAGLE-3 speculative decoding (SLM draft model), [[1.0.0 P-110]] GraphCoder / CodeGraphRAG | implemented |
+| `[[1.0.0 PRIM-31]]` | Iterative Retrieval Refinement | `internal/agents/iter_retrieval.go` | [[RepoCoder-2024]], Dynamic Context, [[1.0.0 P-56]] Multi-SWE-bench, [[1.0.0 P-57]] Speculative Decoding, [[1.0.0 P-58]] Qwen2.5-Coder, [[1.0.0 P-62]] Decomposed Prompting, [[1.0.0 P-108]] EAGLE-3 speculative decoding (SLM draft model), [[1.0.0 P-110]] GraphCoder / CodeGraphRAG, [[1.0.0 P-122]] ReasoningBank strategy-distilled persistent memory (wave-16) | implemented |
 
 ---
 
@@ -145,3 +144,10 @@ All 31 primitives are compiled into the codebase, preserving architectural integ
 - ADR-V-001 status: scripts/lint_vault.sh shipped by this subagent.
 - P-106 status: P-106 BFCL retire task deferred to Sprint 2026-09-27 (Subagent F cancelled).
 - Parity check: 31/31/31 unchanged.
+
+## Sprint 2026-09-27 Vault Sync Audit (Wave-16)
+
+- **Wave-16 FIRED** 2026-09-27. 1 ACCEPT ([[1.0.0 P-122]] ReasoningBank ICLR 2026 tentative) + 2 REJECT (SWE-Bench Pro ICML 2026 + CodeClash ICML 2026 — both fail Q2 mechanism-vs-benchmark gate).
+- **Cross-links propagated** into this INDEX: P-122 into PRIM-21, PRIM-29, PRIM-31. Sources: `.obsidian/MAgHARCM/research/diary/wave-16-candidates.md` + paper note `P-122-reasoningbank-iclr-2026.md`.
+- **Total paper notes**: 122 (121 prior + P-122).
+- **Parity**: 31/31/31 unchanged — 31 primitives listed above, 31 implementation files in `internal/agents/*.go` (35 files = 31 impl + 4 test files + 0 orphan).

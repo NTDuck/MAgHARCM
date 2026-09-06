@@ -1,10 +1,9 @@
 ---
 title: Software Archaeology & Legacy System Modernization Lineage
 backlink: [[2.0.0 Software-Archaeology-Lineage]]
-last_updated: 2026-09-26
-tags: [research, software-archaeology, modernization, lineage, synthesis, [[2.0.0 MAgHARCM]]]
+last_updated: 2026-09-27
+tags: [research, software-archaeology, modernization, lineage, synthesis, [[2.0.0 MAgHARCM]], "[[1.0.0 P-122]]", wave-16]
 ---
-
 # [[2.0.0 Software Archaeology & Legacy System Modernization Lineage]]
 
 ## 1. Executive Summary & Epistemological Stance
@@ -233,6 +232,42 @@ Every stage produces strictly typed, schema-versioned artifacts (`[[1.0.0 PRIM-2
 ---
 
 ## 6. Wave-15 Deferral (2026-09-26)
+
+3 candidates (P-122 SWE-Rebench V2, P-123 SWE-bench Multimodal, P-124 SWE-Bench Verified Reference Harness) were held against the §7 trigger gate rewritten 2026-09-25 and rejected. Full rationale per candidate in `.obsidian/MAgHARCM/research/diary/wave-15-candidates.md`. No `P-NN` anchor added this wave; wave-15 is deferred.
+
+## 7. Wave-16 SLM-Era Anchors (2026-09-27)
+
+Wave-16 fired 2026-09-27 with 1 new SLM-era mechanism paper persisted.
+
+### 7.1 [[1.0.0 P-122]] ReasoningBank (Zhang et al. 2026, ICLR 2026)
+
+Google Research; **strategy-distilled persistent memory** as the canonical substrate for `[[1.0.0 PRIM-31]]` Iterative Retrieval, `[[1.0.0 PRIM-29]]` Recruiter, `[[1.0.0 PRIM-21]]` Migration Strategy Selection.
+
+- **Hop-1 (cited by ReasoningBank)**:
+  - `[[1.0.0 P-90]]` Wei et al. 2022 — Chain-of-Thought (self-judge step).
+  - `[[1.0.0 P-111]]` Jimenez et al. 2024 — SWE-Bench (experimental setup).
+  - Schick et al. 2023 — Toolformer (analog of structured-tool memory).
+- **Hop-2**:
+  - `[[1.0.0 P-109]]` SWE-bench Verified (OpenAI 2024).
+  - `[[1.0.0 P-115]]` OpenHands (Wang 2024).
+- **Lineage position**: closes the persistent-memory gap that `PRIM-31` Iterative Retrieval Refinement assumed but did not implement. Adds the **time-axis dimension** to retrieval (strategy persistence across runs vs LM-feedback within a run).
+
+
+
+### 7.2 Wave-16 Substrate-Cross-Reference Matrix
+
+| Primitive | ReasoningBank (P-122) |
+| :--- | :--- |
+| `[[1.0.0 PRIM-7]]` Verdict Validation | — |
+| `[[1.0.0 PRIM-21]]` Migration Strategy | informed-switching policy |
+| `[[1.0.0 PRIM-29]]` Recruiter Agent | MaTTS compute-memory loop |
+| `[[1.0.0 PRIM-31]]` Iterative Retrieval | strategy-distilled persistent memory |
+
+### 7.3 Wave-16 Deferral Note
+
+2 candidates REJECTED at the §7 trigger gate:
+- **P-124 SWE-Bench Pro** (ICML 2026) — benchmark, not mechanism; re-evaluation fires when a method-level companion lands.
+- **P-125 CodeClash** (ICML 2026) — benchmark, not mechanism; re-evaluation fires when a method-level companion lands.
 
 On 2026-09-26 the wave-15 trigger-criterion evaluation was carried out against the `METHODOLOGY.md` §7 gate rewritten 2026-09-25 ("wave-N+1 fires when a 2025+ NeurIPS/ICML/ICLR paper introduces an unanchored mechanism that defends or refutes an existing SLM-era primitive's substrate claim"). Three candidates were drafted and the gate rejected all three. Full deferral memo with per-candidate verdicts is preserved on file at `.obsidian/MAgHARCM/research/diary/wave-15-candidates.md`.
 
