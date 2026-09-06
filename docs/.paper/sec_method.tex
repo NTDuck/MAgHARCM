@@ -333,7 +333,7 @@ in order; each strategy exposes a predicate and an attempt method.}
 \label{sec:method_qwen25coder_anchor}
 
 MAgHARCM is tuned for the Qwen2.5-Coder family of coding SLMs at the
-7B, 14B, and 32B scales~\cite{p58_hui_qwen25coder_2024,p94_zhou_lima_2023,p96_kojima_zsr_2022,p99_suzgun_bigbench_cot_2022,p100_khot_decomposed_2022,p101_zhou_l2m_2023,p102_smallcode_4b_2025,p104_s_star_2025,p105_chunkkv_2025,p106_bfcl_2025,p107_decomposed_prompting_slm_reanchor_2025,p108_eagle3_2025,p110_graphcoder_2024,p86_xu_modernization_survey_2024_unverified,p88_hityper_peng_2022,p89_phan_baseline_icse_nier_2024_unverified,p85_yue_function_calling_2025_unverified}.
+7B, 14B, and 32B scales~\cite{p58_hui_qwen25coder_2024,p94_zhou_lima_2023,p96_kojima_zsr_2022,p99_suzgun_bigbench_cot_2022,p100_khot_decomposed_2022,p101_zhou_l2m_2023,p102_smallcode_4b_2025,p104_s_star_2025,p105_chunkkv_2025,p106_bfcl_2025,p121_patil_bfcl_2025,p107_decomposed_prompting_slm_reanchor_2025,p108_eagle3_2025,p110_graphcoder_2024,p86_xu_modernization_survey_2024_unverified,p88_hityper_peng_2022,p89_phan_baseline_icse_nier_2024_unverified,p85_yue_function_calling_2025_unverified}.
 fragment context ($\le 4\,\text{KB}$), reverse-topological scheduling,
 and the role-flipped reviewer are calibrated so that the prompt
 window, scratch reasoning budget, and instruction-following fidelity
@@ -468,7 +468,7 @@ summary ($\le 4\,\text{KB}$) of emitted module paths and exported
 signatures so that newly generated modules import and reuse already
 emitted types consistently. The navigator's subgraph ranking follows
 graph-RAG principles that surface high-quality graph context over
-the existing code-property-graph~\cite{p110_graphcoder_2024,p113_zhang_autocoderover_2024,p116_gauthier_aider_2024,p117_zhang_repocoder_2023}, raising small-model (4B--13B) comprehension to large-model parity on repo-level tasks. This design specifically addresses
+the existing code-property-graph~\cite{p110_graphcoder_2024,p113_zhang_autocoderover_2024,p116_gauthier_aider_2024,p117_zhang_repocoder_2023,p120_yang_swesmith_2025}, raising small-model (4B--13B) comprehension to large-model parity on repo-level tasks. This design specifically addresses
 challenge 2: long-horizon agents lose high-level goals without an
 explicit plan and degrade as interaction history grows unbounded; the
 bounded context per fragment prevents both failure modes on small
@@ -529,7 +529,7 @@ adversarial test-weakening guard (halts with a \textsc{Weakened}
 signal if the assertion count decreases across iterations), and the
 coverage plateau detector (a CodaMOSA-style stagnation heuristic on
 the test pass rate; plateau remedies run inside the validator before
-the loop exits). Failure modes are aligned with the human-verified solvability taxonomy of~\cite{p109_swebench_verified_2024,p111_jimenez_swebench_2024,p118_jimenez_swebench_lite_2024}, with the canonical tool-calling agent scaffold and test-run loop~\cite{p112_yang_sweagent_2024}, where the oracle benchmark pins down which failure traces are spurious and which are real regressions.
+the loop exits). Failure modes are aligned with the human-verified solvability taxonomy of~\cite{p109_swebench_verified_2024,p111_jimenez_swebench_2024,p118_jimenez_swebench_lite_2024,p119_badertdinov_swerebench_2025}, with the canonical tool-calling agent scaffold and test-run loop~\cite{p112_yang_sweagent_2024}, where the oracle benchmark pins down which failure traces are spurious and which are real regressions.
 
 \paragraph{(2) Coverage-Guided Test Generation.}
 To fully validate the translated modules, the agent performs a
@@ -587,7 +587,7 @@ the methodological precedent for MAgHARCM's verifier-of-verifier pattern.
 The Recruiter Agent (§\ref{sec:method_recruiter}) evaluates runtime
 validation signals (compilation status, test pass rate, coverage plateau,
 and test weakening) to adapt the pipeline dynamically
-(PRIM-29~\cite{p26_agentverse,p112_yang_sweagent_2024,p115_wang_openhands_2024}). When repair iterations stall or
+(PRIM-29~\cite{p26_agentverse,p112_yang_sweagent_2024,p115_wang_openhands_2024,p121_patil_bfcl_2025}). When repair iterations stall or
 plateau, the Recruiter triggers incremental try-and-fail strategy
 failover, switching from the current migration strategy to the next
 viable strategy in the registry.

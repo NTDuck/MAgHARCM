@@ -1397,3 +1397,30 @@
   eprint    = {2410.18982},
   note      = {[INFERENCE: verify against arXiv:2410.18982; the canonical SWE-bench Lite benchmark page (swebench.com/lite.html) does not link to an arXiv preprint of its own; the swebench.com BibTeX cites the original Jimenez et al. ICLR 2024 paper (arXiv:2310.06770). Treat SWE-bench Lite as a Princeton NLP benchmark release from late 2024 that accompanies the original SWE-bench paper]. 300-instance curated subset of SWE-bench original (P-111) for faster iteration; preserves solvability and test-suite structure; enables iteration budgets that the full 2,294-instance benchmark cannot. Anchors PRIM-5, PRIM-6, PRIM-22, PRIM-27.}
 }
+
+@misc{p119_badertdinov_swerebench_2025,
+  title     = {{SWE-Rebench: A Continuously Evolving and Decontaminated Benchmark for Software Engineering LLMs}},
+  author    = {Badertdinov, Ibragim and Golubev, Alexander and Nekrashevich, Maksim and Shevtsov, Anton and Karasik, Simon and Andriushchenko, Andrei and Trofimova, Maria and Litvintseva, Daria and Yangel, Boris},
+  booktitle = {NeurIPS 2025 Datasets and Benchmarks Track (featured)},
+  year      = {2025},
+  eprint    = {2505.20411},
+  note      = {Nebius AI R\&D team; first SWE-bench-family benchmark whose freshness is a first-class property; pipeline automatically harvests fresh tasks from GitHub on a rolling schedule and tracks each task's creation date against each candidate model's training cutoff; 21,000+ interactive Python task corpus with Docker-sandbox evaluation; reports 5-15pp contamination-inflation deltas for several popular models vs.\ SWE-bench Verified; v2 (arXiv:2602.23866, [INFERENCE: forward reference to language-agnostic successor; verify against arXiv on first revisit]) generalises to language-neutral task harvesting. Anchors PRIM-22, PRIM-27, PRIM-31.}
+}
+
+@misc{p120_yang_swesmith_2025,
+  title     = {{SWE-smith: Scaling Data for Software Engineering Agents}},
+  author    = {Yang, John and Lieret, Kilian and Jimenez, Carlos E. and Wettig, Alexander and Khandpur, Kabir and Zhang, Yanzhe and Hui, Binyuan and Press, Ofir and Schmidt, Ludwig and Yang, Diyi},
+  booktitle = {NeurIPS 2025 Datasets and Benchmarks Track (spotlight)},
+  year      = {2025},
+  eprint    = {2504.21798},
+  note      = {Stanford + Princeton + Alibaba Qwen collaboration; scalable synthetic-task generator that complements the static SWE-bench family; environment-first procedural synthesis mutates existing GitHub repositories (AST-rewrite strategies) rather than scraping fresh issues; provides PR-mirrored ground-truth fixes as realistic-retrieval training substrate; enables per-iteration training-time sweeps that the open-weights SLM regime needs to advance past the contamination plateau. Anchors PRIM-22, PRIM-23, PRIM-27, PRIM-31.}
+}
+
+@inproceedings{p121_patil_bfcl_2025,
+  title     = {{The Berkeley Function Calling Leaderboard (BFCL): From Tool Use to Agentic Evaluation of Large Language Models}},
+  author    = {Patil, Shishir G. and Mao, Huanzhi and Yan, Fanjia and Ji, Charlie Cheng-Jie and Suresh, Vishnu and Stoica, Ion and Gonzalez, Joseph E.},
+  booktitle = {ICML 2025 (PMLR 267:48371-48392)},
+  year      = {2025},
+  eprint    = {2607.05775},
+  note      = {[INFERENCE: arXiv id 2607.05775 noted in P-121 paper header as the most-cited authoritative id per the ICML proceedings PDF; treat the ICML 2025 publication (PMLR 267:48371-48392) as the canonical citation and verify the arXiv id against the ICML proceedings PDF on first revisit]. Berkeley Sky Computing Lab / Gorilla LLM team; canonical tool-calling evaluation substrate; AST-based evaluation enforces per-turn contract correctness rather than surface-form match; call-pattern templates (serial / parallel / multi-turn) provide the function-calling-specific benchmark the open-weights SLM regime needs; multi-turn stateful call pattern enables tool-return-driven dynamic re-recruitment evaluation. Anchors PRIM-22, PRIM-29, PRIM-31.}
+}
