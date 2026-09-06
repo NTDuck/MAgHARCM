@@ -1,9 +1,9 @@
 ---
 title: Software Archaeology & Legacy System Modernization Lineage
-date: 2026-09-27
+date: 2026-09-28
 backlink: [[2.0.0 Software-Archaeology-Lineage]]
-last_updated: 2026-09-27
-tags: [research, software-archaeology, modernization, lineage, synthesis, [[2.0.0 MAgHARCM]], "[[1.0.0 P-122]]", wave-16]
+last_updated: 2026-09-28
+tags: [research, software-archaeology, modernization, lineage, synthesis, [[2.0.0 MAgHARCM]], "[[1.0.0 P-122]]", "[[1.0.0 P-123]]", "[[1.0.0 P-124]]", wave-16, wave-17]
 ---
 
 ## 1. Executive Summary & Epistemological Stance
@@ -289,3 +289,64 @@ On 2026-09-26 the wave-15 trigger-criterion evaluation was carried out against t
 - Trigger-gate language: `METHODOLOGY.md` §7 (rewritten 2026-09-25)
 - Lint automation: `.obsidian/MAgHARCM/architecture/ADR-2026-09-26-Vault-Lint-Extension.md` + `scripts/lint_vault.sh`
 - Sprint-2026-09-26 audit block: `.obsidian/MAgHARCM/primitives/INDEX.md` §Sprint 2026-09-26
+
+## 8. Wave-17 SLM-Era Anchors (2026-09-28)
+
+Wave-17 fired 2026-09-28 with 2 new SLM-era mechanism papers persisted.
+
+### 8.1 [[1.0.0 P-123]] CodeChemist (Wang et al. 2026, ICML 2026)
+
+University of Illinois Urbana-Champaign; **training-free test-time scaling for low-resource code generation via functional knowledge transfer**. The mechanism is multi-temperature hedged sampling + cross-lingual I/O test oracle (functional knowledge transfer from a high-resource reference language into the low-resource target). Demonstrated on Qwen-1.5B with 60-70% relative gains on Lua. Anchors `[[1.0.0 PRIM-21]]` Migration Strategy Selection, `[[1.0.0 PRIM-23]]` Chunked Translation, `[[1.0.0 PRIM-27]]` Coverage-Guided Plateau Detection.
+
+**Substrate implications**:
+- `[[1.0.0 PRIM-21]]`: confidence-gated switching between in-language majority voting (cheap) and cross-lingual I/O test oracle (expensive but cross-language functional). Replaces blind try-and-fail with informed switching that the oracle can verify.
+- `[[1.0.0 PRIM-23]]`: multi-temperature hedged sampling (k candidate drafts at varied temperatures) with cross-language functional verification. The oracle rejects drafts that fail I/O equivalence tests.
+- `[[1.0.0 PRIM-27]]`: functional-coverage plateau via I/O oracle — coverage is measured by oracle acceptance rate, replacing frontier-model judges.
+
+**SLM relevance**: demonstrated on Qwen-1.5B. The oracle is the key enabler: it removes the requirement for a frontier model to judge SLM outputs, making 4B-30B SLM deployment feasible for the chunked-translation pipeline.
+
+### 8.2 [[1.0.0 P-124]] Syzygy (Shetty et al. 2025, ICLR 2025 VerifAI Workshop)
+
+CMU + UCSD; **dual code-test C-to-safe-Rust translation via LLMs + dynamic analysis**. Clang/LLVM-instrumented SpecMiner mines type/bounds/nullability/aliasing properties at runtime; LLM generates Rust code AND equivalence test per translation unit; multi-round repair loop. Anchors `[[1.0.0 PRIM-9]]` Tri-Representation Hybrid Code Graph, `[[1.0.0 PRIM-22]]` Four Phases of Comprehension, `[[1.0.0 PRIM-30]]` Source-to-Target Manifest Rewriter. Complements `[[1.0.0 P-88]]` HiTyper's static Type Dependency Graph with the **dynamic-analysis half** — together they close the type/safety substrate for legacy modernization.
+
+**Substrate implications**:
+- `[[1.0.0 PRIM-9]]`: the tri-representation (AST + CFG + DFG) gains a fourth representation — runtime-mined properties (aliasing, bounds, nullability) — that capture information syntactically hidden from static analysis.
+- `[[1.0.0 PRIM-22]]`: comprehension now combines static TDG (`[[1.0.0 P-88]]` HiTyper) + dynamic property mining (`[[1.0.0 P-124]]` Syzygy) as complementary dimensions. Pure-static comprehension leaves type/bounds/nullability under-specified; pure-dynamic comprehension is per-incomplete; the union is full type/safety reasoning.
+- `[[1.0.0 PRIM-30]]`: manifests become type/bounds/nullability-enriched — necessary for safe-Rust generation, not just functionally-equivalent translation.
+
+**SLM relevance**: bounded per-translation-unit prompt budget (signature + SpecMiner properties + tests). SpecMiner is model-agnostic and grounds SLM type/safety reasoning in real program behavior, mitigating the SLM hallucination analogue that HiTyper documented for Python type inference.
+
+### 8.3 Wave-17 Substrate-Cross-Reference Matrix
+
+| Primitive | CodeChemist (P-123) | Syzygy (P-124) |
+| :--- | :--- | :--- |
+| `[[1.0.0 PRIM-9]]` Tri-Representation Hybrid Code Graph | — | runtime-mined 4th rep |
+| `[[1.0.0 PRIM-21]]` Migration Strategy Selection | confidence-gated oracle switching | — |
+| `[[1.0.0 PRIM-22]]` Four Phases of Comprehension | — | static TDG + dynamic mining |
+| `[[1.0.0 PRIM-23]]` Chunked Translation | multi-temp + functional verification | — |
+| `[[1.0.0 PRIM-27]]` Coverage-Guided Plateau Detection | functional-coverage plateau via oracle | — |
+| `[[1.0.0 PRIM-30]]` Source-to-Target Manifest Rewriter | — | enriched manifests (type/bounds/null) |
+
+### 8.4 Wave-17 Deferral Note
+
+3 candidates REJECTED at the §7 trigger gate:
+- **MemSearcher** (Yuan et al. 2026, ACL 2026 Findings) — REJECTED Q1. ACL 2026 Findings is off the trigger-gate's approved venue list (2025+ NeurIPS/ICML/ICLR). Withdrawn from ICLR 2026. Watchlist candidate: fires if a method-level companion lands at NeurIPS 2026 / ICML 2027 / ICLR 2027.
+- **Verified Tool Calls** (Mansoor et al. 2026, arXiv:2608.02645) — REJECTED Q1. Strongest Q3 anchor to `[[1.0.0 PRIM-7]]` in the candidate class (postcondition verification + idempotency + verify-before-retry), but arXiv-only with no confirmed NeurIPS/ICML/ICLR venue. ToolACE (ICLR 2025) and CoSC (ICLR 2025) reviewed but fail Q2 (data-QC pipeline / execution feedback, not tool-call verdict validation).
+- **LLM-IR / program-comprehension candidates** (Jiang et al. ICML 2025, arXiv:2502.06854) — REJECTED Q2/Q3. The ICML 2025 candidate is a benchmark ("Can LLMs Understand Intermediate Representations in Compilers?"), not a mechanism. No program-comprehension / archaeology mechanism paper at 2025+ ICLR/ICML/NeurIPS found.
+
+**Open gap**: the software archaeology / program-comprehension mechanism slot remains empty at the SLM-era anchor level. The TOSEM SLR (`[[1.0.0 P-87]]` Hou 2024) remains the literature anchor until a 2025+ venue paper emerges.
+
+**Re-evaluation trigger**: any of the three candidates becomes wave-18-eligible when (a) MemSearcher lands at a confirmed 2025+ NeurIPS/ICML/ICLR venue, (b) Verified Tool Calls receives venue confirmation, or (c) a program-comprehension mechanism paper emerges at 2025+ venue. Until then, **no `[[1.0.0 P-125]]` / `[[1.0.0 P-126]]` / `[[1.0.0 P-127]]` anchors are added to any lineage row**, and the deferred-candidate prose bodies are preserved verbatim in `.obsidian/MAgHARCM/research/diary/wave-17-candidates.md`.
+
+### 8.5 Watchlist for Wave-18
+
+- **Software archaeology mechanism gap** — active research-on-file. Recommend the next wave-18 scout carry an explicit `program-comprehension-mechanism` query against NeurIPS 2026 / ICML 2027 / ICLR 2027 listings.
+- **MemSearcher venue confirmation** — fires if accepted at NeurIPS 2026 main track.
+- **Verified Tool Calls venue confirmation** — fires if accepted at NeurIPS 2026 / ICML 2027.
+- **MigGPT follow-up** (NeurIPS 2025 spotlight) — patch migration, not type-aware translation; out of scope for this slot.
+
+**Cross-reference**:
+- Wave-17 candidates memo: `.obsidian/MAgHARCM/research/diary/wave-17-candidates.md`
+- Wave-17 paper notes: `.obsidian/MAgHARCM/research/papers/P-123-codechemist-icml-2026.md` + `P-124-syzygy-iclr2025-workshop.md`
+- Trigger-gate language: `.obsidian/MAgHARCM/research/METHODOLOGY.md` §7 (rewritten 2026-09-25)
+- Sprint-2026-09-28 audit block: `.obsidian/MAgHARCM/primitives/INDEX.md` §Sprint 2026-09-28
