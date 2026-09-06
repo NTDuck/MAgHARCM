@@ -226,6 +226,8 @@ func (t TranslatedProject) SchemaVersion() string { return t.ArtifactSchemaVersi
 // -------------------------------------------------------------------------
 
 // FileStatus records the build/test outcome of an individual file.
+// Compiletime-resident (cycle-safe); producer methods live in
+// internal/agents/validator.go as aliases and use this declaration.
 type FileStatus struct {
 	Path      string `json:"path"`
 	Kind      string `json:"kind"` // "source" or "test"
@@ -236,7 +238,7 @@ type FileStatus struct {
 }
 
 // OptionalCheckResult is the persisted shape of an auxiliary validator
-// primitive outcome.
+// primitive outcome. Compiletime-resident (cycle-safe).
 type OptionalCheckResult struct {
 	Name    string `json:"name"`
 	Verdict string `json:"verdict"`

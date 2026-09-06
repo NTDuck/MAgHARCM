@@ -18,25 +18,12 @@ import (
 	"MAgHARCM/internal/tools"
 )
 
-// Type aliases (cycle-free Locality of Behaviour).
-// Producer files declare the algorithms; canonical artifact types
-// live in internal/compiletime/state.go. Aliases let method receivers
-// reference the type name without package qualification.
-type FileStatus = compiletime.FileStatus
-type OptionalCheckResult = compiletime.OptionalCheckResult
-type ValidationReport = compiletime.ValidationReport
+// Locality of Behaviour: producer-side artifact methods live in this file
+// when local; the artifact structs (FileStatus, OptionalCheckResult) remain
+// compiletime-resident to satisfy the agents ↔ compiletime cycle constraint
+// documented at the top of internal/compiletime/state.go. The producer
+// accesses them via the type aliases below.
 
-// compiletime.FileStatus records the build/test outcome of an individual file.
-// Producer: ValidatorAgent (this file).
-// IsAllSuccess evaluates convergence criteria: compilation passes, all
-// tests pass, no adversarial weakening, no empty-test-suite escape.
-
-// CompilationStatus returns the binary per-project compilation status
-// (PASS or FAIL). Per ADR-C-009 there is no partial compilation rate.
-
-// String renders a one-line summary of the validation report for log output.
-
-// ValidatorAgent executes build and test suites, detects coverage gaps, and triggers test synthesis.
 type ValidatorAgent struct {
 	Model model.BaseChatModel
 	// RunID identifies the current translation run; when set, a checkpoint of

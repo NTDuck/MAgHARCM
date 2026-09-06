@@ -459,6 +459,48 @@ const ASTEmptyElementsSizeThreshold = 200
 const TestResultNotParsedSentinel = -1
 
 // -------------------------------------------------------------------------
+// Wave-16 SLM-Era Pattern Constants (Sprint 2026-09-27)
+// -------------------------------------------------------------------------
+//
+// These constants back the opt-in patterns documented in METHODOLOGY.md §11
+// and Architecture.md §8. Each is read by its consumer via YAML config; the
+// compile-time default is the safe-blind value; the YAML value opts in to the
+// wave-16 pattern.
+
+// MaxDiscoveryArms is the upper bound on MAB arms explored by the
+// bounded-discovery substrate (BOAD, [[1.0.0 P-123]]). Larger values
+// increase combinatorial coverage at the cost of evaluation budget.
+const MaxDiscoveryArms = 16
+
+// MaxDiscoverySamplesPerArm is the upper bound on per-arm samples drawn
+// during MAB evaluation. Combined with MaxDiscoveryArms this caps the total
+// evaluation budget for a single bounded-discovery run.
+const MaxDiscoverySamplesPerArm = 3
+
+// MaxMemoryTriples is the upper bound on the persistent-memory substrate
+// (ReasoningBank, [[1.0.0 P-122]]). The memory store evicts the lowest-reward
+// triple when the bound is exceeded.
+const MaxMemoryTriples = 256
+
+// MemoryTripleRewardEMA is the exponential-moving-average decay factor
+// applied to per-iteration rewards when ranking memory triples for eviction.
+// Larger values give more weight to recent rewards; smaller values smooth.
+const MemoryTripleRewardEMA = 0.3
+
+// BanditPolicyDefault is the safe-blind default for the migration-strategy
+// registry when bandit_policy is not opted in via YAML. "greedy" matches the
+// pre-wave-16 behaviour; "ucb" and "thompson" are wave-16 opt-ins.
+const BanditPolicyDefault = "greedy"
+const BanditPolicyUCB = "ucb"
+const BanditPolicyThompson = "thompson"
+
+// DiscoveryExplorationConstant is the UCB exploration constant c used by the
+// bandit-policy registry when BanditPolicyUCB is selected. The classical UCB1
+// default is sqrt(2); MAgHARCM uses 1.5 to favour exploitation given the
+// bounded evaluation budget.
+const DiscoveryExplorationConstant = 1.5
+
+// -------------------------------------------------------------------------
 // Must Pattern Helpers (No Fallbacks)
 // -------------------------------------------------------------------------
 
