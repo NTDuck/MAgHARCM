@@ -1,3 +1,7 @@
+---
+last_updated: 2026-09-26
+---
+
 # Charm-stack idiomatic audit — `internal/tui/`
 
 Sprint: 2026-09-26  ·  Subagent: G  ·  ADR: ADR-C-011

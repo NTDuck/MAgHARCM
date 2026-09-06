@@ -3,7 +3,7 @@ title: "ADR-2026-09-07 Sprint Conventions — Authoritative Rule-Set for MAgHARC
 backlink: "[[1.0.0 ADR-2026-09-07-Sprint-Conventions]]"
 status: Accepted
 date: 2026-09-07
-tags: [adr, conventions, [[2.0.0 MAgHARCM]], [[2.0.0 Architecture]]]
+last_updated: 2026-09-26
 ---
 
 # [[1.0.0 ADR-2026-09-07 Sprint Conventions]]
@@ -92,3 +92,8 @@ To supersede a rule, write a new ADR referencing the rule ID with explicit `supe
 - Methodology: `.obsidian/MAgHARCM/research/METHODOLOGY.md`
 - Lineage: `.obsidian/MAgHARCM/research/Software-Archaeology-Lineage.md`
 - Handoff (current sprint): `.obsidian/MAgHARCM/diary/Sprint-2026-09-06-Handoff.md`
+
+## Cross-references added 2026-09-26
+
+See also `[[1.0.0 ADR-2026-09-26-Vault-Lint-Extension]]` which automates enforcement of this ADR's `[[1.0.0 ADR-V-001]]` rule via `scripts/lint_vault.sh`.
+See also `[[1.0.0 ADR-C-014]]` (alias pattern satisfies Locality-of-Behaviour intent).

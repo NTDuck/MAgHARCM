@@ -185,6 +185,37 @@ Sprint 2026-09-26 closed (single closing commit per sprint convention):
 - docs(diary): append sprint 2026-09-26 handoff
 - docs(vault): vault-sync sprint 2026-09-26 — wave-15 deferral + ADR-V-001 automation + ADR-C-014 locality + ADR-C-005 sweep + ADR-C-011 charm audit + stale-directive audit
 - docs(research): persist wave-15 deferred-candidates memo
-- chore(scripts): ship scripts/lint_vault.sh (ADR-V-001 enforcement)
 - refactor(agents,compiletime,tools,tui): ADR-C-014 alias pattern + ADR-C-005 magic-string lift + ADR-C-011 dead-code removal
+- chore(scripts): ship scripts/lint_vault.sh (ADR-V-001 enforcement)
 ```
+
+---
+
+## Vault-sync extension (user follow-up: "update other files")
+
+User pointed out that no vault files beyond the four touched during the sprint closing commit carried the `last_updated: 2026-09-26` frontmatter stamp or any cross-reference to the new ADR-2026-09-26-Vault-Lint-Extension. Two follow-up subagents dispatched; 5 files updated.
+
+### Files touched in the extension
+
+| File | Change | Subagent |
+|:---|:---|:---|
+| `.obsidian/MAgHARCM/README.md` | Added `last_updated: 2026-09-26` to frontmatter; appended `## Sprint 2026-09-26 sync` section pointing at this handoff | N |
+| `.obsidian/MAgHARCM/architecture/ADR-2026-09-07-Sprint-Conventions.md` | Added `last_updated: 2026-09-26`; appended `## Cross-references added 2026-09-26` section pointing at `[[1.0.0 ADR-2026-09-26-Vault-Lint-Extension]]` + `[[1.0.0 ADR-V-001]]` + `[[1.0.0 ADR-C-014]]` | M |
+| `.obsidian/MAgHARCM/architecture/ADR-2026-09-07-Dup-Row-Escape-Recipe.md` | Added `last_updated: 2026-09-26`; appended `## Cross-references added 2026-09-26` section pointing at `[[1.0.0 ADR-2026-09-26-Vault-Lint-Extension]]` + `[[1.0.0 ADR-V-001]]` | M |
+| `.obsidian/MAgHARCM/diary/sprint-2026-09-26-charm-audit.md` | Prepended `last_updated: 2026-09-26` to existing frontmatter (file had no frontmatter before) | N |
+| `.obsidian/MAgHARCM/research/diary/wave-15-candidates.md` | Added `last_updated: 2026-09-26` to existing frontmatter | N |
+
+### Files deliberately NOT touched
+
+- Historical sprint handoffs (`Sprint-2026-09-04`..`Sprint-2026-09-25`): each carries its own `date:` frontmatter set to the sprint it covers; re-stamping with 2026-09-26 would corrupt the historical record.
+- `.obsidian/MAgHARCM/research/papers/P-*.md` (121 paper notes): research outputs; each carries its own `date:` field that pins it to the venue/year. No sprint-sync stamp applies.
+- Repo files outside `.obsidian/MAgHARCM/` (README.md at repo root, `flake.nix`, `mise.toml`, `go.mod`, `docs/.paper/*.tex`): outside user-confirmed scope.
+
+### Verification after extension
+
+- `go build ./...` exit 0
+- `go vet ./...` exit 0
+- `go test ./...` all green (cached)
+- `bash scripts/lint_vault.sh` exit 0 (`vault lint clean: 213 files scanned, 15 refs checked`)
+- No Go code touched; no ADR substance altered; only frontmatter lines and 1-line cross-ref appenders added.
+---

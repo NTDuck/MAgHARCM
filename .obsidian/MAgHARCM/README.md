@@ -2,7 +2,7 @@
 title: MAgHARCM Vault
 backlink: [[2.0.0 MAgHARCM Vault]]
 tags: [vault, index, [[2.0.0 MAgHARCM]]]
----
+last_updated: 2026-09-26
 
 # [[2.0.0 MAgHARCM Vault]]
 
@@ -42,3 +42,7 @@ full parity convergence where all 31 primitives are active implementations in th
 All version markers use the `[[x.y.z ...]]` convention. Spontaneous parentheses
 are forbidden; replace them with `[[Author-YEAR]]` or `[[P-NN]]` style backlinks.
 Every primitive is implemented in the codebase, establishing a single source of truth.
+
+## Sprint 2026-09-26 sync
+
+Last touched in Sprint 2026-09-26. See `.obsidian/MAgHARCM/diary/Sprint-2026-09-26-Handoff.md` for the full sync record.

@@ -3,7 +3,7 @@ title: "Wave-15 Candidate — P-122 SWE-Rebench V2 (DEFERRED 2026-09-26)"
 backlink: "[[1.0.0 Wave-15 Candidates (deferred)]]"
 tags: [candidates, deferred, wave-15, swebench, decontamination, language-agnostic, [[1.0.0 P-119]], [[1.0.0 P-122]], [[1.0.0 P-123]], [[1.0.0 P-124]]]
 status: DEFERRED (fails METHODOLOGY.md §7 trigger gate on 2026-09-26)
----
+last_updated: 2026-09-26
 
 # [[1.0.0 Wave-15 Candidates (deferred)]]
 

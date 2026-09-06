@@ -3,7 +3,7 @@ title: "ADR-2026-09-07 Dup-Row Escape Recipe — When the Same [[P-NN]] Belongs 
 backlink: "[[1.0.0 ADR-2026-09-07-Dup-Row-Escape-Recipe]]"
 status: Accepted
 date: 2026-09-07
-tags: [adr, lineage, matrix, [[2.0.0 Architecture]]]
+last_updated: 2026-09-26
 ---
 
 # [[1.0.0 ADR-2026-09-07 Dup-Row Escape Recipe]]
@@ -96,3 +96,7 @@ Result: two legitimate rows. Sprint 2026-09-06 retained both. Correct outcome.
 - Lineage matrix: `.obsidian/MAgHARCM/research/Software-Archaeology-Lineage.md`
 - Example multi-anchor case: `[[1.0.0 P-42]]` rows 129 + 145
 - Sprint audit reports: `.obsidian/MAgHARCM/diary/Sprint-2026-09-05-Handoff.md`, `.obsidian/MAgHARCM/diary/Sprint-2026-09-06-Handoff.md`
+
+## Cross-references added 2026-09-26
+
+See also `[[1.0.0 ADR-2026-09-26-Vault-Lint-Extension]]` which automates enforcement of this ADR's `[[1.0.0 ADR-V-001]]` rule via `scripts/lint_vault.sh`.
