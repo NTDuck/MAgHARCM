@@ -59,7 +59,7 @@ The SLR's findings matter most for MAgHARCM:
 
 - **Citation anchor for the LLM4SE taxonomy** in `Software-Archaeology-Lineage.md`. The SLR is the most authoritative recent taxonomy; MAgHARCM's primitive-to-task mapping should cite it.
 - **Coverage validation**: every MAgHARCM primitive should map to at least one task in the SLR's 16-task taxonomy. MAgHARCM primitives cover ~13 of 16 tasks explicitly; the gap is in requirement engineering, configuration, and deployment (which are out of MAgHARCM's scope).
-- **Evaluation gap justification**: MAgHARCM's WASM oracle (PRIM-12) and implementation-agnostic tests (PRIM-11) address the SLR's "evaluation gap" finding by providing behavioural-equivalence tests that go beyond pass@k.
+- **Evaluation gap justification**: MAgHARCM's WASM oracle [[1.0.0 PRIM-12]] and implementation-agnostic tests [[1.0.0 PRIM-11]] address the SLR's "evaluation gap" finding by providing behavioural-equivalence tests that go beyond pass@k.
 - **SLM-era validation**: the SLR's finding that 60%+ of 2023-2024 papers use ≤13B models validates MAgHARCM's choice to standardise on Qwen2.5-Coder [[P-21]], StarCoder2 [[P-22]], Phi-3-mini [[P-54]].
 
 ## References

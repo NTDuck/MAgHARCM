@@ -46,5 +46,5 @@ tags: [paper, code-editing, benchmark, repair, slm, [[1.0.0 PRIM-22]], [[2.0.0 M
 ## 5. Backlinks
 
 - Translator repair mode: PRIM-22 (Comprehension Recognition) + PRIM-25 (RoleFlip Gate).
-- Adversarial test weakening guard (PRIM-13): the benchmark's "remove this test" anti-pattern motivates the guard.
+- Adversarial test weakening guard [[1.0.0 PRIM-13]]: the benchmark's "remove this test" anti-pattern motivates the guard.
 - Cross-ref: add P-51 to PRIM-22 + PRIM-25 rows in `Software-Archaeology-Lineage.md`.

@@ -16,11 +16,11 @@ The s1 paper asks the narrow but consequential question: *can test-time compute 
 
 Three findings matter most for MAgHARCM:
 
-1. **1,000 high-quality samples beat 100,000 mediocre ones.** The s1K dataset's three-criterion curation (quality + difficulty + diversity) is the existence proof that targeted data curation — not data scale — unlocks reasoning. For MAgHARCM, this validates the principle that carefully-architected comprehension prompts (PRIM-22) and SOP-anchored artifact schemas (PRIM-24) extract more value from a 32B SLM than naive few-shotting.
+1. **1,000 high-quality samples beat 100,000 mediocre ones.** The s1K dataset's three-criterion curation (quality + difficulty + diversity) is the existence proof that targeted data curation — not data scale — unlocks reasoning. For MAgHARCM, this validates the principle that carefully-architected comprehension prompts [[1.0.0 PRIM-22]] and SOP-anchored artifact schemas [[1.0.0 PRIM-24]] extract more value from a 32B SLM than naive few-shotting.
 
-2. **Budget forcing is the operational primitive.** The literal "Wait" injection — appending a single token to force continued deliberation — is the cheapest possible mechanism for allocating extra test-time compute. MAgHARCM can adopt this directly in the optional-checks agent (PRIM-25): when confidence is below a threshold, inject "Wait — re-check the boundary condition" and let the model re-deliberate on the same prompt.
+2. **Budget forcing is the operational primitive.** The literal "Wait" injection — appending a single token to force continued deliberation — is the cheapest possible mechanism for allocating extra test-time compute. MAgHARCM can adopt this directly in the optional-checks agent [[1.0.0 PRIM-25]]: when confidence is below a threshold, inject "Wait — re-check the boundary condition" and let the model re-deliberate on the same prompt.
 
-3. **Test-time scaling has a clear knee.** s1-32B shows monotone improvement on math reasoning as budget grows up to ~4,000 "thinking" tokens, then plateaus. This gives MAgHARCM a calibration point: rather than spending compute indiscriminately, the verdict panel (PRIM-7) and the role-flip gate (PRIM-25) can budget deliberation per-query rather than per-batch.
+3. **Test-time scaling has a clear knee.** s1-32B shows monotone improvement on math reasoning as budget grows up to ~4,000 "thinking" tokens, then plateaus. This gives MAgHARCM a calibration point: rather than spending compute indiscriminately, the verdict panel [[1.0.0 PRIM-7]] and the role-flip gate [[1.0.0 PRIM-25]] can budget deliberation per-query rather than per-batch.
 
 ## Method
 
@@ -32,9 +32,9 @@ Three findings matter most for MAgHARCM:
 
 ## Findings Relevant to MAgHARCM
 
-- **Curated 1K > raw 100K** is the operational justification for MAgHARCM's prompt-engineering investment. The 31 primitives and the SOP-anchored role schema (PRIM-24) are the "curation" layer for SLM reasoning; s1 demonstrates the leverage is real.
-- **"Wait" injection is the cheapest test-time compute allocator.** MAgHARCM's optional-checks agent (PRIM-25) and verdict panel (PRIM-7) can adopt a literal "Wait — re-check…" continuation token when confidence is below threshold. Cost: one extra token of input + one short re-decoding pass. Benefit: demonstrable accuracy gain on hard reasoning sub-tasks.
-- **Reasoning budget is a knob, not a property.** MAgHARCM can configure reasoning depth per-task: light for comprehension (PRIM-22), heavy for adversarial-review verdicts (PRIM-13, PRIM-25). s1's monotone curve through ~4K tokens gives a calibration target.
+- **Curated 1K > raw 100K** is the operational justification for MAgHARCM's prompt-engineering investment. The 31 primitives and the SOP-anchored role schema [[1.0.0 PRIM-24]] are the "curation" layer for SLM reasoning; s1 demonstrates the leverage is real.
+- **"Wait" injection is the cheapest test-time compute allocator.** MAgHARCM's optional-checks agent [[1.0.0 PRIM-25]] and verdict panel [[1.0.0 PRIM-7]] can adopt a literal "Wait — re-check…" continuation token when confidence is below threshold. Cost: one extra token of input + one short re-decoding pass. Benefit: demonstrable accuracy gain on hard reasoning sub-tasks.
+- **Reasoning budget is a knob, not a property.** MAgHARCM can configure reasoning depth per-task: light for comprehension [[1.0.0 PRIM-22]], heavy for adversarial-review verdicts (PRIM-13, PRIM-25). s1's monotone curve through ~4K tokens gives a calibration target.
 - **s1-32B is in the SLM range MAgHARCM targets.** 32B is at the upper edge of the 4B-30B+ fleet (Qwen2.5-Coder [[P-21]], Phi-3 [[P-54]], StarCoder2 [[P-22]]). s1 demonstrates that a 32B model with the right training data can match a much larger closed model — reinforcing P-81 (Gorilla)'s SLM-tool-use thesis and the P-82 SLM-migration thesis.
 
 ## How MAgHARCM Uses It

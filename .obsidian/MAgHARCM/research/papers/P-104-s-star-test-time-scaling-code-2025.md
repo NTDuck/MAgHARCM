@@ -22,7 +22,7 @@ Key empirical finding: hybrid mode achieves **2.3× pass@1 improvement** at matc
 
 ## Relevance to MAgHARCM
 
-- **Direct evolution of P-98 (LLM Monkeys) for code**: validates MAgHARCM's verdict-panel-as-sampling-strategy pattern (PRIM-7) and adds execution-signal guidance for strategy selection (PRIM-21).
+- **Direct evolution of P-98 (LLM Monkeys) for code**: validates MAgHARCM's verdict-panel-as-sampling-strategy pattern [[1.0.0 PRIM-7]] and adds execution-signal guidance for strategy selection [[1.0.0 PRIM-21]].
 - **S* hybrid mode = MAgHARCM verdict panel + repair loop**: verdict_panel samples, recruiter chooses next strategy, translator refines — exactly the hybrid mode.
 - **PRIM-27 Coverage-Guided Plateau Detection** can use S*-style execution feedback as a stop signal: when sequential refinement's marginal gain drops below threshold, switch to next strategy.
 - **Test-budget allocator**: S* provides a concrete algorithm for allocating test-time compute across strategies (vs static "max_iterations: 3" in `configs/agents.yml`).

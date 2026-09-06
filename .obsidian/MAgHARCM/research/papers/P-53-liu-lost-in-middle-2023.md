@@ -22,7 +22,7 @@ Empirically demonstrates **U-shaped attention degradation** in transformer LMs:
 ## 2. Application in MAgHARCM
 
 - Validates the **chunked translation** strategy: when a source file exceeds `IterativeContextBudgetBytes` (4 KiB, see `compiletime.IterativeContextBudgetBytes`), we split into navigable fragments rather than feeding the entire file.
-- Validates the **IterativeNavigator** (PRIM-31) re-indexed/fresh split: re-indexed symbols go to the START of the prompt context (high-attention zone), fresh navigations go to the END.
+- Validates the **IterativeNavigator** [[1.0.0 PRIM-31]] re-indexed/fresh split: re-indexed symbols go to the START of the prompt context (high-attention zone), fresh navigations go to the END.
 - Justifies the `compiletime.DefaultProjectDir` plus per-symbol navigation — we never dump the whole repo into context.
 
 ## 3. Hop-1 References (papers cited by Liu et al.)

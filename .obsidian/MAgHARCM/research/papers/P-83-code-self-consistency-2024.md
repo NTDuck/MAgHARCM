@@ -78,7 +78,7 @@ This paper (P-83) collects the code-specialised and SLM-targeted SC variants int
 - **Existence of an oracle changes the game.** Code is uniquely verifiable; textual SC over NL outputs is a poor proxy for code SC. MAgHARCM's WASM sandbox (cf. `[[1.0.0 P-61]]`) is the *operational* analog of IdentityChain's TOM score.
 - **Specification round-trip is a verifier-free check.** IdentityChain's NL↔PL round-trip doesn't require unit tests — it requires only a model that can write specs. This is cheap and catches ~30% of plausible-but-wrong migrations in the verdict panel.
 - **SC variants for SLMs are non-substitutable.** CISC needs logprobs (closed models or logprob-returning open models); DSC needs a difficulty oracle; SOFT-SC needs action likelihoods; MPSC needs 3x the inference budget. Pick per task budget.
-- **Self-consistency ≠ accuracy.** A model can be high-accuracy and low-self-consistency (Min et al., ICLR 2024). MAgHARCM's verdict panel should *not* treat "high agreement" as a guarantee of correctness — agreement is a *consistency* signal, not a *correctness* signal. Cross-check with execution (PRIM-25).
+- **Self-consistency ≠ accuracy.** A model can be high-accuracy and low-self-consistency (Min et al., ICLR 2024). MAgHARCM's verdict panel should *not* treat "high agreement" as a guarantee of correctness — agreement is a *consistency* signal, not a *correctness* signal. Cross-check with execution [[1.0.0 PRIM-25]].
 - **The "perspectives" in MPSC are MAgHARCM's roles.** Solution = Verdict Panel; Specification = Role-Flip Reviewer; Test case = Optional-Checks test oracle. MPSC's graph scoring formalises what PRIM-7 already does heuristically.
 
 ## How MAgHARCM Uses It
@@ -88,7 +88,7 @@ The Verdict Panel (cf. `internal/agents/verdict_panel.go`) implements a basic ma
 2. **Switch the aggregator** from `mode()` to a confidence-weighted vote when the underlying model returns logprobs.
 3. **Adaptive sampling**: stop the panel early when 3 of 5 already agree (DSC).
 
-The optional-checks pipeline (PRIM-25) already implements IdentityChain's TOM idea at the execution level. P-83 strengthens the cross-reference: cite P-83 alongside P-52 in the Verdict Panel's docstring to make the lineage explicit.
+The optional-checks pipeline [[1.0.0 PRIM-25]] already implements IdentityChain's TOM idea at the execution level. P-83 strengthens the cross-reference: cite P-83 alongside P-52 in the Verdict Panel's docstring to make the lineage explicit.
 
 ## References
 

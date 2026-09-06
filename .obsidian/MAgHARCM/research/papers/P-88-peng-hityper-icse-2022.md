@@ -67,7 +67,7 @@ Empirical results:
 
 If a paper matching the assignment's description (*mixed-method study on type annotation migration for JS→TS*) were located:
 - **JavaScript → TypeScript migration is a specific subtype of PRIM-30** (manifest rewrite + source-to-target type binding).
-- The "mixed-method" framing (qualitative interviews + quantitative evaluation) is appropriate for industrial-track venues; the verdict panel (PRIM-7) could incorporate insights from such mixed-method work.
+- The "mixed-method" framing (qualitative interviews + quantitative evaluation) is appropriate for industrial-track venues; the verdict panel [[1.0.0 PRIM-7]] could incorporate insights from such mixed-method work.
 - Currently, no such paper is verified.
 
 ## UNVERIFIED-Marker Convention

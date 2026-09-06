@@ -63,7 +63,7 @@ The (unverified) paper is presumed to:
 
 - **Benchmark existence is the prerequisite for progress.** The P-09 MigrationBench, P-04 TransRepo-Bench, and P-56 Multi-SWE-bench in MAgHARCM's lineage cover subsets of the modernization-evaluation space, but no single benchmark covers the full moderniz ation spectrum. The (unverified) P-89 paper would fill this gap.
 - **Automated metrics ≠ human evaluation.** The [[1.0.0 PRIM-7]] verdict panel + [[1.0.0 PRIM-11]] implementation-agnostic testing + [[1.0.0 PRIM-12]] WASM reference oracle are MAgHARCM's response to the documented "pass@k does not predict production quality" finding.
-- **LLM-tier effects vary by task.** Comprehension tasks favour SLMs (lower cost, comparable accuracy). Translation tasks favour LLMs (higher accuracy, fewer semantic errors). Validation tasks favour SLMs with verifiers (PRIM-7). MAgHARCM's fleet composition matches this.
+- **LLM-tier effects vary by task.** Comprehension tasks favour SLMs (lower cost, comparable accuracy). Translation tasks favour LLMs (higher accuracy, fewer semantic errors). Validation tasks favour SLMs with verifiers [[1.0.0 PRIM-7]]. MAgHARCM's fleet composition matches this.
 
 ## How MAgHARCM Uses It (provisional, UNVERIFIED)
 
