@@ -1,6 +1,7 @@
 ---
 title: Software Archaeology & Legacy System Modernization Lineage
 backlink: [[2.0.0 Software-Archaeology-Lineage]]
+last_updated: 2026-09-26
 tags: [research, software-archaeology, modernization, lineage, synthesis, [[2.0.0 MAgHARCM]]]
 ---
 
@@ -228,3 +229,28 @@ Four academic synthesis-anchor papers added in the 2026-09-05 sprint. Each provi
 ```
 
 Every stage produces strictly typed, schema-versioned artifacts (`[[1.0.0 PRIM-24]]`), ensuring zero information loss and enabling automated backtracking across iterations.
+
+---
+
+## 6. Wave-15 Deferral (2026-09-26)
+
+On 2026-09-26 the wave-15 trigger-criterion evaluation was carried out against the `METHODOLOGY.md` §7 gate rewritten 2026-09-25 ("wave-N+1 fires when a 2025+ NeurIPS/ICML/ICLR paper introduces an unanchored mechanism that defends or refutes an existing SLM-era primitive's substrate claim"). Three candidates were drafted and the gate rejected all three. Full deferral memo with per-candidate verdicts is preserved on file at `.obsidian/MAgHARCM/research/diary/wave-15-candidates.md`.
+
+**Trigger-gate verdicts:**
+
+- **P-122 SWE-Rebench V2** (Badertdinov et al. 2026) — **REJECTED**. arXiv:2602.23866 is a forward-reference id flagged `[INFERENCE]` in the existing `[[1.0.0 P-119]]` SWE-Rebench V1 note; no confirmed NeurIPS/ICML/ICLR venue publication at note-creation time. Not a 2025+ venue paper.
+- **P-123 SWE-bench Multimodal** (October 2024 announcement per swebench.com) — **REJECTED**. No peer-reviewed venue; no arXiv id; announcement-only. Not a 2025+ venue paper.
+- **P-124 SWE-bench Verified Reference Harness** (OpenAI August 2024) — **REJECTED**. The harness is a component of `[[1.0.0 P-109]]` SWE-bench Verified (OpenAI 2024), not a new mechanism. Already anchored via P-109.
+
+**Why no `P-NN` anchor was added**: the wave-15 trigger criterion was not met this sprint; none of the three candidates survive the 2025+ venue gate, and none introduces an unanchored mechanism that defends or refutes an existing SLM-era primitive's substrate claim. Adding a `P-NN` anchor under these conditions would violate `METHODOLOGY.md` §7 and reintroduce the wave-9 saturation problem that motivated the gate rewrite.
+
+**Re-evaluation trigger**: any of the three candidates becomes wave-15-eligible when (a) P-122 lands at a confirmed 2025+ NeurIPS/ICML/ICLR venue, (b) P-123 lands at a peer-reviewed venue with a verifiable arXiv id, or (c) the user explicitly requests the P-124 component-level anchor. Until then, **no `[[1.0.0 P-122]]` / `[[1.0.0 P-123]]` / `[[1.0.0 P-124]]` anchors are added to any lineage row**, and the P-122 prose body produced during the wave-15 foundation research is preserved verbatim in the deferred-candidates memo as research-on-file.
+
+**Why this lineage note does not cite P-122 even as a hop-2 anchor**: the deferred-candidates memo explicitly bans cross-linking `[[1.0.0 P-122]]` into `Software-Archaeology-Lineage.md`, `docs/.paper/refs.bib`, or `docs/.paper/sec_method.tex` until the candidate is promoted to wave-15. The ban is enforced by the new `scripts/lint_vault.sh` ADR-V-001 automation (which would report a stray `(P-NN)` / `(PRIM-NN)` STRAY hit if anyone attempted to slip the citation in via parenthetical form).
+
+**Cross-reference**:
+
+- Deferred-candidates memo: `.obsidian/MAgHARCM/research/diary/wave-15-candidates.md`
+- Trigger-gate language: `METHODOLOGY.md` §7 (rewritten 2026-09-25)
+- Lint automation: `.obsidian/MAgHARCM/architecture/ADR-2026-09-26-Vault-Lint-Extension.md` + `scripts/lint_vault.sh`
+- Sprint-2026-09-26 audit block: `.obsidian/MAgHARCM/primitives/INDEX.md` §Sprint 2026-09-26

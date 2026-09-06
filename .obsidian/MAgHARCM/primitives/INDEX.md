@@ -1,6 +1,7 @@
 ---
 title: Primitives Index
 backlink: "[[2.0.0 Primitives Index]]"
+last_updated: 2026-09-26
 tags: [primitives, catalog, status, [[1.0.0 PRIM-1]]..[[1.0.0 PRIM-31]]]
 ---
 
@@ -135,3 +136,12 @@ All 31 primitives are compiled into the codebase, preserving architectural integ
 - Cross-links pending for `Software-Archaeology-Lineage.md` PRIM-22, PRIM-23, PRIM-27, PRIM-29, PRIM-31 rows.
 - Primitive-count audit: 31/31 primitives still map to implementation files in `internal/agents/` (35 files = 31 impl + 4 test files + 0 orphan). 8-agent graph still wired; Charm TUI idioms still intact; abcoder-mcp default still in `configs/agents.yml`. Wave-14 trigger criterion met (NeurIPS 2025 + ICML 2025 mechanism papers); fire recorded.
 - All gates green: `go build ./...`, `go vet ./...`, `go test ./...`.
+
+## Sprint 2026-09-26 Vault Sync Audit
+- Wave-15 status: deferred (3 candidates).
+- ADR-C-014 status: locality split applied by Subagent D.
+- ADR-C-005 status: magic-string sweep applied by Subagent E.
+- ADR-C-011 status: Charm stack audit applied by Subagent G.
+- ADR-V-001 status: scripts/lint_vault.sh shipped by this subagent.
+- P-106 status: P-106 BFCL retire task deferred to Sprint 2026-09-27 (Subagent F cancelled).
+- Parity check: 31/31/31 unchanged.

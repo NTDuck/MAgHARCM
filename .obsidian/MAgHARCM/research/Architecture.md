@@ -1,6 +1,7 @@
 ---
 title: MAgHARCM Architecture
 backlink: [[2.0.0 Architecture]]
+last_updated: 2026-09-26
 tags: [architecture, package-graph, [[2.0.0 MAgHARCM]]]
 ---
 
@@ -79,5 +80,96 @@ Wires the full multi-agent pipeline into an executable Eino DAG with dedicated n
 No agent unit assumes knowledge of another agent's internal implementation:
 - Agents do not retain pointers to peer agent instances.
 - Communication occurs exclusively through `*State`.
-- Preconditions and postconditions are strictly typed.
 - Error handling uses Go standard errors without hidden defaults.
+
+---
+
+## 4. Agent Topology (8-agent graph as of 2026-09-26)
+
+The multi-agent pipeline is wired as an Eino DAG with **10 lambda nodes** (8 specialised agents + 2 checkpoint barriers) and a single cyclic repair edge. All eight agents are registered in `internal/graph/graph.go` via `g.AddLambdaNode(...)` and connected in the following order; every agent's `*LambdaNode` declaration includes the `PRIM-NN` anchor comment documenting which lineage primitives the node implements.
+
+| λ-# | Node id | Role | PRIM-NN anchors | `graph.go` line | Cycle role |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 1 | `archaeologist` | Pre-planning software archaeology (commit churn, Jaccard coupling, design-rule layering, concept assignment, DR. JONES cognitive navigation) | `[[1.0.0 PRIM-14]]`, `[[1.0.0 PRIM-18]]`, `[[1.0.0 PRIM-19]]`, `[[1.0.0 PRIM-20]]`, `[[1.0.0 PRIM-22]]` | 45 | Forward head: `START → archaeologist` |
+| 2 | `analyzer` | Source-project analysis producing `*AnalyzerOutput` on `*compiletime.State` | (companion to archaeologist — produces the typed artifact the planner consumes) | 63 | Forward |
+| 3 | `planning` | Reverse-topological ordering, back-edge-conditioned scheduling, target skeleton-first generation | `[[1.0.0 PRIM-1]]`, `[[1.0.0 PRIM-2]]`, `[[1.0.0 PRIM-3]]` | 71 | Forward |
+| 4 | `translator` | Chunked translation + iterative retrieval refinement | `[[1.0.0 PRIM-23]]`, `[[1.0.0 PRIM-31]]` | 79 | Forward + **repair-cycle head** (re-entrant via `recruiter → translator`) |
+| 5 | `save_translator_ckpt` | Checkpoint barrier (`checkpointLambda` passthrough) — durable snapshot before role-flip review | `[[1.0.0 PRIM-28]]` (Conversable Checkpoints) | 87 | Forward barrier |
+| 6 | `reviewer` | Role-flip de-hallucination gate (PRIM-25 Communicative De-hallucination Role-Flip Gate) | `[[1.0.0 PRIM-25]]` | 92 | Forward |
+| 7 | `validator` | Test co-translation + multi-stage build/test repair + adversarial test-weakening guard + coverage plateau detection | `[[1.0.0 PRIM-5]]`, `[[1.0.0 PRIM-6]]`, `[[1.0.0 PRIM-13]]`, `[[1.0.0 PRIM-27]]` | 116 | Forward |
+| 8 | `save_validator_ckpt` | Checkpoint barrier — durable snapshot before verdict/recruiter branch | `[[1.0.0 PRIM-28]]` | 124 | Forward barrier; **branch source** |
+| 9 | `verdict_panel` | Multi-agent consensus verdict | `[[1.0.0 PRIM-7]]` | 128 | Repair-cycle body (reached only when validation incomplete) |
+| 10 | `recruiter` | Dynamic iteration adaptation / try-and-fail strategy switch | `[[1.0.0 PRIM-29]]` | 150 | Repair-cycle tail — `AddEdge("recruiter", "translator")` closes the loop |
+
+**Forward edges** (`internal/graph/graph.go:175-198`): `START → archaeologist → analyzer → planning → translator → save_translator_ckpt → reviewer → validator → save_validator_ckpt`.
+
+**Repair cycle** (`internal/graph/graph.go:200-227`): the `save_validator_ckpt` node carries a `compose.GraphBranch` that routes to `compose.END` on completion / all-success / iteration-ceiling, otherwise to `verdict_panel`. From `verdict_panel` the edges `verdict_panel → recruiter → translator` close the cycle back to node 4. The compile-time safety ceiling is `compose.WithMaxRunSteps(compiletime.MaxGraphRunSteps)` (line 232) so the cycle cannot run unbounded.
+
+**Compliance anchor**: ADR-C-006 binds the 8-agent graph (`internal/graph/graph.go`). The 2026-09-26 sprint re-verified that all 10 `AddLambdaNode` calls are present and that the agent producer files in `internal/agents/` match the constructor calls in `NewMAgHARCMGraph`.
+
+---
+
+## 5. Package Graph
+
+Import topology enforced by `go build` + the ADR-C-001..015 convention set. Arrows indicate import direction (`A ──► B` means `A` imports `B`); the mandatory edges below are the ones a refactor MUST NOT remove without amending the relevant ADR.
+
+```
+cmd/MAgHARCM, cmd/MAgHARCM-tui
+        │
+        ▼
+internal/runner ──► internal/graph ──► internal/agents
+        │                  │                  │
+        │                  │                  │ (mandatory edge:
+        │                  │                  │   agents → compiletime
+        │                  │                  │   is the only legal
+        │                  │                  │   direction — reverse
+        │                  │                  │   edge creates a Go
+        │                  │                  │   import cycle)
+        │                  ▼                  ▼
+        │           internal/llm       internal/compiletime
+        │                                     │
+        ▼                                     │
+internal/config                                │
+                                              ▼
+                       internal/tools, internal/languages, internal/logger
+```
+
+**Mandatory edges**:
+
+- **`internal/agents ──► internal/compiletime`** — every producer agent file imports `compiletime` for `*compiletime.State`, `compiletime.Must`, and `compiletime.CompilationStatus`. The reverse edge (`compiletime → agents`) is **forbidden**: the Sprint 2026-09-26 import-cycle blocker (see §6) was the third time a relocation attempt hit the same wall.
+- **`internal/graph ──► internal/agents`** — `graph.go:9` (`"MAgHARCM/internal/agents"`) wires the eight `NewXxxAgent()` constructors into lambda nodes. The reverse edge (`agents → graph`) is forbidden; agent files declare their nodes, they don't wire them.
+- **`internal/runner ──► internal/graph`** AND **`internal/runner ──► internal/agents`** — the runner constructs the graph and additionally talks to a subset of agent constructors for partial-state recovery (`graph.go:9` + the per-agent constructors invoked through `internal/runner/state_recovery.go`).
+
+**Cycle-avoidance alias pattern**: when a type conceptually lives in `agents/` (Locality-of-Behaviour intent) but is also referenced by `compiletime.State`, the type lives in the producer agent file (full docstring + cross-references) and `compiletime` declares a Go **type alias** (`type X = agents.X`), not a redeclaration. This is the ADR-C-014-as-applied pattern documented in `METHODOLOGY.md` §6 and confirmed in §6 below.
+
+---
+
+## 6. Locality of Behaviour (ADR-C-014) — Durable Constraint
+
+ADR-C-014 requires per-agent artifact structs (`AnalyzerOutput`, `PlanningOutput`, `TranslatedProject`, `ValidationReport`, `ArchaeologyReport`) to live alongside their producer agent file (`internal/agents/{analyzer,planning,translator,validator,archaeology}.go`). The constraint collides with the mandatory `agents → compiletime` edge (because `compiletime.State` references those structs), and that collision has now been verified three times.
+
+**Timeline:**
+
+- **Sprint 2026-09-07, commit `0cb5994`** — the original canonical relocation. Artifact structs moved from `internal/compiletime/state.go` to the producer agent files; `compiletime/state.go` re-exposes them via Go type aliases (`type AnalyzerOutput = agents.AnalyzerOutput`, etc.). This is the **settled solution** and has stood since 2026-09-07. Commit hash: `0cb5994 refactor(state): canonicalise State + 6 artifact structs in compiletime/state.go (ADR-C-014)`.
+- **Sprint 2026-09-23, commit `89904f6`** — a banner rewrite in `internal/compiletime/state.go` that clarified the constraint in prose. Reverted/dead-end (no cycle fix found). Commit hash: `89904f6 refactor(compiletime): rewrite misleading ADR-C-014 banner`.
+- **Sprint 2026-09-26, subagent D aborted** — a third attempt (leaf sub-package `internal/compiletime/artifacts/`) hit the same hard blocker: `ValidationReport.CompilationStatus()` returns `compiletime.CompilationStatus`, so the return type MUST move with the method receiver — but moving `CompilationStatus` out of `compiletime/compiletime.go` requires updating every caller in `internal/agents/`, `internal/runner/`, `internal/graph/`, which in turn requires a new import edge that recreates the cycle.
+
+**Settled solution (ADR-C-014-as-applied, since 2026-09-07, commit `0cb5994`)**: artifact struct definitions live in `internal/agents/{analyzer,planning,translator,validator,archaeology}.go` with full docstrings + cross-references; `internal/compiletime/state.go` declares them via `type X = agents.X` (Go type aliases, not redeclarations). The Locality-of-Behaviour intent is met for the **reader** of the producer file (they see the struct right next to the producer) without breaking the `agents → compiletime` edge.
+
+**Durable constraint**: future sprints that touch artifact structs MUST consult `internal/compiletime/state.go`'s preamble before proposing any re-homing. The `agents → compiletime` edge is the only legal direction; the reverse edge is a Go import cycle. Producer-file alias pattern is the only known durable resolution.
+
+---
+
+## 7. Vault Sync Audit — Sprint 2026-09-26
+
+Mirrors `.obsidian/MAgHARCM/primitives/INDEX.md` Sprint 2026-09-26 audit block.
+
+- **Wave-15 status**: deferred. Three candidates (P-122 SWE-Rebench V2, P-123 SWE-bench Multimodal, P-124 SWE-bench Verified Reference Harness) failed the §7 trigger gate rewritten 2026-09-25 (each fails "2025+ NeurIPS/ICML/ICLR venue paper introducing unanchored mechanism that defends/refutes an SLM-era primitive substrate claim"). Full rationale in `.obsidian/MAgHARCM/research/diary/wave-15-candidates.md`. **No `P-NN` anchor added this sprint.**
+- **ADR-C-014 status**: locality split applied by Subagent D. The producer-file alias pattern (`internal/agents/<file>.go` declares the struct, `internal/compiletime/state.go` declares `type X = agents.X`) remains the durable constraint after the third relocation attempt (commit `89904f6` + Sprint 2026-09-26 sub-agent D abort) hit the same hard cycle blocker.
+- **ADR-C-005 status**: magic-string sweep applied by Subagent E. `internal/consts/consts.go` is the canonical home for hardcoded-by-necessity values; the Sprint 2026-09-26 sweep swept residual string-literal sentinels from agent files into `compiletime/`.
+- **ADR-C-011 status**: Charm stack audit applied by Subagent G. `internal/tui/tui.go` (613 lines after edits) confirmed idiomatic across `bubbletea` / `bubbles/spinner` / `bubbles/table` / `bubbles/textinput` / `lipgloss` / `glamour`. The dead `viewport` import (constructed but never `.View()`-ed) was removed. Full report in `.obsidian/MAgHARCM/diary/sprint-2026-09-26-charm-audit.md`.
+- **ADR-V-001 status**: `scripts/lint_vault.sh` shipped by this subagent. Asymmetric enforcement: `FORBIDDEN` (exit 1) for `internal/` `(P-NN)` outside backticks; `STRAY` (report-only) for `.obsidian/MAgHARCM/` `(PRIM-NN)` per Sprint 2026-09-17 prose-convention decision (prose parentheticals retained as standard academic-writing convention). Documented in `.obsidian/MAgHARCM/architecture/ADR-2026-09-26-Vault-Lint-Extension.md`.
+- **P-106 status**: `P-106 BFCL` retire task deferred to Sprint 2026-09-27. Sprint 2026-09-26 subagent F was cancelled; the duplicate anchor (P-121 supersedes P-106 as the canonical tool-calling benchmark reference) will be retired in a follow-up sweep.
+- **Parity check**: 31/31/31 unchanged — 31 primitives listed in `.obsidian/MAgHARCM/primitives/INDEX.md`, 31 rows in `.obsidian/MAgHARCM/research/Software-Archaeology-Lineage.md`, 31 implementation files in `internal/agents/*.go` (35 files = 31 impl + 4 test files + 0 orphan).
+
+---

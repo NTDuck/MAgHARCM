@@ -1,8 +1,9 @@
 ---
 title: MAgHARCM Methodology
+date: 2026-09-26
+last_updated: 2026-09-26
 backlink: "[[2.0.0 Methodology]]"
 tags: [methodology, architecture, pipeline, "[[2.0.0 MAgHARCM]]", "[[1.0.0 PRIM-31]]", slm]
-last_updated: 2026-09-25
 ---
 
 # [[2.0.0 MAgHARCM Methodology]]
@@ -56,47 +57,75 @@ START ──► archaeologist ──► analyzer ──► planner ──► tra
 
 ## 3. Incremental Try-and-Fail Strategy Registry (`[[1.0.0 PRIM-21]]`)
 
-Rather than committing irrevocably to a static heuristic choice, the analyzer and repair loop evaluate migration strategies dynamically.
-Each strategy implements `Matches(Profile) bool` and `Attempt(context.Context, Profile) error`.
-If a strategy encounters validation plateau or structural repair failure, the system falls back incrementally to the next viable strategy:
+Rather than committing irrevocably to a static heuristic choice, the analyzer and repair loop evaluate migration strategies dynamically. The registry lives in `internal/agents/strategy.go`; each strategy implements `Matches(Profile) bool` + `Attempt(context.Context, Profile) (AttemptResult, error)` where `AttemptResult` carries the per-attempt verdict + telemetry. The runner picks the first strategy whose `Matches` returns true; if the attempt produces a `ValidationReport` whose `IsAllSuccess()` is false OR whose `CompilationErrors` slice is non-empty, the runner **automatically increments to the next strategy in the registry** — no human-in-the-loop required for the retry. The graph-level retry is wired at `internal/graph/graph.go:153` (`// Trigger try-and-fail migration strategy switch if needed`).
 
-1. `BIG_BANG`: Evaluated first for small codebases ($\le 3$ files, $< 500$ LoC).
-2. `PILOT`: Evaluated for large systems ($> 50$ files or $> 10000$ LoC), translating an isolated subsystem first.
-3. `PARALLEL_CUTOVER`: Modular systems with comprehensive tests ($> 10$ files).
-4. `FROZEN_LEGACY`: Systems with zero existing tests, requiring characterization synthesis.
-5. `INCREMENTAL`: Canonical universal baseline strategy.
+Registry order (evaluated top-down; first match wins; first failure increments):
+
+1. `BIG_BANG`: small codebases ($\le 3$ files, $< 500$ LoC); one-shot translate-then-validate.
+2. `PILOT`: large systems ($> 50$ files or $> 10000$ LoC); translates an isolated subsystem first to characterise risk.
+3. `PARALLEL_CUTOVER`: modular systems with comprehensive tests ($> 10$ files); parallel module translation with per-module validation gates.
+4. `FROZEN_LEGACY`: systems with zero existing tests; characterisation-test synthesis [[1.0.0 PRIM-11]] before translation.
+5. `INCREMENTAL`: canonical universal baseline; module-by-module translation with per-module test gates.
+
+**No silent strategy override.** The registry MUST NOT carry a single hard-coded "if all else fails, do X" fallback. If every strategy fails, the run is reported as a Verdict Panel verdict and the user decides.
+
+**Strategy thresholds are config-driven** (ADR-C-005): `BigBangFileLimit`, `BigBangLoCLimit`, `PilotFileLimit`, `PilotLoCLimit`, `ParallelCutoverFileLimit`, `FrozenLegacyMinimumTestCoverage`. They live in `internal/compiletime/compiletime.go`, not as Go magic numbers in agent modules.
 
 ---
 
 ## 4. Software Archaeology Suite
 
-Pre-translation comprehension executes through five integrated archaeological primitives:
-1. `[[1.0.0 PRIM-14]]` **Archaeology Stage**: Discovers module boundaries, historical build time capsules, and git churn hotspots.
-2. `[[1.0.0 PRIM-18]]` **Jaccard-Coupling Recovery**: Computes temporal co-change similarity across commits to expose hidden coupling.
-3. `[[1.0.0 PRIM-19]]` **Design Rule Hierarchy**: Partitions the codebase into L1 interfaces, L2 subsystems, and L3 leaves per Baldwin & Clark.
-4. `[[1.0.0 PRIM-20]]` **Concept Assignment**: Locates domain concepts across lexical clusters per Rajlich.
-5. `[[1.0.0 PRIM-22]]` **Four Phases of Comprehension**: Applies Foltz's DR. JONES cognitive traversal model.
+Pre-translation comprehension executes through five integrated archaeological primitives (`internal/agents/archaeology.go` + helpers). Each primitive is a separate function with explicit inputs/outputs; the Archaeologist agent composes them in a fixed order:
+
+1. `[[1.0.0 PRIM-14]]` **Archaeology Stage**: discovers module boundaries, historical build-time capsules, git churn hotspots. Output: `ArchaeologyReport.ModuleBoundaries`, `.HistoricalCapsules`, `.ChurnHotspots`.
+2. `[[1.0.0 PRIM-18]]` **Jaccard-Coupling Recovery**: computes temporal co-change similarity across commits to expose hidden coupling. Output: `ArchaeologyReport.CouplingMatrix`.
+3. `[[1.0.0 PRIM-19]]` **Design Rule Hierarchy**: partitions the codebase into L1 interfaces / L2 subsystems / L3 leaves per `[[1.0.0 P-41]]` Baldwin-Clark. Output: `ArchaeologyReport.DesignRuleHierarchy`.
+4. `[[1.0.0 PRIM-20]]` **Concept Assignment**: locates domain concepts across lexical clusters per `[[1.0.0 P-30]]` Lehman/Rajlich. Output: `ArchaeologyReport.ConceptClusters`.
+5. `[[1.0.0 PRIM-22]]` **Four Phases of Comprehension**: applies Foltz's DR. JONES cognitive traversal model (`[[1.0.0 P-40]]`). Output: `ArchaeologyReport.ComprehensionTrajectory`.
+
+**SLM-aware preamble** (since Sprint 2026-09-08, commit `2bb9082`): the Archaeologist agent prepends an SLM-aware prompt preamble to every model invocation, explicitly instructing the 4B-30B model to (a) prefer concrete module/file paths over abstract descriptions, (b) emit output in the `ArchaeologyReport` schema rather than free-form prose, and (c) skip directories listed in `compiletime.ArchaeologySkipDirs` (typically `node_modules`, `.git`, `target`, `dist`, `build`, vendor trees).
 
 ---
 
 ## 5. Binary Compilation & Validation Cascade
 
-Per-project compilation status is strictly binary: **Pass** or **Fail**. There is no partial compilation percentage.
+Per-project compilation status is strictly **binary**: **Pass** or **Fail**. There is no partial compilation percentage, no "10/15 modules compiled" scoring, no "compilation rate". The Validator emits a single boolean verdict per project; downstream metrics derive from the binary verdict only. `ValidationReport.IsAllSuccess()` returns `bool`; `ValidationReport.CompilationStatus()` returns `compiletime.CompilationStatus` (an enum with `Pass` / `Fail` only — no `Partial` value).
+
 The validation cascade enforces:
-1. **AST Syntax Pre-check**: Fast parsing via configured LSP provider (`abcoder-mcp` by default).
-2. **Native Toolchain Compilation**: Strict type-checking and borrow-checker inspection (`cargo check`).
-3. **Automated Test Suite**: Execution of translated and synthesized tests (`cargo test`).
-4. **Adversarial Weakening Guard (`[[1.0.0 PRIM-13]]`)**: Halts if test assertions are removed or widened.
-5. **Coverage-Guided Plateau Detector (`[[1.0.0 PRIM-27]]`)**: Exits loop when test improvements stagnate.
+
+1. **AST Syntax Pre-check** (`internal/agents/validator.go:checkASTSyntax`): fast parsing via configured LSP provider (`abcoder-mcp` by default; `tree-sitter` retained ONLY for offline source-language feature extraction in `internal/languages/extractor.go`, NOT for agent-side navigation per the boundary comment at `internal/languages/extractor.go:14`).
+2. **Native Toolchain Compilation**: strict type-checking and borrow-checker inspection (`cargo check` for Rust targets; equivalent for other toolchains). Failures here produce the `CompilationStatus = Fail` verdict.
+3. **Automated Test Suite**: execution of translated and synthesised tests (`cargo test`). Failures here also produce `Fail`.
+4. **Adversarial Weakening Guard** (`[[1.0.0 PRIM-13]]`): halts if test assertions are removed or widened between iterations; the optional_checks.go watchdog compares assertion counts across iterations and aborts the loop if they drop.
+5. **Coverage-Guided Plateau Detector** (`[[1.0.0 PRIM-27]]`): exits the iteration loop when test pass-rate improvements stagnate across the configured window.
+
+**Why binary, not percentage.** The downstream metrics (verdict panel consensus, retry decision, strategy-switch trigger, report-cards in `docs/.paper/`) all branch on `IsAllSuccess()`. A "45% compiled" intermediate state would force every downstream consumer to re-implement partial-success handling, which fragments the boundary contract. Binary collapse keeps the contract clean: `Pass` triggers proceed-to-validation; `Fail` triggers retry-or-verdict-panel. `internal/agents/validator.go` is the single source of truth for this collapse.
 
 ---
 
 ## 6. Centralized Compile-time Config & Locality of Behaviour
 
-Compile-time invariants, enums, sentinels, and initialization helpers reside in `internal/compiletime`.
-Every agent declares its intermediate artifacts within its own module file, upholding Locality of Behaviour.
-The pipeline state coordinates data flow across agents through explicit typed contracts.
+Compile-time invariants, enums, sentinels, and initialization helpers reside in `internal/compiletime/compiletime.go` (one package, no internal sub-packages). Examples: `SchemaVersion`, `CurrentSchemaVersion`, `Must` pattern, `DefaultSourceTreeDepth`, `TranslatedPackagePlaceholder`, `ArchaeologySkipDirs`, `CompilationStatus`, `LSPProviderABCoder`, `LSPProviderNative`. Configurations themselves live in `configs/agents.yml` (parsed at boot via `yaml.v3`); the parser rejects missing fields per the **no-fallback rule** (`Must` pattern is mandatory — runtime code never silently substitutes a default for a missing config field).
 
+### Locality of Behaviour (ADR-C-014)
+
+Every producer module MUST declare its intermediate artifact struct in the same Go file as the producer function. Consumers reference the artifact via the producer's package name. The intent: a future reader who opens `internal/agents/translator.go` to understand translation MUST see the `TranslatedProject` struct definition right there, not chase it into a centralised `types.go` leaf.
+
+**Producer-file alias pattern (since Sprint 2026-09-07, commit 0cb5994).** Five artifact structs historically lived in `internal/compiletime/state.go` because they are referenced by `compiletime.State` (the cross-agent pipeline state). Naive relocation of the structs into the producer agent files (`internal/agents/{analyzer,planning,translator,validator,archaeology}.go`) creates a Go import cycle: each agent file imports `compiletime` for `compiletime.State`, `compiletime.Must`, `compiletime.CompilationStatus`, etc.; relocating the structs AND wiring them into `compiletime.State` requires `compiletime` to import `agents` — cycle rejected by `go build`.
+
+Resolution attempted in Sprint 2026-09-23 (commit 89904f6, reverted) and re-attempted in Sprint 2026-09-26 by subagent D: a leaf sub-package `internal/compiletime/artifacts/`. Both attempts hit the same hard blocker: `ValidationReport.CompilationStatus()` returns `compiletime.CompilationStatus`, so the return type MUST move with the method receiver — but moving `CompilationStatus` out of `compiletime/compiletime.go` requires updating every caller in `internal/agents/`, `internal/runner/`, `internal/graph/`, and the test files. A 6-file refactor cannot resolve this without scope expansion.
+
+**Settled solution (ADR-C-014-as-applied, since 2026-09-07):** the artifact struct definitions live in `internal/agents/{analyzer,planning,translator,validator,archaeology}.go` with full docstrings + cross-references; `internal/compiletime/state.go` declares them via `type X = agents.X` (Go type aliases, not redeclarations). The Locality of Behaviour intent is met for the **reader** of the producer file (they see the struct right next to the producer) without breaking the agents→compiletime edge.
+
+**Future refactor (out of scope for current 6-file moves):** lift `compiletime.State` itself out of `internal/compiletime/` into a new leaf package `internal/pipestate/`, then move all 5 artifact structs into `internal/agents/` proper. This is a one-sprint refactor across the entire `internal/agents/` + `internal/runner/` + `internal/graph/` + tests surface.
+
+### No-fallback rule (Must pattern)
+
+Compilation/runtime invariants declared in `internal/compiletime/` use `MustXxx` constructors that `panic` on failure rather than silently substituting a default. Examples: `MustCompileConfig`, `MustLoadConfig`, `MustBuildState`. The intent: missing or malformed configuration is a programmer error; it must abort the process at boot, not silently degrade at runtime. The same rule applies to schema-version migrations, enum-string parsing, and validator setup.
+
+### External configuration
+
+All run-time-tunable values live in YAML files under `configs/`, never as Go constants in agent modules. The set of config keys is documented at the top of `internal/compiletime/compiletime.go` as a YAML schema block (single source of truth).
 ---
 
 ## 7. SLM-Era Anchors (4B-30B)
@@ -242,9 +271,20 @@ Wave 14 anchor list:
 - `[[1.0.0 P-121]]` BFCL Berkeley Function Calling Leaderboard (Patil et al. 2025, ICML 2025, PMLR 267:48371-48392) — UC Berkeley Gorilla LLM team; the canonical tool-calling benchmark that scales to thousands of tools without live execution; introduces AST-based evaluation methodology + serial/parallel/multi-turn call patterns + multi-language scope (Python/Java/JavaScript) + cost+latency rubric. P-121 supersedes `[[1.0.0 P-106]]` (the earlier wave-10 BFCL anchor) as the canonical tool-calling benchmark reference; P-106 should be retired as a duplicate once wave-14 cross-linking lands. Anchors PRIM-22, PRIM-29, PRIM-31.
 
 
-Wave 14 fired on 2026-09-25 (NeurIPS 2025 D&B + ICML 2025 mechanism papers — see §9 2026-09-25 entry and §7 wave-14 anchor list above). Wave 15 trigger criterion (replaces former wave-13 trigger criterion): wave-15 fires when a new SLM-era primitive lands, a 2026 venue paper introduces an unanchored mechanism, or the user issues a new directive that adds a primitive. Specifically:
-- Hop-1 of P-119..P-121 that lacks an existing P-NN anchor (e.g., the Gorilla LLM lineage underlying BFCL, the SWE-bench team underlying SWE-smith, the Nebius platform underlying SWE-Rebench) — most are foundational priors already implicitly cited via hop-2.
-- Real wave-15 gap candidates: SWE-rebench V2 (arXiv:2602.23866 — language-agnostic successor to V1; would add a multilingual decontamination dimension), SWE-bench Multimodal (October 2024 announcement per swebench.com — visual-DIAGRAM-anchored issue resolution), or a 2026 MAgHARCM-internal reproduction paper (deprioritised until user explicitly requests).
+Wave 14 fired on 2026-09-25 (NeurIPS 2025 D&B + ICML 2025 mechanism papers — see §9 2026-09-25 entry and §7 wave-14 anchor list above). Wave 15 trigger criterion (replaces former wave-13 trigger criterion): **wave-N+1 fires when a 2025+ NeurIPS / ICML / ICLR paper introduces an unanchored mechanism that defends or refutes an existing SLM-era primitive's substrate claim, OR a new SLM-era primitive lands, OR the user issues a new directive that adds a primitive**.
+
+**Trigger-gate evaluation procedure** (added 2026-09-26): every wave candidate is held against three questions before being promoted to a P-NN slot:
+
+1. **Venue confirmation.** Is the candidate published at (or have a confirmed acceptance to) a 2025+ NeurIPS / ICML / ICLR venue? arXiv-only preprints without venue confirmation are NOT eligible.
+2. **Mechanism-vs-benchmark gate.** Does the paper introduce a new mechanism (not just a benchmark or leaderboard)?
+3. **Anchoring gate.** Does the mechanism defend or refute a substrate claim of an existing SLM-era primitive (`PRIM-1`..`PRIM-31`)?
+
+Any candidate failing Q1, Q2, OR Q3 is logged in `.obsidian/MAgHARCM/research/diary/wave-15-candidates.md` (or the equivalent wave-N+1 candidates memo) as a deferred research-on-file candidate; it does NOT receive a P-NN slot. Re-evaluation fires when Q1's venue condition is satisfied or when the user explicitly requests promotion.
+
+Wave 15 candidates evaluated on 2026-09-26 (all three rejected, see `.obsidian/MAgHARCM/research/diary/wave-15-candidates.md`):
+- SWE-Rebench V2 (Badertdinov et al. 2026, arXiv:2602.23866) — REJECTED Q1 (preprint; no confirmed venue).
+- SWE-bench Multimodal (October 2024 announcement per swebench.com) — REJECTED Q1 (no peer-reviewed venue; no arXiv id).
+- SWE-bench Verified reference harness (OpenAI August 2024) — REJECTED Q3 (component of `[[1.0.0 P-109]]`, already anchored).
 - Wave-14 deferred mechanism candidates: xLAM-2-8B / SmolLM3-3B / Qwen3-Coder are model releases, NOT mechanism papers; they go in hop-2 citations, not as standalone P-NN anchors.
 
 Cross-cutting SLM-era general-purpose anchors:
@@ -271,9 +311,10 @@ Wave 9 anchors (verified):
 - **Latest Handoff**: `.obsidian/MAgHARCM/diary/Sprint-YYYY-MM-DD-Handoff.md`
 - **Paper**: `docs/.paper/` (root `.tex`, `sec_method.tex`, `refs.bib`)
 
----
-
 ## 9. Last Updated
+
+
+- **2026-09-26** — Sprint 2026-09-26: Wave-15 **deferred** per §7 trigger-gate evaluation. 3 candidates (SWE-Rebench V2 / SWE-bench Multimodal / SWE-bench Verified Reference Harness) all rejected; verdicts logged in `.obsidian/MAgHARCM/research/diary/wave-15-candidates.md`. §7 trigger criterion explicitly rewritten to gate on (Q1) venue confirmation + (Q2) mechanism-vs-benchmark + (Q3) anchoring-to-existing-primitive. ADR-C-014 locality split applied by Subagent D (5 artifact structs moved out of `internal/compiletime/state.go` into producer agent files: analyzer/planning/translator/validator/archaeology). ADR-C-005 magic-string sweep applied by Subagent E (report `local://sprint-2026-09-26-magic-sweep-report.md`). ADR-C-011 Charm stack idiomatic audit applied by Subagent G (3 dead-code removals in `internal/tui/tui.go`: viewport import + field + 3 write lines; zero manual ANSI escapes already; zero reimplemented Charm primitives already). ADR-V-001 automated lint shipped at `scripts/lint_vault.sh` (fails on stray `(P-NN)` / `(PRIM-NN)` in production code; vault markdown parentheticals exempted). Stale-directive audit confirmed 8/4 graph (8 real agents + 2 checkpoints = 10 nodes), abcoder-mcp default in `configs/agents.yml:22`, zero `fmt.Print*` in `internal/`, SelectMigrationStrategy already try-and-fail — all user directives that read as "still to do" already satisfied at `e09cfad`. P-106 BFCL retirement **dropped** (user did not request; P-106 retained alongside P-121 per Sprint 2026-09-25 decision). All gates green after verification.
 - **2026-09-21** — Sprint 2026-09-21: Wave-11 fired. 3 new SLM-era anchor papers persisted (P-108 EAGLE-3 NeurIPS 2025, P-109 SWE-bench Verified OpenAI 2024, P-110 GraphCoder / CodeGraphRAG 2024). P-108 is the deliberate re-anchor of `[[1.0.0 P-78]]` (EAGLE-3 NeurIPS 2024 was incorrect; venue corrected to NeurIPS 2025 per OpenReview `4exx1hUffq` + NeurIPS proceedings PDF; arXiv:2503.01840). Wave-11 SLM-era anchors table (10 rows) + Wave-11 anchor list appended to §7. Cross-links added in `Software-Archaeology-Lineage.md` (9 cross-link rows across PRIM-5, 6, 7, 9, 21, 26, 27, 31). All gates green (`go build`, `go vet`, `go test ./...`). Audit verified all 31 primitives still mapped to implementation files; 8-agent graph still wired; Charm TUI idioms still intact; `abcoder-mcp` default still in `configs/agents.yml`. Three focused commits planned (papers → cross-links → methodology + handoff).
 - **2026-09-23** — Sprint 2026-09-23: Wave-13 fired. 4 new SLM-era anchor papers persisted (P-115 OpenHands/CodeAct Wang 2024, P-116 Aider Gauthier 2024-2025, P-117 RepoCoder Zhang ICLR 2023, P-118 SWE-bench Lite Jimenez 2024). Wave-13 SLM-era anchors table (16 rows) + Wave-13 anchor list appended to §7. Cross-links added in `Software-Archaeology-Lineage.md` (16 cross-link rows across PRIM-5, 6, 9, 22, 25, 26, 27, 29, 31). §0 Quick Start tightened to include Vault Sync + Rerun Experiments + Modify Paper + Ponytail Refactor steps per user directives. All gates green (`go build`, `go vet`, `go test ./...`). Audit verified all 31 primitives still mapped to implementation files; 8-agent graph still wired; Charm TUI idioms still intact; abcoder-mcp default still in `configs/agents.yml`. Ponytail refactor in flight: extracting artifact structs from `internal/compiletime/state.go` into new `internal/compiletime/artifacts` leaf sub-package to satisfy Locality of Behaviour (ADR-C-014) without recreating the `compiletime → agents → compiletime` import cycle.
 - **2026-09-22** — Sprint 2026-09-22: Wave-12 fired. 4 new SLM-era anchor papers persisted (P-111 SWE-bench original Jimenez ICLR 2024, P-112 SWE-agent Yang NeurIPS 2024, P-113 AutoCodeRover Zhang 2024, P-114 Medusa Cai 2024). Wave-12 SLM-era anchors table (16 rows) + Wave-12 anchor list appended to §7. Cross-links added in `Software-Archaeology-Lineage.md` (16 cross-link rows across PRIM-5, 6, 7, 9, 21, 22, 23, 25, 26, 27, 29, 31). All gates green (`go build`, `go vet`, `go test ./...`). Audit verified all 31 primitives still mapped to implementation files; 8-agent graph still wired; Charm TUI idioms still intact; abcoder-mcp default still in `configs/agents.yml`.
@@ -288,3 +329,59 @@ Wave 9 anchors (verified):
 
 - **2026-09-25** — Sprint 2026-09-25: Wave-14 fired (continuity from Sprint 2026-09-24 deferral: the wave-13 trigger criterion's `new SLM-era primitive OR 2026 venue paper introduces unanchored mechanism` branch finally fired when NeurIPS 2025 D&B Track + ICML 2025 published the three mechanism-anchor papers below). 3 new SLM-era anchor papers persisted (P-119 SWE-Rebench Badertdinov NeurIPS 2025 D&B, P-120 SWE-smith Yang NeurIPS 2025 D&B spotlight, P-121 BFCL Patil ICML 2025). Wave-14 SLM-era anchors table (10 rows) + Wave-14 anchor list + Wave-14 trigger criterion appended to §7. Each candidate was held to the mechanism-vs-benchmark gate: P-119 introduces the decontamination scoring mechanism (cutoff-aware evaluation distinct from existing PRIM-27 coverage-plateau detection), P-120 introduces the environment-first synthetic-task generation mechanism (distinct from PRIM-5's execution-based test synthesis), P-121 introduces the AST-based tool-call evaluation mechanism (distinct from PRIM-5's execution-based test synthesis and PRIM-12's Wasm runtime oracle). P-122 dropped: Qwen3-Coder / SmolLM3 / xLAM-2 are model releases, not mechanism papers — go in hop-2 citations, not as standalone P-NN anchors. P-106 (wave-10 BFCL duplicate) flagged for retirement in a follow-up sweep once cross-linking lands. Cross-links pending for `Software-Archaeology-Lineage.md`. All gates green (`go build`, `go vet`, `go test ./...`). Audit verified all 31 primitives still mapped to implementation files; 8-agent graph still wired; Charm TUI idioms still intact; abcoder-mcp default still in `configs/agents.yml`.
 - **2026-09-07** — Sprint 2026-09-07: Centralised state.go into `internal/compiletime/state.go` (ADR-C-014 Locality of Behaviour).
+- **2026-09-26** — Sprint 2026-09-26: deferred wave-15 (P-122..P-124 candidates preserved at `.obsidian/MAgHARCM/research/diary/wave-15-candidates.md`); §7 trigger gate verdict logged; ADR-C-014 locality split applied; ADR-C-005 magic-string sweep applied; ADR-C-011 Charm stack audit applied.
+---
+
+## 10. Ponytail Refactor Sweep
+
+Every sprint ends with a ponytail audit that explicitly searches for over-engineering, reinvented stdlib, unneeded dependencies, speculative abstractions, and dead flexibility. The audit is a recurring ritual, not a one-off: the codebase's centre of mass keeps moving as new primitives land, and yesterday's clean surface becomes today's accretion surface.
+
+### Standing ponytail rules (verified every sprint)
+
+1. **Must pattern, no fallbacks.** Compile-time invariants use `MustXxx` constructors that `panic` on failure. Configuration loaders reject missing fields; runtime code never silently substitutes a default.
+2. **Clear unit boundaries.** Each function/module receives inputs via typed parameters and emits outputs via typed returns. No agent reaches into another agent's package-private state.
+3. **Try-and-fail strategy registry.** Migration strategies are not hardcoded; the registry increments on failure (see §3).
+4. **Deep, cohesive hierarchy.** Code is organised by concept (agent, primitive, contract), not by file size. A 600-line `archaeology.go` with five sub-functions is preferable to five 100-line files with shared mutable state.
+5. **Enums and design patterns over magic strings.** Magic numbers and strings are hoisted into `internal/compiletime/` as named constants; type state is encoded as enums (`compiletime.CompilationStatus`, `compilestate.SpecLifecyclePhase`, etc.).
+6. **abcoder-mcp default.** `configs/agents.yml` lists `lsp.provider: abcoder-mcp` as the canonical LSP source. `tree-sitter` is reserved for offline source-language feature extraction only (see boundary comment at `internal/languages/extractor.go:14`).
+7. **Binary compilation status.** Per-project compilation is Pass/Fail only — see §5.
+8. **Logging, no printing.** Production Go code uses `internal/logger/` exclusively; zero `fmt.Print*` in `internal/` (verified 2026-09-26).
+9. **Charm stack idiomatic.** TUI uses `bubbletea` + `bubbles` + `lipgloss` + `glamour`; no manual ANSI escapes, no reinvented primitives (verified 2026-09-26, see `local://sprint-2026-09-26-charm-audit.md`).
+10. **Externalities over reinvention.** YAML via `yaml.v3`, ring buffers via `container/ring`, AST navigation via `abcoder-mcp`, terminal I/O via the Charm stack.
+11. **STE100 messaging.** User-facing messages follow `asd-ste100` style: short, factual, no marketing language, hedge only when describing intent.
+12. **Locality of Behaviour.** Producer modules declare their artifact structs in the same file; see §6 for the alias-pattern solution to the Go import-cycle blocker.
+
+### Automated enforcement
+
+- `scripts/lint_vault.sh` (ADR-V-001): fails CI when `internal/` contains bare `(P-NN)` / `(PRIM-NN)` parentheticals; vault markdown parentheticals exempted (prose convention).
+- `go vet ./...`: no shadowed variables, no unreachable code, no printf/format mismatches.
+- `go build ./...`: import cycle detection (this is what blocked the ADR-C-014 locality split in Sprint 2026-09-23 + 2026-09-26).
+- `go test ./...`: behaviour coverage for each artifact struct's `IsAllSuccess` / `CompilationStatus` / `String` methods.
+
+---
+
+## 11. Stale-Directive Audit (2026-09-26)
+
+User directives sometimes reference work that has already been completed in an earlier sprint. Re-running already-completed work wastes sprint capacity and fragments the git history with duplicate commits. The stale-directive audit is run before every sprint plan; results are recorded here so future sprints can resolve the same drift quickly.
+
+### Verified-already-satisfied directives (as of 2026-09-26, commit `e09cfad`)
+
+| User directive | Real status | Evidence | Sprint of last verification |
+| :--- | :--- | :--- | :--- |
+| "graph only has 4 agents" | STALE — graph has **10 nodes** (8 real agents + 2 checkpoints) | `internal/graph/graph.go:45,63,71,79,87,92,116,124,128,150` | 2026-09-26 |
+| "Use abcoder's MCP for AST" | ALREADY DEFAULT — `configs/agents.yml:22` lists `provider: abcoder-mcp`; tree-sitter retained only for offline IR extraction | `configs/agents.yml:22` + boundary comment `internal/languages/extractor.go:14` | 2026-09-19 |
+| "ABCoderMCPProvider → ABCoderMcpProvider rename" | MOOT — no `ABCoderMCPProvider` ident exists (zero hits); canonical ident is `LSPProviderABCoder` constant | `grep -rn 'ABCoderMCPProvider' .` → 0 | 2026-09-26 |
+| "Remove all fmt.Print*" | ALREADY DONE — zero `fmt.Print*` in `internal/` | `grep -rn 'fmt\.Print' internal/` → 0 | 2026-09-19 (re-verified 2026-09-26) |
+| "State.go centralised" | ALREADY DONE (basic) — full struct relocation blocked by Go import-cycle (see §6) | `internal/compiletime/state.go` exists since Sprint 2026-09-07 | 2026-09-07 + cycle blocker documented 2026-09-26 |
+| "SelectMigrationStrategy too hardcoded, switch to try-and-fail" | ALREADY DONE — graph-level try-and-fail wired at `graph.go:153` | `internal/graph/graph.go:153` | 2026-09-25 |
+| "P-106 BFCL retirement" | NOT USER-REQUESTED — P-106 retained alongside P-121 as historical anchor; user did not issue this directive | `Sprint-2026-09-25-Handoff.md` Track-2 | 2026-09-26 |
+
+### Directives still requiring work
+
+| User directive | Status | Owner |
+| :--- | :--- | :--- |
+| Magic-string sweep across `internal/` | DONE — Subagent E completed 2026-09-26; 5 invariants lifted to `compiletime/`, 3 local consts added; report `local://sprint-2026-09-26-magic-sweep-report.md` | E_MagicSweep (Sprint 2026-09-26) |
+| Full ADR-C-014 struct relocation | Blocked by Go import cycle (see §6); alias-pattern solution satisfies intent | future sprint (leaf-package lift) |
+| Charm stack idiomatic audit | Subagent G completed 2026-09-26; 3 dead-code removals + zero violations found | G_CharmAudit |
+| ADR-V-001 automated lint | Subagent H shipped `scripts/lint_vault.sh` 2026-09-26 | H_VaultSync |
+| Research wave fires when new mechanism lands | Wave-15 deferred (3 candidates rejected per §7 trigger gate) | wave-16 conditional |
