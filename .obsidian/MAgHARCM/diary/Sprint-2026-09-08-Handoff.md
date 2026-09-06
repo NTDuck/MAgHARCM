@@ -32,3 +32,7 @@ Build cycle recovered after the Sprint-2026-09-07 centralisation. All packages `
 ```
 d0ef05b refactor(state): centralise State + artifact structs in internal/compiletime/state.go; producer files declare bare type aliases; migrate checkpoint.Checkpoint to add Iteration; all packages build green
 ```
+
+## See also
+
+- `[[1.0.0 ADR-2026-09-26-Vault-Lint-Extension]]` — supersedes the carryover "ABCoderMCPProvider → ABCoderMcpProvider rename" (ADR-2026-09-26 §Audit findings shows the rename was moot: zero hits in `internal/`; canonical ident is `LSPProviderABCoder`).

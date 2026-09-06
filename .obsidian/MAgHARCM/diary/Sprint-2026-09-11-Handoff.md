@@ -72,3 +72,7 @@ b243650 docs(research): persist P-74..P-77 anchor papers
 - Ponytail sweep on `internal/compiletime/compiletime.go` for any remaining inline magic literals; this file has grown to 447 lines.
 - Wire the Archaeologist agent to populate `stableSinceYears` from git blame / file mtime so the new modularity-trap detection actually surfaces in user-facing output.
 - Verify the two deferred sub-citation claims (Baldwin "Where Do Transactions Come From?" year; Colfer & Baldwin "Mirroring Hypothesis" year) via web_search; fix P-41 line 25 if either year is wrong.
+
+## See also
+
+- `[[1.0.0 ADR-2026-09-26-Vault-Lint-Extension]]` — closes several open follow-ups: the try-and-fail cascade + `MigrationStrategy` naming/centralisation were implemented in Sprint 2026-09-25 (`internal/agents/strategy.go`); the `ABCoderMCPProvider` rename was moot (zero hits); the ponytail sweep on `compiletime/compiletime.go` was deferred to ADR-C-014 alias pattern.

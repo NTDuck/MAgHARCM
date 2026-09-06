@@ -75,3 +75,7 @@ See [[primitives/INDEX]], [[research/Architecture]], [[research/METHODOLOGY]].
 Bibliography recursion will pivot off PRIM-1..30 with depth bound = 2 hops. Software-archaeology
 sources get priority in hop-2: pp-besm dev.to playbook, AgentPatterns.ai Legacy Code Archaeology,
 Rajlich, Müller, Foltz, Baldwin & Clark, Kazman & Cai.
+
+## See also
+
+- `[[1.0.0 ADR-2026-09-26-Vault-Lint-Extension]]` — vault lint script (`scripts/lint_vault.sh`) retroactively validates this recon note's `[[x.y.z ...]]` convention.

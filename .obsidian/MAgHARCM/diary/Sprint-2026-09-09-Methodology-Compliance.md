@@ -370,3 +370,7 @@ from all compiled code.
 
 All ten directives are PASS. No code changes are required for this
 sprint's methodology compliance gate.
+
+## See also
+
+- `[[1.0.0 ADR-2026-09-26-Vault-Lint-Extension]]` — supersedes the row-5 ("8+ agent graph") and row-10 ("ABCoderMcp naming") audits. ADR-2026-09-26 §Audit findings gives the canonical 10-node topology (8 functional + 2 checkpoint) and confirms `ABCoderMCPProvider` is moot (zero hits); canonical ident is `LSPProviderABCoder`.
