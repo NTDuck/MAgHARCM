@@ -1,9 +1,9 @@
 ---
 title: MAgHARCM Architecture
-date: 2026-09-27
+date: 2026-09-28
 backlink: [[2.0.0 Architecture]]
-last_updated: 2026-09-27
-tags: [architecture, package-graph, [[2.0.0 MAgHARCM]], "[[1.0.0 P-122]]", wave-16]
+last_updated: 2026-09-28
+tags: [architecture, package-graph, [[2.0.0 MAgHARCM]], "[[1.0.0 P-122]]", "[[1.0.0 P-123]]", "[[1.0.0 P-124]]", wave-16, wave-17]
 ---
 # [[2.0.0 MAgHARCM Architecture]]
 
@@ -162,11 +162,12 @@ ADR-C-014 requires per-agent artifact structs (`AnalyzerOutput`, `PlanningOutput
 
 ---
 
-## 7. Vault Sync Audit — Sprint 2026-09-27 (cumulative)
+## 7. Vault Sync Audit — Sprint 2026-09-28 (cumulative)
 Mirrors `.obsidian/MAgHARCM/primitives/INDEX.md` Sprint 2026-09-26 audit block.
 
 - **Wave-15 status**: deferred on 2026-09-26 (3 candidates rejected per §7 trigger gate). Full rationale in `.obsidian/MAgHARCM/research/diary/wave-15-candidates.md`.
 - **Wave-16 status**: FIRED 2026-09-27. 3 candidates triaged; 1 ACCEPT (P-122 ReasoningBank ICLR 2026 tentative) + 2 REJECT (SWE-Bench Pro ICML 2026 + CodeClash ICML 2026 — both fail Q2 mechanism-vs-benchmark gate). Full rationale in `.obsidian/MAgHARCM/research/diary/wave-16-candidates.md`. 1 new SLM-era anchor persisted; 1 new paper note added (`.obsidian/MAgHARCM/research/papers/P-122-reasoningbank-iclr-2026.md`).
+- **Wave-17 status**: FIRED 2026-09-28. 5 candidates triaged; 2 ACCEPT (P-123 CodeChemist ICML 2026 + P-124 Syzygy ICLR 2025 VerifAI Workshop) + 3 REJECT (MemSearcher ACL 2026 Findings — off-list venue; Verified Tool Calls arXiv-only — no venue confirmation; LLM-IR / program-comprehension — benchmark, no mechanism). Full rationale in `.obsidian/MAgHARCM/research/diary/wave-17-candidates.md`. 2 new SLM-era anchors persisted; 2 new paper notes added.
 - **ADR-C-014 status**: locality split applied by Subagent D. The producer-file alias pattern (`internal/agents/<file>.go` declares the struct, `internal/compiletime/state.go` declares `type X = agents.X`) remains the durable constraint after the third relocation attempt (commit `89904f6` + Sprint 2026-09-26 sub-agent D abort) hit the same hard cycle blocker.
 - **ADR-C-005 status**: magic-string sweep applied by Subagent E. `internal/consts/consts.go` is the canonical home for hardcoded-by-necessity values; the Sprint 2026-09-26 sweep swept residual string-literal sentinels from agent files into `compiletime/`.
 - **ADR-C-011 status**: Charm stack audit applied by Subagent G. `internal/tui/tui.go` (613 lines after edits) confirmed idiomatic across `bubbletea` / `bubbles/spinner` / `bubbles/table` / `bubbles/textinput` / `lipgloss` / `glamour`. The dead `viewport` import (constructed but never `.View()`-ed) was removed. Full report in `.obsidian/MAgHARCM/diary/sprint-2026-09-26-charm-audit.md`.
@@ -198,5 +199,37 @@ Both shifts are opt-in. Existing users with `configs/agents.yml` default keys co
 - **Wave-16 anchors**: 1 added (P-122). Total vault paper notes: 122 (121 prior + P-122).
 - **Cross-links**: propagated in `Software-Archaeology-Lineage.md` (sprint 2026-09-27 close).
 
+
+## 9. Wave-17 SLM-Era Architectural Implications (2026-09-28)
+
+Wave-17 fired 2026-09-28 (`[[1.0.0 P-123]]` CodeChemist ICML 2026 + `[[1.0.0 P-124]]` Syzygy ICLR 2025 VerifAI Workshop, both accepted). Two architectural shifts implied; opt-in via YAML config to preserve backward compatibility.
+
+### 9.1 Cross-Lingual Functional Oracle (P-123 CodeChemist)
+
+Three primitives acquire a cross-lingual I/O test oracle when `configs/agents.yml:oracle.cross_lingual: true`:
+- **`[[1.0.0 PRIM-21]]` Migration Strategy Selection** — confidence-gated switching between in-language majority voting (cheap) and cross-lingual I/O test oracle (expensive but cross-language functional) replaces blind try-and-fail.
+- **`[[1.0.0 PRIM-23]]` Chunked Translation** — multi-temperature hedged sampling with cross-language functional verification. SLM-amenable: demonstrated on Qwen-1.5B.
+- **`[[1.0.0 PRIM-27]]` Coverage-Guided Plateau Detection** — functional-coverage plateau via I/O oracle (tests across source + target language) replaces frontier-model judges.
+
+The oracle is a typed `FunctionalOracle` interface in a leaf package `internal/oracle/` (forthcoming — sprint 2026-09-30+); primitives consume it via typed inputs. No graph re-wiring required.
+
+### 9.2 Dynamic-Analysis Property Mining (P-124 Syzygy)
+
+Three primitives acquire a runtime-mined property enrichment when `configs/agents.yml:translation.dynamic_specs: true`:
+- **`[[1.0.0 PRIM-9]]` Tri-Representation Hybrid Code Graph** — runtime-mined properties (aliasing, bounds, nullability) injected as fourth representation.
+- **`[[1.0.0 PRIM-22]]` Four Phases of Comprehension** — static TDG (`[[1.0.0 P-88]]` HiTyper) + dynamic property mining (`[[1.0.0 P-124]]` Syzygy) as complementary dimensions.
+- **`[[1.0.0 PRIM-30]]` Source-to-Target Manifest Rewriter** — type/bounds/nullability-enriched manifests for safe-Rust generation.
+
+The mining substrate is a leaf package `internal/specminer/` (forthcoming — sprint 2026-09-30+); uses Clang/LLVM instrumentation when the legacy codebase compiles. Static-only path remains as fallback for uncompilable code.
+
+### 9.3 Backward Compatibility
+
+Both shifts are opt-in. Existing users with `configs/agents.yml` default keys continue to get blind try-and-fail + feedback-driven retrieval (the Sprint 2026-09-26 baseline) + static-only manifests (the Sprint 2026-09-07 baseline). New YAML keys added; no breaking changes.
+
+### 9.4 Parity Check (post-wave-17, 2026-09-28)
+
+- **Parity**: 31/31/31 unchanged — 31 primitives listed in `.obsidian/MAgHARCM/primitives/INDEX.md`, 31 rows in `.obsidian/MAgHARCM/research/Software-Archaeology-Lineage.md`, 31 implementation files in `internal/agents/*.go` (32 files = 31 impl + 1 test file + 0 orphan).
+- **Wave-17 anchors**: 2 added (P-123, P-124). Total vault paper notes: 124 (122 prior + P-123 + P-124).
+- **Cross-links**: propagated in `Software-Archaeology-Lineage.md` (sprint 2026-09-28 close) and `primitives/INDEX.md`.
 ---
 
