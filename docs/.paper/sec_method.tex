@@ -303,7 +303,7 @@ registry retries the next strategy if the active one fails, before
 falling back to a final always-accept entry. Adding a strategy is a
 one-line append to \texttt{NewDefaultRegistry}.
 This cascading-fallback structure mirrors the migration strategy
-taxonomy proposed for legacy system modernisation~\cite{p60_bisbal_cascading_fallback,p84_s1_test_time_scaling_2025,p108_eagle3_2025},
+This cascading-fallback structure mirrors the migration strategy taxonomy proposed for legacy system modernisation~\cite{p60_bisbal_cascading_fallback,p84_s1_test_time_scaling_2025,p108_eagle3_2025,p122_zhang_reasoningbank_2026},
 with the informal wrap/reengineer/replace/migrate coping-strategy framing discussed in Bennett's 1995 editorial~\cite{p75_bennett_legacy_coping_success_1995},
 with the broader research-agenda mapping of grand challenges (concept location,
 impact analysis, comprehension at scale, migration strategies, empirical validation)
@@ -332,8 +332,7 @@ in order; each strategy exposes a predicate and an attempt method.}
 \subsection{Qwen2.5-Coder SLM Anchor (PRIM-22, PRIM-23, PRIM-31)}
 \label{sec:method_qwen25coder_anchor}
 
-MAgHARCM is tuned for the Qwen2.5-Coder family of coding SLMs at the
-7B, 14B, and 32B scales~\cite{p58_hui_qwen25coder_2024,p94_zhou_lima_2023,p96_kojima_zsr_2022,p99_suzgun_bigbench_cot_2022,p100_khot_decomposed_2022,p101_zhou_l2m_2023,p102_smallcode_4b_2025,p104_s_star_2025,p105_chunkkv_2025,p106_bfcl_2025,p121_patil_bfcl_2025,p107_decomposed_prompting_slm_reanchor_2025,p108_eagle3_2025,p110_graphcoder_2024,p86_xu_modernization_survey_2024_unverified,p88_hityper_peng_2022,p89_phan_baseline_icse_nier_2024_unverified,p85_yue_function_calling_2025_unverified}.
+MAgHARCM is tuned for the Qwen2.5-Coder family of coding SLMs at the 7B, 14B, and 32B scales~\cite{p58_hui_qwen25coder_2024,p94_zhou_lima_2023,p96_kojima_zsr_2022,p99_suzgun_bigbench_cot_2022,p100_khot_decomposed_2022,p101_zhou_l2m_2023,p102_smallcode_4b_2025,p104_s_star_2025,p105_chunkkv_2025,p106_bfcl_2025,p121_patil_bfcl_2025,p107_decomposed_prompting_slm_reanchor_2025,p108_eagle3_2025,p110_graphcoder_2024,p122_zhang_reasoningbank_2026,p86_xu_modernization_survey_2024_unverified,p88_hityper_peng_2022,p89_phan_baseline_icse_nier_2024_unverified,p85_yue_function_calling_2025_unverified}.
 fragment context ($\le 4\,\text{KB}$), reverse-topological scheduling,
 and the role-flipped reviewer are calibrated so that the prompt
 window, scratch reasoning budget, and instruction-following fidelity
@@ -587,7 +586,7 @@ the methodological precedent for MAgHARCM's verifier-of-verifier pattern.
 The Recruiter Agent (§\ref{sec:method_recruiter}) evaluates runtime
 validation signals (compilation status, test pass rate, coverage plateau,
 and test weakening) to adapt the pipeline dynamically
-(PRIM-29~\cite{p26_agentverse,p112_yang_sweagent_2024,p115_wang_openhands_2024,p121_patil_bfcl_2025}). When repair iterations stall or
+(PRIM-29~\cite{p26_agentverse,p112_yang_sweagent_2024,p115_wang_openhands_2024,p121_patil_bfcl_2025,p122_zhang_reasoningbank_2026}).
 plateau, the Recruiter triggers incremental try-and-fail strategy
 failover, switching from the current migration strategy to the next
 viable strategy in the registry.
