@@ -1433,3 +1433,21 @@
   eprint    = {2509.25140},
   note      = {[INFERENCE: tentative ICLR 2026 venue — verify on first revisit if accepted/rejected. Per §7 Q1 caveat, the arXiv preprint anchors P-122 until venue confirmation]. Google Research; strategy-distilled persistent memory as a substrate for self-evolving LLM/SLM agents; introduces (Title, Description, Content) MemoryTriple extraction via self-judge, retrieval at test time, and a Memory-aware Test-Time Scaling (MaTTS) loop; closed-loop; demonstrated on SWE-Bench + WebArena. Anchors PRIM-31, PRIM-29, PRIM-21.}
 }
+
+@inproceedings{p123_wang_codechemist_2026,
+  title     = {{CodeChemist: Test-Time Scaling for Low-Resource Code Generation via Functional Knowledge Transfer}},
+  author    = {Wang, [et al.]},
+  booktitle = {Proceedings of the 43rd International Conference on Machine Learning (ICML 2026)},
+  year      = {2026},
+  eprint    = {2510.00501},
+  note      = {Training-free test-time scaling for low-resource code generation; multi-temperature hedged sampling + cross-lingual I/O test oracle (functional knowledge transfer from a high-resource reference language into the low-resource target); demonstrated on Qwen-1.5B with 60-70\% relative gains on Lua; replaces frontier-model judge with executable oracle amenable to SLM deployment. Anchors PRIM-21, PRIM-23, PRIM-27.}
+}
+
+@inproceedings{p124_shetty_syzygy_2025,
+  title     = {{Syzygy: Dual Code-Test C to (safe) Rust Translation using LLMs and Dynamic Analysis}},
+  author    = {Shetty, Manish and Jain, Naman and Godbole, Adwait and Seshia, Sanjit A. and Sen, Koushik},
+  booktitle = {VerifAI Workshop at the International Conference on Learning Representations (ICLR 2025 Workshop, peer-reviewed)},
+  year      = {2025},
+  eprint    = {2412.14234},
+  note      = {Dual code-test C-to-safe-Rust translation; Clang/LLVM-instrumented SpecMiner mines type/bounds/nullability/aliasing properties at runtime; LLM generates Rust code AND equivalence test per translation unit; multi-round repair loop with I/O-equivalence validation. Complements P-88 HiTyper's static TDG with the dynamic-analysis half. Anchors PRIM-9, PRIM-22, PRIM-30.}
+}

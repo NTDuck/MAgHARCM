@@ -303,7 +303,7 @@ registry retries the next strategy if the active one fails, before
 falling back to a final always-accept entry. Adding a strategy is a
 one-line append to \texttt{NewDefaultRegistry}.
 This cascading-fallback structure mirrors the migration strategy
-This cascading-fallback structure mirrors the migration strategy taxonomy proposed for legacy system modernisation~\cite{p60_bisbal_cascading_fallback,p84_s1_test_time_scaling_2025,p108_eagle3_2025,p122_zhang_reasoningbank_2026},
+This cascading-fallback structure mirrors the migration strategy taxonomy proposed for legacy system modernisation~\cite{p60_bisbal_cascading_fallback,p84_s1_test_time_scaling_2025,p108_eagle3_2025,p122_zhang_reasoningbank_2026,p123_wang_codechemist_2026},
 with the informal wrap/reengineer/replace/migrate coping-strategy framing discussed in Bennett's 1995 editorial~\cite{p75_bennett_legacy_coping_success_1995},
 with the broader research-agenda mapping of grand challenges (concept location,
 impact analysis, comprehension at scale, migration strategies, empirical validation)
@@ -332,7 +332,7 @@ in order; each strategy exposes a predicate and an attempt method.}
 \subsection{Qwen2.5-Coder SLM Anchor (PRIM-22, PRIM-23, PRIM-31)}
 \label{sec:method_qwen25coder_anchor}
 
-MAgHARCM is tuned for the Qwen2.5-Coder family of coding SLMs at the 7B, 14B, and 32B scales~\cite{p58_hui_qwen25coder_2024,p94_zhou_lima_2023,p96_kojima_zsr_2022,p99_suzgun_bigbench_cot_2022,p100_khot_decomposed_2022,p101_zhou_l2m_2023,p102_smallcode_4b_2025,p104_s_star_2025,p105_chunkkv_2025,p106_bfcl_2025,p121_patil_bfcl_2025,p107_decomposed_prompting_slm_reanchor_2025,p108_eagle3_2025,p110_graphcoder_2024,p122_zhang_reasoningbank_2026,p86_xu_modernization_survey_2024_unverified,p88_hityper_peng_2022,p89_phan_baseline_icse_nier_2024_unverified,p85_yue_function_calling_2025_unverified}.
+MAgHARCM is tuned for the Qwen2.5-Coder family of coding SLMs at the 7B, 14B, and 32B scales~\cite{p58_hui_qwen25coder_2024,p94_zhou_lima_2023,p96_kojima_zsr_2022,p99_suzgun_bigbench_cot_2022,p100_khot_decomposed_2022,p101_zhou_l2m_2023,p102_smallcode_4b_2025,p104_s_star_2025,p105_chunkkv_2025,p106_bfcl_2025,p121_patil_bfcl_2025,p107_decomposed_prompting_slm_reanchor_2025,p108_eagle3_2025,p110_graphcoder_2024,p122_zhang_reasoningbank_2026,p124_shetty_syzygy_2025,p86_xu_modernization_survey_2024_unverified,p88_hityper_peng_2022,...
 fragment context ($\le 4\,\text{KB}$), reverse-topological scheduling,
 and the role-flipped reviewer are calibrated so that the prompt
 window, scratch reasoning budget, and instruction-following fidelity
@@ -454,7 +454,9 @@ The four-mode structure follows a decomposed prompting
 style~\cite{p62_decomposed_prompting}, and the Translator may offload
 arithmetic and symbolic computation to a program-aided code-execution
 pass~\cite{p65_gao_pal_2022} when a fragment requires deterministic
-evaluation.
+evaluation. When the source and target languages can both execute,
+a cross-lingual I/O test oracle can replace the frontier-model judge
+with a training-free executable verifier~\cite{p123_wang_codechemist_2026}.
 
 \paragraph{(1) Context Integration.}
 The agent loads the Implementation Plan, the Target Project Design
@@ -466,8 +468,7 @@ at $\le 4\,\text{KB}$. The Prior-Modules Memory maintains a running
 summary ($\le 4\,\text{KB}$) of emitted module paths and exported
 signatures so that newly generated modules import and reuse already
 emitted types consistently. The navigator's subgraph ranking follows
-graph-RAG principles that surface high-quality graph context over
-the existing code-property-graph~\cite{p110_graphcoder_2024,p113_zhang_autocoderover_2024,p116_gauthier_aider_2024,p117_zhang_repocoder_2023,p120_yang_swesmith_2025}, raising small-model (4B--13B) comprehension to large-model parity on repo-level tasks. This design specifically addresses
+the existing code-property-graph~\cite{p110_graphcoder_2024,p113_zhang_autocoderover_2024,p116_gauthier_aider_2024,p117_zhang_repocoder_2023,p120_yang_swesmith_2025,p124_shetty_syzygy_2025}, raising small-model (4B--13B) comprehension to large-model parity on repo-level tasks. When the legacy codebase can be compiled, runtime-mined type, bounds, and nullability properties from instrumented execution complement the static code-property-graph~\cite{p124_shetty_syzygy_2025}.
 challenge 2: long-horizon agents lose high-level goals without an
 explicit plan and degrade as interaction history grows unbounded; the
 bounded context per fragment prevents both failure modes on small
