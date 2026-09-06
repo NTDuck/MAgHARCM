@@ -1,10 +1,10 @@
 ---
 title: MAgHARCM Architecture
+date: 2026-09-27
 backlink: [[2.0.0 Architecture]]
 last_updated: 2026-09-27
 tags: [architecture, package-graph, [[2.0.0 MAgHARCM]], "[[1.0.0 P-122]]", wave-16]
 ---
-
 # [[2.0.0 MAgHARCM Architecture]]
 
 ## 1. Package Decomposition & Dependency DAG

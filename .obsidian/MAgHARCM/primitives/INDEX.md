@@ -1,10 +1,10 @@
 ---
 title: Primitives Index
+date: 2026-09-27
 backlink: "[[2.0.0 Primitives Index]]"
 last_updated: 2026-09-27
 tags: [primitives, catalog, status, [[1.0.0 PRIM-1]]..[[1.0.0 PRIM-31]], "[[1.0.0 P-122]]", wave-16]
 ---
-# [[2.0.0 Primitives Index]]
 
 A primitive is a small, named, reusable capability within the MAgHARCM pipeline.
 Each entry links to its specification, theoretical lineage, and implementing code file.

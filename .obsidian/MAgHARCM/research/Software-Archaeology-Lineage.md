@@ -1,10 +1,10 @@
 ---
 title: Software Archaeology & Legacy System Modernization Lineage
+date: 2026-09-27
 backlink: [[2.0.0 Software-Archaeology-Lineage]]
 last_updated: 2026-09-27
 tags: [research, software-archaeology, modernization, lineage, synthesis, [[2.0.0 MAgHARCM]], "[[1.0.0 P-122]]", wave-16]
 ---
-# [[2.0.0 Software Archaeology & Legacy System Modernization Lineage]]
 
 ## 1. Executive Summary & Epistemological Stance
 

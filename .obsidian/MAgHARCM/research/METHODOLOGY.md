@@ -1,6 +1,6 @@
 ---
 title: MAgHARCM Methodology
-date: 2026-09-26
+date: 2026-09-27
 last_updated: 2026-09-27
 backlink: "[[2.0.0 Methodology]]"
 tags: [methodology, architecture, pipeline, "[[2.0.0 MAgHARCM]]", "[[1.0.0 PRIM-31]]", slm, "[[1.0.0 P-122]]", wave-16]
