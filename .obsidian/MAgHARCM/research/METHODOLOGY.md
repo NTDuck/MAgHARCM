@@ -364,6 +364,8 @@ Every sprint ends with a ponytail audit that explicitly searches for over-engine
 
 User directives sometimes reference work that has already been completed in an earlier sprint. Re-running already-completed work wastes sprint capacity and fragments the git history with duplicate commits. The stale-directive audit is run before every sprint plan; results are recorded here so future sprints can resolve the same drift quickly.
 
+> **Shorthand note**: The phrase `'8-agent graph'` used as a tag in vault audit lines (this section included) and historical sprint handoffs is shorthand for the canonical 10-node topology (8 specialised agents + 2 checkpoint barriers). The `reviewer` lambda registered at `internal/graph/graph.go:92` is constructed via `agents.NewRoleFlipGate`; "reviewer" is the graph node id, "RoleFlipGate" is the constructor name. See `.obsidian/MAgHARCM/research/Architecture.md` §4 for the canonical statement.
+
 ### Verified-already-satisfied directives (as of 2026-09-26, commit `e09cfad`)
 
 | User directive | Real status | Evidence | Sprint of last verification |

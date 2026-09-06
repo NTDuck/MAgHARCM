@@ -88,6 +88,8 @@ No agent unit assumes knowledge of another agent's internal implementation:
 
 The multi-agent pipeline is wired as an Eino DAG with **10 lambda nodes** (8 specialised agents + 2 checkpoint barriers) and a single cyclic repair edge. All eight agents are registered in `internal/graph/graph.go` via `g.AddLambdaNode(...)` and connected in the following order; every agent's `*LambdaNode` declaration includes the `PRIM-NN` anchor comment documenting which lineage primitives the node implements.
 
+> **Shorthand note**: The phrase `'8-agent graph'` used as a tag elsewhere in vault audit lines (e.g. `primitives/INDEX.md`, `METHODOLOGY.md` §11, historical sprint handoffs) is shorthand for this 10-node topology. The `reviewer` lambda registered at `graph.go:92` is constructed via `agents.NewRoleFlipGate` (`internal/agents/roleflip.go:44`); "reviewer" is the graph node id, "RoleFlipGate" is the constructor name.
+
 | λ-# | Node id | Role | PRIM-NN anchors | `graph.go` line | Cycle role |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | 1 | `archaeologist` | Pre-planning software archaeology (commit churn, Jaccard coupling, design-rule layering, concept assignment, DR. JONES cognitive navigation) | `[[1.0.0 PRIM-14]]`, `[[1.0.0 PRIM-18]]`, `[[1.0.0 PRIM-19]]`, `[[1.0.0 PRIM-20]]`, `[[1.0.0 PRIM-22]]` | 45 | Forward head: `START → archaeologist` |
