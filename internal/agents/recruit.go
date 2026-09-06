@@ -83,7 +83,7 @@ func (r *Recruiter) Recruit(ctx context.Context, profile Profile, lastReport Val
 	case lastReport.AdversarialWeakeningDetected:
 		logger.LogStep(compiletime.LogScopeRecruiter + ": adversarial weakening → re-run role-flip gate")
 		return RecruitmentPlan{
-			Tools:     []string{compiletime.AgentRoleFlip + "_gate", compiletime.AgentAdversarialSuite},
+			Tools:     []string{compiletime.AgentRoleFlip + compiletime.RoleFlipGateToolSuffix, compiletime.AgentAdversarialSuite},
 			Agents:    []string{compiletime.AgentRoleFlip},
 			Rationale: "Adversarial weakening detected; re-run the role-flip gate to collect compensating evidence before resuming translation.",
 		}, nil

@@ -80,6 +80,12 @@ type OptionalCheck interface {
 // upper bound before declaring plateau and exiting.
 const MaxRemedyIterations = 3
 
+// optionalCheckLogTruncateLen is the maximum number of bytes an optional
+// check detail line may occupy before truncateForLog caps it for the
+// log stream. Local constant; centralised values live in
+// internal/compiletime.
+const optionalCheckLogTruncateLen = 120
+
 // NewValidatorAgent creates a ValidatorAgent instance. runID enables
 // per-run checkpoint persistence; pass "" to disable checkpointing.
 func NewValidatorAgent(m model.BaseChatModel, runID string) *ValidatorAgent {
@@ -140,7 +146,7 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *compiletime.State) (*co
 	if distinctSources == 0 {
 		distinctSources = len(state.PlanningOutput.Fragments)
 	}
-	report.MinRealTests = max(5, distinctSources*2)
+	report.MinRealTests = max(compiletime.MinRealTestsFloor, distinctSources*compiletime.MinRealTestsMultiplier)
 	if report.TotalTests > 0 {
 		report.TestPassRate = float64(report.PassedTests) / float64(report.TotalTests) * 100.0
 	}
@@ -467,7 +473,7 @@ func (v *ValidatorAgent) checkASTSyntax(targetDir, targetLang string) []string {
 			structOut, parseErr := tools.ParseFileStructure(path)
 			if parseErr != nil {
 				syntaxErrors = append(syntaxErrors, fmt.Sprintf("%s: parse error: %v", filepath.Base(path), parseErr))
-			} else if structOut != nil && len(structOut.Elements) == 0 && info.Size() > 200 {
+			} else if structOut != nil && len(structOut.Elements) == 0 && info.Size() > compiletime.ASTEmptyElementsSizeThreshold {
 				syntaxErrors = append(syntaxErrors, fmt.Sprintf("%s: 0 AST elements extracted from %d bytes", filepath.Base(path), info.Size()))
 			}
 		}
@@ -538,7 +544,7 @@ func (v *ValidatorAgent) runOptionalChecks(ctx context.Context, state *compileti
 			Verdict: verdict,
 			Detail:  detail,
 		})
-		logger.LogStep("OptionalCheck %s -> %s; %s", check.Name(), verdict, truncateForLog(detail, 120))
+		logger.LogStep("OptionalCheck %s -> %s; %s", check.Name(), verdict, truncateForLog(detail, optionalCheckLogTruncateLen))
 	}
 	return results
 }

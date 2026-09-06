@@ -18,6 +18,12 @@ import (
 	"MAgHARCM/internal/logger"
 )
 
+// roleflipLogTruncateLen is the maximum length (in bytes) the reviewer
+// remark is allowed to occupy in the structured log buffer before
+// truncate() caps it. Local constant; centralised values live in
+// internal/compiletime.
+const roleflipLogTruncateLen = 160
+
 // RoleFlipVerdict is the gate's structured outcome. DefectFound drives whether the
 // pipeline re-invokes the translator; Reason and RetryHint feed the next pass.
 type RoleFlipVerdict struct {
@@ -69,11 +75,9 @@ func (g *RoleFlipGate) Inspect(ctx context.Context, translatorOutput string) (Ro
 
 	reply := strings.TrimSpace(resp.Content)
 	if reply == "" || strings.EqualFold(reply, compiletime.RoleFlipNoDefectToken) {
-		logger.LogAgent(compiletime.LogScopeRoleFlip, "Reviewer accepted translator output")
 		return RoleFlipVerdict{DefectFound: false, Reason: compiletime.RoleFlipAcceptedReason}, nil
 	}
-
-	logger.LogValidation("RoleFlipGate surfaced defect: %s", truncate(reply, 160))
+	logger.LogValidation("RoleFlipGate surfaced defect: %s", truncate(reply, roleflipLogTruncateLen))
 	return RoleFlipVerdict{DefectFound: true, Reason: reply, RetryHint: compiletime.RoleFlipRetryHint}, nil
 }
 

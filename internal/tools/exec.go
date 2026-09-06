@@ -262,7 +262,7 @@ func RunProjectTests(ctx context.Context, projectDir, lang, toolchain, filter st
 	// Other languages: leave RealTests = -1 (sentinel: not parsed for this language) and keep legacy regex aggregation.
 	passed := 0
 	failed := 0
-	realTests := -1
+	realTests := compiletime.TestResultNotParsedSentinel
 
 	isRust := strings.EqualFold(lang, "rust") || strings.EqualFold(tcName, "cargo") || strings.EqualFold(tcName, "rust")
 

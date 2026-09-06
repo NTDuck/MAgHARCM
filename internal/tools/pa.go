@@ -13,7 +13,17 @@ import (
 	"MAgHARCM/internal/languages"
 )
 
-// DirectoryTreeInput parameters for get_directory_tree.
+// directoryTreeSkipDirs are the entry names BuildDirectoryTree suppresses
+// when rendering the human-facing repository tree. Mirrors but does not
+// alias compiletime.ArchaeologySkipDirs because the user-facing tree wants
+// only build artefact dirs ("target", "bin", "node_modules", "vendor") and
+// intentionally keeps dotfiles visible to the user.
+var directoryTreeSkipDirs = map[string]struct{}{
+	"target":      {},
+	"bin":         {},
+	"node_modules": {},
+	"vendor":      {},
+}
 type DirectoryTreeInput struct {
 	DirectoryPath string `json:"directory_path" jsonschema_description:"Path of the directory to analyze (default: current directory)"`
 	MaxDepth      int    `json:"max_depth,omitempty" jsonschema_description:"Maximum depth to traverse (default: 5)"`
@@ -76,11 +86,14 @@ func BuildDirectoryTree(root string, maxDepth int) (string, []string, error) {
 		var filtered []os.DirEntry
 		for _, e := range entries {
 			name := e.Name()
-			if strings.HasPrefix(name, ".") || name == "target" || name == "bin" || name == "node_modules" || name == "vendor" {
-				continue
-			}
-			filtered = append(filtered, e)
+			if strings.HasPrefix(name, ".") {
+			continue
 		}
+			if _, skip := directoryTreeSkipDirs[name]; skip {
+			continue
+		}
+		filtered = append(filtered, e)
+	}
 
 		for i, entry := range filtered {
 			isLast := i == len(filtered)-1

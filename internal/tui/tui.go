@@ -30,7 +30,7 @@ import (
 	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/table"
 	"github.com/charmbracelet/bubbles/textinput"
-	"github.com/charmbracelet/bubbles/viewport"
+
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/glamour"
 	"github.com/charmbracelet/lipgloss"
@@ -103,7 +103,6 @@ type model struct {
 	phase    Phase
 	rs       *ReplState
 	input    textinput.Model
-	viewport viewport.Model
 	spinner  spinner.Model
 	history  []string
 	quitting bool
@@ -149,11 +148,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			vHeight = 5
 		}
 		if !m.ready {
-			m.viewport = viewport.New(msg.Width, vHeight)
 			m.ready = true
-		} else {
-			m.viewport.Width = msg.Width
-			m.viewport.Height = vHeight
 		}
 		return m, nil
 

@@ -421,6 +421,44 @@ const (
 )
 
 // -------------------------------------------------------------------------
+// Shared Magic Values (ADR-C-005 Sweep)
+// -------------------------------------------------------------------------
+
+// RoleFlipGateToolSuffix is the trailing vocabulary piece appended to
+// compiletime.AgentRoleFlip ("roleflip") when the recruiter enumerates
+// the PRIM-25 communicative-de-hallucination gate as a standalone tool.
+// Centralised here so the recruiter, the runner's status surface, and any
+// future log-filter wiring reference the same suffix instead of repeating
+// the concatenation at every callsite.
+const RoleFlipGateToolSuffix = "_gate"
+
+// MinRealTestsFloor is the absolute lower bound applied to the per-run
+// MinRealTests threshold (validator.go). Distinct-source-count * 2 is the
+// scale-up rule; this floor guarantees a non-zero target for tiny repos
+// where 1 source file would otherwise map to a 2-test minimum.
+const MinRealTestsFloor = 5
+
+// MinRealTestsMultiplier is the per-distinct-source multiplier the
+// validator applies when computing MinRealTests. Tuned in PR-#54 so a
+// single source file with N functions maps to roughly 2N expected real
+// tests; keeping the multiplier centralised prevents drift between the
+// validator's primary cascade and any downstream remediation loop.
+const MinRealTestsMultiplier = 2
+
+// ASTEmptyElementsSizeThreshold is the minimum source-file size (bytes)
+// below which the validator's pre-compile AST check skips emitting a
+// "0 AST elements" warning. Tiny stub files (mod.rs, mod.go) routinely
+// parse to zero elements but are correct as-is; the byte floor filters
+// the noise without losing real syntax-error coverage on larger files.
+const ASTEmptyElementsSizeThreshold = 200
+
+// TestResultNotParsedSentinel is the RunTestsOutput.RealTests value used
+// by tools.RunProjectTests to flag a target language whose test runner
+// does not emit a parseable per-test count. Validator treats any
+// non-negative RealTests value as authoritative.
+const TestResultNotParsedSentinel = -1
+
+// -------------------------------------------------------------------------
 // Must Pattern Helpers (No Fallbacks)
 // -------------------------------------------------------------------------
 
