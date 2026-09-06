@@ -1,9 +1,9 @@
 ---
 title: MAgHARCM Methodology
-date: 2026-09-27
-last_updated: 2026-09-27
+date: 2026-09-28
+last_updated: 2026-09-28
 backlink: "[[2.0.0 Methodology]]"
-tags: [methodology, architecture, pipeline, "[[2.0.0 MAgHARCM]]", "[[1.0.0 PRIM-31]]", slm, "[[1.0.0 P-122]]", wave-16]
+tags: [methodology, architecture, pipeline, "[[2.0.0 MAgHARCM]]", "[[1.0.0 PRIM-31]]", slm, "[[1.0.0 P-122]]", "[[1.0.0 P-123]]", "[[1.0.0 P-124]]", wave-16, wave-17]
 ---
 
 # [[2.0.0 MAgHARCM Methodology]]
@@ -286,6 +286,24 @@ Wave 16 anchor list:
 
 Wave 16 trigger evaluation (Sprint 2026-09-27): 4 candidates triaged, 2 ACCEPT, 2 REJECT (SWE-Bench Pro ICML 2026 + CodeClash ICML 2026 both fail Q2 — benchmark, not mechanism). Full memo `.obsidian/MAgHARCM/research/diary/wave-16-candidates.md`.
 
+Wave 17 SLM-era anchors (2 verified new; 3 rejected — 2 on Q1 venue, 1 on Q2 mechanism):
+Table:
+| Primitive | SLM Mitigation | Anchor Paper | Verification |
+| :--- | :--- | :--- | :--- |
+| `[[1.0.0 PRIM-21]]` Migration Strategy Selection | Confidence-gated switching between in-language majority voting and cross-lingual I/O test oracle | `[[1.0.0 P-123]]` CodeChemist (ICML 2026) | verified |
+| `[[1.0.0 PRIM-23]]` Chunked Translation | Multi-temperature hedged sampling with cross-language functional verification | `[[1.0.0 P-123]]` CodeChemist | verified |
+| `[[1.0.0 PRIM-27]]` Coverage-Guided Plateau Detection | Functional-coverage plateau via I/O oracle (tests across source + target language) | `[[1.0.0 P-123]]` CodeChemist | verified |
+| `[[1.0.0 PRIM-9]]` Tri-Representation Hybrid Code Graph | Runtime-mined properties (aliasing, bounds, nullability) injected as fourth representation | `[[1.0.0 P-124]]` Syzygy (ICLR 2025 VerifAI workshop) | verified |
+| `[[1.0.0 PRIM-22]]` Four Phases of Comprehension | Static TDG (`[[1.0.0 P-88]]` HiTyper) + dynamic property mining (`[[1.0.0 P-124]]` Syzygy) as complementary dimensions | `[[1.0.0 P-124]]` Syzygy | verified |
+| `[[1.0.0 PRIM-30]]` Source-to-Target Manifest Rewriter | Type/bounds/nullability-enriched manifests for safe-Rust generation | `[[1.0.0 P-124]]` Syzygy | verified |
+
+Wave 17 anchor list:
+- `[[1.0.0 P-123]]` CodeChemist (Wang et al. 2026, ICML 2026, arXiv:2510.00501) — training-free test-time scaling for low-resource code generation; multi-temperature hedged sampling + cross-lingual I/O test oracle transfers functional knowledge from high-resource reference languages; demonstrated on Qwen-1.5B with 60-70% relative gains on Lua. Anchors `PRIM-21`, `PRIM-23`, `PRIM-27`.
+- `[[1.0.0 P-124]]` Syzygy (Shetty et al. 2025, ICLR 2025 VerifAI Workshop, arXiv:2412.14234) — dual code-test C-to-safe-Rust translation via LLMs + dynamic analysis; Clang/LLVM-instrumented SpecMiner mines type/bounds/nullability/aliasing properties at runtime; LLM generates Rust code AND equivalence test per translation unit; multi-round repair loop. Anchors `PRIM-9`, `PRIM-22`, `PRIM-30`. Complements `[[1.0.0 P-88]]` HiTyper's static TDG with the dynamic-analysis half.
+
+Wave 17 trigger evaluation (Sprint 2026-09-28): 5 candidates triaged, 2 ACCEPT, 3 REJECT. Reject rationale: MemSearcher (ACL 2026 Findings, off-list venue), Verified Tool Calls (arXiv-only, no NeurIPS/ICML/ICLR venue), LLM-IR / program-comprehension (ICML 2025 candidate is a benchmark, no mechanism; no SLM-era archaeology mechanism paper found). Full memo `.obsidian/MAgHARCM/research/diary/wave-17-candidates.md`.
+
+
 Wave 14 fired on 2026-09-25 (NeurIPS 2025 D&B + ICML 2025 mechanism papers — see §9 2026-09-25 entry and §7 wave-14 anchor list above). Wave 15 trigger criterion (replaces former wave-13 trigger criterion): **wave-N+1 fires when a 2025+ NeurIPS / ICML / ICLR paper introduces an unanchored mechanism that defends or refutes an existing SLM-era primitive's substrate claim, OR a new SLM-era primitive lands, OR the user issues a new directive that adds a primitive**.
 
 **Trigger-gate evaluation procedure** (added 2026-09-26): every wave candidate is held against three questions before being promoted to a P-NN slot:
@@ -330,6 +348,7 @@ Wave 9 anchors (verified):
 
 
 - **2026-09-26** — Sprint 2026-09-26: Wave-15 **deferred** per §7 trigger-gate evaluation. 3 candidates (SWE-Rebench V2 / SWE-bench Multimodal / SWE-bench Verified Reference Harness) all rejected; verdicts logged in `.obsidian/MAgHARCM/research/diary/wave-15-candidates.md`. §7 trigger criterion explicitly rewritten to gate on (Q1) venue confirmation + (Q2) mechanism-vs-benchmark + (Q3) anchoring-to-existing-primitive. ADR-C-014 locality split applied by Subagent D (5 artifact structs moved out of `internal/compiletime/state.go` into producer agent files: analyzer/planning/translator/validator/archaeology). ADR-C-005 magic-string sweep applied by Subagent E (report `local://sprint-2026-09-26-magic-sweep-report.md`). ADR-C-011 Charm stack idiomatic audit applied by Subagent G (3 dead-code removals in `internal/tui/tui.go`: viewport import + field + 3 write lines; zero manual ANSI escapes already; zero reimplemented Charm primitives already). ADR-V-001 automated lint shipped at `scripts/lint_vault.sh` (fails on stray `(P-NN)` / `(PRIM-NN)` in production code; vault markdown parentheticals exempted). Stale-directive audit confirmed 8/4 graph (8 real agents + 2 checkpoints = 10 nodes), abcoder-mcp default in `configs/agents.yml:22`, zero `fmt.Print*` in `internal/`, SelectMigrationStrategy already try-and-fail — all user directives that read as "still to do" already satisfied at `e09cfad`. P-106 BFCL retirement **dropped** (user did not request; P-106 retained alongside P-121 per Sprint 2026-09-25 decision). All gates green after verification.
+- **2026-09-28** — Sprint 2026-09-28: Wave-17 FIRED. 2 new SLM-era anchor papers persisted (`[[1.0.0 P-123]]` CodeChemist Wang ICML 2026, arXiv:2510.00501; `[[1.0.0 P-124]]` Syzygy Shetty ICLR 2025 VerifAI Workshop, arXiv:2412.14234). Both pass §7 trigger gate rewritten 2026-09-25 (Q1 venue confirmed, Q2 mechanism-not-benchmark, Q3 anchoring-to-existing-primitive). CodeChemist anchors the cross-lingual functional oracle substrate for `PRIM-21` Migration Strategy Selection, `PRIM-23` Chunked Translation, `PRIM-27` Coverage-Guided Plateau Detection. Syzygy anchors the dynamic-analysis property-mining substrate for `PRIM-9` Tri-Representation Hybrid Code Graph, `PRIM-22` Four Phases of Comprehension, `PRIM-30` Source-to-Target Manifest Rewriter (complementing `[[1.0.0 P-88]]` HiTyper's static TDG with the dynamic half). 3 candidates REJECTED: MemSearcher (ACL 2026 Findings, off-list venue), Verified Tool Calls (arXiv:2608.02645, no NeurIPS/ICML/ICLR venue), LLM-IR / program-comprehension (ICML 2025 candidate is a benchmark, no mechanism; software archaeology SLM-era mechanism gap remains open). §11 extended from 2 to 4 ReasoningBank/CodeChemist/Syzygy sub-sections; §11.5 Substrate Application Matrix now 4 rows. Cross-reference stamps propagated to Architecture §8 (2 new sub-sections), primitives/INDEX frontmatter (2 new P-NN tags) + PRIM-21/23/27/9/22/30 cross-links, Software-Archaeology-Lineage §7/§8. All gates green (`go build`, `go vet`, `go test ./...`, `bash scripts/lint_vault.sh`).
 - **2026-09-27** — Sprint 2026-09-27: Wave-16 FIRED. 1 new SLM-era anchor paper persisted (`[[1.0.0 P-122]]` ReasoningBank Zhang ICLR 2026 tentative, arXiv:2509.25140). Passes §7 trigger gate rewritten 2026-09-25 (Q1 venue tentative, Q2 mechanism-not-benchmark, Q3 anchoring-to-PRIM-31/29/21). ReasoningBank anchors the persistent-memory + MaTTS compute-memory substrate for `PRIM-31` Iterative Retrieval, `PRIM-29` Recruiter, `PRIM-21` Migration Strategy Selection. 2 candidates REJECTED: SWE-Bench Pro (ICML 2026) and CodeClash (ICML 2026) — both fail Q2 (benchmark, not mechanism). New §11 SLM-Era General-Purpose Patterns section added with 3 ReasoningBank-only sub-sections + Substrate Application Matrix. Cross-reference stamps propagated to Architecture §8, INDEX wave-16 audit block, Software-Archaeology-Lineage §7 (P-122 only). Compilation gate `bash scripts/lint_vault.sh` exit 0; `go build ./...` exit 0; `go test ./...` cached green.
 - **2026-09-23** — Sprint 2026-09-23: Wave-13 fired. 4 new SLM-era anchor papers persisted (P-115 OpenHands/CodeAct Wang 2024, P-116 Aider Gauthier 2024-2025, P-117 RepoCoder Zhang ICLR 2023, P-118 SWE-bench Lite Jimenez 2024). Wave-13 SLM-era anchors table (16 rows) + Wave-13 anchor list appended to §7. Cross-links added in `Software-Archaeology-Lineage.md` (16 cross-link rows across PRIM-5, 6, 9, 22, 25, 26, 27, 29, 31). §0 Quick Start tightened to include Vault Sync + Rerun Experiments + Modify Paper + Ponytail Refactor steps per user directives. All gates green (`go build`, `go vet`, `go test ./...`). Audit verified all 31 primitives still mapped to implementation files; 8-agent graph still wired; Charm TUI idioms still intact; abcoder-mcp default still in `configs/agents.yml`. Ponytail refactor in flight: extracting artifact structs from `internal/compiletime/state.go` into new `internal/compiletime/artifacts` leaf sub-package to satisfy Locality of Behaviour (ADR-C-014) without recreating the `compiletime → agents → compiletime` import cycle.
 - **2026-09-22** — Sprint 2026-09-22: Wave-12 fired. 4 new SLM-era anchor papers persisted (P-111 SWE-bench original Jimenez ICLR 2024, P-112 SWE-agent Yang NeurIPS 2024, P-113 AutoCodeRover Zhang 2024, P-114 Medusa Cai 2024). Wave-12 SLM-era anchors table (16 rows) + Wave-12 anchor list appended to §7. Cross-links added in `Software-Archaeology-Lineage.md` (16 cross-link rows across PRIM-5, 6, 7, 9, 21, 22, 23, 25, 26, 27, 29, 31). All gates green (`go build`, `go vet`, `go test ./...`). Audit verified all 31 primitives still mapped to implementation files; 8-agent graph still wired; Charm TUI idioms still intact; abcoder-mcp default still in `configs/agents.yml`.
@@ -375,33 +394,38 @@ Every sprint ends with a ponytail audit that explicitly searches for over-engine
 
 ---
 
-## 11. SLM-Era General-Purpose Patterns (2026-09-27)
+## 11. SLM-Era General-Purpose Patterns (2026-09-28)
 
-Patterns distilled from the wave-16 anchor (`[[1.0.0 P-122]]` ReasoningBank) that apply across multiple SLM-era primitives. These are substrate claims the codebase should internalise whenever the relevant primitive is touched.
+Patterns distilled from the wave-16 + wave-17 anchors (`[[1.0.0 P-122]]` ReasoningBank, `[[1.0.0 P-123]]` CodeChemist, `[[1.0.0 P-124]]` Syzygy) that apply across multiple SLM-era primitives. These are substrate claims the codebase should internalise whenever the relevant primitive is touched.
 
 ### 11.1. Persistent Memory Substrate (from `[[1.0.0 P-122]]` ReasoningBank)
 
 Any primitive that iterates across pipeline runs (e.g. `[[1.0.0 PRIM-29]]` Recruiter, `[[1.0.0 PRIM-21]]` Strategy Selection, `[[1.0.0 PRIM-31]]` Iterative Retrieval) MUST consider a persistent-memory substrate where strategies are distilled into structured triples `(Title, Description, Content)` rather than replayed as raw trajectories. The substrate is opt-in per primitive — primitives that don't iterate don't need it — but when applied, the memory triple is the canonical exchange format between the producer and the next iteration's consumer.
 
 
-### 11.2. MaTTS Compute-Memory Loop (from `[[1.0.0 P-122]]` MaTTS)
+### 11.3. Cross-Lingual Functional Oracle (from `[[1.0.0 P-123]]` CodeChemist)
 
+`[[1.0.0 PRIM-21]]` Migration Strategy Selection, `[[1.0.0 PRIM-23]]` Chunked Translation, and `[[1.0.0 PRIM-27]]` Coverage-Guided Plateau Detection SHOULD consider a cross-lingual I/O test oracle as the canonical functional verifier when both source and target can execute. The oracle transfers functional knowledge from the high-resource reference language (the source) into the low-resource target, replacing the frontier-model judge. SLM-amenable: demonstrated on Qwen-1.5B.
 
-### 11.3. Substrate Application Matrix
+### 11.4. Dynamic-Analysis Property Mining (from `[[1.0.0 P-124]]` Syzygy)
+
+`[[1.0.0 PRIM-9]]` Tri-Representation Hybrid Code Graph, `[[1.0.0 PRIM-22]]` Four Phases of Comprehension, and `[[1.0.0 PRIM-30]]` Source-to-Target Manifest Rewriter SHOULD inject runtime-mined properties (aliasing, bounds, nullability) as a fourth representation when the legacy codebase can be compiled. LLVM/Clang instrumentation is the canonical mining substrate; the result enriches the manifest that `[[1.0.0 PRIM-30]]` produces, closing the safe-Rust / null-safety / bounds-safety gap that pure-static translation leaves open. Static-only path remains as fallback for uncompilable code.
+
+### 11.5. Substrate Application Matrix
 
 | Pattern | Substrate | Affects | Opt-in location |
 | :--- | :--- | :--- | :--- |
 | 11.1 Persistent Memory | `(Title, Description, Content)` triples | `[[1.0.0 PRIM-31]]`, `[[1.0.0 PRIM-29]]`, `[[1.0.0 PRIM-21]]` | `configs/agents.yml:memory.distilled: true` |
 | 11.2 MaTTS Loop | compute-memory symbiosis | iterative primitives | `configs/agents.yml:mattts.enabled: true` |
-
-
-## 12. Stale-Directive Audit (rolling — last refreshed 2026-09-26)
+| 11.3 Cross-Lingual Functional Oracle | I/O test oracle | `[[1.0.0 PRIM-21]]`, `[[1.0.0 PRIM-23]]`, `[[1.0.0 PRIM-27]]` | `configs/agents.yml:oracle.cross_lingual: true` |
+| 11.4 Dynamic-Analysis Property Mining | LLVM/Clang instrumentation | `[[1.0.0 PRIM-9]]`, `[[1.0.0 PRIM-22]]`, `[[1.0.0 PRIM-30]]` | `configs/agents.yml:translation.dynamic_specs: true` |
+## 12. Stale-Directive Audit (rolling — last refreshed 2026-09-28)
 
 User directives sometimes reference work that has already been completed in an earlier sprint. Re-running already-completed work wastes sprint capacity and fragments the git history with duplicate commits. The stale-directive audit is run before every sprint plan; results are recorded here so future sprints can resolve the same drift quickly.
 
 > **Shorthand note**: The phrase `'8-agent graph'` used as a tag in vault audit lines (this section included) and historical sprint handoffs is shorthand for the canonical 10-node topology (8 specialised agents + 2 checkpoint barriers). The `reviewer` lambda registered at `internal/graph/graph.go:92` is constructed via `agents.NewRoleFlipGate`; "reviewer" is the graph node id, "RoleFlipGate" is the constructor name. See `.obsidian/MAgHARCM/research/Architecture.md` §4 for the canonical statement.
 
-### Verified-already-satisfied directives (as of 2026-09-26, commit `e09cfad`)
+### Verified-already-satisfied directives (as of 2026-09-28, commit `a5bba8e`)
 
 | User directive | Real status | Evidence | Sprint of last verification |
 | :--- | :--- | :--- | :--- |
@@ -421,4 +445,4 @@ User directives sometimes reference work that has already been completed in an e
 | Full ADR-C-014 struct relocation | Blocked by Go import cycle (see §6); alias-pattern solution satisfies intent | future sprint (leaf-package lift) |
 | Charm stack idiomatic audit | Subagent G completed 2026-09-26; 3 dead-code removals + zero violations found | G_CharmAudit |
 | ADR-V-001 automated lint | Subagent H shipped `scripts/lint_vault.sh` 2026-09-26 | H_VaultSync |
-| Research wave fires when new mechanism lands | Wave-16 FIRED 2026-09-27 (P-122 ReasoningBank accepted; SWE-Bench Pro + CodeClash rejected) | wave-17 conditional |
+| Research wave fires when new mechanism lands | Wave-17 FIRED 2026-09-28 (P-123 CodeChemist + P-124 Syzygy accepted; MemSearcher / Verified Tool Calls / LLM-IR rejected) | wave-18 conditional |
