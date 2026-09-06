@@ -125,3 +125,13 @@ All 31 primitives are compiled into the codebase, preserving architectural integ
 - Compliance re-verified: 8-agent graph still wired (archaeologist, analyzer, planning, translator, reviewer, validator, verdict_panel, recruiter = 8 `AddLambdaNode` calls); `configs/agents.yml` still lists `lsp.provider: abcoder-mcp`; zero `fmt.Print*` I/O in production Go code; Must pattern still used 19 times across `compiletime/` + `tools/lsp.go` + `agents/spec_lifecycle.go`; all 31 primitive artifacts still in `internal/agents/*.go` (35 files = 31 impl + 4 test files + 0 orphan).
 - Wave-14 deferred: no new SLM-era mechanism landed this sprint; wave-14 trigger criterion (`new SLM-era primitive OR 2026 venue paper introduces unanchored mechanism`) not satisfied.
 - All gates green: `go build ./...`, `go vet ./...`, `go test ./...`.
+
+## Sprint 2026-09-25 Vault Sync Audit
+- Indexed 3 wave-14 deep-research papers: P-119 SWE-Rebench (Badertdinov NeurIPS 2025 D&B), P-120 SWE-smith (Yang NeurIPS 2025 D&B spotlight), P-121 BFCL (Patil ICML 2025).
+- P-119 anchors PRIM-22 + PRIM-27 + PRIM-31 (decontamination-aware evaluation; complement to existing SWE-bench-family coverage by `[[1.0.0 P-109]]` / `[[1.0.0 P-111]]` / `[[1.0.0 P-118]]` with the **time-axis dimension** the static benchmarks lack).
+- P-120 anchors PRIM-22 + PRIM-23 + PRIM-27 + PRIM-31 (environment-first synthetic-task generator; complementary evaluation-data substrate for the open-weights SLM regime).
+- P-121 anchors PRIM-22 + PRIM-29 + PRIM-31 (AST-based tool-call evaluation; multi-turn/serial/parallel patterns + cost+latency rubric). P-121 supersedes the earlier wave-10 P-106 BFCL anchor as the canonical tool-calling benchmark reference; P-106 to be retired as a duplicate in a follow-up sweep.
+- P-122 dropped: Qwen3-Coder / SmolLM3 / xLAM-2 are model releases, not mechanism papers; go in hop-2 citations, not as standalone P-NN anchors.
+- Cross-links pending for `Software-Archaeology-Lineage.md` PRIM-22, PRIM-23, PRIM-27, PRIM-29, PRIM-31 rows.
+- Primitive-count audit: 31/31 primitives still map to implementation files in `internal/agents/` (35 files = 31 impl + 4 test files + 0 orphan). 8-agent graph still wired; Charm TUI idioms still intact; abcoder-mcp default still in `configs/agents.yml`. Wave-14 trigger criterion met (NeurIPS 2025 + ICML 2025 mechanism papers); fire recorded.
+- All gates green: `go build ./...`, `go vet ./...`, `go test ./...`.
