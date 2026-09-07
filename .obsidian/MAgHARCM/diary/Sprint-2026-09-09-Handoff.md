@@ -23,7 +23,7 @@ Sprint 2026-09-09 closed. Three research waves, vault sync, codebase hardening, 
 
 ## Vault Sync
 
-- Normalised spontaneous parens `(Author Year)` to `[[x.y.z P-NN]]` across primitives/INDEX, Software-Archaeology-Lineage, 7 paper files, 2 diary files, 2 ADR files.
+- Normalised spontaneous parens `(Author Year)` to `[[x.y.z P-NN]]` across primitives/Primitives-Index, Software-Archaeology-Lineage, 7 paper files, 2 diary files, 2 ADR files.
 - Cross-linked all 31 primitives to new anchors (P-58..P-65) where they apply.
 - Fixed INDEX convention regression in follow-up commit (collapsed doubled `[[P-NN]] [[x.y.z P-NN slug]]` to single form; resolved `[[NEEDS-LINK]]` stubs; corrected Corkill typo).
 

@@ -8,11 +8,11 @@ tags: [sprint, handoff, [[2.0.0 MAgHARCM]], [[1.0.0 ADR-V-001]], [[1.0.0 ADR-C-0
 
 ## Outcome
 
-Wave-15 **deferred** (3 candidates failed the §7 trigger-gate rewritten 2026-09-25). Vault-versioning automation landed (`scripts/lint_vault.sh`, ADR-2026-09-26-Vault-Lint-Extension). Four ADRs bound (ADR-C-014 locality split applied, ADR-C-005 magic-string sweep applied, ADR-C-011 Charm audit applied, ADR-V-001 lint automation shipped). Stale-directive audit captured as `METHODOLOGY.md` §11 with 7 verified-already-satisfied items. All gates green (`go build`, `go vet`, `go test ./...`).
+Wave-15 **deferred** (3 candidates failed the §7 trigger-gate rewritten 2026-09-25). Vault-versioning automation landed (`scripts/lint_vault.sh`, ADR-2026-09-26-Vault-Lint-Extension). Four ADRs bound (ADR-C-014 locality split applied, ADR-C-005 magic-string sweep applied, ADR-C-011 Charm audit applied, ADR-V-001 lint automation shipped). Stale-directive audit captured as `Methodology.md` §11 with 7 verified-already-satisfied items. All gates green (`go build`, `go vet`, `go test ./...`).
 
 ## Foundation (closed)
 
-- Read Sprint 2026-09-25 handoff + `METHODOLOGY.md` (entry point) + ADR-C-014 for grounding.
+- Read Sprint 2026-09-25 handoff + `Methodology.md` (entry point) + ADR-C-014 for grounding.
 - Mapped open directives:
   - ADR-C-014 locality split: 5 artifact structs in `compiletime/state.go` could not be relocated (Go import cycle); alias-pattern solution satisfies intent.
   - Wave-15 trigger: 3 candidates drafted (P-122 SWE-Rebench V2, P-123 SWE-bench Multimodal, P-124 SWE-bench Verified Reference Harness); all 3 rejected per §7 gate.
@@ -24,7 +24,7 @@ Wave-15 **deferred** (3 candidates failed the §7 trigger-gate rewritten 2026-09
 
 ### Trigger-gate rewrite (Sprint 2026-09-25 carry-over)
 
-`METHODOLOGY.md` §7 trigger criterion was rewritten 2026-09-25 to gate on (Q1) venue confirmation + (Q2) mechanism-vs-benchmark distinction + (Q3) anchoring-to-existing-primitive. The 2026-09-26 evaluation held each candidate to the gate.
+`Methodology.md` §7 trigger criterion was rewritten 2026-09-25 to gate on (Q1) venue confirmation + (Q2) mechanism-vs-benchmark distinction + (Q3) anchoring-to-existing-primitive. The 2026-09-26 evaluation held each candidate to the gate.
 
 ### Trigger-gate verdicts
 
@@ -32,7 +32,7 @@ Wave-15 **deferred** (3 candidates failed the §7 trigger-gate rewritten 2026-09
 - **[[1.0.0 P-123]] SWE-bench Multimodal** (October 2024 announcement per swebench.com) — **REJECTED**. No peer-reviewed venue; no arXiv id; announcement-only.
 - **[[1.0.0 P-124]] SWE-bench Verified Reference Harness** (OpenAI August 2024) — **REJECTED**. The harness is a component of [[1.0.0 P-109]] SWE-bench Verified (OpenAI 2024), not a new mechanism; already anchored via P-109.
 
-Full deferral memo: `.obsidian/MAgHARCM/research/diary/wave-15-candidates.md`. Re-evaluation trigger documented inline.
+Full deferral memo: `.obsidian/MAgHARCM/research/diary/Wave-15-Candidates.md`. Re-evaluation trigger documented inline.
 
 ## Track-1 Codebase Ponytail (closed)
 
@@ -55,7 +55,7 @@ Full deferral memo: `.obsidian/MAgHARCM/research/diary/wave-15-candidates.md`. R
   - `TestResultNotParsedSentinel = -1`
 - **3 local `const` blocks added** in agent files for OS / JSON-RPC / file-walker heuristics that are agent-local.
 - **~30 inline retained** (correctly): schema field names, JSON/YAML tags, env vars, language extensions, Ollama knobs.
-- Report: `.obsidian/MAgHARCM/diary/sprint-2026-09-26-charm-audit.md` (charm) + `local://sprint-2026-09-26-magic-sweep-report.md` (magic sweep).
+- Report: `.obsidian/MAgHARCM/diary/Sprint-2026-09-26-Charm-Audit.md` (charm) + `local://sprint-2026-09-26-magic-sweep-report.md` (magic sweep).
 
 ### [[1.0.0 ADR-C-011]] Charm stack idiomatic audit (Subagent G)
 
@@ -63,7 +63,7 @@ Full deferral memo: `.obsidian/MAgHARCM/research/diary/wave-15-candidates.md`. R
 - Charm imports audited: `bubbletea` (idiomatic), `bubbles/spinner` (idiomatic), `lipgloss` (idiomatic), `glamour` (idiomatic).
 - **3 dead-code removals**: dead `errorStyle` declaration at `internal/tui/tui.go:73-75` (already removed Sprint 2026-09-16); 2 dead helper references discovered this sprint and deleted.
 - Zero violations of Charm idioms (no manual ANSI escapes, no reinvented primitives).
-- Report: `.obsidian/MAgHARCM/diary/sprint-2026-09-26-charm-audit.md`.
+- Report: `.obsidian/MAgHARCM/diary/Sprint-2026-09-26-Charm-Audit.md`.
 
 ## Track-2 Vault Sync (closed)
 
@@ -91,16 +91,16 @@ Full deferral memo: `.obsidian/MAgHARCM/research/diary/wave-15-candidates.md`. R
 - `last_updated: 2026-09-26` added to frontmatter.
 - **§6 Wave-15 Deferral (2026-09-26)**: 3 rejected candidates listed, rationale per candidate, re-evaluation trigger documented.
 
-### `METHODOLOGY.md` §11 Stale-Directive Audit (inline)
+### `Methodology.md` §11 Stale-Directive Audit (inline)
 
 7 verified-already-satisfied directives captured with evidence + sprint of last verification. 5 directives still requiring work captured with status + owner. See "Stale-Directive Audit Findings" below for the summary table.
 
-### `primitives/INDEX.md` frontmatter + audit block (Subagent K)
+### `primitives/Primitives-Index.md` frontmatter + audit block (Subagent K)
 
 - `last_updated: 2026-09-26` added to frontmatter.
 - Sprint 2026-09-26 Vault Sync Audit block (7 bullets) appended at end.
 
-## Stale-Directive Audit Findings (METHODOLOGY.md §11)
+## Stale-Directive Audit Findings (Methodology.md §11)
 
 The stale-directive audit identifies user directives that reference already-completed work; re-running them wastes sprint capacity and fragments git history.
 
@@ -142,9 +142,9 @@ The stale-directive audit identifies user directives that reference already-comp
 ## Files modified / created this sprint (21 modified + 4 new)
 
 **Modified (21)**:
-- `.obsidian/MAgHARCM/primitives/INDEX.md` (K: frontmatter + audit block)
+- `.obsidian/MAgHARCM/primitives/Primitives-Index.md` (K: frontmatter + audit block)
 - `.obsidian/MAgHARCM/research/Architecture.md` (K: §4-§7 expansion)
-- `.obsidian/MAgHARCM/research/METHODOLOGY.md` (D, H, K, inline: §11 stale-directive audit + §9 changelog + §10 charm-audit reference)
+- `.obsidian/MAgHARCM/research/Methodology.md` (D, H, K, inline: §11 stale-directive audit + §9 changelog + §10 charm-audit reference)
 - `.obsidian/MAgHARCM/research/Software-Archaeology-Lineage.md` (K: §6 wave-15 deferral)
 - `.obsidian/MAgHARCM/research/papers/P-{51,53,83,84,85,87,88,89,104,117}-*.md` (H: stray-hit rewrites P-83, P-84, P-87; others carried from prior sweep)
 - `internal/agents/recruit.go` (E: local const + `RoleFlipGateToolSuffix`)
@@ -157,8 +157,8 @@ The stale-directive audit identifies user directives that reference already-comp
 
 **New (4)**:
 - `.obsidian/MAgHARCM/architecture/ADR-2026-09-26-Vault-Lint-Extension.md` (K: ADR for ADR-V-001 automation)
-- `.obsidian/MAgHARCM/diary/sprint-2026-09-26-charm-audit.md` (G: charm-stack audit report)
-- `.obsidian/MAgHARCM/research/diary/wave-15-candidates.md` (H: deferred-candidates memo)
+- `.obsidian/MAgHARCM/diary/Sprint-2026-09-26-Charm-Audit.md` (G: charm-stack audit report)
+- `.obsidian/MAgHARCM/research/diary/Wave-15-Candidates.md` (H: deferred-candidates memo)
 - `scripts/lint_vault.sh` (H: ADR-V-001 enforcement script)
 
 ## Subagent ledger
@@ -202,8 +202,8 @@ User pointed out that no vault files beyond the four touched during the sprint c
 | `.obsidian/MAgHARCM/README.md` | Added `last_updated: 2026-09-26` to frontmatter; appended `## Sprint 2026-09-26 sync` section pointing at this handoff | N |
 | `.obsidian/MAgHARCM/architecture/ADR-2026-09-07-Sprint-Conventions.md` | Added `last_updated: 2026-09-26`; appended `## Cross-references added 2026-09-26` section pointing at `[[1.0.0 ADR-2026-09-26-Vault-Lint-Extension]]` + `[[1.0.0 ADR-V-001]]` + `[[1.0.0 ADR-C-014]]` | M |
 | `.obsidian/MAgHARCM/architecture/ADR-2026-09-07-Dup-Row-Escape-Recipe.md` | Added `last_updated: 2026-09-26`; appended `## Cross-references added 2026-09-26` section pointing at `[[1.0.0 ADR-2026-09-26-Vault-Lint-Extension]]` + `[[1.0.0 ADR-V-001]]` | M |
-| `.obsidian/MAgHARCM/diary/sprint-2026-09-26-charm-audit.md` | Prepended `last_updated: 2026-09-26` to existing frontmatter (file had no frontmatter before) | N |
-| `.obsidian/MAgHARCM/research/diary/wave-15-candidates.md` | Added `last_updated: 2026-09-26` to existing frontmatter | N |
+| `.obsidian/MAgHARCM/diary/Sprint-2026-09-26-Charm-Audit.md` | Prepended `last_updated: 2026-09-26` to existing frontmatter (file had no frontmatter before) | N |
+| `.obsidian/MAgHARCM/research/diary/Wave-15-Candidates.md` | Added `last_updated: 2026-09-26` to existing frontmatter | N |
 
 ### Files deliberately NOT touched
 

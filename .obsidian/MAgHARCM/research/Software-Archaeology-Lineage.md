@@ -233,7 +233,7 @@ Every stage produces strictly typed, schema-versioned artifacts (`[[1.0.0 PRIM-2
 
 ## 6. Wave-15 Deferral (2026-09-26)
 
-3 candidates (P-122 SWE-Rebench V2, P-123 SWE-bench Multimodal, P-124 SWE-Bench Verified Reference Harness) were held against the §7 trigger gate rewritten 2026-09-25 and rejected. Full rationale per candidate in `.obsidian/MAgHARCM/research/diary/wave-15-candidates.md`. No `P-NN` anchor added this wave; wave-15 is deferred.
+3 candidates (P-122 SWE-Rebench V2, P-123 SWE-bench Multimodal, P-124 SWE-Bench Verified Reference Harness) were held against the §7 trigger gate rewritten 2026-09-25 and rejected. Full rationale per candidate in `.obsidian/MAgHARCM/research/diary/Wave-15-Candidates.md`. No `P-NN` anchor added this wave; wave-15 is deferred.
 
 ## 7. Wave-16 SLM-Era Anchors (2026-09-27)
 
@@ -269,7 +269,7 @@ Google Research; **strategy-distilled persistent memory** as the canonical subst
 - **P-124 SWE-Bench Pro** (ICML 2026) — benchmark, not mechanism; re-evaluation fires when a method-level companion lands.
 - **P-125 CodeClash** (ICML 2026) — benchmark, not mechanism; re-evaluation fires when a method-level companion lands.
 
-On 2026-09-26 the wave-15 trigger-criterion evaluation was carried out against the `METHODOLOGY.md` §7 gate rewritten 2026-09-25 ("wave-N+1 fires when a 2025+ NeurIPS/ICML/ICLR paper introduces an unanchored mechanism that defends or refutes an existing SLM-era primitive's substrate claim"). Three candidates were drafted and the gate rejected all three. Full deferral memo with per-candidate verdicts is preserved on file at `.obsidian/MAgHARCM/research/diary/wave-15-candidates.md`.
+On 2026-09-26 the wave-15 trigger-criterion evaluation was carried out against the `Methodology.md` §7 gate rewritten 2026-09-25 ("wave-N+1 fires when a 2025+ NeurIPS/ICML/ICLR paper introduces an unanchored mechanism that defends or refutes an existing SLM-era primitive's substrate claim"). Three candidates were drafted and the gate rejected all three. Full deferral memo with per-candidate verdicts is preserved on file at `.obsidian/MAgHARCM/research/diary/Wave-15-Candidates.md`.
 
 **Trigger-gate verdicts:**
 
@@ -277,7 +277,7 @@ On 2026-09-26 the wave-15 trigger-criterion evaluation was carried out against t
 - **P-123 SWE-bench Multimodal** (October 2024 announcement per swebench.com) — **REJECTED**. No peer-reviewed venue; no arXiv id; announcement-only. Not a 2025+ venue paper.
 - **P-124 SWE-bench Verified Reference Harness** (OpenAI August 2024) — **REJECTED**. The harness is a component of `[[1.0.0 P-109]]` SWE-bench Verified (OpenAI 2024), not a new mechanism. Already anchored via P-109.
 
-**Why no `P-NN` anchor was added**: the wave-15 trigger criterion was not met this sprint; none of the three candidates survive the 2025+ venue gate, and none introduces an unanchored mechanism that defends or refutes an existing SLM-era primitive's substrate claim. Adding a `P-NN` anchor under these conditions would violate `METHODOLOGY.md` §7 and reintroduce the wave-9 saturation problem that motivated the gate rewrite.
+**Why no `P-NN` anchor was added**: the wave-15 trigger criterion was not met this sprint; none of the three candidates survive the 2025+ venue gate, and none introduces an unanchored mechanism that defends or refutes an existing SLM-era primitive's substrate claim. Adding a `P-NN` anchor under these conditions would violate `Methodology.md` §7 and reintroduce the wave-9 saturation problem that motivated the gate rewrite.
 
 **Re-evaluation trigger**: any of the three candidates becomes wave-15-eligible when (a) P-122 lands at a confirmed 2025+ NeurIPS/ICML/ICLR venue, (b) P-123 lands at a peer-reviewed venue with a verifiable arXiv id, or (c) the user explicitly requests the P-124 component-level anchor. Until then, **no `[[1.0.0 P-122]]` / `[[1.0.0 P-123]]` / `[[1.0.0 P-124]]` anchors are added to any lineage row**, and the P-122 prose body produced during the wave-15 foundation research is preserved verbatim in the deferred-candidates memo as research-on-file.
 
@@ -285,10 +285,10 @@ On 2026-09-26 the wave-15 trigger-criterion evaluation was carried out against t
 
 **Cross-reference**:
 
-- Deferred-candidates memo: `.obsidian/MAgHARCM/research/diary/wave-15-candidates.md`
-- Trigger-gate language: `METHODOLOGY.md` §7 (rewritten 2026-09-25)
+- Deferred-candidates memo: `.obsidian/MAgHARCM/research/diary/Wave-15-Candidates.md`
+- Trigger-gate language: `Methodology.md` §7 (rewritten 2026-09-25)
 - Lint automation: `.obsidian/MAgHARCM/architecture/ADR-2026-09-26-Vault-Lint-Extension.md` + `scripts/lint_vault.sh`
-- Sprint-2026-09-26 audit block: `.obsidian/MAgHARCM/primitives/INDEX.md` §Sprint 2026-09-26
+- Sprint-2026-09-26 audit block: `.obsidian/MAgHARCM/primitives/Primitives-Index.md` §Sprint 2026-09-26
 
 ## 8. Wave-17 SLM-Era Anchors (2026-09-28)
 
@@ -336,7 +336,7 @@ CMU + UCSD; **dual code-test C-to-safe-Rust translation via LLMs + dynamic analy
 
 **Open gap**: the software archaeology / program-comprehension mechanism slot remains empty at the SLM-era anchor level. The TOSEM SLR (`[[1.0.0 P-87]]` Hou 2024) remains the literature anchor until a 2025+ venue paper emerges.
 
-**Re-evaluation trigger**: any of the three candidates becomes wave-18-eligible when (a) MemSearcher lands at a confirmed 2025+ NeurIPS/ICML/ICLR venue, (b) Verified Tool Calls receives venue confirmation, or (c) a program-comprehension mechanism paper emerges at 2025+ venue. Until then, **no `[[1.0.0 P-125]]` / `[[1.0.0 P-126]]` / `[[1.0.0 P-127]]` anchors are added to any lineage row**, and the deferred-candidate prose bodies are preserved verbatim in `.obsidian/MAgHARCM/research/diary/wave-17-candidates.md`.
+**Re-evaluation trigger**: any of the three candidates becomes wave-18-eligible when (a) MemSearcher lands at a confirmed 2025+ NeurIPS/ICML/ICLR venue, (b) Verified Tool Calls receives venue confirmation, or (c) a program-comprehension mechanism paper emerges at 2025+ venue. Until then, **no `[[1.0.0 P-125]]` / `[[1.0.0 P-126]]` / `[[1.0.0 P-127]]` anchors are added to any lineage row**, and the deferred-candidate prose bodies are preserved verbatim in `.obsidian/MAgHARCM/research/diary/Wave-17-Candidates.md`.
 
 ### 8.5 Watchlist for Wave-18
 
@@ -346,7 +346,7 @@ CMU + UCSD; **dual code-test C-to-safe-Rust translation via LLMs + dynamic analy
 - **MigGPT follow-up** (NeurIPS 2025 spotlight) — patch migration, not type-aware translation; out of scope for this slot.
 
 **Cross-reference**:
-- Wave-17 candidates memo: `.obsidian/MAgHARCM/research/diary/wave-17-candidates.md`
-- Wave-17 paper notes: `.obsidian/MAgHARCM/research/papers/P-123-codechemist-icml-2026.md` + `P-124-syzygy-iclr2025-workshop.md`
-- Trigger-gate language: `.obsidian/MAgHARCM/research/METHODOLOGY.md` §7 (rewritten 2026-09-25)
-- Sprint-2026-09-28 audit block: `.obsidian/MAgHARCM/primitives/INDEX.md` §Sprint 2026-09-28
+- Wave-17 candidates memo: `.obsidian/MAgHARCM/research/diary/Wave-17-Candidates.md`
+- Wave-17 paper notes: `.obsidian/MAgHARCM/research/papers/P-123-CodeChemist-ICML-2026.md` + `P-124-Syzygy-ICLR2025-Workshop.md`
+- Trigger-gate language: `.obsidian/MAgHARCM/research/Methodology.md` §7 (rewritten 2026-09-25)
+- Sprint-2026-09-28 audit block: `.obsidian/MAgHARCM/primitives/Primitives-Index.md` §Sprint 2026-09-28

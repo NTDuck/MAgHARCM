@@ -8,11 +8,11 @@ tags: [sprint, handoff, [[2.0.0 MAgHARCM]], wave-14, swebench, bfcl, slm, vault-
 
 ## Outcome
 
-Wave-14 fired. Three new SLM-era paper notes persisted (`[[1.0.0 P-119]]` SWE-Rebench Badertdinov NeurIPS 2025, `[[1.0.0 P-120]]` SWE-smith Yang NeurIPS 2025 spotlight, `[[1.0.0 P-121]]` BFCL Patil ICML 2025). Wave-14 cross-links landed in five `Software-Archaeology-Lineage.md` rows (PRIM-22, PRIM-23, PRIM-27, PRIM-29, PRIM-31). Four `\cite{}` updates in `sec_method.tex` (L336, L471, L532, L590) plus three new bib entries in `refs.bib`. METHODOLOGY.md §9 changelog + §7 wave-13 trigger criterion updated. No code logic changes. `go build` / `go vet` / `go test ./...` all green.
+Wave-14 fired. Three new SLM-era paper notes persisted (`[[1.0.0 P-119]]` SWE-Rebench Badertdinov NeurIPS 2025, `[[1.0.0 P-120]]` SWE-smith Yang NeurIPS 2025 spotlight, `[[1.0.0 P-121]]` BFCL Patil ICML 2025). Wave-14 cross-links landed in five `Software-Archaeology-Lineage.md` rows (PRIM-22, PRIM-23, PRIM-27, PRIM-29, PRIM-31). Four `\cite{}` updates in `sec_method.tex` (L336, L471, L532, L590) plus three new bib entries in `refs.bib`. Methodology.md §9 changelog + §7 wave-13 trigger criterion updated. No code logic changes. `go build` / `go vet` / `go test ./...` all green.
 
 ## Foundation (closed)
 
-- Read Sprint-2026-09-24 handoff + `METHODOLOGY.md` (entry point) for grounding.
+- Read Sprint-2026-09-24 handoff + `Methodology.md` (entry point) for grounding.
 - Audited current code state (no drift):
   - Zero `fmt.Print*` I/O in production Go code.
   - Zero hardcoded magic strings outside `internal/compiletime/`.
@@ -49,12 +49,12 @@ Originally scoped as a fourth wave-14 anchor (a 2026 SLM-era paper I had under c
 
 ## Track-1 Vault Sync (closed)
 
-### METHODOLOGY.md
+### Methodology.md
 - §0 frontmatter `last_updated` bumped 2026-09-23 → 2026-09-25.
 - §9 changelog: appended `2026-09-25` entry noting wave-14 fire (P-119/P-120/P-121), three SLM-era substrate-defence anchors, no code logic changes.
 - §7 trigger criterion: rewrote the wave-13 → wave-14 successor criterion to point at the 2026-09-25 decisions ("wave-N+1 fires when a 2025+ NeurIPS/ICML/ICLR paper introduces an unanchored mechanism that defends or refutes an existing SLM-era primitive's substrate claim").
 
-### primitives/INDEX.md
+### primitives/Primitives-Index.md
 - Appended `## Sprint 2026-09-25 Vault Sync Audit` block: 3 papers persisted, 5 lineage rows cross-linked (PRIM-22, PRIM-23, PRIM-27, PRIM-29, PRIM-31), 0 compliance drift.
 
 ### Software-Archaeology-Lineage.md
@@ -104,7 +104,7 @@ Four focused commits, ordered for safe rollback:
 - Possible follow-up: verify P-121 arXiv id `2607.05775` against the ICML 2025 proceedings PDF on first revisit; the P-121 paper header notes this is `[INFERENCE]`-marked per the methodology.
 - Possible follow-up: SWE-Rebench V2 (arXiv:2602.23866 [INFERENCE]) is a forward reference in `[[1.0.0 P-119]]`; materialise as `[[1.0.0 P-119-v2]]` when the V2 paper note lands.
 - Possible follow-up: extend the ADR-V-001 sweep into a pre-commit lint check that also rejects stray `(P-NN)` / `(PRIM-NN)` references in `Software-Archaeology-Lineage.md` figure annotations (currently out of scope per Sprint 2026-09-24 reasoning).
-- Possible follow-up: the wave-13 trigger criterion at METHODOLOGY.md §7 should be rewritten to point at the wave-N+1 criterion (already done this sprint; verify on next sprint).
+- Possible follow-up: the wave-13 trigger criterion at Methodology.md §7 should be rewritten to point at the wave-N+1 criterion (already done this sprint; verify on next sprint).
 
 ## Commits this sprint
 

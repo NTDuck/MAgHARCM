@@ -10,7 +10,7 @@ tags: [sprint, handoff, "[[2.0.0 MAgHARCM]]", "[[1.0.0 PRIM-31]]", slm, research
 
 Closed all requested items. Three phases completed:
 
-1. **METHODOLOGY as Entry Point** — Rewrote `research/METHODOLOGY.md` with Section 0 Quick Start, Section 7 SLM-Era Anchors (verified/unverified column), Section 8 Cross-References, Section 9 Last Updated.
+1. **METHODOLOGY as Entry Point** — Rewrote `research/Methodology.md` with Section 0 Quick Start, Section 7 SLM-Era Anchors (verified/unverified column), Section 8 Cross-References, Section 9 Last Updated.
 2. **Research Wave 7 (P-84..P-89)** — Persisted 6 new SLM-era anchor papers + 6 bib entries + 6 \cite mentions. Cross-linked into lineage matrix + primitives INDEX.
 3. **Codebase Ponytail Audit** — Verified ste100 messaging compliance (zero marketing jargon), externalities adoption (yaml.v3, charm stack, abcoder-mcp, %w wrap, filepath). Build/vet/test all green.
 
@@ -98,4 +98,4 @@ The METHODOLOGY file is now structured as an entry point with:
 - Section 8 (Cross-References)
 - Section 9 (Last Updated)
 
-Subsequent jobs can begin by reading METHODOLOGY.md, then drilling into the linked files.
+Subsequent jobs can begin by reading Methodology.md, then drilling into the linked files.

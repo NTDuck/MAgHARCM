@@ -9,7 +9,7 @@ tags: [sprint, handoff, [[2.0.0 MAgHARCM]], [[1.0.0 PRIM-31]], slm, locality-of-
 ## Outcome
 
 Closed all 32 sprint items across seven phases. Wave-13 research fired (4 new
-SLM-era anchor papers). METHODOLOGY.md gained a §0 Quick Start / Entry Point
+SLM-era anchor papers). Methodology.md gained a §0 Quick Start / Entry Point
 section and the wave-13 trigger criteria. Vault + paper sync shipped.
 ADR-C-014 (Locality of Behaviour) reality check: the artifact structs cannot
 be re-homed without breaking the import graph — the algorithm locality is
@@ -20,14 +20,14 @@ constraint.
 ## Foundation (closed)
 
 - Read Sprint-2026-09-22 handoff fully + scanned for stale artifacts.
-- Read METHODOLOGY.md fully + identified §0 entry-point gap.
+- Read Methodology.md fully + identified §0 entry-point gap.
 - Surveyed wave-12 backward references for unanchored hop-1 papers; 4 viable
   wave-13 candidates identified.
 - Verified branch state at 16fdb18 (clean tree, ahead of origin).
 
 ## Track-1 Methodology Entry-Point Update (closed)
 
-- Added §0 Quick Start / Entry Point section to METHODOLOGY.md so a fresh
+- Added §0 Quick Start / Entry Point section to Methodology.md so a fresh
   reader can locate the wave trigger criteria, dup-row escape recipe, and
   the citation back-link conventions within the first scroll.
 - Bumped `last_updated` to 2026-09-23.
@@ -54,10 +54,10 @@ repository); no paper required deep triangulation this wave.
 
 - 16 cross-link rows added to `Software-Archaeology-Lineage.md` across 9
   distinct PRIM rows (PRIM-5, 6, 9, 22, 25, 26, 27, 29, 31).
-- Sprint 2026-09-23 Vault Sync Audit appended to `primitives/INDEX.md`
+- Sprint 2026-09-23 Vault Sync Audit appended to `primitives/Primitives-Index.md`
   (lines 113-120).
-- METHODOLOGY.md §7 wave-13 SLM-era anchors table appended.
-- METHODOLOGY.md §9 changelog entry bumped to 2026-09-23.
+- Methodology.md §7 wave-13 SLM-era anchors table appended.
+- Methodology.md §9 changelog entry bumped to 2026-09-23.
 
 ## Track-4 Paper Sync (closed)
 
@@ -119,9 +119,9 @@ Three focused commits, ordered for safe rollback:
 
 ```
 1. docs(methodology,paper,vault): wave-13 P-115..P-118 sync
-   - METHODOLOGY.md §0 + §7 + §9
+   - Methodology.md §0 + §7 + §9
    - Software-Archaeology-Lineage.md cross-links
-   - primitives/INDEX.md audit block
+   - primitives/Primitives-Index.md audit block
    - docs/.paper/refs.bib + docs/.paper/sec_method.tex
    - P-115..P-118 paper notes
 2. refactor(compiletime): rewrite misleading ADR-C-014 banner

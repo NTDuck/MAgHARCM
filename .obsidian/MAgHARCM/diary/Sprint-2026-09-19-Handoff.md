@@ -13,7 +13,7 @@ Ponytail inline sweep completed. Three findings actioned (HIGH-1, HIGH-2, MED-1)
 ## Foundation (closed)
 
 - Ingested Sprint-2026-09-18 handoff + 3 commits (`f95bc03`, `d5cdac5`, `05b8d86`).
-- Read METHODOLOGY.md entry point: confirmed §7 wave-10 anchors + §9 changelog structure.
+- Read Methodology.md entry point: confirmed §7 wave-10 anchors + §9 changelog structure.
 - Audited 12 directive items against current commit `05b8d86` — all compliant (table in scout-ponytail-sweep.md).
 - Read all 7 wave-10 paper notes for wave-11 trigger candidates.
 
@@ -55,8 +55,8 @@ $ go test ./...    → all packages ok (tui, languages, runner, tools re-ran due
 
 ## Vault Sync (closed)
 
-- `.obsidian/MAgHARCM/primitives/INDEX.md`: Sprint-2026-09-18 + 2026-09-19 audit blocks appended.
-- `.obsidian/MAgHARCM/research/METHODOLOGY.md`: 2026-09-19 changelog entry added; `last_updated` bumped; append-only order preserved (09-19 → 09-18 → 09-17 → 09-16 → 09-15 → 09-14 → 09-13 → 09-07).
+- `.obsidian/MAgHARCM/primitives/Primitives-Index.md`: Sprint-2026-09-18 + 2026-09-19 audit blocks appended.
+- `.obsidian/MAgHARCM/research/Methodology.md`: 2026-09-19 changelog entry added; `last_updated` bumped; append-only order preserved (09-19 → 09-18 → 09-17 → 09-16 → 09-15 → 09-14 → 09-13 → 09-07).
 - No `sec_method.tex` / `refs.bib` changes (no wave-11 fired).
 - Three scout reports persisted under `.artifacts/local/`.
 
@@ -76,7 +76,7 @@ $ go test ./...    → all packages ok (tui, languages, runner, tools re-ran due
 
 ## Methodology Compliance
 
-- Method entry-point (`METHODOLOGY.md` §0..§9) structurally intact; §9 changelog + §7 deferred-wave-11 status updated.
+- Method entry-point (`Methodology.md` §0..§9) structurally intact; §9 changelog + §7 deferred-wave-11 status updated.
 - All ADRs (`ADR-C-001` through `ADR-C-015`, `ADR-V-001` through `ADR-V-007`) verified compliant.
 - Ste100 messaging: clean (carried over).
 - Externalities adoption: comprehensive (carried over).

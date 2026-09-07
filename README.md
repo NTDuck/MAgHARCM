@@ -56,4 +56,4 @@ Per-run checkpoints under `.artifacts/<run-id>/checkpoints/` enable resume
 after a crash.
 
 See `docs/.paper/` for the empirical evaluation and
-`.obsidian/MAgHARCM/research/METHODOLOGY.md` for the methodology.
+`.obsidian/MAgHARCM/adhoc/Methodology.md` for the methodology.

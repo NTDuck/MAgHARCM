@@ -8,17 +8,17 @@ tags: [sprint, handoff, [[2.0.0 MAgHARCM]], [[1.0.0 ADR-V-001]], slm, vault-sync
 
 ## Outcome
 
-Closed 16/16 sprint items across four phases. Compliance-only sprint: no new research wave, no code logic changes. ADR-V-001 sweep purged 11 stray `(P-NN)` / `(PRIM-NN)` parentheticals across `METHODOLOGY.md`, `primitives/INDEX.md`, and four sprint handoff files. All compliance invariants re-verified green.
+Closed 16/16 sprint items across four phases. Compliance-only sprint: no new research wave, no code logic changes. ADR-V-001 sweep purged 11 stray `(P-NN)` / `(PRIM-NN)` parentheticals across `Methodology.md`, `primitives/Primitives-Index.md`, and four sprint handoff files. All compliance invariants re-verified green.
 
 ## Foundation (closed)
 
-- Read Sprint-2026-09-23 handoff + `METHODOLOGY.md` (entry point) for grounding.
+- Read Sprint-2026-09-23 handoff + `Methodology.md` (entry point) for grounding.
 - Audited current code state:
   - Zero `fmt.Print*` I/O in production Go code (only `fmt.Sprintf`/`Fprintf` for string construction; verified across `internal/`).
   - Zero hardcoded magic strings outside `compiletime/` — every sentinel, enum, threshold, and role-flip / verdict / strategy prompt constant lives in `internal/compiletime/compiletime.go`.
   - `ABCoderMCPProvider` occurrences: **zero** in any `.go` file. Only matches are the ADR-V-001 / ADR-C-013 rule statements themselves (`architecture/ADR-2026-09-07-Sprint-Conventions.md:37,45` and three sprint-handoff rule-citations). The Sprint 2026-09-05 rename was thorough.
   - `SelectMigrationStrategy` references: one comment in `tests/internal/agents/analyzer.go:13` is intentional historical context ("legacy `SelectMigrationStrategy` helper was retired in favour of the strategy interface"), not a live identifier. Left as-is.
-- Inventoried primitives INDEX: `grep -oE 'PRIM-[0-9]+' .obsidian/MAgHARCM/primitives/INDEX.md | sort -u | wc -l` = **31** (no orphans, no missing rows; the earlier "37" count was raw substring matches that included tag-list `[[1.0.0 PRIM-1]]..[[1.0.0 PRIM-31]]`).
+- Inventoried primitives INDEX: `grep -oE 'PRIM-[0-9]+' .obsidian/MAgHARCM/primitives/Primitives-Index.md | sort -u | wc -l` = **31** (no orphans, no missing rows; the earlier "37" count was raw substring matches that included tag-list `[[1.0.0 PRIM-1]]..[[1.0.0 PRIM-31]]`).
 - Wave-14 trigger decision: deferred. Per the Sprint 2026-09-23 §9 changelog criterion ("wave-14 fires when a new SLM-era primitive lands, a 2026 venue paper introduces an unanchored mechanism, or the user issues a new directive"), no trigger was met this sprint. Five candidates already triaged (Multi-SWE-bench, SWE-Rebench, 2026 MAgHARCM-internal reproduction); none introduce a mechanism not already anchored.
 
 ## Track-1 Vault Sync (ADR-V-001) — closed
@@ -27,10 +27,10 @@ Closed 16/16 sprint items across four phases. Compliance-only sprint: no new res
 
 | File | Lines | Rewrite |
 | :--- | :--- | :--- |
-| `METHODOLOGY.md` | 192 | `(P-109)` → `[[1.0.0 P-109]]` |
-| `METHODOLOGY.md` | 222 | `(P-111)` → `[[1.0.0 P-111]]` |
-| `primitives/INDEX.md` | 75 | `(PRIM-9)` → `[[1.0.0 PRIM-9]]`; `(PRIM-17)` → `[[1.0.0 PRIM-17]]` |
-| `primitives/INDEX.md` | 118 | `(P-111)` → `[[1.0.0 P-111]]` |
+| `Methodology.md` | 192 | `(P-109)` → `[[1.0.0 P-109]]` |
+| `Methodology.md` | 222 | `(P-111)` → `[[1.0.0 P-111]]` |
+| `primitives/Primitives-Index.md` | 75 | `(PRIM-9)` → `[[1.0.0 PRIM-9]]`; `(PRIM-17)` → `[[1.0.0 PRIM-17]]` |
+| `primitives/Primitives-Index.md` | 118 | `(P-111)` → `[[1.0.0 P-111]]` |
 | `diary/Sprint-2026-09-06-Handoff.md` | 49 | `(PRIM-9)` / `(PRIM-17)` → wikilink form |
 | `diary/Sprint-2026-09-18-Handoff.md` | 36, 38 | `(P-100)` x2 + P-102..P-106 + P-107 → wikilink form |
 | `diary/Sprint-2026-09-22-Handoff.md` | 92 | `(P-109)` → `[[1.0.0 P-109]]` |
@@ -40,7 +40,7 @@ Two remaining `(P-NN)` parentheticals in `architecture/ADR-2026-09-07-Sprint-Con
 
 One remaining `(PRIM-NN)` cluster in `Software-Archaeology-Lineage.md:51` lives inside an ASCII lineage diagram (`[Shen 2023] HuggingGPT / Controller-Expert (PRIM-29 hop-1) / Sycophancy (PRIM-25) / …`). Diagrams are out of scope for ADR-V-001 (the rule applies to version slots, not figure annotations). Retained.
 
-Sprint 2026-09-24 Vault Sync Audit block appended to `primitives/INDEX.md` (lines 122-127).
+Sprint 2026-09-24 Vault Sync Audit block appended to `primitives/Primitives-Index.md` (lines 122-127).
 
 ## Track-2 Codebase Ponytail Cleanup — closed
 
@@ -70,8 +70,8 @@ Two focused commits, ordered for safe rollback:
 
 ```
 1. docs(vault): ADR-V-001 sweep — convert stray (P-NN)/(PRIM-NN) to wikilink form
-   - METHODOLOGY.md:2 lines
-   - primitives/INDEX.md:2 lines (75, 118) + Sprint 2026-09-24 audit block (122-127)
+   - Methodology.md:2 lines
+   - primitives/Primitives-Index.md:2 lines (75, 118) + Sprint 2026-09-24 audit block (122-127)
    - diary/Sprint-2026-09-06-Handoff.md:1 line
    - diary/Sprint-2026-09-18-Handoff.md:2 lines (36, 38)
    - diary/Sprint-2026-09-22-Handoff.md:1 line
@@ -83,7 +83,7 @@ Two focused commits, ordered for safe rollback:
 
 - Possible follow-up: extend the ADR-V-001 sweep into a pre-commit lint check that auto-rewrites stray parentheticals (per Sprint 2026-09-23 follow-up carryover).
 - Possible follow-up: when wave-14 fires, scan the new paper notes for version-mismatch leaks before commit.
-- Possible follow-up: per user directive, the `(CodaMOSA)` / `(ReCodeAgent)` parentheticals flagged by `primitives/INDEX.md:59` as forbidden — `grep` sweep found none remain in the prose body, but the rule's prose could be tightened with a concrete forbidden-pattern regex.
+- Possible follow-up: per user directive, the `(CodaMOSA)` / `(ReCodeAgent)` parentheticals flagged by `primitives/Primitives-Index.md:59` as forbidden — `grep` sweep found none remain in the prose body, but the rule's prose could be tightened with a concrete forbidden-pattern regex.
 
 ## Commits this sprint
 

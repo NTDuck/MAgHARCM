@@ -13,7 +13,7 @@ tags: [adr, vault-lint, automation, adr-v-001, [[2.0.0 MAgHARCM]], [[2.0.0 Archi
 
 `[[1.0.0 ADR-V-001]]` (`.obsidian/MAgHARCM/architecture/ADR-2026-09-07-Sprint-Conventions.md`, §2.2) mandates that version markers MUST use `[[x.y.z ...]]` wikilink syntax; stray parentheticals such as `(P-46)` are PROHIBITED in version slots. Enforcement until Sprint 2026-09-26 was entirely human: each sprint's audit step manually grep'd `(P-NN)` / `(PRIM-NN)` matches in `internal/` and `.obsidian/MAgHARCM/`, manually inspected each match for backtick-context exemption, and manually rewrote the violations.
 
-The Sprint 2026-09-24 audit sweep landed 17 violations to 0 across `METHODOLOGY.md`, `primitives/INDEX.md`, and four diary handoffs. The sweep took one subagent ~25 minutes and is the model for future drift repair — but the model is not durable. Future drifts between sprints will reintroduce the same violation set unless the rule is automated.
+The Sprint 2026-09-24 audit sweep landed 17 violations to 0 across `Methodology.md`, `primitives/Primitives-Index.md`, and four diary handoffs. The sweep took one subagent ~25 minutes and is the model for future drift repair — but the model is not durable. Future drifts between sprints will reintroduce the same violation set unless the rule is automated.
 
 The Sprint 2026-09-17 prose-convention decision ("prose parentheticals `(PRIM-NN)` / `(P-NN)` are retained as standard academic-writing convention in user-facing prose") further complicates the enforcement shape: bare `(PRIM-NN)` is permitted in vault prose but banned in `internal/` Go source. A naive lint script that flags all `(P-NN)` / `(PRIM-NN)` matches without distinguishing these contexts will produce both false positives (vault prose) and false negatives (Go source after backtick-context exemptions).
 
@@ -68,7 +68,7 @@ Negative:
 | `[[1.0.0 ADR-V-001]]` enforcement | ✅ | `scripts/lint_vault.sh` |
 | `[[1.0.0 ADR-2026-09-07-Sprint-Conventions]]` §2.2 rule statement | ✅ preserved | unchanged in `architecture/ADR-2026-09-07-Sprint-Conventions.md` (canonical counter-example retained) |
 | Sprint 2026-09-17 prose-convention decision | ✅ preserved | asymmetric enforcement + STRAY (not FORBIDDEN) for vault `(PRIM-NN)` |
-| `METHODOLOGY.md` §10 (vault sync audit trail) | ✅ | lint script emission fed into Sprint 2026-09-26 audit block |
+| `Methodology.md` §10 (vault sync audit trail) | ✅ | lint script emission fed into Sprint 2026-09-26 audit block |
 | `scripts/` directory convention | ✅ | `scripts/lint_vault.sh` is the second automation in `scripts/` (alongside `generate-configs.py`, `retry-stable.sh`, etc.) |
 
 ## 5. Supersession
@@ -80,8 +80,8 @@ To supersede this ADR (e.g. to add an `--auto-fix` mode, to extend the rule to `
 - Lint script: `scripts/lint_vault.sh` (signed-off in Sprint 2026-09-26)
 - Companion ADR: `[[1.0.0 ADR-V-001]]` in `.obsidian/MAgHARCM/architecture/ADR-2026-09-07-Sprint-Conventions.md` §2.2
 - Sprint-Conventions ADR: `.obsidian/MAgHARCM/architecture/ADR-2026-09-07-Sprint-Conventions.md`
-- Methodology: `.obsidian/MAgHARCM/research/METHODOLOGY.md` §10 (vault sync audit trail)
+- Methodology: `.obsidian/MAgHARCM/research/Methodology.md` §10 (vault sync audit trail)
 - Architecture: `.obsidian/MAgHARCM/research/Architecture.md` §7 (Sprint 2026-09-26 Vault Sync Audit)
-- Primitives INDEX audit block: `.obsidian/MAgHARCM/primitives/INDEX.md` §Sprint 2026-09-26
+- Primitives INDEX audit block: `.obsidian/MAgHARCM/primitives/Primitives-Index.md` §Sprint 2026-09-26
 - Lineage note: `.obsidian/MAgHARCM/research/Software-Archaeology-Lineage.md` §6 (Wave-15 Deferral)
 - Sprint handoff (current sprint): `.obsidian/MAgHARCM/diary/Sprint-2026-09-26-Handoff.md` (pending)

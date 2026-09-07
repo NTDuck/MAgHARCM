@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "README.md",
+                "file": "Readme.md",
                 "mode": "source",
                 "source": false
               },
@@ -99,7 +99,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "research/METHODOLOGY.md",
+                "file": "Methodology.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -118,7 +118,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "research/METHODOLOGY.md",
+                "file": "Methodology.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
@@ -161,7 +161,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "research/METHODOLOGY.md",
+                "file": "Methodology.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
@@ -190,11 +190,11 @@
   },
   "active": "6abea5a18f313a58",
   "lastOpenFiles": [
-    "2026-09-28.md",
+    "Methodology.md",
     "diary/Sprint-Recon-2026-09-04.md",
     "diary/Sprint-2026-09-28-Handoff.md",
-    "README.md",
-    "research/METHODOLOGY.md",
+    "Readme.md",
+    "Methodology.md",
     "research/Software-Archaeology-Lineage.md"
   ]
 }

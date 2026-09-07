@@ -8,7 +8,7 @@ tags: [sprint, handoff, "[[2.0.0 MAgHARCM]]", "[[1.0.0 PRIM-31]]", slm, ponytail
 
 ## Outcome
 
-Wave-10 SLM-era research anchors persisted (P-102..P-107). Vault synced: METHODOLOGY.md §7 wave-10 table + Wave-10 anchors list + corrected P-103 venue + 2026-09-18 changelog. Primitives INDEX.md cross-links added for 8 primitives. Paper `docs/.paper/refs.bib` extended with 6 wave-10 entries; `sec_method.tex` wave-10 cite inserted. All 7 directive items already verified compliant at `0c1aed5` (no code refactor needed). Tree clean except wave-10 untracked files + paper edits.
+Wave-10 SLM-era research anchors persisted (P-102..P-107). Vault synced: Methodology.md §7 wave-10 table + Wave-10 anchors list + corrected P-103 venue + 2026-09-18 changelog. Primitives INDEX.md cross-links added for 8 primitives. Paper `docs/.paper/refs.bib` extended with 6 wave-10 entries; `sec_method.tex` wave-10 cite inserted. All 7 directive items already verified compliant at `0c1aed5` (no code refactor needed). Tree clean except wave-10 untracked files + paper edits.
 
 ## Foundation (closed)
 
@@ -39,9 +39,9 @@ Honest Wave-10 count: **5 new verified papers (`[[1.0.0 P-102]]`..`[[1.0.0 P-106
 
 ## Track-3 Vault Sync (closed)
 
-- `METHODOLOGY.md` §7: Wave-10 anchors list (lines 124-130) + Wave-10 SLM-era table (10 rows, lines 132-144) + Cross-cutting list (lines 146-150, with P-85 supersession note) + Wave-9 anchors list (lines 152-158). `last_updated` bumped to 2026-09-18.
-- `METHODOLOGY.md` §9 changelog: 2026-09-18 entry added (line 174); 2026-09-17 line preserved at line 175.
-- `.obsidian/MAgHARCM/primitives/INDEX.md`: 8 primitives updated with wave-10 cross-links (PRIM-21, 22, 23, 24, 25, 26, 27, 31). Sprint-2026-09-18 audit block added.
+- `Methodology.md` §7: Wave-10 anchors list (lines 124-130) + Wave-10 SLM-era table (10 rows, lines 132-144) + Cross-cutting list (lines 146-150, with P-85 supersession note) + Wave-9 anchors list (lines 152-158). `last_updated` bumped to 2026-09-18.
+- `Methodology.md` §9 changelog: 2026-09-18 entry added (line 174); 2026-09-17 line preserved at line 175.
+- `.obsidian/MAgHARCM/primitives/Primitives-Index.md`: 8 primitives updated with wave-10 cross-links (PRIM-21, 22, 23, 24, 25, 26, 27, 31). Sprint-2026-09-18 audit block added.
 - `docs/.paper/refs.bib`: 6 wave-10 entries appended (P-102..P-107), each with full citation + note explaining MAgHARCM relevance.
 - `docs/.paper/sec_method.tex` L336: wave-10 cite key added to Qwen2.5-Coder scale sentence + Wave-10 narrative paragraph added explaining each anchor's role.
 
@@ -56,7 +56,7 @@ $ go test ./...     → all packages ok
 ## Commits this sprint
 
 To be committed at end of this handoff:
-1. `docs(research): wave-10 SLM-era anchors (P-102..P-107) persisted` — 6 paper notes + METHODOLOGY.md §7 + INDEX.md + handoff.
+1. `docs(research): wave-10 SLM-era anchors (P-102..P-107) persisted` — 6 paper notes + Methodology.md §7 + INDEX.md + handoff.
 2. `docs(paper): wave-10 bib entries + sec_method cite` — refs.bib + sec_method.tex.
 
 ## Out-of-scope items (deferred)
@@ -70,7 +70,7 @@ To be committed at end of this handoff:
 
 ## Methodology Compliance
 
-- Method entry-point (`METHODOLOGY.md` §0..§9) structurally intact; §7 wave-10 anchors + §9 changelog added.
+- Method entry-point (`Methodology.md` §0..§9) structurally intact; §7 wave-10 anchors + §9 changelog added.
 - All ADRs (`ADR-C-001` through `ADR-C-015`, `ADR-V-001` through `ADR-V-007`) verified compliant.
 - Ste100 messaging: clean (carried over from Sprint-2026-09-17).
 - Externalities adoption: comprehensive (carried over).

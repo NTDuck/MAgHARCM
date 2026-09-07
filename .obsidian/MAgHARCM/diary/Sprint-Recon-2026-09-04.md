@@ -53,7 +53,7 @@ Implement the 12 high-value absents in the codebase: PRIM-4, PRIM-7, PRIM-8, PRI
 Skip the software-archaeology *analysis* primitives (PRIM-15, PRIM-16, PRIM-18, PRIM-19,
 PRIM-20, PRIM-22) as standalone implementations — these are described in the paper appendix
 as conceptual primitives drawn from the cited literature; tracking them in
-[[primitives/INDEX]] with status **referenced** (not implemented) keeps the parity surface
+[[primitives/Primitives-Index]] with status **referenced** (not implemented) keeps the parity surface
 honest. PRIM-14 (Software-Archaeology Stage) is implemented as a planning-stage hook because
 it is invoked by the pipeline; the deeper conceptual primitives stay referenced.
 
@@ -68,7 +68,7 @@ Examples:
 - `(Syzygy)` → `[[P58 Syzygy]]`
 - `(pp-besm dev.to playbook)` → `[[pp-besm Software Archaeology]]`
 
-See [[primitives/INDEX]], [[research/Architecture]], [[research/METHODOLOGY]].
+See [[primitives/Primitives-Index]], [[research/Architecture]], [[research/Methodology]].
 
 ## Recursive research anchor
 

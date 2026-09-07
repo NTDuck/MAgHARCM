@@ -22,10 +22,10 @@ All gates green at closure: `go build ./...`, `go vet ./...`, `go test ./...` (a
 ## Research Wave (closed)
 
 4 paper notes persisted in parallel via subagents:
-- `.obsidian/MAgHARCM/research/papers/P-111-jimenez-swebench-original-2024.md` (18,268 bytes, 80 lines) — SWE-bench original (Jimenez ICLR 2024, arXiv:2310.06770); 4 anchored primitives (PRIM-5, PRIM-6, PRIM-23, PRIM-27).
-- `.obsidian/MAgHARCM/research/papers/P-112-yang-sweagent-2024.md` (19,261 bytes, 107 lines) — SWE-agent (Yang NeurIPS 2024, arXiv:2405.15793); 4 anchored primitives (PRIM-5, PRIM-6, PRIM-25, PRIM-29).
-- `.obsidian/MAgHARCM/research/papers/P-113-zhang-autocoderover-2024.md` (23,869 bytes, 111 lines) — AutoCodeRover (Zhang 2024, arXiv:2404.05427); 4 anchored primitives (PRIM-9, PRIM-22, PRIM-23, PRIM-26).
-- `.obsidian/MAgHARCM/research/papers/P-114-cai-medusa-2024.md` (18,003 bytes) — Medusa (Cai 2024, arXiv:2401.10774); 4 anchored primitives (PRIM-7, PRIM-21, PRIM-22, PRIM-31).
+- `.obsidian/MAgHARCM/research/papers/P-111-Jimenez-SWE-Bench-Original-2024.md` (18,268 bytes, 80 lines) — SWE-bench original (Jimenez ICLR 2024, arXiv:2310.06770); 4 anchored primitives (PRIM-5, PRIM-6, PRIM-23, PRIM-27).
+- `.obsidian/MAgHARCM/research/papers/P-112-Yang-SWE-Agent-2024.md` (19,261 bytes, 107 lines) — SWE-agent (Yang NeurIPS 2024, arXiv:2405.15793); 4 anchored primitives (PRIM-5, PRIM-6, PRIM-25, PRIM-29).
+- `.obsidian/MAgHARCM/research/papers/P-113-Zhang-AutoCodeRover-2024.md` (23,869 bytes, 111 lines) — AutoCodeRover (Zhang 2024, arXiv:2404.05427); 4 anchored primitives (PRIM-9, PRIM-22, PRIM-23, PRIM-26).
+- `.obsidian/MAgHARCM/research/papers/P-114-Cai-Medusa-2024.md` (18,003 bytes) — Medusa (Cai 2024, arXiv:2401.10774); 4 anchored primitives (PRIM-7, PRIM-21, PRIM-22, PRIM-31).
 
 Total: 114 paper notes persisted in `.obsidian/MAgHARCM/research/papers/`.
 
@@ -35,13 +35,13 @@ Cross-links added to `.obsidian/MAgHARCM/research/Software-Archaeology-Lineage.m
 - P-113 → PRIM-9, PRIM-22, PRIM-23, PRIM-26 (4 rows).
 - P-114 → PRIM-7, PRIM-21, PRIM-22, PRIM-31 (4 rows).
 
-`.obsidian/MAgHARCM/primitives/INDEX.md` wave-12 audit block appended.
+`.obsidian/MAgHARCM/primitives/Primitives-Index.md` wave-12 audit block appended.
 
 ## Vault Sync (closed)
 
-- METHODOLOGY.md §7 — appended Wave-12 SLM-era anchors table (16 rows) + Wave-12 anchor list (4 entries).
-- METHODOLOGY.md §9 — appended 2026-09-22 changelog entry at top of dated list (newest-first convention).
-- METHODOLOGY.md frontmatter `last_updated` bumped to `2026-09-22`.
+- Methodology.md §7 — appended Wave-12 SLM-era anchors table (16 rows) + Wave-12 anchor list (4 entries).
+- Methodology.md §9 — appended 2026-09-22 changelog entry at top of dated list (newest-first convention).
+- Methodology.md frontmatter `last_updated` bumped to `2026-09-22`.
 
 ## Paper Sync (closed)
 

@@ -22,12 +22,12 @@ Sprint 2026-09-11 closed. Four real anchor papers persisted (P-74..P-77); all 6 
 ## NEEDS-LINK Resolution (closed)
 
 All 6 remaining stubs resolved:
-- `[[NEEDS-LINK Rajlich-1997]]` (in `Software-Archaeology-Lineage.md`, `P-40-foltz-dr-jones-2023.md`) → `[[1.0.0 P-74]]` Biggerstaff 1993 (the actual concept-assignment paper; Rajlich cites this).
+- `[[NEEDS-LINK Rajlich-1997]]` (in `Software-Archaeology-Lineage.md`, `P-40-Foltz-Dr-Jones-2023.md`) → `[[1.0.0 P-74]]` Biggerstaff 1993 (the actual concept-assignment paper; Rajlich cites this).
 - `[[NEEDS-LINK Bennett-2000]]` (in `Software-Archaeology-Lineage.md`) → `[[1.0.0 P-75]]` Bennett 1995 + `[[1.0.0 P-76]]` Bennett & Rajlich 2000 Roadmap.
-- `[[NEEDS-LINK Baldwin-Clark-2016-Money]]` (in `P-41-baldwin-clark-design-rules-deep-2024.md`) → conflation dropped; modular-money framing anchored in existing `[[1.0.0 P-70]]` / `[[1.0.0 P-71]]` with sub-citation years deferred.
-- `[[NEEDS-LINK Anthropic-2024-Claude35Sonnet]]` (in `P-56-zan-multiswebench-2025.md`) → inline plain-text reference + cross-link to `[[1.0.0 P-38]]`.
-- `[[NEEDS-LINK Anthropic-2025]]` (in `P-61-guo-risky-code-execution-2024.md`) → cross-link to `[[1.0.0 P-38]]` + `[[1.0.0 P-69]]`.
-- `[[NEEDS-LINK OpenAI-2024-CodexRedTeam]]` (in `P-61-guo-risky-code-execution-2024.md`) → cross-link to `[[1.0.0 P-77]]` (no Codex-specific red-team report exists; OpenAI 2024 *Advancing Red Teaming with People and AI* is the closest analogue).
+- `[[NEEDS-LINK Baldwin-Clark-2016-Money]]` (in `P-41-Baldwin-Clark-Design-Rules-Deep-2024.md`) → conflation dropped; modular-money framing anchored in existing `[[1.0.0 P-70]]` / `[[1.0.0 P-71]]` with sub-citation years deferred.
+- `[[NEEDS-LINK Anthropic-2024-Claude35Sonnet]]` (in `P-56-Zan-MultiSWE-Bench-2025.md`) → inline plain-text reference + cross-link to `[[1.0.0 P-38]]`.
+- `[[NEEDS-LINK Anthropic-2025]]` (in `P-61-Guo-Risky-Code-Execution-2024.md`) → cross-link to `[[1.0.0 P-38]]` + `[[1.0.0 P-69]]`.
+- `[[NEEDS-LINK OpenAI-2024-CodexRedTeam]]` (in `P-61-Guo-Risky-Code-Execution-2024.md`) → cross-link to `[[1.0.0 P-77]]` (no Codex-specific red-team report exists; OpenAI 2024 *Advancing Red Teaming with People and AI* is the closest analogue).
 
 ## Codebase Ponytail (closed)
 
@@ -68,7 +68,7 @@ b243650 docs(research): persist P-74..P-77 anchor papers
 - **Primary** (the user's actual codebase brief still largely unaddressed): implement the `MigrationStrategy` interface registry as a real try-and-fail cascade. `internal/agents/strategy.go` already has the `MigrationStrategy` interface (`Kind()`, `Matches()`, `Attempt()`) + `Registry.TryInOrder()` + `Registry.NextStrategy()`, but the "try-and-fail incrementally" semantics the user asked for need: (a) explicit state-machine wiring so a failure of one strategy records the failure context and feeds it forward to the next; (b) richer `Profile` fields beyond `FileCount / LoC / HasTests / HasBuild` (e.g. cyclomatic complexity, language distribution, build-tool chain); (c) telemetry around which strategies get tried in real benchmarks.
 - **SelectMigrationStrategy vs MigrationStrategy naming**: `SwitchToNextStrategy` already exists in `internal/agents/`; rename + centralise as `compiletime.MigrationStrategy` (currently an enum) and ensure the strategy selection is one canonical path, not duplicated across agents.
 - The old `p71_anthropic_sycophancy_2025` bib entry (Raman et al., arXiv 2503.13930) is still in `refs.bib` with no in-text cite. Decide: re-introduce it as the actual P-69 source (replacing Sharma 2025), or remove as dead entry.
-- File the research-agenda grand challenges from Bennett & Rajlich 2000 (`[[1.0.0 P-76]]`) into the `[[primitives/INDEX]]` as a research-agenda column.
+- File the research-agenda grand challenges from Bennett & Rajlich 2000 (`[[1.0.0 P-76]]`) into the `[[primitives/Primitives-Index]]` as a research-agenda column.
 - Ponytail sweep on `internal/compiletime/compiletime.go` for any remaining inline magic literals; this file has grown to 447 lines.
 - Wire the Archaeologist agent to populate `stableSinceYears` from git blame / file mtime so the new modularity-trap detection actually surfaces in user-facing output.
 - Verify the two deferred sub-citation claims (Baldwin "Where Do Transactions Come From?" year; Colfer & Baldwin "Mirroring Hypothesis" year) via web_search; fix P-41 line 25 if either year is wrong.

@@ -12,7 +12,7 @@ green and the audit does NOT modify any code. Each finding cites the
 exact file and line that supports it.
 
 Inputs cross-checked:
-- `.obsidian/MAgHARCM/research/METHODOLOGY.md` (§§1–6)
+- `.obsidian/MAgHARCM/research/Methodology.md` (§§1–6)
 - `.obsidian/MAgHARCM/architecture/ADR-2026-09-07-Sprint-Conventions.md` (ADR-C-007..015)
 
 ---

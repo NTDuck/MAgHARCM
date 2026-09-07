@@ -24,7 +24,7 @@ Closed all requested items. Three phases completed:
   - `p82_pahins_..._2024_unverified` — UNVERIFIED (no matching paper; closest analogue Li et al. ASE'24 noted).
   - `p83_code_self_consistency_2024` — MPSC multi-problem self-consistency (Huang et al. ACL'24).
 - Inserted 5 `\cite{}` mentions in sec_method.tex at semantically appropriate anchors (P-79 → Concept Assignment, P-80 → KV-cache, P-81 → Role-Flip, P-83 → Verdict Panel, P-78 → EAGLE line).
-- Updated `Software-Archaeology-Lineage.md` and `primitives/INDEX.md` with P-78..P-83 cross-links; all 31 primitives still implemented.
+- Updated `Software-Archaeology-Lineage.md` and `primitives/Primitives-Index.md` with P-78..P-83 cross-links; all 31 primitives still implemented.
 - Single versioning convention enforced: 0 unversioned `[[P-NN]]` citations remain.
 
 ## Phase 2: Codebase Compliance (closed)
@@ -68,4 +68,4 @@ ecc3f24 docs(paper): persist P-78..P-83 wave-6 anchors into refs.bib + sec_metho
 
 ## Methodology update
 
-`METHODOLOGY.md` already reflects current state (try-and-fail registry, binary compilation, abcoder-mcp default, 8-agent pipeline). No changes needed.
+`Methodology.md` already reflects current state (try-and-fail registry, binary compilation, abcoder-mcp default, 8-agent pipeline). No changes needed.

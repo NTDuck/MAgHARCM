@@ -12,7 +12,7 @@ Closed 17 of 20 sprint items. Three items dropped (with justification) as out-of
 
 ## Phase A: Vault single-versioning + primitive sync (closed)
 
-- Fixed malformed wikilink in `P-63-dong-survey-llm-code-agents-2025.md` line 22: `([1.0.0 PRIM-17]]` → `([[1.0.0 PRIM-17]]`.
+- Fixed malformed wikilink in `P-63-Dong-Survey-LLM-Code-Agents-2025.md` line 22: `([1.0.0 PRIM-17]]` → `([[1.0.0 PRIM-17]]`.
 - Fixed Primitives INDEX backlink line 3: `[[2.0.0 Primitives]]` → `[[2.0.0 Primitives Index]]` (canonical title).
 
 ## Phase B: Codebase Must-pattern + design-pattern audit (closed)

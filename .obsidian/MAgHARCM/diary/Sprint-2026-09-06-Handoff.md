@@ -16,8 +16,8 @@ Closed all 10 items. Three phases finished: Foundation, Track-1 Codebase (wave-8
 - Persisted wave-8 SLM-era anchor papers (P-90..P-95) — all verified.
 - Cross-linked wave-8 anchors into:
   - `.obsidian/MAgHARCM/research/Software-Archaeology-Lineage.md` (lineage matrix)
-  - `.obsidian/MAgHARCM/primitives/INDEX.md` (primitives index)
-  - `.obsidian/MAgHARCM/research/METHODOLOGY.md` (§7 SLM-Era Anchors table + §9 changelog)
+  - `.obsidian/MAgHARCM/primitives/Primitives-Index.md` (primitives index)
+  - `.obsidian/MAgHARCM/research/Methodology.md` (§7 SLM-Era Anchors table + §9 changelog)
 - Updated `docs/.paper/sec_method.tex` with wave-8 `\cite` entries (P-90..P-95).
 
 ## Track-1 Codebase (wave-8 + ponytail audit v2) - closed

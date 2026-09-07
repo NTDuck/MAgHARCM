@@ -32,7 +32,7 @@ Working tree clean. Single changelog commit closes the sprint.
 
 - Re-grep parens-style version mismatches across `.obsidian/MAgHARCM/**.md`: zero hits.
 - Re-grep single-versioning convention `[[x.y.z ...]]` compliance: 100% in vault + paper.
-- Re-checked `diary/` / `INDEX.md` / `METHODOLOGY.md` drift: none.
+- Re-checked `diary/` / `INDEX.md` / `Methodology.md` drift: none.
 
 ## Codebase Audit (Ponytail Inline) (closed)
 
@@ -52,8 +52,8 @@ Working tree clean. Single changelog commit closes the sprint.
 - `go vet ./...` — clean.
 - `go test ./...` — all packages pass (cached): `cmd/MAgHARCM`, `cmd/MAgHARCM-tui`, `internal/agents`, `internal/config`, `internal/languages`, `internal/logger`, `internal/runner`, `internal/tools`; 3 packages have no test files (`internal/tui`, `tests/internal/graph`, etc.).
 - `Sprint-2026-09-20-Handoff.md` written (this file).
-- METHODOLOGY.md §9 changelog updated.
-- primitives/INDEX.md audit block appended.
+- Methodology.md §9 changelog updated.
+- primitives/Primitives-Index.md audit block appended.
 - Single changelog commit per [[ADR-2026-09-07-Sprint-Conventions]].
 
 ## Directive-Item Audit (12/12 still satisfied)

@@ -43,7 +43,7 @@ The following conventions are authoritative for the MAgHARCM codebase and Obsidi
 | ID | Rule | Enforcement |
 | :--- | :--- | :--- |
 | [[1.0.0 ADR-V-001]] | Version markers MUST use `[[x.y.z ...]]` wikilink syntax. Stray parentheses (e.g. `(P-46)`) are PROHIBITED in version slots. | `grep` sweep each sprint. |
-| [[1.0.0 ADR-V-002]] | Primitives (`PRIM-*`) are SINGLE-SOURCE-OF-TRUTH. The index `.obsidian/MAgHARCM/primitives/INDEX.md`, the lineage matrix `.obsidian/MAgHARCM/research/Software-Archaeology-Lineage.md`, and the codebase `internal/` MUST agree on the full primitive set. | Parity check `P-31` in INDEX ≡ rows in lineage ≡ files in `internal/`. |
+| [[1.0.0 ADR-V-002]] | Primitives (`PRIM-*`) are SINGLE-SOURCE-OF-TRUTH. The index `.obsidian/MAgHARCM/primitives/Primitives-Index.md`, the lineage matrix `.obsidian/MAgHARCM/research/Software-Archaeology-Lineage.md`, and the codebase `internal/` MUST agree on the full primitive set. | Parity check `P-31` in INDEX ≡ rows in lineage ≡ files in `internal/`. |
 | [[1.0.0 ADR-V-003]] | Hop-1 + hop-2 citation chains MUST be persisted per paper. Hop-1 = the paper's own bibliography; hop-2 = papers-cited-by-hop-1 authors. | Each `P-NN` paper file has a `## Hop-1` and `## Hop-2` section. |
 | [[1.0.0 ADR-V-004]] | ADRs live in `.obsidian/MAgHARCM/architecture/`. New ADR = new file `ADR-YYYY-MM-DD-<slug>.md`. | Directory layout. |
 | [[1.0.0 ADR-V-005]] | Sprint handoffs live in `.obsidian/MAgHARCM/diary/Sprint-YYYY-MM-DD-Handoff.md`. | Directory layout. |
@@ -89,7 +89,7 @@ To supersede a rule, write a new ADR referencing the rule ID with explicit `supe
 ## 6. Pointers
 
 - Companion ADR: [[1.0.0 ADR-2026-09-07-Dup-Row-Escape-Recipe]]
-- Methodology: `.obsidian/MAgHARCM/research/METHODOLOGY.md`
+- Methodology: `.obsidian/MAgHARCM/research/Methodology.md`
 - Lineage: `.obsidian/MAgHARCM/research/Software-Archaeology-Lineage.md`
 - Handoff (current sprint): `.obsidian/MAgHARCM/diary/Sprint-2026-09-06-Handoff.md`
 

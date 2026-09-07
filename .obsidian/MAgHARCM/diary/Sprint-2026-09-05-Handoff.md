@@ -13,7 +13,7 @@ Continuation of the modernization track from `[[2.0.0 Sprint-2026-09-04-Handoff]
 1. **Ponytail closure applied.** `internal/compiletime/compiletime.go` grew from 172 to 431 lines as the central source of typed enums (ArchitectureStabilityLayer, SpecLifecyclePhase, Verdict), sentinel strings (ErrorUnknown, DefaultProjectDir), magic numbers (BigBangFileMax, PilotFileMin, ParallelCutoverFileMin, IterativeContextBudgetBytes, ConceptTokenMinLength), format strings (CheckpointFilePattern, CheckpointExt), cluster tables (DefaultConceptClusters), and description tables (ArchitectureStabilityDescriptionL1/L2/L3, ComprehensionRecognition*, ComprehensionExplanationDefault). 13 agent files migrated to compile-time references; 11 of those gained `Must*` constructors. The orphaned `CurrentSchemaVersion` re-export in `internal/agents/state.go` was deleted; callers now reference `compiletime.CurrentSchemaVersion` directly.
 2. **Imports restored.** `strings`, `unicode`, and `eino/components/model` were restored in `internal/agents/analyzer.go` and `internal/agents/planning.go` after PonytailFix dropped them; `go build ./...` and `go vet ./...` are green; `go test -count=1 ./...` reports 9/9 packages passing.
 3. **Four synthesis-anchor papers persisted.** `[[1.0.0 P-42]]` (MacCormack DSM 2006, anchors PRIM-3 + PRIM-19), `[[1.0.0 P-43]]` (Kang FODA 1990, anchors PRIM-10), `[[1.0.0 P-44]]` (Corkill Blackboard 1991, anchors PRIM-17), `[[1.0.0 P-45]]` (Curtis-Kellner-Over Process Modelling 1992, anchors PRIM-24).
-4. **Lineage + INDEX rewired.** `Software-Archaeology-Lineage.md` matrix cross-references P-42..P-45 in their respective PRIM rows; new section 5 documents the four synthesis citations. `primitives/INDEX.md` does the same in compact form.
+4. **Lineage + INDEX rewired.** `Software-Archaeology-Lineage.md` matrix cross-references P-42..P-45 in their respective PRIM rows; new section 5 documents the four synthesis citations. `primitives/Primitives-Index.md` does the same in compact form.
 5. **Versioning convention clean.** No stray parentheses in version markers anywhere in the vault. The convention `[[x.y.z ...]]` is the only form used.
 
 ## 2. Codebase State
@@ -44,7 +44,7 @@ The following modules now consume compile-time constants exclusively (no inline 
 | `state.go` | Re-exported `CurrentSchemaVersion` | Deleted; callers reference `compiletime.CurrentSchemaVersion` directly |
 
 ### 2.3. Backbone Integrity
-- All 31 primitives (`PRIM-1` .. `PRIM-31`) appear in `primitives/INDEX.md`; all 31 rows appear in `Software-Archaeology-Lineage.md` matrix. No duplicates, no orphans.
+- All 31 primitives (`PRIM-1` .. `PRIM-31`) appear in `primitives/Primitives-Index.md`; all 31 rows appear in `Software-Archaeology-Lineage.md` matrix. No duplicates, no orphans.
 - 8 dedicated agent nodes (`archaeologist`, `analyzer`, `planning`, `translator`, `validator`, `roleflip`, `verdict_panel`, `recruiter`) wired through the Eino graph in `internal/graph/graph.go`.
 
 ## 3. Research State

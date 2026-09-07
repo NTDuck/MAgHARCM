@@ -12,7 +12,7 @@ Wave-17 **FIRED** (5 candidates triaged, 2 ACCEPT + 3 REJECT). Two new SLM-era m
 
 ## Foundation (closed)
 
-- Re-read Sprint 2026-09-26 handoff + `METHODOLOGY.md` (entry point) + ADR-C-014 for grounding.
+- Re-read Sprint 2026-09-26 handoff + `Methodology.md` (entry point) + ADR-C-014 for grounding.
 - Confirmed gate baseline (build/vet/test/lint) before research fan-out.
 - Stale-directive audit verified all 7 user directives still satisfied at `a5bba8e` (8-agent graph + 2 checkpoints, abcoder-mcp default, zero `fmt.Print*`, etc.).
 
@@ -24,14 +24,14 @@ Wave-17 **FIRED** (5 candidates triaged, 2 ACCEPT + 3 REJECT). Two new SLM-era m
   - `ResearchMemSearcher` → **REJECT Q1** (ACL 2026 Findings, off-list venue).
   - `ResearchToolVerify` → **REJECT Q1** (arXiv-only, no venue confirmation).
   - `ResearchSoftwareArch` → **REJECT Q2/Q3** (ICML 2025 candidate is a benchmark; software archaeology SLM-era mechanism gap remains open).
-- **2 P-NN notes persisted** (`P-123-codechemist-icml-2026.md`, `P-124-syzygy-iclr2025-workshop.md`).
-- **Wave-17 candidates memo** appended at `.obsidian/MAgHARCM/research/diary/wave-17-candidates.md`.
+- **2 P-NN notes persisted** (`P-123-CodeChemist-ICML-2026.md`, `P-124-Syzygy-ICLR2025-Workshop.md`).
+- **Wave-17 candidates memo** appended at `.obsidian/MAgHARCM/research/diary/Wave-17-Candidates.md`.
 
 ## Vault Sync (Wave-17)
 
-- `METHODOLOGY.md` — frontmatter bumped to 2026-09-28; §7 wave-17 SLM-era anchors table (6 rows: PRIM-21/23/27/9/22/30) + Wave-17 anchor list appended; §9 entry for 2026-09-28 appended; §11 extended from 2 to 4 ReasoningBank/CodeChemist/Syzygy sub-sections; §11.5 Substrate Application Matrix now 4 rows; §12 stale-directive audit rolled forward to 2026-09-28.
+- `Methodology.md` — frontmatter bumped to 2026-09-28; §7 wave-17 SLM-era anchors table (6 rows: PRIM-21/23/27/9/22/30) + Wave-17 anchor list appended; §9 entry for 2026-09-28 appended; §11 extended from 2 to 4 ReasoningBank/CodeChemist/Syzygy sub-sections; §11.5 Substrate Application Matrix now 4 rows; §12 stale-directive audit rolled forward to 2026-09-28.
 - `Architecture.md` — frontmatter bumped; §7 vault sync audit extended with Wave-17 row; §9 Wave-17 SLM-Era Architectural Implications added (9.1 cross-lingual oracle, 9.2 dynamic-analysis mining, 9.3 backward compatibility, 9.4 parity check).
-- `primitives/INDEX.md` — frontmatter bumped; PRIM-9/21/22/23/27/30 rows cross-linked to P-124/P-123; Sprint 2026-09-28 Vault Sync Audit block appended.
+- `primitives/Primitives-Index.md` — frontmatter bumped; PRIM-9/21/22/23/27/30 rows cross-linked to P-124/P-123; Sprint 2026-09-28 Vault Sync Audit block appended.
 - `Software-Archaeology-Lineage.md` — frontmatter bumped; §8 Wave-17 SLM-Era Anchors added (8.1 P-123 CodeChemist, 8.2 P-124 Syzygy, 8.3 substrate cross-reference matrix, 8.4 deferral note, 8.5 watchlist for Wave-18).
 
 ## Codebase Refactor
@@ -54,12 +54,12 @@ Wave-17 **FIRED** (5 candidates triaged, 2 ACCEPT + 3 REJECT). Two new SLM-era m
 
 ## Files touched (this sprint)
 
-- `.obsidian/MAgHARCM/research/papers/P-123-codechemist-icml-2026.md` (new)
-- `.obsidian/MAgHARCM/research/papers/P-124-syzygy-iclr2025-workshop.md` (new)
-- `.obsidian/MAgHARCM/research/diary/wave-17-candidates.md` (new)
-- `.obsidian/MAgHARCM/research/METHODOLOGY.md` (frontmatter, §7 wave-17 anchors, §9 entry, §11 extension, §12 refresh)
+- `.obsidian/MAgHARCM/research/papers/P-123-CodeChemist-ICML-2026.md` (new)
+- `.obsidian/MAgHARCM/research/papers/P-124-Syzygy-ICLR2025-Workshop.md` (new)
+- `.obsidian/MAgHARCM/research/diary/Wave-17-Candidates.md` (new)
+- `.obsidian/MAgHARCM/research/Methodology.md` (frontmatter, §7 wave-17 anchors, §9 entry, §11 extension, §12 refresh)
 - `.obsidian/MAgHARCM/research/Architecture.md` (frontmatter, §7 vault sync, §9 wave-17 implications)
-- `.obsidian/MAgHARCM/primitives/INDEX.md` (frontmatter, PRIM-9/21/22/23/27/30 rows, Sprint 2026-09-28 audit block)
+- `.obsidian/MAgHARCM/primitives/Primitives-Index.md` (frontmatter, PRIM-9/21/22/23/27/30 rows, Sprint 2026-09-28 audit block)
 - `.obsidian/MAgHARCM/research/Software-Archaeology-Lineage.md` (frontmatter, §8 wave-17 anchors)
 - `docs/.paper/refs.bib` (2 new entries)
 - `docs/.paper/sec_method.tex` (3 cite clusters extended)

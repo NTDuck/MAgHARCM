@@ -57,7 +57,7 @@ Retried P-06 / P-79 / P-82 via web search:
 
 ## Track-3 Vault Sync (closed)
 
-- `METHODOLOGY.md` §9 changelog updated (2026-09-17 entry).
+- `Methodology.md` §9 changelog updated (2026-09-17 entry).
 - No vault version-slot drift detected.
 - No stray paren version markers (`(1.0.0 ...)` style) in non-diary vault.
 
@@ -87,7 +87,7 @@ This sprint produced no code changes (all ADRs verified compliant; no new edits 
 
 ## Methodology Compliance
 
-- Method entry-point (`METHODOLOGY.md` §0..§9) unchanged structurally from Sprint-2026-09-16; only §9 changelog added.
+- Method entry-point (`Methodology.md` §0..§9) unchanged structurally from Sprint-2026-09-16; only §9 changelog added.
 - All ADRs (`ADR-C-001` through `ADR-C-015`, `ADR-V-001` through `ADR-V-007`) verified compliant.
 - Ste100 messaging: clean.
 - Externalities adoption: comprehensive.

@@ -24,22 +24,22 @@ All gates green at closure: `go build ./...`, `go vet ./...`, `go test ./...` (a
 ## Research Wave (closed)
 
 3 paper notes persisted in parallel via subagents:
-- `.obsidian/MAgHARCM/research/papers/P-108-eagle3-speculative-decoding-2024.md` (13,457 bytes, 93 lines) — EAGLE-3 NeurIPS 2025 (arXiv:2503.01840), venue corrected from P-78's earlier "NeurIPS 2024" attribution; 4 anchored primitives (PRIM-7, PRIM-21, PRIM-22, PRIM-31).
-- `.obsidian/MAgHARCM/research/papers/P-109-swebench-verified-2024.md` (14,863 bytes, 92 lines) — SWE-bench Verified (OpenAI 2024, arXiv:2407.01489); 4 anchored primitives (PRIM-5, PRIM-6, PRIM-23, PRIM-27).
-- `.obsidian/MAgHARCM/research/papers/P-110-graphcoder-graph-rag-2024.md` (14,375 bytes) — GraphCoder / CodeGraphRAG (2024, `[INFERENCE: best-available analog]`); 4 anchored primitives (PRIM-9, PRIM-22, PRIM-26, PRIM-31).
+- `.obsidian/MAgHARCM/research/papers/P-108-EAGLE3-Speculative-Decoding-2024.md` (13,457 bytes, 93 lines) — EAGLE-3 NeurIPS 2025 (arXiv:2503.01840), venue corrected from P-78's earlier "NeurIPS 2024" attribution; 4 anchored primitives (PRIM-7, PRIM-21, PRIM-22, PRIM-31).
+- `.obsidian/MAgHARCM/research/papers/P-109-SWE-Bench-Verified-2024.md` (14,863 bytes, 92 lines) — SWE-bench Verified (OpenAI 2024, arXiv:2407.01489); 4 anchored primitives (PRIM-5, PRIM-6, PRIM-23, PRIM-27).
+- `.obsidian/MAgHARCM/research/papers/P-110-GraphCoder-Graph-RAG-2024.md` (14,375 bytes) — GraphCoder / CodeGraphRAG (2024, `[INFERENCE: best-available analog]`); 4 anchored primitives (PRIM-9, PRIM-22, PRIM-26, PRIM-31).
 
 Cross-links added to `.obsidian/MAgHARCM/research/Software-Archaeology-Lineage.md`:
 - P-108 → PRIM-7, PRIM-21, PRIM-31 (3 rows).
 - P-109 → PRIM-5, PRIM-6, PRIM-27 (3 rows).
 - P-110 → PRIM-9, PRIM-26, PRIM-31 (3 rows).
 
-`.obsidian/MAgHARCM/primitives/INDEX.md` wave-11 audit block appended; INDEX row counts corrected (P-110 → 3 rows, not 4).
+`.obsidian/MAgHARCM/primitives/Primitives-Index.md` wave-11 audit block appended; INDEX row counts corrected (P-110 → 3 rows, not 4).
 
 ## Vault Sync (closed)
 
-- METHODOLOGY.md §7 — appended Wave-11 SLM-era anchors table (10 rows) + Wave-11 anchor list (3 entries, including re-anchor note for P-108).
-- METHODOLOGY.md §9 — appended 2026-09-21 changelog entry at top of dated list (newest-first convention).
-- METHODOLOGY.md frontmatter `last_updated` bumped to `2026-09-21`.
+- Methodology.md §7 — appended Wave-11 SLM-era anchors table (10 rows) + Wave-11 anchor list (3 entries, including re-anchor note for P-108).
+- Methodology.md §9 — appended 2026-09-21 changelog entry at top of dated list (newest-first convention).
+- Methodology.md frontmatter `last_updated` bumped to `2026-09-21`.
 - `docs/.paper/` — wave-11 bib entries (`p108_eagle3_2025`, `p109_swebench_verified_2024`, `p110_graphcoder_2024`) + `\cite{}` mentions in `sec_method.tex` propagated via subagent (work in flight at handoff write time; see Commits).
 
 ## Implementation Pool (closed by design)

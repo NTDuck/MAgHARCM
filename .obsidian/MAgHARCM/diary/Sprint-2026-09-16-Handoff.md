@@ -35,13 +35,13 @@ Wave-10 anchors NOT persisted this sprint. Rationale:
 
 - Wave-9 (P-96..P-101) already saturated the SLM-era reasoning-anchors set: ZS-CoT, self-correct, LLM-Monkeys, BIG-Bench Hard, decomposed prompting, least-to-most.
 - Next wave should launch when a *new* SLM-era mechanism requires anchoring (e.g., RAG-for-code SLMs, Mixture-of-Experts at 4B-30B, or agentic tool-use benchmarks).
-- Persisted in `METHODOLOGY.md` §9 Last Updated as deferred-not-closed.
+- Persisted in `Methodology.md` §9 Last Updated as deferred-not-closed.
 
 ## Track-3 Vault Sync (closed)
 
 - No stray paren version slots in `.obsidian/MAgHARCM/**/*.md` outside diary (diary is exempt per ADR-V-001 spirit — historical snapshots may cite using the prior convention).
-- 3 UNVERIFIED papers remain: `P-06-codes-bench.md`, `P-79-wilde-scully-reconnaissance-1995.md`, `P-82-slm-code-migration-2024.md`. Per-source URLs re-confirmed absent in available search; persisted as deliberately-unverified placeholders rather than fabricating citations.
-- `METHODOLOGY.md` §9 changelog updated (2026-09-16 entry).
+- 3 UNVERIFIED papers remain: `P-06-CodeS-Bench.md`, `P-79-Wilde-Scully-Reconnaissance-1995.md`, `P-82-SLM-Code-Migration-2024.md`. Per-source URLs re-confirmed absent in available search; persisted as deliberately-unverified placeholders rather than fabricating citations.
+- `Methodology.md` §9 changelog updated (2026-09-16 entry).
 
 ## Verification (closed)
 
@@ -71,6 +71,6 @@ TBD — pending commit on errorStyle removal + locality header
 
 ## Methodology Compliance
 
-- Method entry-point (`METHODOLOGY.md` §0..§9) unchanged structurally from Sprint-2026-09-15; only §9 changelog added.
+- Method entry-point (`Methodology.md` §0..§9) unchanged structurally from Sprint-2026-09-15; only §9 changelog added.
 - ADR-C-014 cycle-free architecture formally documented in `compiletime/state.go` preamble; producer-file backlink headers added to strengthen locality without breaking Go imports.
 - All ADRs (`ADR-C-001` through `ADR-C-015`, `ADR-V-001` through `ADR-V-007`) verified compliant.

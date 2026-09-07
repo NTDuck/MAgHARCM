@@ -14,8 +14,8 @@ Wave-16 **FIRED**. 1 new SLM-era anchor paper persisted (`[[1.0.0 P-122]]` Reaso
 
 ## Foundation (closed)
 
-- Read latest handoff (`Sprint-2026-09-26-Handoff.md`) + `METHODOLOGY.md` + `Architecture.md` + key ADRs.
-- Mapped open user directives vs stale-directive audit (table at `METHODOLOGY.md` §12):
+- Read latest handoff (`Sprint-2026-09-26-Handoff.md`) + `Methodology.md` + `Architecture.md` + key ADRs.
+- Mapped open user directives vs stale-directive audit (table at `Methodology.md` §12):
   - 7/12 directives already satisfied at `e09cfad` (8/4 graph, abcoder-mcp default, no `fmt.Print*`, state.go centralised, try-and-fail strategy registry, Charm TUI idiomatic, Must pattern).
   - 2 directives required work this sprint (wave research, magic-string sweep — closed 2026-09-26).
 - Gates baseline: `go build ./...` exit 0, `go vet ./...` exit 0, `go test ./...` cached green, `bash scripts/lint_vault.sh` clean (213 files scanned).
@@ -51,7 +51,7 @@ See `.obsidian/MAgHARCM/research/Software-Archaeology-Lineage.md` §7.1. Reasoni
 
 ## Track-1 Vault Updates (closed)
 
-### METHODOLOGY.md (the user's must-see entry point)
+### Methodology.md (the user's must-see entry point)
 
 - `last_updated` bumped to 2026-09-27 in frontmatter.
 - Tags list extended with `[[1.0.0 P-122]]`, `wave-16` (BOAD dropped).
@@ -68,7 +68,7 @@ See `.obsidian/MAgHARCM/research/Software-Archaeology-Lineage.md` §7.1. Reasoni
 - §7 Vault Sync Audit renamed to "Sprint 2026-09-27 (cumulative)"; Wave-15 + Wave-16 status lines updated.
 - **§8 Wave-16 SLM-Era Architectural Implications** (3 sub-sections: 8.1 Persistent-Memory, 8.2 Backward Compatibility, 8.3 Parity Check) added.
 
-### primitives/INDEX.md
+### primitives/Primitives-Index.md
 
 - `last_updated` bumped to 2026-09-27.
 - Tags list extended with `[[1.0.0 P-122]]`, `wave-16`.
@@ -86,11 +86,11 @@ See `.obsidian/MAgHARCM/research/Software-Archaeology-Lineage.md` §7.1. Reasoni
 
 ### One new paper note persisted
 
-- `.obsidian/MAgHARCM/research/papers/P-122-reasoningbank-iclr-2026.md` (3.7 KB).
+- `.obsidian/MAgHARCM/research/papers/P-122-ReasoningBank-ICLR-2026.md` (3.7 KB).
 
 ### One new diary memo persisted
 
-- `.obsidian/MAgHARCM/research/diary/wave-16-candidates.md` (5.4 KB).
+- `.obsidian/MAgHARCM/research/diary/Wave-16-Candidates.md` (5.4 KB).
 
 ## Track-2 Vault Versioning (closed)
 
@@ -139,9 +139,9 @@ Full leaf-package lift (`internal/pipestate/`) deferred to Sprint 2026-09-28+ be
 ## Files modified / created this sprint (8 modified + 2 new)
 
 **Modified (8)**:
-- `.obsidian/MAgHARCM/research/METHODOLOGY.md` (Wave-16 §7 + §9 entry + new §11 + §12 renumber)
+- `.obsidian/MAgHARCM/research/Methodology.md` (Wave-16 §7 + §9 entry + new §11 + §12 renumber)
 - `.obsidian/MAgHARCM/research/Architecture.md` (frontmatter + §7 status + new §8)
-- `.obsidian/MAgHARCM/primitives/INDEX.md` (frontmatter + PRIM-21/29/31 rows + Wave-16 audit block)
+- `.obsidian/MAgHARCM/primitives/Primitives-Index.md` (frontmatter + PRIM-21/29/31 rows + Wave-16 audit block)
 - `.obsidian/MAgHARCM/research/Software-Archaeology-Lineage.md` (frontmatter + §6 populated + new §7)
 - `internal/compiletime/compiletime.go` (Wave-16 constants section appended)
 - `internal/agents/validator.go` (`FileStatus` + `OptionalCheckResult` declared as canonical)
@@ -150,8 +150,8 @@ Full leaf-package lift (`internal/pipestate/`) deferred to Sprint 2026-09-28+ be
 - `docs/.paper/sec_method.tex` (2 new `\cite{}` mentions added)
 
 **New (2)**:
-- `.obsidian/MAgHARCM/research/papers/P-122-reasoningbank-iclr-2026.md`
-- `.obsidian/MAgHARCM/research/diary/wave-16-candidates.md`
+- `.obsidian/MAgHARCM/research/papers/P-122-ReasoningBank-ICLR-2026.md`
+- `.obsidian/MAgHARCM/research/diary/Wave-16-Candidates.md`
 
 ## Subagent ledger
 

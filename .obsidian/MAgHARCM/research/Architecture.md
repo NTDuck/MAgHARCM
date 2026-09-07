@@ -88,7 +88,7 @@ No agent unit assumes knowledge of another agent's internal implementation:
 
 The multi-agent pipeline is wired as an Eino DAG with **10 lambda nodes** (8 specialised agents + 2 checkpoint barriers) and a single cyclic repair edge. All eight agents are registered in `internal/graph/graph.go` via `g.AddLambdaNode(...)` and connected in the following order; every agent's `*LambdaNode` declaration includes the `PRIM-NN` anchor comment documenting which lineage primitives the node implements.
 
-> **Shorthand note**: The phrase `'8-agent graph'` used as a tag elsewhere in vault audit lines (e.g. `primitives/INDEX.md`, `METHODOLOGY.md` §11, historical sprint handoffs) is shorthand for this 10-node topology. The `reviewer` lambda registered at `graph.go:92` is constructed via `agents.NewRoleFlipGate` (`internal/agents/roleflip.go:44`); "reviewer" is the graph node id, "RoleFlipGate" is the constructor name.
+> **Shorthand note**: The phrase `'8-agent graph'` used as a tag elsewhere in vault audit lines (e.g. `primitives/Primitives-Index.md`, `Methodology.md` §11, historical sprint handoffs) is shorthand for this 10-node topology. The `reviewer` lambda registered at `graph.go:92` is constructed via `agents.NewRoleFlipGate` (`internal/agents/roleflip.go:44`); "reviewer" is the graph node id, "RoleFlipGate" is the constructor name.
 
 | λ-# | Node id | Role | PRIM-NN anchors | `graph.go` line | Cycle role |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -142,7 +142,7 @@ internal/config                                │
 - **`internal/graph ──► internal/agents`** — `graph.go:9` (`"MAgHARCM/internal/agents"`) wires the eight `NewXxxAgent()` constructors into lambda nodes. The reverse edge (`agents → graph`) is forbidden; agent files declare their nodes, they don't wire them.
 - **`internal/runner ──► internal/graph`** AND **`internal/runner ──► internal/agents`** — the runner constructs the graph and additionally talks to a subset of agent constructors for partial-state recovery (`graph.go:9` + the per-agent constructors invoked through `internal/runner/state_recovery.go`).
 
-**Cycle-avoidance alias pattern**: when a type conceptually lives in `agents/` (Locality-of-Behaviour intent) but is also referenced by `compiletime.State`, the type lives in the producer agent file (full docstring + cross-references) and `compiletime` declares a Go **type alias** (`type X = agents.X`), not a redeclaration. This is the ADR-C-014-as-applied pattern documented in `METHODOLOGY.md` §6 and confirmed in §6 below.
+**Cycle-avoidance alias pattern**: when a type conceptually lives in `agents/` (Locality-of-Behaviour intent) but is also referenced by `compiletime.State`, the type lives in the producer agent file (full docstring + cross-references) and `compiletime` declares a Go **type alias** (`type X = agents.X`), not a redeclaration. This is the ADR-C-014-as-applied pattern documented in `Methodology.md` §6 and confirmed in §6 below.
 
 ---
 
@@ -163,14 +163,14 @@ ADR-C-014 requires per-agent artifact structs (`AnalyzerOutput`, `PlanningOutput
 ---
 
 ## 7. Vault Sync Audit — Sprint 2026-09-28 (cumulative)
-Mirrors `.obsidian/MAgHARCM/primitives/INDEX.md` Sprint 2026-09-26 audit block.
+Mirrors `.obsidian/MAgHARCM/primitives/Primitives-Index.md` Sprint 2026-09-26 audit block.
 
-- **Wave-15 status**: deferred on 2026-09-26 (3 candidates rejected per §7 trigger gate). Full rationale in `.obsidian/MAgHARCM/research/diary/wave-15-candidates.md`.
-- **Wave-16 status**: FIRED 2026-09-27. 3 candidates triaged; 1 ACCEPT (P-122 ReasoningBank ICLR 2026 tentative) + 2 REJECT (SWE-Bench Pro ICML 2026 + CodeClash ICML 2026 — both fail Q2 mechanism-vs-benchmark gate). Full rationale in `.obsidian/MAgHARCM/research/diary/wave-16-candidates.md`. 1 new SLM-era anchor persisted; 1 new paper note added (`.obsidian/MAgHARCM/research/papers/P-122-reasoningbank-iclr-2026.md`).
-- **Wave-17 status**: FIRED 2026-09-28. 5 candidates triaged; 2 ACCEPT (P-123 CodeChemist ICML 2026 + P-124 Syzygy ICLR 2025 VerifAI Workshop) + 3 REJECT (MemSearcher ACL 2026 Findings — off-list venue; Verified Tool Calls arXiv-only — no venue confirmation; LLM-IR / program-comprehension — benchmark, no mechanism). Full rationale in `.obsidian/MAgHARCM/research/diary/wave-17-candidates.md`. 2 new SLM-era anchors persisted; 2 new paper notes added.
+- **Wave-15 status**: deferred on 2026-09-26 (3 candidates rejected per §7 trigger gate). Full rationale in `.obsidian/MAgHARCM/research/diary/Wave-15-Candidates.md`.
+- **Wave-16 status**: FIRED 2026-09-27. 3 candidates triaged; 1 ACCEPT (P-122 ReasoningBank ICLR 2026 tentative) + 2 REJECT (SWE-Bench Pro ICML 2026 + CodeClash ICML 2026 — both fail Q2 mechanism-vs-benchmark gate). Full rationale in `.obsidian/MAgHARCM/research/diary/Wave-16-Candidates.md`. 1 new SLM-era anchor persisted; 1 new paper note added (`.obsidian/MAgHARCM/research/papers/P-122-ReasoningBank-ICLR-2026.md`).
+- **Wave-17 status**: FIRED 2026-09-28. 5 candidates triaged; 2 ACCEPT (P-123 CodeChemist ICML 2026 + P-124 Syzygy ICLR 2025 VerifAI Workshop) + 3 REJECT (MemSearcher ACL 2026 Findings — off-list venue; Verified Tool Calls arXiv-only — no venue confirmation; LLM-IR / program-comprehension — benchmark, no mechanism). Full rationale in `.obsidian/MAgHARCM/research/diary/Wave-17-Candidates.md`. 2 new SLM-era anchors persisted; 2 new paper notes added.
 - **ADR-C-014 status**: locality split applied by Subagent D. The producer-file alias pattern (`internal/agents/<file>.go` declares the struct, `internal/compiletime/state.go` declares `type X = agents.X`) remains the durable constraint after the third relocation attempt (commit `89904f6` + Sprint 2026-09-26 sub-agent D abort) hit the same hard cycle blocker.
 - **ADR-C-005 status**: magic-string sweep applied by Subagent E. `internal/consts/consts.go` is the canonical home for hardcoded-by-necessity values; the Sprint 2026-09-26 sweep swept residual string-literal sentinels from agent files into `compiletime/`.
-- **ADR-C-011 status**: Charm stack audit applied by Subagent G. `internal/tui/tui.go` (613 lines after edits) confirmed idiomatic across `bubbletea` / `bubbles/spinner` / `bubbles/table` / `bubbles/textinput` / `lipgloss` / `glamour`. The dead `viewport` import (constructed but never `.View()`-ed) was removed. Full report in `.obsidian/MAgHARCM/diary/sprint-2026-09-26-charm-audit.md`.
+- **ADR-C-011 status**: Charm stack audit applied by Subagent G. `internal/tui/tui.go` (613 lines after edits) confirmed idiomatic across `bubbletea` / `bubbles/spinner` / `bubbles/table` / `bubbles/textinput` / `lipgloss` / `glamour`. The dead `viewport` import (constructed but never `.View()`-ed) was removed. Full report in `.obsidian/MAgHARCM/diary/Sprint-2026-09-26-Charm-Audit.md`.
 - **ADR-V-001 status**: `scripts/lint_vault.sh` shipped by this subagent. Asymmetric enforcement: `FORBIDDEN` (exit 1) for `internal/` `(P-NN)` outside backticks; `STRAY` (report-only) for `.obsidian/MAgHARCM/` `(PRIM-NN)` per Sprint 2026-09-17 prose-convention decision (prose parentheticals retained as standard academic-writing convention). Documented in `.obsidian/MAgHARCM/architecture/ADR-2026-09-26-Vault-Lint-Extension.md`.
 - **P-106 status**: `P-106 BFCL` retire task deferred to Sprint 2026-09-27. Sprint 2026-09-26 subagent F was cancelled; the duplicate anchor (P-121 supersedes P-106 as the canonical tool-calling benchmark reference) will be retired in a follow-up sweep.
 
@@ -195,7 +195,7 @@ Both shifts are opt-in. Existing users with `configs/agents.yml` default keys co
 
 ### 8.3 Parity Check (post-wave-16, 2026-09-27)
 
-- **Parity**: 31/31/31 unchanged — 31 primitives listed in `.obsidian/MAgHARCM/primitives/INDEX.md`, 31 rows in `.obsidian/MAgHARCM/research/Software-Archaeology-Lineage.md`, 31 implementation files in `internal/agents/*.go` (35 files = 31 primitive impl + 1 state (ADR-C-014) + 2 utility (parser, canonical_crates) + 3 test files + 0 orphan).
+- **Parity**: 31/31/31 unchanged — 31 primitives listed in `.obsidian/MAgHARCM/primitives/Primitives-Index.md`, 31 rows in `.obsidian/MAgHARCM/research/Software-Archaeology-Lineage.md`, 31 implementation files in `internal/agents/*.go` (35 files = 31 primitive impl + 1 state (ADR-C-014) + 2 utility (parser, canonical_crates) + 3 test files + 0 orphan).
 - **Wave-16 anchors**: 1 added (P-122). Total vault paper notes: 122 (121 prior + P-122).
 - **Cross-links**: propagated in `Software-Archaeology-Lineage.md` (sprint 2026-09-27 close).
 
@@ -228,8 +228,8 @@ Both shifts are opt-in. Existing users with `configs/agents.yml` default keys co
 
 ### 9.4 Parity Check (post-wave-17, 2026-09-28)
 
-- **Parity**: 31/31/31 unchanged — 31 primitives listed in `.obsidian/MAgHARCM/primitives/INDEX.md`, 31 rows in `.obsidian/MAgHARCM/research/Software-Archaeology-Lineage.md`, 31 implementation files in `internal/agents/*.go` (35 files = 31 primitive impl + 1 state (ADR-C-014) + 2 utility (parser, canonical_crates) + 3 test files + 0 orphan).
+- **Parity**: 31/31/31 unchanged — 31 primitives listed in `.obsidian/MAgHARCM/primitives/Primitives-Index.md`, 31 rows in `.obsidian/MAgHARCM/research/Software-Archaeology-Lineage.md`, 31 implementation files in `internal/agents/*.go` (35 files = 31 primitive impl + 1 state (ADR-C-014) + 2 utility (parser, canonical_crates) + 3 test files + 0 orphan).
 - **Wave-17 anchors**: 2 added (P-123, P-124). Total vault paper notes: 124 (122 prior + P-123 + P-124).
-- **Cross-links**: propagated in `Software-Archaeology-Lineage.md` (sprint 2026-09-28 close) and `primitives/INDEX.md`.
+- **Cross-links**: propagated in `Software-Archaeology-Lineage.md` (sprint 2026-09-28 close) and `primitives/Primitives-Index.md`.
 ---
 
