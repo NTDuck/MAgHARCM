@@ -1,0 +1,128 @@
+---
+description: "Execute a research sprint, vault sync, empirical tests, code defense, and command evolution"
+---
+
+# MAgHARCM Research Sprint and Modernization Workflow
+
+Run a MAgHARCM research and codebase iteration.
+Optional focus argument: `$ARGUMENTS`
+
+## 1. Start the Sprint
+
+1. Get the current date in YYYY-MM-DD format from the system reminder or `date -u`.
+2. Do not extrapolate future dates from git history or older notes.
+3. Set the sprint handoff path to `.obsidian/MAgHARCM/diary/Sprint-YYYY-MM-DD-Handoff.md`.
+4. If a handoff file exists for today, append `-1`, `-2`, or the next number.
+
+5. Read the previous sprint handoff note in `.obsidian/MAgHARCM/diary/` for open tasks.
+6. Read `.obsidian/MAgHARCM/adhoc/Human-Intervention-And-Blockers.md` to identify active blockers.
+7. Delete stale temporary files from `.artifacts/local/` and test caches.
+8. Commit: `docs(diary): start sprint YYYY-MM-DD`.
+
+## 2. Research and Literature Expansion
+
+1. Search for papers in major venues like NeurIPS, ICML, ICLR, FSE, ICSE, ASE, and TOSEM.
+2. Examine each candidate paper with three questions:
+   - Is the paper in a peer-reviewed venue or an established archive?
+   - Does it describe a concrete mechanism instead of a prompt tweak?
+   - Does it anchor or defend an existing or new MAgHARCM primitive?
+
+3. For each admitted paper, record two citation hops:
+   - Hop 1 supports the mechanism.
+   - Hop 2 supports the foundational sources.
+
+4. Focus research on software archaeology:
+   - Program slicing, dynamic invariants, and concept assignment.
+   - Temporal coupling, dependency structure matrices, and design rule hierarchy partitions.
+
+5. Focus research on small language models with 4B to 30B parameters:
+   - Structured output cloze slots, KV cache compression, and speculative decoding.
+   - Test-time scaling search, distilled self-reflection, and self-consistency.
+
+6. Do not fabricate citations.
+7. If you cannot verify a source, label it as an unverified placeholder.
+8. Add unverified sources to `.obsidian/MAgHARCM/adhoc/Human-Intervention-And-Blockers.md`.
+9. Commit: `feat(research): add wave research papers`.
+
+## 3. Synchronize the Obsidian Vault
+
+1. Update `.obsidian/MAgHARCM/Research-Database.json` with all new paper and primitive entries.
+2. Fill all fields: id, title, authors, year, venue, bibkey, DOI, citations, and summaries.
+3. Save paper notes in `.obsidian/MAgHARCM/research/papers/P-NN-<Name>.md`.
+4. Add YAML aliases in each paper note so wikilinks resolve in Obsidian.
+
+5. Update the human reports in `.obsidian/MAgHARCM/adhoc/`:
+   - `adhoc/Methodology.md` updates anchors and the changelog.
+   - `adhoc/Project-Progress-And-Milestones.md` updates metrics and milestone status.
+   - `adhoc/Strategic-Direction-And-Roadmap.md` updates roadmaps and wave plans.
+   - `adhoc/Human-Intervention-And-Blockers.md` updates active blockers.
+
+6. Update remaining human reports in `.obsidian/MAgHARCM/adhoc/`:
+   - `adhoc/Benchmark-Results-And-Evaluation.md` updates empirical data.
+   - `adhoc/Architecture-And-Dataflow.md` updates state and graph diagrams.
+   - `adhoc/Research-Waves-Index.md` updates the wave index.
+
+7. Cross-reference new papers in `.obsidian/MAgHARCM/research/Software-Archaeology-Lineage.md`.
+8. Update `.obsidian/MAgHARCM/primitives/Primitives-Index.md` with primitive changes.
+9. Maintain full parity across the primitives index, lineage matrix, and code.
+
+10. Use Camel-Case with hyphens for every file name in the vault.
+11. Run `./scripts/lint_vault.sh` from the repository root.
+12. Make sure the script exits with code 0.
+13. Commit: `feat(vault): sync research database and adhoc reports`.
+
+## 4. Run Empirical Experiments
+
+1. Test the system on the four benchmark repositories:
+   - GildedRose (C to Rust).
+   - Gohistogram (Go to Rust).
+   - Stats (Go to Rust).
+   - Commons-Validator (Java to Rust).
+
+2. Record the binary compilation status as Pass or Fail. Do not record partial compilation.
+3. Record the exact test pass count and test pass percentage.
+4. Do not fake, mock, or skip experiments.
+
+5. Record experimental results in `.obsidian/MAgHARCM/adhoc/Benchmark-Results-And-Evaluation.md`.
+6. Record experimental results in `docs/.paper/sec_eval.tex`.
+7. Commit: `test(benchmarks): record empirical evaluation results`.
+
+## 5. Defend the Codebase and Invariants
+
+1. Make sure compile-time initializations use the Must pattern and panic on error.
+2. Do not use fallbacks in compile-time configuration.
+3. Read runtime settings from external YAML files in `configs/`.
+4. Keep shared state declarations in `internal/compiletime/state.go`.
+
+5. Keep agent artifact types in their producer files. Use type aliases to avoid cycles.
+6. Use the try-and-fail strategy registry in `internal/agents/strategy.go`.
+7. Keep all eight agents wired in `internal/graph/graph.go`.
+8. Use idiomatic Charm libraries in `cmd/MAgHARCM-tui`.
+
+9. Do not use `fmt.Print*` in production Go code. Use `internal/logger` instead.
+10. Use plain technical English in messages per ASD-STE100.
+11. Resolve blockers listed in `.obsidian/MAgHARCM/adhoc/Human-Intervention-And-Blockers.md`.
+12. Run `go test ./...` and fix any build breaks.
+13. Commit: `fix(codebase): defend architecture invariants and resolve blockers`.
+
+## 6. Synchronize the Academic Paper
+
+1. Update `docs/.paper/sec_method.tex` and `main.tex` with citations to new papers.
+2. Add BibTeX entries to `docs/.paper/refs.bib`.
+3. Update `docs/.paper/sec_eval.tex` with new benchmark numbers.
+4. Make sure claims in the paper match the codebase and the vault.
+5. Commit: `docs(paper): update method and references`.
+
+## 7. Evolve This Command File
+
+1. Read `.omp/commands/MAgHARCM.md`.
+2. Remove directives that describe completed work.
+3. Add new research insights, newly admitted anchors, or resolved blockers.
+4. Keep this command concise, exhaustive, and compliant with ASD-STE100.
+5. Commit: `feat(command): evolve MAgHARCM sprint workflow`.
+
+## 8. Persist Sprint Handoff
+
+1. Write the sprint summary to `.obsidian/MAgHARCM/diary/Sprint-YYYY-MM-DD-Handoff.md`.
+2. Document closed tasks, commits, audit tables, and active triggers.
+3. Commit: `docs(diary): persist sprint YYYY-MM-DD handoff`.
