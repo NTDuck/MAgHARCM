@@ -62,3 +62,13 @@ tags: [adhoc, blockers, human-intervention, triage, issues, "[[2.0.0 MAgHARCM]]"
   - `research/papers/P-89-Phan-Baseline-ICSE-NIER-2024-Unverified.md`
 - **Issue**: These notes represent provisional anchors identified in earlier research waves whose publication venues could not be confirmed in available open databases.
 - **Recommendation**: Confirm peer-reviewed venue publication or replace with verified counterparts.
+
+## Active Carriers (resolved and informational)
+
+| Issue ID | Status | Notes |
+|---|---|---|
+| **BLK-02** | INFORMATIONAL (carry) | No GPU/LLM endpoint reachable in this sandbox; plateau persists at 0/32 for Commons-Validator. Human architectural guidance on Java inheritance/regex mapping recommended but not autonomous-actionable. |
+| **BLK-03** | INFORMATIONAL (carry) | P-85/P-86/P-89 unverified placeholders — confirm venues or replace. Surface question already addressed in `Methodology.md §9`; no autonomous venue lookup available. |
+| **BLK-04** | INFORMATIONAL (carry) | Runtime config wiring in `configs/*.yaml` confirmed by static read; no network probe available to exercise the daemon. |
+| **BLK-06** | RESOLVED 2026-09-07 (iter-2) | The dating convention is: every sprint MUST use `date -u` (or the system reminder's date) as the authoritative date. If a sprint is run later than expected and a handoff filename is in the future, the next sprint MUST reset the metadata header to the actual current date and document the rationale in `Methodology.md §6`. No future-dating permitted. |
+| **BLK-08** | **RESOLVED 2026-09-07 (iter-2)** | REJECT registry added to `Research-Database.json` under `reject_registry.wave-19` (3 REJECT entries: R1 TTA* workshop redundancy, R2 HELIOS off-list venue + off-axis target, R3 LongSpec off-list venue). Standing rule from iter-2 onward: every sprint writes the prior wave's REJECT list with rationale + verdict. |

@@ -1,18 +1,12 @@
 ---
 title: MAgHARCM Project Progress & Milestones Tracker
-date: 2026-09-28
-last_updated: 2026-09-28
+date: 2026-09-07
+last_updated: 2026-09-07
 aliases:
   - "Project-Progress-And-Milestones"
   - "Project Progress and Milestones"
   - "Progress"
 tags: [adhoc, progress, milestones, status, parity, "[[2.0.0 MAgHARCM]]"]
----
-
-# [[2.0.0 Project Progress & Milestones Tracker]]
-
-> **Executive Overview**: This artifact provides human engineering leads and researchers with a consolidated status report on the MAgHARCM modernization platform, tracking codebase parity, agent infrastructure, research waves, and sprint history.
-
 ---
 
 ## 1. High-Level Metrics Dashboard
@@ -21,9 +15,8 @@ tags: [adhoc, progress, milestones, status, parity, "[[2.0.0 MAgHARCM]]"]
 | :--- | :--- | :--- | :--- |
 | **Primitives Implemented** | 31 | 31 | **100.0%** (`[[1.0.0 PRIM-1]]`..`[[1.0.0 PRIM-31]]`) |
 | **Agent Units Wired** | 8 | 8 | **100.0%** (Eino cyclic graph in `internal/graph/graph.go`) |
-| **Research Papers Cataloged** | 120+ | 124 | **100.0%** (`[[1.0.0 P-01]]`..`[[1.0.0 P-124]]`) |
-| **Research Waves Fired** | 17 | 17 | **100.0%** (Wave-1 through Wave-17 closed) |
-| **Vault Parity Verification** | 0 violations | 0 violations | **Pass** (`scripts/lint_vault.sh` green) |
+| **Research Papers Cataloged** | 140+ | 141 | **100.0%** (`[[1.0.0 P-01]]`..`[[1.0.0 P-141]]`) |
+| **Research Waves Fired** | 19 | 19 | **100.0%** (Wave-1 through Wave-19 closed; Wave-18 + Wave-19 added 2026-09-07) |
 | **Architecture Decision Records** | Active | 3 ADRs | ADR-C-001..015, ADR-V-001..007 captured |
 
 ---
@@ -64,3 +57,4 @@ tags: [adhoc, progress, milestones, status, parity, "[[2.0.0 MAgHARCM]]"]
 - **Sprint 2026-09-15 to 2026-09-20**: Waves 9–10 research anchors (P-96 through P-107); prompt contract enforcement; elimination of magic strings into `compiletime/`.
 - **Sprint 2026-09-21 to 2026-09-24**: Waves 11–13 anchors (SWE-bench, OpenHands, Aider, Medusa); ADR-V-001 sweep eliminating stray version parentheses.
 - **Sprint 2026-09-25 to 2026-09-28**: Waves 14–17 anchors (SWE-Rebench, ReasoningBank, CodeChemist, Syzygy); `scripts/lint_vault.sh` CI automation; full parity convergence.
+- **Sprint 2026-09-07 (iter-2)**: Wave-18 + Wave-19 anchors (P-125..P-141). Wave-19 covers speculative-decoding × KV-cache hybrids (P-134, P-137, P-138, P-141), SLM-scale test-time scaling (P-135 SPECS, P-136 CaTS), LLM-augmented static analysis beyond dependence graphs (P-139 TypePro, P-140 Panta). 17 papers ACCEPT, 7 REJECT (4 in Wave-18 + 3 in Wave-19), 2 UNVERIFIED watchlist. BLK-08 resolved (REJECT registry added to Research-Database.json). BLK-06 dating convention reasserted.

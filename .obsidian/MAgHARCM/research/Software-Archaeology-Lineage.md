@@ -350,3 +350,64 @@ CMU + UCSD; **dual code-test C-to-safe-Rust translation via LLMs + dynamic analy
 - Wave-17 paper notes: `.obsidian/MAgHARCM/research/papers/P-123-CodeChemist-ICML-2026.md` + `P-124-Syzygy-ICLR2025-Workshop.md`
 - Trigger-gate language: `.obsidian/MAgHARCM/research/Methodology.md` §7 (rewritten 2026-09-25)
 - Sprint-2026-09-28 audit block: `.obsidian/MAgHARCM/primitives/Primitives-Index.md` §Sprint 2026-09-28
+
+## 9. Wave-18 SLM-Era Anchors (2026-09-07 iter-2)
+
+9 ACCEPT + 4 REJECT = 13 triaged. Wave-18 closes the SLM-scale verdict + LLM-augmented software-archaeology gap.
+
+### 9.1 Accepted anchors
+
+- `[[1.0.0 P-125]]` **T1: Tool-Integrated Verification for Test-time Compute Scaling in SLMs** (Kang, Jeong & Cho, ICLR 2026) — tool-use as verifier at SLM scale. Anchors `[[1.0.0 PRIM-7]]` Verdict Validation + `[[1.0.0 PRIM-22]]` Four Phases of Comprehension.
+- `[[1.0.0 P-126]]` **ARC-Decode: Risk-Bounded Acceptance for Speculative Decoding** (Li et al., ICML 2026) — continuous risk-budget knob. Anchors `[[1.0.0 PRIM-7]]` + `[[1.0.0 PRIM-21]]`.
+- `[[1.0.0 P-127]]` **SLM-as-a-Judge for Code Generation** (Crupi et al., ICSE 2026) — replaces frontier PRM. Anchors `[[1.0.0 PRIM-7]]`.
+- `[[1.0.0 P-128]]` **KVzip: Query-Agnostic KV Cache Compression with Context Reconstruction** (Kim et al., NeurIPS 2025 Oral) — single-query KV compression. Anchors `[[1.0.0 PRIM-22]]` + `[[1.0.0 PRIM-31]]`.
+- `[[1.0.0 P-129]]` **LλMDA: LLM-Aided Partial Program Dependence Analysis** (Rong, Yadavally & Nguyen, ICSE 2026) — LLM-aided partial PDG construction. Anchors `[[1.0.0 PRIM-9]]` + `[[1.0.0 PRIM-22]]`.
+- `[[1.0.0 P-130]]` **SSAR: Software Architecture Recovery** (Ding, Mo, Wu & Song, ICSE 2026) — structural+semantic hybrid. Anchors `[[1.0.0 PRIM-9]]` + `[[1.0.0 PRIM-22]]`.
+- `[[1.0.0 P-131]]` **SemArc: Software Architecture Recovery Augmented with Semantics** (Zhao et al., TSE 2026) — semantic-enhanced architecture recovery. Anchors `[[1.0.0 PRIM-9]]` + `[[1.0.0 PRIM-22]]`.
+- `[[1.0.0 P-132]]` **SemRef: Semantic-Enhanced Refinement of Architecture Recovery** (Zhang et al., ICSE 2026) — iterative semantic refinement. Anchors `[[1.0.0 PRIM-9]]` + `[[1.0.0 PRIM-22]]` + `[[1.0.0 PRIM-31]]`.
+- `[[1.0.0 P-133]]` **ADI: Empowering Autonomous Debugging Agents with Efficient Dynamic Analysis** (Xiang et al., FSE 2026 — SIGSOFT Distinguished Paper Award) — Frame Lifetime Trace + function-level interactive debugging. Anchors `[[1.0.0 PRIM-22]]` + `[[1.0.0 PRIM-31]]`.
+
+### 9.2 Rejected (4)
+
+- **R1 ReflexiCoder** (Jiang et al., ACL 2026 Findings) — REJECTED Q1. ACL Findings off-list. Mechanism real (RL-internalised self-reflection at 1.5B-14B) but venue fails Q1.
+- **R2 Self-Distillation for Code Generation** (Zhang et al., Apple, arXiv:2604.01193) — REJECTED Q1. arXiv-only; no confirmed peer-reviewed acceptance. Strong mechanism (30B 42.4% → 55.3% pass@1 on LiveCodeBench v6).
+- **R3 SPECS** (Cemri et al., arXiv:2506.15733) — REJECTED Q1 (Wave-18). ICLR 2026 submission acceptance unconfirmed at Wave-18 triage. **Resolved in Wave-19**: accepted at ICLR 2026 as P-135.
+- **R4 Software-Archaeology strict-mechanism gap** — gap partially closed by Wave-18 P-129..P-133; strict program-comprehension-mechanism slot remains open.
+
+**Cross-reference**:
+- Wave-18 candidates memo: `.obsidian/MAgHARCM/research/diary/Wave-18-Candidates.md`
+- Wave-18 paper notes: `.obsidian/MAgHARCM/research/papers/P-125..P-133-*.md`
+- Sprint 2026-09-07 (iter-2) audit block: `.obsidian/MAgHARCM/primitives/Primitives-Index.md` §Sprint 2026-09-07 (Wave-19)
+
+## 10. Wave-19 SLM-Era Anchors (2026-09-07 iter-2)
+
+8 ACCEPT + 3 REJECT + 2 UNVERIFIED = 13 triaged. Wave-19 closes the speculative-decoding × KV-cache hybrid gap and the SLM-scale test-time-scaling gap.
+
+### 10.1 Accepted anchors
+
+- `[[1.0.0 P-134]]` **RelayCaching: Accelerating LLM Collaboration via Decoding KV Cache Reuse** (Geng et al., ICML 2026 Poster #1915) — cross-agent KV reuse via sparse deviation recompute (>80% reuse, 4.7× TTFT). Anchors `[[1.0.0 PRIM-31]]` + `[[1.0.0 PRIM-9]]`.
+- `[[1.0.0 P-135]]` **SPECS: Faster Test-Time Scaling through Speculative Drafts** (Cemri et al., ICLR 2026) — speculative drafts + soft verification + dynamic switch. Closes Wave-18 R3. Anchors `[[1.0.0 PRIM-7]]` + `[[1.0.0 PRIM-21]]`.
+- `[[1.0.0 P-136]]` **CaTS: Calibrated Test-Time Scaling for Efficient LLM Reasoning** (Huang et al., ICLR 2026 Poster) — Self-Calibration distilled confidence. Anchors `[[1.0.0 PRIM-7]]` as frontier-PRM replacement.
+- `[[1.0.0 P-137]]` **SuffixDecoding: Extreme Speculative Decoding for Emerging AI Applications** (Oliaro et al., NeurIPS 2025 Spotlight) — model-free suffix-tree draft. Deployed in Snowflake ArcticInference + vLLM. Anchors `[[1.0.0 PRIM-7]]` + `[[1.0.0 PRIM-21]]`.
+- `[[1.0.0 P-138]]` **RepairKV (Cache You Later)** (Rusli et al., ICML 2026 AdaptFM Workshop) — borderline workshop-track ACCEPT per §7 method-level threshold. Post-compression KV repair runtime operator. Anchors `[[1.0.0 PRIM-22]]` + `[[1.0.0 PRIM-31]]`.
+- `[[1.0.0 P-139]]` **TypePro: Boosting LLM-Based Type Inference via Inter-Procedural Slicing** (Lin et al., FSE 2026) — SDG + inter-procedural backward/forward slicing. Anchors `[[1.0.0 PRIM-9]]` + `[[1.0.0 PRIM-22]]`.
+- `[[1.0.0 P-140]]` **Panta: LLM Test Generation via Iterative Hybrid Program Analysis** (Gu, Nashid & Mesbah, ICSE 2026) — static (cyclomatic) + dynamic (coverage) iterative loop. Anchors `[[1.0.0 PRIM-22]]` + `[[1.0.0 PRIM-21]]`.
+- `[[1.0.0 P-141]]` **KVFlow: Workflow-Aware KV Cache Eviction for Multi-Agent LLM Serving** (NeurIPS 2025 Poster) — Agent Step Graph + steps-to-execution metric + prefetching. Anchors `[[1.0.0 PRIM-31]]` + `[[1.0.0 PRIM-21]]`.
+
+### 10.2 Rejected (3)
+
+- **R1 TTA\*** (Braverman, Zhang & Gu, NeurIPS 2025 LAW Workshop) — REJECTED Q1 (workshop redundancy). P-135 SPECS + P-136 CaTS cover same focus area at ICLR 2026 main track. Mechanism (A* search wrapper) concrete but adds little beyond P-84 s1 beam-search lineage.
+- **R2 HELIOS** (Achamyeleh, Thomare & Al Faruque, NDSS 2026 LAST-X Workshop) — REJECTED Q1 (off-list venue + off-axis target). NDSS LAST-X workshop is off-list. Mechanism concrete (CFG+FCG → textual prompt; compilability 45.0%→85.2%) but binary-decompilation target is off-axis for MAgHARCM's source→source translation.
+- **R3 LongSpec** (ACL 2026 Main) — REJECTED Q1 (off-list venue). ACL is not in Wave-19 whitelist. Same rationale as Wave-18 R1 ReflexiCoder.
+
+### 10.3 Watchlist — UNVERIFIED (2)
+
+- **W1 SliceMate** (Chang et al., arXiv:2507.18957) — UNVERIFIED. Yunbo Lyu's homepage claims ISSTA 2026 acceptance, but no ISSTA 2026 program slot for SliceMate is listed on conf.researchr.org. Mechanism concrete (three LLM agents replace explicit PDG/SDG construction; 22% acc / 28% F1 improvement). Watchlist for Wave-20 venue re-verification.
+- **W2 SWE-TRACE** (Han et al., arXiv:2604.14820) — UNVERIFIED. April 2026 arXiv preprint only; no peer-reviewed venue confirmation. Mechanism concrete (cascaded trajectory optimisation + rubric-PRM + heuristic TTS). Watchlist for Wave-20 venue confirmation.
+
+**Cross-reference**:
+- Wave-19 candidates memo: `.obsidian/MAgHARCM/research/diary/Wave-19-Candidates.md`
+- Wave-19 paper notes: `.obsidian/MAgHARCM/research/papers/P-134..P-141-*.md`
+- REJECT registry: `.obsidian/MAgHARCM/Research-Database.json::reject_registry.wave-19` (BLK-08 resolved)
+- Watchlist: `.obsidian/MAgHARCM/Research-Database.json::watchlist.wave-19`
+- Sprint 2026-09-07 (iter-2) audit block: `.obsidian/MAgHARCM/primitives/Primitives-Index.md` §Sprint 2026-09-07 (Wave-19)

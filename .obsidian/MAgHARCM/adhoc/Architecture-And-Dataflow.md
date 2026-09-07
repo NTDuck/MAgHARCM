@@ -1,15 +1,7 @@
 ---
-title: MAgHARCM Architecture & System Dataflow
-date: 2026-09-28
-last_updated: 2026-09-28
-aliases:
-  - "Architecture-And-Dataflow"
-  - "Architecture and Dataflow"
-  - "Dataflow"
-tags: [adhoc, architecture, dataflow, dag, agents, eino, "[[2.0.0 MAgHARCM]]"]
+date: 2026-09-07
+last_updated: 2026-09-07
 ---
-
-# [[2.0.0 MAgHARCM Architecture & System Dataflow]]
 
 > **Executive Overview**: Visual and architectural specification of the MAgHARCM multi-agent graph, typed pipeline state, and Locality of Behaviour boundaries.
 
