@@ -126,3 +126,26 @@ Optional focus argument: `$ARGUMENTS`
 1. Write the sprint summary to `.obsidian/MAgHARCM/diary/Sprint-YYYY-MM-DD-Handoff.md`.
 2. Document closed tasks, commits, audit tables, and active triggers.
 3. Commit: `docs(diary): persist sprint YYYY-MM-DD handoff`.
+
+## 9. Wave-18 Insights (2026-09-07)
+
+1. **SLM-as-judge is the default verifier.** Frontier-PRM-as-judge (P-91..P-92, P-97..P-98) is superseded for 4B-30B substrates by T1 (P-125), ARC-Decode (P-126), and SLM-as-a-Judge (P-127). Promote these as the canonical PRIM-7 anchor in future waves.
+2. **Architecture-recovery trio (SSAR + SemArc + SemRef).** P-130, P-131, P-132 form the canonical pattern for PRIM-9 Tri-Representation Hybrid Code Graph. Edge weights combine semantic similarity + structural dependency; canonical-pattern knowledge base anchors the partition; iterative LLM refinement closes the loop.
+3. **Query-agnostic KV cache compression for multi-step agents.** P-128 KVzip replaces P-80 StreamingLLM and P-105 ChunkKV as the right substrate for agent loops because the eviction is independent of the future query.
+4. **Function-level dynamic analysis for debugging agents.** P-133 ADI's Frame Lifetime Trace + high-level navigational commands is the right pattern for PRIM-22 observation/structure phases; line-level gdb-style DA is the wrong substrate for SLM-era agents.
+5. **Partial-program dependence analysis as LLM-augmented static analysis.** P-129 LλMDA's "context-augment partial program then run classical DA" pattern generalizes beyond dependence graphs to slicing and concept assignment.
+
+## 10. Evidence and Citation Discipline
+
+1. Every accepted paper must have a `bibkey`, a venue, and either a DOI, OpenReview ID, or arXiv ID — never a bare URL.
+2. Every accepted paper must record two citation hops (mechanism-support + foundational) in `Research-Database.json` and the paper note.
+3. Every paper note must declare YAML aliases including the version marker (`[[1.0.0 P-NN]]`).
+4. Every REJECT must be logged in `Wave-NN-Candidates.md` with the Q1/Q2/Q3 verdict and a one-line rationale.
+5. `Research-Database.json` MUST parse cleanly with `python3 -c "import json; json.load(...)"` after every edit.
+
+## 11. Wave Memo Discipline
+
+1. Each research wave writes a `.obsidian/MAgHARCM/research/diary/Wave-NN-Candidates.md` memo before any paper notes are persisted.
+2. The memo is the triage ledger: every fired candidate appears with verdict + rationale.
+3. The memo's bibkeys MUST match the bibkeys written to `refs.bib` and `Research-Database.json`.
+4. The memo's ACCEPT list MUST equal the new entries appended to `Research-Database.json`.
