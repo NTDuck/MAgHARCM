@@ -3,12 +3,15 @@ package config
 import (
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"gopkg.in/yaml.v3"
 )
 
-// YAMLConfig represents the declarative YAML configuration format for MAgHARCM.
+// YAMLConfig is the on-disk schema; only the nested translation.* form
+// is supported.
+// Backlink: [[Methodology]] §1 "The 6-Stage Pipeline" and [[Primitives]] §NEW-PRIM-24.
 type YAMLConfig struct {
 	Translation struct {
 		Source struct {
@@ -33,120 +36,105 @@ type YAMLConfig struct {
 			Provider string `yaml:"provider"`
 		} `yaml:"lsp"`
 	} `yaml:"translation"`
-
-	// Flat format support for convenience
-	SourceDir      string `yaml:"source_dir"`
-	TargetDir      string `yaml:"target_dir"`
-	SourceLang     string `yaml:"source_lang"`
-	TargetLang     string `yaml:"target_lang"`
-	Toolchain      string `yaml:"toolchain"`
-	ReasoningModel string `yaml:"reasoning_model"`
-	CodingModel    string `yaml:"coding_model"`
-	OllamaURL      string `yaml:"ollama_url"`
-	MaxIterations  int    `yaml:"max_iterations"`
-	TimeoutSeconds int    `yaml:"timeout_seconds"`
-	LSPProvider    string `yaml:"lsp_provider"`
 }
 
-// ParseYAML parses raw YAML bytes into a Config struct.
-func ParseYAML(data []byte) (*Config, error) {
-	var y YAMLConfig
-	if err := yaml.Unmarshal(data, &y); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal yaml config: %w", err)
-	}
-
-	cfg, err := New()
-	if err != nil {
-		return nil, err
-	}
-
-	// Structured nested format mapping
-	if y.Translation.Source.Dir != "" {
-		cfg.SourceDir = y.Translation.Source.Dir
-	}
-	if y.Translation.Source.Language != "" {
-		cfg.SourceLang = y.Translation.Source.Language
-	}
-	if y.Translation.Target.Dir != "" {
-		cfg.TargetDir = y.Translation.Target.Dir
-	}
-	if y.Translation.Target.Language != "" {
-		cfg.TargetLang = y.Translation.Target.Language
-	}
-	if y.Translation.Target.Toolchain != "" {
-		cfg.Toolchain = y.Translation.Target.Toolchain
-	}
-	if y.Translation.Models.Reasoning != "" {
-		cfg.ReasoningModel = y.Translation.Models.Reasoning
-	}
-	if y.Translation.Models.Coding != "" {
-		cfg.CodingModel = y.Translation.Models.Coding
-	}
-	if y.Translation.Models.OllamaURL != "" {
-		cfg.OllamaBaseURL = y.Translation.Models.OllamaURL
-	}
-	if y.Translation.Execution.MaxIterations > 0 {
-		cfg.MaxIterations = y.Translation.Execution.MaxIterations
-	}
-	if y.Translation.Execution.TimeoutSeconds > 0 {
-		cfg.Timeout = time.Duration(y.Translation.Execution.TimeoutSeconds) * time.Second
-	}
-	if y.Translation.LSP.Provider != "" {
-		cfg.LSPProvider = y.Translation.LSP.Provider
-	}
-
-	// Flat format overrides if present
-	if y.SourceDir != "" {
-		cfg.SourceDir = y.SourceDir
-	}
-	if y.TargetDir != "" {
-		cfg.TargetDir = y.TargetDir
-	}
-	if y.SourceLang != "" {
-		cfg.SourceLang = y.SourceLang
-	}
-	if y.TargetLang != "" {
-		cfg.TargetLang = y.TargetLang
-	}
-	if y.Toolchain != "" {
-		cfg.Toolchain = y.Toolchain
-	}
-	if y.ReasoningModel != "" {
-		cfg.ReasoningModel = y.ReasoningModel
-	}
-	if y.CodingModel != "" {
-		cfg.CodingModel = y.CodingModel
-	}
-	if y.OllamaURL != "" {
-		cfg.OllamaBaseURL = y.OllamaURL
-	}
-	if y.MaxIterations > 0 {
-		cfg.MaxIterations = y.MaxIterations
-	}
-	if y.TimeoutSeconds > 0 {
-		cfg.Timeout = time.Duration(y.TimeoutSeconds) * time.Second
-	}
-	if y.LSPProvider != "" {
-		cfg.LSPProvider = y.LSPProvider
-	}
-
-	return cfg, nil
-}
-
-// LoadYAML reads a YAML file from disk and parses it into a Config.
+// LoadYAML reads a YAML file and returns a fully-populated Config.
+// The file MUST set every field; missing fields produce an error.
 func LoadYAML(path string) (*Config, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read yaml config file %s: %w", path, err)
+		return nil, fmt.Errorf("read %s: %w", path, err)
 	}
 	return ParseYAML(data)
 }
 
-// MustLoadYAML reads and parses a YAML config or panics using the Must pattern.
+// MustLoadYAML reads a YAML file and returns *Config or panics on any error.
 func MustLoadYAML(path string) *Config {
 	cfg, err := LoadYAML(path)
 	if err != nil {
-		panic(err)
+		panic(fmt.Sprintf("MustLoadYAML %s failed: %v", path, err))
 	}
 	return cfg
 }
+
+// MustParseYAML decodes YAML bytes and returns *Config or panics on any error.
+func MustParseYAML(data []byte) *Config {
+	cfg, err := ParseYAML(data)
+	if err != nil {
+		panic(fmt.Sprintf("MustParseYAML failed: %v", err))
+	}
+	return cfg
+}
+
+// ParseYAML decodes YAML bytes into a Config. Every field must be present in
+// the file; missing fields are reported as a single structured error.
+func ParseYAML(data []byte) (*Config, error) {
+	var y YAMLConfig
+	if err := yaml.Unmarshal(data, &y); err != nil {
+		return nil, fmt.Errorf("unmarshal yaml: %w", err)
+	}
+
+	cfg := &Config{
+		SourceDir:      y.Translation.Source.Dir,
+		SourceLang:     y.Translation.Source.Language,
+		TargetDir:      y.Translation.Target.Dir,
+		TargetLang:     y.Translation.Target.Language,
+		Toolchain:      y.Translation.Target.Toolchain,
+		ReasoningModel: y.Translation.Models.Reasoning,
+		CodingModel:    y.Translation.Models.Coding,
+		OllamaBaseURL:  y.Translation.Models.OllamaURL,
+		MaxIterations:  y.Translation.Execution.MaxIterations,
+		Timeout:        time.Duration(y.Translation.Execution.TimeoutSeconds) * time.Second,
+		LSPProvider:    y.Translation.LSP.Provider,
+	}
+
+	if err := Require(cfg); err != nil {
+		return nil, err
+	}
+	return cfg, nil
+}
+
+// Require checks that every config field is set and returns a single
+// structured error listing the missing fields. Fields are required: there are
+// no default fallbacks.
+func Require(cfg *Config) error {
+	var missing []string
+	if cfg.OllamaBaseURL == "" {
+		missing = append(missing, "models.ollama_url")
+	}
+	if cfg.ReasoningModel == "" {
+		missing = append(missing, "models.reasoning")
+	}
+	if cfg.CodingModel == "" {
+		missing = append(missing, "models.coding")
+	}
+	if cfg.MaxIterations == 0 {
+		missing = append(missing, "execution.max_iterations")
+	}
+	if cfg.Timeout == 0 {
+		missing = append(missing, "execution.timeout_seconds")
+	}
+	if cfg.SourceDir == "" {
+		missing = append(missing, "source.dir")
+	}
+	if cfg.TargetDir == "" {
+		missing = append(missing, "target.dir")
+	}
+	if cfg.SourceLang == "" {
+		missing = append(missing, "source.language")
+	}
+	if cfg.TargetLang == "" {
+		missing = append(missing, "target.language")
+	}
+	if cfg.Toolchain == "" {
+		missing = append(missing, "target.toolchain")
+	}
+	if cfg.LSPProvider == "" {
+		missing = append(missing, "lsp.provider")
+	}
+	if len(missing) > 0 {
+		return fmt.Errorf("config: missing required fields: %s", strings.Join(missing, ", "))
+	}
+	return nil
+}
+

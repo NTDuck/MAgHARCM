@@ -2,17 +2,41 @@
 go = "1.26.5"
 rust = "latest"
 
+[tasks.start]
+description = "Run MAgHARCM translation with the default gildedrose config"
+run = "go run ./cmd/MAgHARCM --config .config/gildedrose.yml"
+
 [tasks.dev]
-description = "Run MAgHARCM translation with YAML config"
-run = "go run ./cmd/MAgHARCM --config config.yml"
+description = "Alias for start"
+run = "go run ./cmd/MAgHARCM --config .config/gildedrose.yml"
+
+[tasks.ui]
+description = "Launch the interactive MAgHARCM TUI"
+run = "go run ./cmd/MAgHARCM-tui"
+
+[tasks.bench]
+description = "Run every .config/**/*.yml once"
+run = "bash scripts/run-all-samples.sh"
+
+[tasks.bench-k]
+description = "Run every .config/**/*.yml K times (K=3) for stability"
+run = "K=3 bash scripts/run-samples-k.sh"
+
+[tasks.retry]
+description = "Retry a sample whose first attempt was unstable (usage: mise run retry -- <config>)"
+run = "bash scripts/retry-stable.sh"
+
+[tasks.gen-configs]
+description = "Regenerate categorized .config/**/*.yml from assets/samples/ corpus"
+run = "python3 scripts/generate-configs.py"
 
 [tasks.build]
-description = "Build binary"
-run = "go build -o bin/MAgHARCM ./cmd/MAgHARCM"
+description = "Build binaries"
+run = "go build -o bin/MAgHARCM ./cmd/MAgHARCM && go build -o bin/MAgHARCM-tui ./cmd/MAgHARCM-tui"
 
 [tasks.test]
-description = "Run tests"
-run = "go test ./..."
+description = "Run tests under tests/ directory"
+run = "go test ./tests/..."
 
 [tasks.lint]
 description = "Run go vet"
@@ -23,5 +47,5 @@ description = "Format Go code"
 run = "go fmt ./..."
 
 [tasks.clean]
-description = "Clean build artifacts"
+description = "Clean build artifacts and translated projects"
 run = "rm -rf bin/ .artifacts/"

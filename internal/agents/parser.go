@@ -38,7 +38,7 @@ func isValidFilePath(p string) bool {
 }
 
 // parseAllFileMarkers parses all file blocks and their contents from model markdown output.
-func parseAllFileMarkers(text string) map[string]string {
+func ParseAllFileMarkers(text string) map[string]string {
 	files := make(map[string]string)
 	lines := strings.Split(text, "\n")
 
@@ -141,5 +141,7 @@ func parseFileBlocks(text, sectionHeader string) map[string]string {
 			sectionText = text[idx+len(sectionHeader):]
 		}
 	}
-	return parseAllFileMarkers(sectionText)
+	return ParseAllFileMarkers(sectionText)
 }
+
+var parseAllFileMarkers = ParseAllFileMarkers

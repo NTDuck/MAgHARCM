@@ -319,11 +319,12 @@ func ExecuteRenameSymbol(ctx context.Context, input *RenameSymbolInput) (*Rename
 		Success:      true,
 	}, nil
 }
-
-// NewLSPToolsWithProvider creates LSP tools bound to the provided LSP provider.
-func NewLSPToolsWithProvider(provider LSPProvider) []tool.BaseTool {
+// MustNewLSPToolsWithProvider creates LSP tools bound to the provided LSP provider.
+// Panics on a nil provider — runtime fallbacks are forbidden by ADR-C-014; the
+// configured provider MUST come from configs/*.yml.
+func MustNewLSPToolsWithProvider(provider LSPProvider) []tool.BaseTool {
 	if provider == nil {
-		provider = NewNativeLSPProvider()
+		panic("compiletime.MustNewLSPToolsWithProvider: lsp.provider must not be nil")
 	}
 
 	defTool, _ := utils.InferTool("definition", "Retrieves definition location and implementation for a symbol",
@@ -359,7 +360,17 @@ func NewLSPToolsWithProvider(provider LSPProvider) []tool.BaseTool {
 	return []tool.BaseTool{defTool, diagTool, editTool, hoverTool, refTool, renameTool}
 }
 
-// NewLSPTools creates the default native LSP tools.
-func NewLSPTools() []tool.BaseTool {
-	return NewLSPToolsWithProvider(NewNativeLSPProvider())
+// MustNewLSPTools creates LSP tools bound to the canonical abcoder MCP provider
+// (compiletime.LSPProviderABCoder). Tests that need the native provider MUST
+// call MustNewLSPToolsWithProvider(NewNativeLSPProvider()) explicitly; the
+// production default is abcoder MCP per ADR-C-014.
+func MustNewLSPTools() []tool.BaseTool {
+	return MustNewLSPToolsWithProvider(MustNewABCoderMcpProvider())
+}
+
+// MustNewABCoderMcpProvider returns a non-nil abcoder MCP LSP provider;
+// production callers MUST obtain abcoder via this constructor. The default
+// command ("abcoder") and arguments (empty) match the upstream binary name.
+func MustNewABCoderMcpProvider() *ABCoderMcpProvider {
+	return NewABCoderMcpProvider("abcoder")
 }

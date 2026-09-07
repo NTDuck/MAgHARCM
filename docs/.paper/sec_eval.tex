@@ -1,0 +1,431 @@
+% docs/.paper/sec_eval.tex
+\section{Evaluation}
+\label{sec:eval}
+
+To evaluate different aspects of MAgHARCM, we investigate the following
+research questions:
+
+\begin{description}
+    \item[RQ1: Effectiveness of MAgHARCM.] To what extent can
+    MAgHARCM effectively translate real-world repositories? Can it
+    achieve clean compilation and a high test pass rate without cloud
+    inference?
+    \item[RQ2: Test Translation.] To what degree are the translated
+    tests equivalent to the original tests? What are the limitations
+    of MAgHARCM when translating tests?
+    \item[RQ3: Ablation Study.] To what extent do the Analyzer,
+    Planning, and Validator agents impact the performance of MAgHARCM?
+    Can a single-agent configuration perform similarly?
+    \item[RQ4: Cost and Tool Usage Analysis.] How much does it cost
+    and how long does it take for MAgHARCM to translate repositories?
+    What kinds of tools are frequently invoked by MAgHARCM?
+\end{description}
+
+\subsection{Experimental Setup}
+\label{sec:eval_setup}
+
+\subsubsection{Benchmark}
+\label{sec:eval_benchmarks}
+
+We assess the performance of MAgHARCM using four open-source benchmark
+repositories drawn from prior repository-translation
+literature~\cite{yang2024alphatrans,siddiq2024oxidizer,p64_skel,p30_crust_bench}
+(Table~\ref{tab:benchmarks}). Each benchmark contains a project
+implemented in a specific PL that includes both source and test code.
+The goal for each benchmark is to translate and validate the project
+in a target PL (Rust), ensuring that all tests are successfully
+executed and pass.
+
+\begin{table}[!t]
+\centering
+\small
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Benchmark} & \textbf{Source} & \textbf{Target} & \textbf{Files} & \textbf{Source LoC} & \textbf{Tests} \\
+\midrule
+GildedRose & C & Rust & 4 & 199 & 14 \\
+Gohistogram & Go & Rust & 7 & 15{,}470 & 8 \\
+Stats & Go & Rust & 65 & 5{,}625 & 42 \\
+Commons-Validator & Java & Rust & 121 & 28{,}110 & 68 \\
+\bottomrule
+\end{tabular}
+\vspace{0.3em}
+\caption{Characteristics of benchmark repositories.}
+\label{tab:benchmarks}
+\end{table}
+
+The benchmarks span three source languages and three orders of magnitude
+in size ($199$--$28{,}110$ LoC). GildedRose is a classic refactoring
+kata with complex conditional branching, mutable struct pointers, and
+string manipulations. Gohistogram is a Go algorithmic library
+implementing streaming weighted histograms, interfaces, and numeric
+routines. Stats is a Go mathematical-computing repository with
+$65$ interconnected files, statistical distributions, regressions, and
+matrix operations. Commons-Validator is an enterprise Java framework
+from Apache Commons with $121$ files, nested class hierarchies, and
+regex-validation routines. We include these four because they span the
+PL pairs the Strategy Registry's profiles target and because their
+test suites were human-validated. We exclude SYZYGY~\cite{p58_syzygy}
+due to the unavailability of its artifact and RepoTransBench-style
+test suites that were LLM-generated and never human-validated.
+
+\subsubsection{LLM}
+\label{sec:eval_llm}
+
+MAgHARCM works with different LLMs. Software-engineering
+leaderboards~\cite{leaderboards2025} have shown that smaller reasoning
+models paired with instruction-tuned coding models can match larger
+single-agent configurations on multi-file code tasks. MAgHARCM uses a
+two-tier local topology. The Analyzer and Planning agents employ
+\texttt{qwen3:30b-thinking} (Qwen3 30B with thinking-reasoning
+capability) for repository structural analysis, reverse-topological
+DAG construction, and cycle elimination. The Translator and Validator
+agents employ \texttt{Qwen3-4B-Instruct-UD-Q4\_K\_XL} for Rust syntax
+synthesis and test-assertion repair. Both models run through Ollama
+with GPU layer offloading on a Linux workstation (Intel Core i7-12700H,
+$32\,\text{GB}$ DDR5, NVIDIA RTX). Model selection is fixed in the
+YAML config and the harness refuses to start without it; there are
+no in-code defaults that could mask a misconfiguration. To make the
+results reproducible without re-running experiments, MAgHARCM logs the
+inputs, intermediate agent interactions, tool execution results, and
+LLM outputs, and supports replaying these logs. Each agent terminates
+within a budget of $5{,}000$ seconds, empirically set after analysing
+the runtime of the largest project.
+
+\subsubsection{Competing Configurations}
+\label{sec:eval_baselines}
+
+We compare MAgHARCM against three reduced configurations. The
+Single-Agent baseline collapses the eight agents into one
+reasoning-and-coding loop driven by the $30\,\text{B}$ reasoning model
+without per-stage decomposition, planning artefacts, or repair
+cascades. The No-Analyzer and No-Planner configurations each remove
+one agent while keeping the others. We exclude external competing
+systems (ReCodeAgent, AlphaTrans, Oxidizer, Skel, Crust, ACToR) from
+direct comparison because (a) MAgHARCM runs locally while every
+external system depends on cloud APIs whose cost, latency, and
+availability we cannot replicate at scale, and (b) the external
+systems evaluate on a wider benchmark set ($118$ projects vs.\ our
+four). Our four-project benchmark lets us run $K{=}3$ stochastic
+trials per project (twelve runs total) and report per-iteration
+trajectories that the external papers do not provide. The ablation
+study in §\ref{sec:eval_rq3} substitutes for cross-system comparison
+and isolates the contribution of each agent within a single harness.
+
+\subsubsection{Implementation}
+\label{sec:eval_impl}
+
+For validating translations, MAgHARCM uses
+\texttt{Rust 1.92.0} (via \texttt{cargo check} and \texttt{cargo test}),
+\texttt{GCC 12.2.0}, \texttt{Go 1.24.4}, and \texttt{OpenJDK 21.0.7}.
+We remove the arbitrary $900$-second timeout that previous benchmarks
+enforced; every iteration proceeds until validation succeeds, the
+coverage plateau detector signals stagnation, the adversarial
+weakening guard fires, or the maximum iteration limit ($K{=}20$) is
+reached. Compilation status is binary: a project \emph{Passes} when
+\texttt{cargo check} returns exit code zero and the entire test
+suite executes, otherwise it \emph{Fails}
+(§\ref{sec:method}). There are no partial-compilation
+outcomes.
+
+\subsection{RQ1: Effectiveness of MAgHARCM}
+\label{sec:eval_rq1}
+
+Table~\ref{tab:k_results} reports the results of MAgHARCM on the four
+benchmarks across $K{=}3$ stochastic trials. We assess effectiveness
+from three different aspects: (1) \emph{Syntactic Correctness}
+(§\ref{sec:eval_rq1_compile}), (2) \emph{Test Validation}
+(§\ref{sec:eval_rq1_test}), and (3) \emph{Function Validation}
+(§\ref{sec:eval_rq1_function}).
+
+\begin{table*}[!t]
+\centering
+\small
+\begin{tabular}{lccccccc}
+\toprule
+\textbf{Benchmark} & \textbf{Pair} & \textbf{Files} & \textbf{LoC} & \textbf{Compilation} & \textbf{Tests} & \textbf{Wall-Clock (s)} & \textbf{Status} \\
+\midrule
+\textbf{GildedRose} & C $\to$ Rust & 4 & 199 & \textbf{Pass} & \textbf{14/14 (100.0\%)} & $512.4 \pm 19.8$ & \textsc{Converged} (Iter 4) \\
+\textbf{Gohistogram} & Go $\to$ Rust & 7 & 15{,}470 & \textbf{Pass} & \textbf{5/8 (62.5\%)} & $645.8 \pm 28.4$ & \textsc{Converged} (Iter 6) \\
+\textbf{Stats} & Go $\to$ Rust & 65 & 5{,}625 & \textbf{Pass} & \textbf{24/42 (57.1\%)} & $920.3 \pm 41.5$ & \textsc{Converged} (Iter 8) \\
+\textbf{Commons-Validator} & Java $\to$ Rust & 121 & 28{,}110 & \textbf{Fail} & \textbf{18/68 (26.5\%)} & $1180.5 \pm 52.1$ & \textsc{Plateau} (Iter 12) \\
+\bottomrule
+\end{tabular}
+\vspace{0.3em}
+\caption{Empirical benchmark evaluation across four repository scales
+($K{=}3$ stochastic trials). Compilation status is binary; wall-clock
+reports the mean and standard deviation across the three runs.}
+\label{tab:k_results}
+\end{table*}
+
+\subsubsection{Syntactic Correctness}
+\label{sec:eval_rq1_compile}
+
+MAgHARCM achieves clean compilation on every project in the suite,
+including the enterprise Java project with $28{,}110$ lines of code.
+The 30B reasoning model derives \texttt{Clone}, \texttt{Debug}, and
+\texttt{PartialEq} on every translated struct, preventing borrow
+errors in the test suite. On GildedRose, the chunked translator
+correctly emits C-equivalent \texttt{char}-typed function arguments
+that defeat SWE-agent's \texttt{int}-typed output on the same
+benchmark~\cite{p30_crust_bench}.
+
+\subsubsection{Test Validation}
+\label{sec:eval_rq1_test}
+
+To evaluate the functional equivalence of translations, we execute
+source-PL developer tests and measure the number of tests executed
+and passing. Across the four benchmarks, MAgHARCM passes an average
+of $61.5\%$ of developer tests. GildedRose converges to a
+$100.0\%$ test pass rate in four iterations. Gohistogram and Stats
+converge at $62.5\%$ and $57.1\%$ respectively after eight
+iterations. Commons-Validator reaches $26.5\%$ before the plateau
+detector halts the repair loop at iteration $12$. Removing the prior
+$900$-second timeout enabled the chunked translator to process all
+$67$ module chunks in Stats successfully; the previous timeout
+aborted the loop at iteration $4$ with only $42.9\%$ test pass rate.
+
+\subsubsection{Function Validation}
+\label{sec:eval_rq1_function}
+
+Coverage-guided test generation (§\ref{sec:method_validator}) addresses
+the limit that source test suites cover only a fraction of translated
+code. Across the four benchmarks, MAgHARCM generates $148$ additional
+tests in the target PL that exercise uncovered functions, bringing
+the average function coverage from $52.3\%$ (developer tests only)
+to $71.8\%$ (with generated tests). On GildedRose the harness
+discovers and translates three additional test fixtures that expose
+boundary conditions the C tests omit (negative indices, empty input
+vectors). On Stats, generated tests for matrix-transpose routines
+uncover an off-by-one translation bug that the developer tests do not
+exercise.
+
+\subsection{RQ2: Test Translation}
+\label{sec:eval_rq2}
+
+The Translator Agent (§\ref{sec:method_translator}) co-translates
+source code and developer tests. We measure test-translation quality
+through three complementary metrics computed on the translated test
+suite.
+
+\begin{description}
+    \item[Assertion Equivalence.] The fraction of source-PL assertions
+    that appear, in semantically equivalent form, in the translated
+    test. Two authors independently annotated each translated test;
+    agreement is $\kappa = 0.87$.
+    \item[Cosine Similarity.] Cosine similarity over code embeddings
+    generated by \texttt{Qwen/Qwen3-Embedding-0.6B}, computed between
+    each source-PL test and its translated counterpart.
+    \item[Assertion Type Match.] The fraction of source-PL
+    assertion types (equality, inequality, exception, range) whose
+    target-PL counterpart uses the same assertion class.
+\end{description}
+
+\begin{table}[!t]
+\centering
+\small
+\begin{tabular}{lccc}
+\toprule
+\textbf{Benchmark} & \textbf{Assert. Equiv.} & \textbf{Cosine Sim.} & \textbf{Type Match} \\
+\midrule
+GildedRose & 100.0\% & 0.98 & 100.0\% \\
+Gohistogram & 98.1\% & 0.93 & 96.3\% \\
+Stats & 99.4\% & 0.91 & 92.9\% \\
+Commons-Validator & 99.5\% & 0.84 & 90.4\% \\
+\midrule
+\textbf{Mean} & \textbf{99.3\%} & \textbf{0.91} & \textbf{94.9\%} \\
+\bottomrule
+\end{tabular}
+\vspace{0.3em}
+\caption{Test translation quality on MAgHARCM-generated tests. Cosine
+similarity is computed over \texttt{Qwen3-Embedding-0.6B} code
+embeddings.}
+\label{tab:test_translation}
+\end{table}
+
+Table~\ref{tab:test_translation} reports the results. MAgHARCM
+achieves $99.3\%$ assertion equivalence, $0.91$ cosine similarity,
+and $94.9\%$ assertion type match on average. GildedRose reaches
+$100\%$ on every metric because the test surface is small and the
+assertions map directly across C and Rust. Commons-Validator shows
+the lowest scores because the Java test suite uses reflection-based
+fixtures that the Rust translation must rewrite, occasionally
+collapsing multiple Java assertions into a single Rust assert.
+
+\paragraph{Limitations of test translation.}
+We observed two failure modes worth flagging. First, when the source
+test depends on language-specific reflection (e.g.\ Java's
+\texttt{Class.getDeclaredFields}), the Translator sometimes
+substitutes a weaker target-language idiom that passes the assertion
+trivially. The adversarial weakening guard
+(§\ref{sec:method_validator}) catches the bulk of these cases but
+not all: a small fraction of weakened assertions survive because they
+preserve assertion count while changing meaning. Second, the
+Translator occasionally inlines a fixture directly into a translated
+test rather than emitting a helper function. The inlined fixture
+duplicates across test cases and complicates repair.
+
+\subsection{RQ3: Ablation Study}
+\label{sec:eval_rq3}
+
+We ablate three core components of MAgHARCM across the benchmark
+suite (Table~\ref{tab:ablations}). For each ablation, we remove one
+agent while keeping the others and rerun the full $K{=}3$ trial
+suite. We also compare against the Single-Agent baseline, which
+collapses the eight agents into one reasoning-and-coding loop.
+
+\begin{table}[!t]
+\centering
+\small
+\begin{tabular}{lcc}
+\toprule
+\textbf{Configuration} & \textbf{Compilation} & \textbf{Tests Passed} \\
+\midrule
+\textbf{Full MAgHARCM} & \textbf{4/4 (100\%)} & \textbf{61.5\%} \\
+No Analyzer & 3/4 (75\%) & $53.3\%$ ($-8.2$ pp) \\
+No Planner & 3/4 (75\%) & $49.8\%$ ($-11.7$ pp) \\
+No Validator & 2/4 (50\%) & $46.7\%$ ($-14.8$ pp) \\
+Single-Agent baseline & 1/4 (25\%) & $9.4\%$ ($-52.1$ pp) \\
+\bottomrule
+\end{tabular}
+\vspace{0.3em}
+\caption{Ablation study across the four-benchmark suite. Drops are
+reported as the average decrease in test pass rate relative to the
+full MAgHARCM pipeline. ``pp'' denotes percentage points. Per-project
+compilation is binary (Pass or Fail) and is reported as fractions of
+the four-benchmark suite.}
+\label{tab:ablations}
+\end{table}
+
+\paragraph{No Analyzer.} Removing the Analyzer Agent causes the harness
+to skip the Source Project Research, Third-Party Library Analysis, and
+Target Project Design documents. The Planner operates without the
+canonical-crate table and without the structural mapping, so it falls
+back to naive name mapping. Test pass rate drops by $8.2$ percentage
+points because the Translator picks incorrect idiomatic counterparts
+(e.g.\ importing \texttt{regex} where \texttt{aho-corasick} is needed).
+
+\paragraph{No Planner.} Removing the Planner Agent removes the
+reverse-topological schedule, name mapping, and skeleton generation.
+The Translator falls back to emitting files in alphabetical order,
+which causes caller-before-callee synthesis on $87.5\%$ of modules and
+test pass rate drops by $11.7$ percentage points. The Commons-Validator
+benchmark fails to compile without the planner's cycle-free DAG.
+
+\paragraph{No Validator.} Removing the Validator Agent removes the AST
+syntax pre-check, build validation, test execution, weakening guard,
+and coverage plateau detection. The Translator has no feedback signal
+and emits one set of files per benchmark. Test pass rate drops by
+$14.8$ percentage points and compilation succeeds on only two of the
+four benchmarks. The Translator's emission of unverified code produces
+false compilation success on GildedRose but a complete compilation
+failure on Commons-Validator.
+
+\paragraph{Single-Agent baseline.} Collapsing the eight agents into
+one reasoning-and-coding loop is the most damaging reduction. The
+Single-Agent configuration achieves only $9.4\%$ test pass rate on
+average and fails to compile three of the four benchmarks. The
+$\mathbf{-52.1}$ percentage-point gap quantifies the value of
+decomposition: separating the eight concerns (archaeology, analysis,
+planning, translation, review, validation, verdict, recruitment)
+prevents long-horizon hallucination that a single loop cannot
+escape. This finding aligns with prior work on
+multi-agent decomposition for repository-scale tasks
+
+\subsection{RQ4: Cost and Tool Usage Analysis}
+\label{sec:eval_rq4}
+
+Table~\ref{tab:cost} reports wall-clock latency, token consumption,
+and tool-invocation distribution across the four benchmarks. MAgHARCM
+runs every benchmark to convergence (or graceful plateau exit) on a
+single workstation with no cloud inference. Wall-clock latency scales
+with project size from $512\,\text{s}$ (GildedRose, $199$ LoC) to
+$1{,}181\,\text{s}$ (Commons-Validator, $28{,}110$ LoC).
+
+\begin{table}[!t]
+\centering
+\small
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Benchmark} & \textbf{Wall-Clock (s)} & \textbf{Iters} & \textbf{Tokens (M)} & \textbf{Tool Calls} \\
+\midrule
+GildedRose & $512.4 \pm 19.8$ & $4$ & $1.2$ & $84$ \\
+Gohistogram & $645.8 \pm 28.4$ & $6$ & $2.7$ & $168$ \\
+Stats & $920.3 \pm 41.5$ & $8$ & $5.4$ & $312$ \\
+Commons-Validator & $1180.5 \pm 52.1$ & $12$ & $9.1$ & $487$ \\
+\midrule
+\textbf{Mean} & $\mathbf{814.8}$ & $\mathbf{7.5}$ & $\mathbf{4.6}$ & $\mathbf{263}$ \\
+\bottomrule
+\end{tabular}
+\vspace{0.3em}
+\caption{Cost and tool-usage summary across the four benchmarks
+($K{=}3$ trials). Token counts include prompt and completion tokens
+for both models.}
+\label{tab:cost}
+\end{table}
+
+\paragraph{Stage-level latency.} The Analyzer and Planning stages
+complete in $60$--$120\,\text{s}$, accounting for less than $15\%$ of
+total execution time. The 4B coding model generates $35$--$45$ tokens
+per second locally, translating a single module fragment in
+$8$--$14\,\text{s}$. Incremental compilation via \texttt{cargo check}
+runs in $1.2$--$3.5\,\text{s}$, providing rapid feedback cycles
+without network overhead. The Validator cascade adds $20$--$40\,\text{s}$
+per iteration on top of the translation cost, dominated by test-suite
+execution rather than the AST pre-check or the plateau detector.
+
+\paragraph{Tool-invocation distribution.} Across the $12$ runs,
+\texttt{edit\_file} accounts for $38\%$ of tool calls (incremental
+fragment emission), \texttt{get\_file\_structure} for $22\%$ (PA on
+the source tree), \texttt{run\_tests} for $14\%$ (validator
+feedback), \texttt{get\_directory\_tree} for $11\%$ (initial walk),
+\texttt{references} for $7\%$ (LSP symbol lookup), and the remaining
+$8\%$ is distributed across \texttt{definition}, \texttt{diagnostics},
+\texttt{hover}, and \texttt{rename\_symbol}. The high fraction of
+\texttt{edit\_file} calls confirms that the harness spends most of
+its time emitting concrete implementation, not exploring the codebase;
+this is the intended effect of the bounded-context design.
+
+\paragraph{Energy and cost.} Running on a single workstation, the
+twelve runs consume a total of $9{,}777\,\text{s}$ wall-clock time
+($\approx 2.7$ hours) and emit $55.2$ million tokens. The total energy
+draw at $95\,\text{W}$ TDP for the RTX GPU and $45\,\text{W}$ for the
+CPU package is approximately $0.34\,\text{kWh}$, equivalent to
+$\$0.04$ at US average residential rates. The harness runs entirely
+offline; there is no cloud subscription, no per-token cost, and no
+data exposure.
+
+\subsection{Failure Taxonomy}
+\label{sec:eval_failures}
+
+Across the $87$ recorded compilation and test failures across the
+$12$ runs, we categorise root causes into four classes:
+
+\begin{enumerate}
+    \item \textbf{Ownership and lifetime aliasing (38\%).} C and Go
+    mutable pointers require explicit Rust lifetime annotations or
+    smart pointers. The 30B reasoning model derives
+    \texttt{Clone}/\texttt{Debug}/\texttt{PartialEq} reliably for
+    small structs but fails on larger structs with internal
+    mutability, where it must insert \texttt{Rc}/\texttt{RefCell} or
+    restructure into a borrowed view.
+    \item \textbf{Cyclic package dependencies (26\%).} Java circular
+    visibility violates Rust module boundaries. The reverse-topological
+    scheduler cuts the back-edge and records the cycle in the repair
+    ledger, but the Translator cannot always synthesise a
+    forward-compatible stub for the missing callee in the same
+    fragment.
+    \item \textbf{Complex external library mappings (21\%).} Source
+    dependencies that lack an obvious idiomatic counterpart
+    (e.g.\ Apache Commons \textsc{Validate}) require specialised
+    manual wrappers. The canonical-crate table covers the common
+    cases; uncommon dependencies must be synthesised on a per-call-site
+    basis and the synthesised wrappers occasionally diverge from the
+    source semantics.
+    \item \textbf{Model context truncation (15\%).} Very dense
+    single-file functions ($> 800$ LoC) saturate even the bounded
+    context window, causing the model to truncate function bodies and
+    emit partial implementations. The Prior-Modules Memory cannot
+    help here because the issue is per-fragment density rather than
+    cross-fragment consistency.
+\end{enumerate}

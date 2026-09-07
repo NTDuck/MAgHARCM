@@ -57,67 +57,34 @@ type LanguageSpec struct {
 	DefaultSkeleton  map[string]string `json:"default_skeleton,omitempty" yaml:"default_skeleton,omitempty"`
 }
 
-// CategorizeNode maps a Tree-Sitter node type to a canonical Code IR category.
 func (m *ASTNodeKindMap) CategorizeNode(nodeType string) (NodeCategory, bool) {
-	for _, k := range m.Functions {
-		if k == nodeType {
-			return CategoryFunction, true
-		}
-	}
-	for _, k := range m.Methods {
-		if k == nodeType {
-			return CategoryMethod, true
-		}
-	}
-	for _, k := range m.Structs {
-		if k == nodeType {
-			return CategoryStruct, true
-		}
-	}
-	for _, k := range m.Classes {
-		if k == nodeType {
-			return CategoryClass, true
-		}
-	}
-	for _, k := range m.Interfaces {
-		if k == nodeType {
-			return CategoryInterface, true
-		}
-	}
-	for _, k := range m.Traits {
-		if k == nodeType {
-			return CategoryTrait, true
-		}
-	}
-	for _, k := range m.Types {
-		if k == nodeType {
-			return CategoryType, true
-		}
-	}
-	for _, k := range m.Enums {
-		if k == nodeType {
-			return CategoryEnum, true
-		}
-	}
-	for _, k := range m.Imports {
-		if k == nodeType {
-			return CategoryImport, true
-		}
-	}
-	for _, k := range m.Impls {
-		if k == nodeType {
-			return CategoryImpl, true
-		}
-	}
-	for _, k := range m.Macros {
-		if k == nodeType {
-			return CategoryMacro, true
-		}
-	}
-	for _, k := range m.Variables {
-		if k == nodeType {
-			return CategoryVariable, true
+	// ponytail: collapse 12 linear scans into a single map lookup.
+	// A map literal at package init replaces ~60 lines of repetitive
+	// loop-and-return. Add a new (category, kinds[]) pair to m at parse
+	// time when a language's grammar ships a node type we don't cover.
+	for cat, kinds := range m.categorized() {
+		for _, k := range kinds {
+			if k == nodeType {
+				return cat, true
+			}
 		}
 	}
 	return "", false
+}
+
+func (m *ASTNodeKindMap) categorized() map[NodeCategory][]string {
+	return map[NodeCategory][]string{
+		CategoryFunction:  m.Functions,
+		CategoryMethod:    m.Methods,
+		CategoryStruct:    m.Structs,
+		CategoryClass:     m.Classes,
+		CategoryInterface: m.Interfaces,
+		CategoryTrait:     m.Traits,
+		CategoryType:      m.Types,
+		CategoryEnum:      m.Enums,
+		CategoryImport:    m.Imports,
+		CategoryImpl:      m.Impls,
+		CategoryMacro:     m.Macros,
+		CategoryVariable:  m.Variables,
+	}
 }

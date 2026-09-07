@@ -59,33 +59,33 @@ func (n *NativeLSPProvider) RenameSymbol(ctx context.Context, input *RenameSymbo
 	return ExecuteRenameSymbol(ctx, input)
 }
 
-// ABCoderMCPProvider integrates with CloudWeGo abcoder (https://github.com/cloudwego/abcoder)
+// ABCoderMcpProvider integrates with CloudWeGo abcoder (https://github.com/cloudwego/abcoder)
 // via Model Context Protocol (MCP) tool invocation over JSON-RPC stdio.
-type ABCoderMCPProvider struct {
+type ABCoderMcpProvider struct {
 	nativeFallback LSPProvider
 	serverCmd      string
 	serverArgs     []string
 	mu             sync.Mutex
 }
 
-// NewABCoderMCPProvider creates an ABCoder MCP provider with native fallback.
-func NewABCoderMCPProvider(cmd string, args ...string) *ABCoderMCPProvider {
+// NewABCoderMcpProvider creates an ABCoder MCP provider with native fallback.
+func NewABCoderMcpProvider(cmd string, args ...string) *ABCoderMcpProvider {
 	if cmd == "" {
 		cmd = "abcoder"
 	}
-	return &ABCoderMCPProvider{
+	return &ABCoderMcpProvider{
 		nativeFallback: NewNativeLSPProvider(),
 		serverCmd:      cmd,
 		serverArgs:     args,
 	}
 }
 
-func (a *ABCoderMCPProvider) Name() string {
+func (a *ABCoderMcpProvider) Name() string {
 	return "abcoder-mcp"
 }
 
-// callMCP executes an MCP JSON-RPC call against the abcoder MCP server.
-func (a *ABCoderMCPProvider) callMCP(ctx context.Context, toolName string, arguments map[string]any) ([]byte, error) {
+// callMcp executes an MCP JSON-RPC call against the abcoder MCP server.
+func (a *ABCoderMcpProvider) callMcp(ctx context.Context, toolName string, arguments map[string]any) ([]byte, error) {
 	if _, err := exec.LookPath(a.serverCmd); err != nil {
 		return nil, fmt.Errorf("abcoder binary not found in PATH: %w", err)
 	}
@@ -116,9 +116,9 @@ func (a *ABCoderMCPProvider) callMCP(ctx context.Context, toolName string, argum
 	return outBuf.Bytes(), nil
 }
 
-func (a *ABCoderMCPProvider) GetDefinition(ctx context.Context, input *DefinitionInput) (*DefinitionOutput, error) {
+func (a *ABCoderMcpProvider) GetDefinition(ctx context.Context, input *DefinitionInput) (*DefinitionOutput, error) {
 	args := map[string]any{"symbol": input.Symbol, "file_path": input.FilePath, "project_dir": input.Project}
-	if out, err := a.callMCP(ctx, "definition", args); err == nil && len(out) > 0 {
+	if out, err := a.callMcp(ctx, "definition", args); err == nil && len(out) > 0 {
 		var res DefinitionOutput
 		if err := json.Unmarshal(out, &res); err == nil && len(res.Definitions) > 0 {
 			logger.LogTool("abcoder_mcp", "Resolved definition for `%s` via `abcoder`", input.Symbol)
@@ -129,9 +129,9 @@ func (a *ABCoderMCPProvider) GetDefinition(ctx context.Context, input *Definitio
 	return a.nativeFallback.GetDefinition(ctx, input)
 }
 
-func (a *ABCoderMCPProvider) GetDiagnostics(ctx context.Context, input *DiagnosticsInput) (*DiagnosticsOutput, error) {
+func (a *ABCoderMcpProvider) GetDiagnostics(ctx context.Context, input *DiagnosticsInput) (*DiagnosticsOutput, error) {
 	args := map[string]any{"file_path": input.FilePath, "project_dir": input.ProjectDir}
-	if out, err := a.callMCP(ctx, "diagnostics", args); err == nil && len(out) > 0 {
+	if out, err := a.callMcp(ctx, "diagnostics", args); err == nil && len(out) > 0 {
 		var res DiagnosticsOutput
 		if err := json.Unmarshal(out, &res); err == nil {
 			logger.LogTool("abcoder_mcp", "Retrieved diagnostics for `%s` via `abcoder`", input.FilePath)
@@ -141,9 +141,9 @@ func (a *ABCoderMCPProvider) GetDiagnostics(ctx context.Context, input *Diagnost
 	return a.nativeFallback.GetDiagnostics(ctx, input)
 }
 
-func (a *ABCoderMCPProvider) EditFile(ctx context.Context, input *EditFileInput) (*EditFileOutput, error) {
+func (a *ABCoderMcpProvider) EditFile(ctx context.Context, input *EditFileInput) (*EditFileOutput, error) {
 	args := map[string]any{"file_path": input.FilePath, "edits": input.Edits, "project_dir": input.ProjectDir}
-	if out, err := a.callMCP(ctx, "edit_file", args); err == nil && len(out) > 0 {
+	if out, err := a.callMcp(ctx, "edit_file", args); err == nil && len(out) > 0 {
 		var res EditFileOutput
 		if err := json.Unmarshal(out, &res); err == nil && res.Success {
 			return &res, nil
@@ -152,9 +152,9 @@ func (a *ABCoderMCPProvider) EditFile(ctx context.Context, input *EditFileInput)
 	return a.nativeFallback.EditFile(ctx, input)
 }
 
-func (a *ABCoderMCPProvider) GetHover(ctx context.Context, input *HoverInput) (*HoverOutput, error) {
+func (a *ABCoderMcpProvider) GetHover(ctx context.Context, input *HoverInput) (*HoverOutput, error) {
 	args := map[string]any{"symbol": input.Symbol, "file_path": input.FilePath, "project_dir": input.ProjectDir}
-	if out, err := a.callMCP(ctx, "hover", args); err == nil && len(out) > 0 {
+	if out, err := a.callMcp(ctx, "hover", args); err == nil && len(out) > 0 {
 		var res HoverOutput
 		if err := json.Unmarshal(out, &res); err == nil && res.Found {
 			return &res, nil
@@ -163,9 +163,9 @@ func (a *ABCoderMCPProvider) GetHover(ctx context.Context, input *HoverInput) (*
 	return a.nativeFallback.GetHover(ctx, input)
 }
 
-func (a *ABCoderMCPProvider) GetReferences(ctx context.Context, input *ReferencesInput) (*ReferencesOutput, error) {
+func (a *ABCoderMcpProvider) GetReferences(ctx context.Context, input *ReferencesInput) (*ReferencesOutput, error) {
 	args := map[string]any{"symbol": input.Symbol, "project_dir": input.ProjectDir}
-	if out, err := a.callMCP(ctx, "references", args); err == nil && len(out) > 0 {
+	if out, err := a.callMcp(ctx, "references", args); err == nil && len(out) > 0 {
 		var res ReferencesOutput
 		if err := json.Unmarshal(out, &res); err == nil && len(res.References) > 0 {
 			return &res, nil
@@ -174,9 +174,9 @@ func (a *ABCoderMCPProvider) GetReferences(ctx context.Context, input *Reference
 	return a.nativeFallback.GetReferences(ctx, input)
 }
 
-func (a *ABCoderMCPProvider) RenameSymbol(ctx context.Context, input *RenameSymbolInput) (*RenameSymbolOutput, error) {
+func (a *ABCoderMcpProvider) RenameSymbol(ctx context.Context, input *RenameSymbolInput) (*RenameSymbolOutput, error) {
 	args := map[string]any{"old_name": input.OldName, "new_name": input.NewName, "project_dir": input.ProjectDir}
-	if out, err := a.callMCP(ctx, "rename_symbol", args); err == nil && len(out) > 0 {
+	if out, err := a.callMcp(ctx, "rename_symbol", args); err == nil && len(out) > 0 {
 		var res RenameSymbolOutput
 		if err := json.Unmarshal(out, &res); err == nil && res.Success {
 			return &res, nil
@@ -189,7 +189,7 @@ func (a *ABCoderMCPProvider) RenameSymbol(ctx context.Context, input *RenameSymb
 func GetLSPProvider(providerName string) LSPProvider {
 	switch strings.ToLower(strings.TrimSpace(providerName)) {
 	case "abcoder", "abcoder-mcp", "mcp":
-		return NewABCoderMCPProvider("abcoder")
+		return NewABCoderMcpProvider("abcoder")
 	default:
 		return NewNativeLSPProvider()
 	}

@@ -1,0 +1,132 @@
+[
+  {
+    "label": "sample1",
+    "log": "run-2026-08-30-fixed-1.log",
+    "final_iter": 10,
+    "compilation_success": true,
+    "compilation_missing_config": false,
+    "final_test_passed": 4,
+    "final_test_failed": 0,
+    "panic_names": [],
+    "chunked_selected": null,
+    "chunked_dispatch_indices": [],
+    "chunked_dispatch_total": null,
+    "chunked_files_written": null,
+    "fragment_count": 6,
+    "source_file_count": 7,
+    "final_warning": "Validation INCOMPLETE: compilation=true, passed=4/4 (100.0%), compile_errs=0, test_fails=0, uncovered=6",
+    "real_per_iter": {
+      "5": {
+        "real": 0,
+        "min": 6,
+        "vacuous": true
+      },
+      "7": {
+        "real": 4,
+        "min": 6,
+        "vacuous": false
+      },
+      "8": {
+        "real": 4,
+        "min": 6,
+        "vacuous": false
+      },
+      "9": {
+        "real": 4,
+        "min": 6,
+        "vacuous": false
+      },
+      "10": {
+        "real": 4,
+        "min": 6,
+        "vacuous": false
+      }
+    }
+  },
+  {
+    "label": "sample2",
+    "log": "run-2026-08-30-fixed-2.log",
+    "final_iter": 0,
+    "compilation_success": false,
+    "compilation_missing_config": false,
+    "final_test_passed": null,
+    "final_test_failed": null,
+    "panic_names": [],
+    "chunked_selected": {
+      "fragments": 517,
+      "loc": 11575
+    },
+    "chunked_dispatch_indices": [
+      1,
+      2
+    ],
+    "chunked_dispatch_total": 63,
+    "chunked_files_written": null,
+    "fragment_count": 517,
+    "source_file_count": 73,
+    "final_warning": null,
+    "real_per_iter": {}
+  },
+  {
+    "label": "sample3",
+    "log": "run-2026-08-30-fixed-3.log",
+    "final_iter": 1,
+    "compilation_success": false,
+    "compilation_missing_config": false,
+    "final_test_passed": 0,
+    "final_test_failed": 0,
+    "panic_names": [],
+    "chunked_selected": {
+      "fragments": 14,
+      "loc": 16477
+    },
+    "chunked_dispatch_indices": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "chunked_dispatch_total": 6,
+    "chunked_files_written": 5,
+    "fragment_count": 14,
+    "source_file_count": 12,
+    "final_warning": "Validation INCOMPLETE: compilation=false, passed=0/0 (0.0%), compile_errs=11, test_fails=0, uncovered=0",
+    "real_per_iter": {
+      "1": {
+        "real": 0,
+        "min": 12,
+        "vacuous": true
+      }
+    }
+  },
+  {
+    "label": "sample4",
+    "log": "run-2026-08-30-fixed-4.log",
+    "final_iter": 10,
+    "compilation_success": false,
+    "compilation_missing_config": true,
+    "final_test_passed": null,
+    "final_test_failed": null,
+    "panic_names": [],
+    "chunked_selected": {
+      "fragments": 26,
+      "loc": 36683
+    },
+    "chunked_dispatch_indices": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "chunked_dispatch_total": 6,
+    "chunked_files_written": 7,
+    "fragment_count": 26,
+    "source_file_count": 25,
+    "final_warning": "Validation INCOMPLETE: compilation=false, passed=0/0 (0.0%), compile_errs=1, test_fails=0, uncovered=0",
+    "real_per_iter": {}
+  }
+]

@@ -1,0 +1,109 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "MAgHARCM Eight-Agent Translation & Repair Pipeline",
+    "subtitle": "Software-archaeology-guided, role-flip-reviewed repository translation harness on local Qwen3 SLMs via Ollama.",
+    "output": "docs/.paper/figures/magh-pipeline.html"
+  },
+  "lanes": [
+    { "id": "input_lane", "label": "Inputs & Config" },
+    { "id": "orchestrator_lane", "label": "Pipeline Lifecycle" },
+    { "id": "agent_lane", "label": "Eight-Agent Core" },
+    { "id": "context_lane", "label": "Bounded Context" },
+    { "id": "validation_lane", "label": "Validation & Defense" },
+    { "id": "storage_lane", "label": "Target Artifacts" }
+  ],
+  "phases": [
+    { "id": "phase_arch", "label": "Archaeology", "fromCol": 0, "toCol": 0, "variant": "emphasis" },
+    { "id": "phase_intake", "label": "Analyze", "fromCol": 1, "toCol": 1, "variant": "emphasis" },
+    { "id": "phase_plan", "label": "Plan", "fromCol": 2, "toCol": 2, "variant": "emphasis" },
+    { "id": "phase_trans", "label": "Translate & Review", "fromCol": 3, "toCol": 3, "variant": "emphasis" },
+    { "id": "phase_val", "label": "Validate", "fromCol": 4, "toCol": 4, "variant": "dashed" },
+    { "id": "phase_verdict", "label": "Verdict", "fromCol": 5, "toCol": 5, "variant": "dashed" }
+  ],
+  "groups": [
+    { "id": "reasoning_group", "label": "Archaeologist + Analyzer + Planner (Qwen3-30B Thinking)", "lane": "agent_lane", "fromCol": 0, "toCol": 2, "variant": "emphasis" },
+    { "id": "coding_group", "label": "Translator (Qwen3-4B Coding)", "lane": "agent_lane", "fromCol": 3, "toCol": 3, "variant": "emphasis" },
+    { "id": "review_group", "label": "RoleFlipReviewer + VerdictPanel + Recruiter", "lane": "agent_lane", "fromCol": 4, "toCol": 5, "variant": "emphasis" },
+    { "id": "validation_cascade", "label": "Defense Cascade", "lane": "validation_lane", "fromCol": 4, "toCol": 5, "variant": "security" }
+  ],
+  "mainPath": ["yaml_cfg", "intake_parser", "archaeologist_agent", "analyzer_agent", "planner_agent", "translator_agent", "roleflip_agent", "validator_agent", "verdict_panel", "recruiter_agent"],
+  "nodes": [
+    { "id": "yaml_cfg", "lane": "input_lane", "col": 0, "type": "external", "label": "YAML Config", "sublabel": "Source / Target", "tag": "Ollama local" },
+    { "id": "intake_parser", "lane": "orchestrator_lane", "col": 0, "type": "backend", "label": "Intake", "sublabel": "ABCoderMcp PA", "tag": "AST + Manifest" },
+    { "id": "archaeologist_agent", "lane": "agent_lane", "col": 0, "type": "backend", "label": "1. Archaeologist", "sublabel": "Concept + DRH", "tag": "Time capsule", "width": 120 },
+    { "id": "analyzer_agent", "lane": "agent_lane", "col": 1, "type": "backend", "label": "2. Analyzer", "sublabel": "Research + Design", "tag": "3 documents" },
+    { "id": "planner_agent", "lane": "agent_lane", "col": 2, "type": "backend", "label": "3. Planner", "sublabel": "Fragment + Skel", "tag": "Reverse-Topo" },
+    { "id": "translator_agent", "lane": "agent_lane", "col": 3, "type": "backend", "label": "4. Translator", "sublabel": "Chunked Code", "tag": "Qwen3-4B" },
+    { "id": "roleflip_agent", "lane": "agent_lane", "col": 3, "type": "backend", "label": "5. RoleFlipReviewer", "sublabel": "De-hallucination", "tag": "Adversarial", "width": 140, "yOffset": 100 },
+    { "id": "validator_agent", "lane": "validation_lane", "col": 4, "type": "backend", "label": "6. Validator", "sublabel": "Cascade", "tag": "Build + Tests" },
+    { "id": "verdict_panel", "lane": "agent_lane", "col": 5, "type": "backend", "label": "7. VerdictPanel", "sublabel": "Consensus", "tag": "Multi-judge", "width": 112 },
+    { "id": "recruiter_agent", "lane": "agent_lane", "col": 5, "type": "backend", "label": "8. Recruiter", "sublabel": "Adaptive Plan", "tag": "Reorganize", "yOffset": 100 },
+    { "id": "weakening_guard", "lane": "validation_lane", "col": 5, "type": "security", "label": "Guard", "sublabel": "Weakening", "tag": "Assertions" },
+    { "id": "navigator", "lane": "context_lane", "col": 3, "type": "backend", "label": "Navigator", "sublabel": "Symbol Lookup", "tag": "<= 4KB" },
+    { "id": "prior_memory", "lane": "context_lane", "col": 4, "type": "database", "label": "Prior Memory", "sublabel": "Signatures", "tag": "<= 4KB" },
+    { "id": "strategy_registry", "lane": "orchestrator_lane", "col": 1, "type": "backend", "label": "Strategy", "sublabel": "Try-and-fail", "tag": "Registry" },
+    { "id": "manifest_rewriter", "lane": "context_lane", "col": 2, "type": "backend", "label": "Rewriter", "sublabel": "Canonical Crates", "tag": "Cargo.toml" },
+    { "id": "checkpoint_store", "lane": "storage_lane", "col": 3, "type": "database", "label": "Checkpoints", "sublabel": "State Snapshot", "tag": "Resume" },
+    { "id": "target_crate", "lane": "storage_lane", "col": 4, "type": "database", "label": "Target Crate", "sublabel": "Rust / Cargo", "tag": "Synced" },
+    { "id": "plateau_detector", "lane": "orchestrator_lane", "col": 5, "type": "backend", "label": "Plateau", "sublabel": "Stagnation", "tag": "Exit" }
+  ],
+  "edges": [
+    { "from": "yaml_cfg", "to": "intake_parser", "variant": "default" },
+    { "from": "intake_parser", "to": "archaeologist_agent", "label": "manifest + AST", "variant": "emphasis" },
+    { "from": "archaeologist_agent", "to": "analyzer_agent", "label": "concept map", "variant": "emphasis" },
+    { "from": "analyzer_agent", "to": "planner_agent", "label": "3 documents", "variant": "emphasis" },
+    { "from": "planner_agent", "to": "translator_agent", "label": "plan", "variant": "emphasis" },
+    { "from": "translator_agent", "to": "roleflip_agent", "label": "candidate P_t", "variant": "emphasis" },
+    { "from": "roleflip_agent", "to": "validator_agent", "label": "reviewed P_t", "variant": "emphasis" },
+    { "from": "validator_agent", "to": "verdict_panel", "label": "R", "variant": "default" },
+    { "from": "translator_agent", "to": "target_crate", "label": "emit files", "variant": "emphasis" },
+    { "from": "target_crate", "to": "validator_agent", "label": "compile & test", "variant": "default" },
+    { "from": "validator_agent", "to": "weakening_guard", "label": "assertions", "variant": "security" },
+    { "from": "weakening_guard", "to": "plateau_detector", "label": "coverage delta", "variant": "default" },
+    { "from": "validator_agent", "to": "translator_agent", "label": "repair loop", "variant": "dashed", "role": "return" },
+    { "from": "translator_agent", "to": "navigator", "label": "lookup", "variant": "dashed" },
+    { "from": "navigator", "to": "translator_agent", "label": "context", "variant": "dashed" },
+    { "from": "translator_agent", "to": "prior_memory", "label": "emit", "variant": "default" },
+    { "from": "prior_memory", "to": "translator_agent", "label": "signatures", "variant": "default" },
+    { "from": "planner_agent", "to": "manifest_rewriter", "label": "deps", "variant": "default" },
+    { "from": "analyzer_agent", "to": "strategy_registry", "label": "select", "variant": "default" },
+    { "from": "translator_agent", "to": "checkpoint_store", "label": "persist", "variant": "dashed" },
+    { "from": "checkpoint_store", "to": "translator_agent", "label": "resume", "variant": "dashed" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Local SLM Pipeline",
+      "items": [
+        "Eight-agent Archaeology -> Analyze -> Plan -> Translate -> Review -> Validate -> Verdict -> Recruit loop",
+        "Qwen3-30B Thinking reasoning model paired with Qwen3-4B Instruct coding model",
+        "100% self-hosted via Ollama with zero external cloud dependencies"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Agent Decomposition",
+      "items": [
+        "Archaeologist emits concept map + design-rule hierarchy before planning",
+        "Analyzer emits Source Research, Library Analysis, Target Design",
+        "Planner fragments AST, resolves names, builds reverse-topo DAG + skeletons",
+        "Translator executes Part A (source) + Part B (tests) in topological order",
+        "RoleFlipReviewer runs communicative de-hallucination checks",
+        "Validator runs AST -> compiler -> tests -> guard -> plateau cascade",
+        "VerdictPanel applies multi-judge consensus, Recruiter re-plans as needed"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Strategy Registry & Repair Loop",
+      "items": [
+        "Try-and-fail strategy registry replaces hardcoded if-cascade",
+        "Bounded context per fragment: Symbol Navigator + Prior Memory (each <= 4KB)",
+        "Repair loop iterates until validator converges or plateau stalls",
+        "Conversable checkpointing for crash-safe idempotent resume"
+      ]
+    }
+  ]
+}

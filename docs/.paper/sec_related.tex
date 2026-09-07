@@ -1,0 +1,145 @@
+% docs/.paper/sec_related.tex
+\section{Related Work}
+\label{sec:related}
+
+Repository-scale code translation has been studied along three
+parallel tracks that we group below. Each track addresses part of
+problem space that MAgHARCM targets; none covers the full
+eight-agent, local-SLM configuration.
+
+\subsection{Rule-Based Transpilation}
+\label{sec:related_transpilers}
+
+Rule-based transpilers perform deterministic AST rewrites from a
+source grammar to a target grammar. \textsc{C2Rust}~\cite{c2rust,p38_c2rust}
+is the canonical C-to-Rust transpiler: it preserves C memory layouts
+and emits Rust code with explicit \texttt{unsafe} blocks and raw
+pointer operations. The tool requires $\ge 100\,\text{K}$ LoC of
+rewrites per source--target pair and produces unidiomatic output that
+demands human refactoring before it can satisfy Rust's safety
+guarantees~\cite{siddiq2024oxidizer,p50_rav1d_c2rust_case,p51_libexpat_c2rust_case}.
+Other rule-based systems target narrower pairs:
+\textsc{CxGo} for C-to-Go, \textsc{Sharpen} for Java-to-C\#, and
+\textsc{JavaToCSharp}. General-purpose AST rewriters like
+    \textsc{OpenRewrite}~\cite{p39_openrewrite} and
+    \textsc{Codemod}~\cite{codemod2020} automate mass refactoring but do not
+cross language boundaries. The rule-based track delivers the highest
+assurance for narrow pairs but scales poorly because each new
+language pair requires a hand-written rewrite set.
+
+\subsection{Neuro-Symbolic Repository Translation}
+\label{sec:related_neurosym}
+
+Neuro-symbolic systems replace hand-written rewrite rules with LLM
+synthesis guided by program-analysis infrastructure.
+\textsc{AlphaTrans}~\cite{yang2024alphatrans,p02_alphatrans} is the
+most extensively evaluated neuro-symbolic system. It combines static
+type analysis, a deterministic translation pipeline, and
+GraalVM-based test translation. The approach is engineered for the
+Java-to-Python pair and does not generalise to new language pairs
+without re-implementing the analysis infrastructure. The authors
+report that long call chains in test suites produce a \emph{test
+translation coupling effect}: a buggy callee blocks the validation of
+every downstream test, motivating the separation of test execution
+and test generation in MAgHARCM and ReCodeAgent. AlphaTrans's
+evaluation of $116$ projects also reports $2.4\%$ false positives and
+$7.6\%$ false negatives under GraalVM-based validation.
+\textsc{Oxidizer}~\cite{siddiq2024oxidizer,p05_oxidizer} targets
+Go-to-Rust through type-driven synthesis and language-feature mapping.
+The system extracts input/output pairs by executing source tests and
+generates mock tests in the target language for validation.
+Oxidizer demonstrates that test coverage is a useful proxy for
+translation correctness but does not address the absence of an
+executable test suite in many real-world projects.
+\textsc{Skel}~\cite{p64_skel,p65_skel_pldi} generates target-language
+skeletons (compilable frameworks with declarations but no
+implementations) and uses execution traces from the source language
+to drive translation. Skel shows that skeleton generation reduces
+hallucinated type signatures and supports incremental translation, a
+primitive MAgHARCM also adopts. \textsc{SYZYGY}~\cite{p58_syzygy,p51_syzygy_arxiv}
+is a dual code-test C-to-(safe)-Rust translator that combines LLM
+synthesis with dynamic analysis on hardware-in-the-loop test
+execution. SYZYGY's bidirectional validation prevents some
+translation regressions but couples tightly to a single
+source--target pair. \textsc{VERT}~\cite{p72_vert} is a polyglot
+verified equivalent Rust transpiler that proves translation
+equivalence through symbolic reasoning. VERT demonstrates high
+assurance for narrow problem domains but does not generalise to
+multi-file repositories. The neuro-symbolic track improves
+correctness on a single pair but binds each new pair to a bespoke
+analysis stack.
+
+\subsection{Agentic Repository Translation}
+\label{sec:related_agents}
+
+Recent agentic systems coordinate one or more LLM agents over
+reasoning--action--observation loops~\cite{yao2023react}.
+\textsc{ReCodeAgent}~\cite{ibrahimzada2026recodeagent,p01_recodeagent}
+is the closest prior work. It coordinates four specialised agents
+(Analyzer, Planning, Translator, Validator) through an explicit
+\textsc{Analyze} $\to$ \textsc{Plan} $\to$ \textsc{Translate} $\to$
+\textsc{Validate} $\to$ \textsc{Repair} loop, exposes an MCP tool
+surface combining LSP queries and Tree-sitter-based project-analysis
+tools, and translates developer-written tests within the same
+Translator Agent rather than treating tests as a separate concern.
+ReCodeAgent is engineered to run on Anthropic Claude Sonnet through
+Claude Code, is evaluated on $118$ projects spanning four language
+pairs and six languages, and reports a $99.4\%$ compilation success
+rate and an $86.5\%$ test pass rate. MAgHARCM builds upon ReCodeAgent's
+agentic decomposition and MCP tool surface, extending it into an
+eight-agent pipeline (incorporating pre-planning software archaeology,
+communicative review, verdict consensus, and adaptive recruitment)
+while replacing cloud LLM dependencies with a local $30\,\text{B}$ reasoning +
+$4\,\text{B}$ coding topology. \textsc{Crust-Bench} / \textsc{SWE-agent}~\cite{p30_crust_bench,yang2024sweagent}
+adapts the SWE-agent harness to C-to-Rust translation. The agent
+relies on basic file-navigation and build/test commands and is
+compared against a generate-then-repair loop; on the Crust benchmark
+SWE-agent under-performs the generate-repair loop on test pass rate
+while wasting many turns on file navigation. Crust's evaluation
+compares $100$ independent C projects translated to Rust with
+validated test suites. \textsc{ACToR}~\cite{p31_actor} is an
+adversarial agent-collaboration system for C-to-Rust translation
+that relies on CLI differential fuzzing. The approach is limited to
+programs with CLI front-ends and is not directly comparable to
+MAgHARCM on repository benchmarks without command-line interfaces.
+\textsc{RepoTransAgent}~\cite{p62_repograph,p52_repotransagent} is a
+multi-agent LLM framework for repository-aware code translation. The
+system relies on hard-coded Java-to-C\# lookup tools and does not
+generalise beyond that source--target pair.
+\textsc{MatchFixAgent}~\cite{p08_matchfixagent} focuses on autonomous
+validation and repair for repository-level translation; it is
+complementary to MAgHARCM's repair loop and the Validator cascade
+draws on its adversarial assertion-checking pattern. General-purpose
+multi-agent software-engineering frameworks such as
+\textsc{MetaGPT}~\cite{hong2023metagpt,p11_metagpt},
+\textsc{ChatDev}~\cite{qian2023chatdev,p12_chatdev},
+\textsc{HyperAgent}~\cite{p13_hyperagent,p47_hyperagent_deepread},
+\textsc{AgentVerse}~\cite{p26_agentverse}, and
+\textsc{AutoGen}~\cite{p16_autogen,p48_autogen_deepread} coordinate
+agents across discrete development roles (product manager, architect,
+developer, QA) but do not embed the program-analysis primitives
+required for repository-scale translation. The agentic track
+relies on cloud inference. MAgHARCM is the first agentic system to
+deliver an eight-agent repository translation pipeline on local SLMs.
+\subsection{Positioning of MAgHARCM}
+
+MAgHARCM sits at the intersection of the agentic and neuro-symbolic
+tracks. From the agentic track it inherits the agentic decomposition,
+the MCP tool surface, and the translate--review--validate--verdict--
+recruit--repair loop. From the neuro-symbolic track it borrows the
+bounded context primitives (the Symbol Navigator and Prior-Modules
+Memory are direct analogues
+of the dependency-graph context slices used by
+\textsc{CodePlan}~\cite{p03_codeplan},
+\textsc{RepoCoder}~\cite{p61_repocoder}, and
+\textsc{RepoGraph}~\cite{p62_repograph}). Where MAgHARCM departs from
+both tracks is its local-SLM orientation: every published agentic
+system runs on a cloud-hosted frontier model, and every
+neuro-symbolic system that runs locally uses static analysis to
+compensate for small-model limitations. MAgHARCM runs entirely on
+local SLMs and uses the eight-agent decomposition to compensate
+instead. The bounded context primitives ($\le 4\,\text{KB}$ Symbol
+Navigator + $\le 4\,\text{KB}$ Prior-Modules Memory) keep the
+$4\,\text{B}$ coding model within its effective attention budget, and
+the reverse-topological schedule prevents the long-horizon
+hallucination that defeats single-agent configurations.

@@ -1,0 +1,163 @@
+% docs/.paper/sec_intro.tex
+\section{Introduction}
+\label{sec:intro}
+
+Repository-level code translation converts an entire codebase from one
+programming language to another~\cite{ibrahimzada2026recodeagent}.
+Organisations use it to retire C and C++ code in favour of memory-safe
+languages like Rust~\cite{szekeres2013sok,p58_syzygy,p56_rust_ffi_verification},
+to modernise Java stacks, and to consolidate mixed-language toolchains.
+The process touches every file, every public symbol, and every call chain
+in the source project, so isolated-function LLM translation does not
+transfer directly. Migration at repository scale introduces distinct
+technical barriers that defeat single-shot prompting and stress every
+existing translation approach in different ways.
+
+Early work took a rule-based form. Transpilers such as
+\textsc{C2Rust}~\cite{c2rust,p38_c2rust} write hand-crafted AST rewrites
+from a source grammar to a target grammar. The rule sets exceed
+$100\,\text{K}$ lines of code per source--target pair~\cite{p01_recodeagent}.
+The output is unidiomatic, full of \texttt{unsafe} blocks and raw
+pointers, and demands human refactoring before it satisfies the target
+language's safety guarantees~\cite{p50_rav1d_c2rust_case,p51_libexpat_c2rust_case}.
+Later work added program analysis. Neuro-symbolic systems like
+\textsc{AlphaTrans}~\cite{yang2024alphatrans,p02_alphatrans},
+\textsc{Oxidizer}~\cite{siddiq2024oxidizer,p05_oxidizer}, and
+\textsc{Skel}~\cite{p64_skel,p65_skel_pldi} combine LLM synthesis with
+symbolic program analysis pipelines (type-driven proofs, dynamic traces,
+GraalVM-based test translation). Their analysis components cost another
+$4\,\text{K}$ to $19\,\text{K}$ lines per pair~\cite{p01_recodeagent},
+and the resulting systems still evaluate on a single source--target
+pair. Recent agentic systems drop the analysis stack in favour of one or
+more LLM agents over a reasoning--action--observation loop
+\cite{yao2023react}. \textsc{ReCodeAgent}~\cite{ibrahimzada2026recodeagent},
+\textsc{Crust} / \textsc{SWE-agent}~\cite{p30_crust_bench,yang2024sweagent},
+\textsc{ACToR}~\cite{p31_actor}, and
+\textsc{RepoTransAgent}~\cite{p62_repograph,p52_repotransagent}
+demonstrate that agents can drive end-to-end repository translation
+without bespoke analysis infrastructure, but the published systems rely
+on Anthropic Claude or GPT-4-class cloud models whose monetary cost and
+data exposure rule them out for many users.
+
+This paper presents \textbf{MAgHARCM} (\textbf{M}ulti-\textbf{Ag}ent
+\textbf{H}arness for \textbf{A}rchaeology-guided \textbf{R}epository-scale
+\textbf{C}ode \textbf{M}igration), an open-source translation harness
+written in Go that runs entirely on local Small Language Models (SLMs)
+served by Ollama. MAgHARCM coordinates eight specialised agents
+(Analyzer, Archaeologist, Planning, Translator, Validator, VerdictPanel,
+Recruiter, RoleFlipReviewer) through an explicit
+\textsc{Archaeology} $\to$ \textsc{Analyze} $\to$ \textsc{Plan} $\to$
+\textsc{Translate} $\to$ \textsc{Review} $\to$ \textsc{Validate} $\to$
+\textsc{Verdict} $\to$ \textsc{Recruit} loop. The agents share a single
+state container and access the codebase through Model-Context-Protocol
+(MCP) tools that wrap ABCoderMcpProvider UniAST project analysis and
+optional LSP-backed symbol resolution. We identify four open challenges
+that shape the design.
+
+\paragraph{Challenge 1: Engineering cost per language pair.}
+Prior automated migration systems either demand large bespoke rewrite
+sets or a paired program-analysis stack per source--target combination.
+A truly PL-agnostic approach should require only lightweight tools that
+support many languages and should adapt to a new pair by changing the
+configuration rather than the harness.
+
+\paragraph{Challenge 2: Hallucination in long-horizon translation.}
+Repository-scale translation is a long-horizon task whose feedback loops
+span hundreds of model invocations. Long-horizon agents lose high-level
+goals without an explicit plan~\cite{p53_context_folding}, confabulate
+under multi-step tool feedback, and degrade as interaction history grows
+unbounded~\cite{p06_long_horizon}. In repository translation, AlphaTrans
+shows LLMs hallucinate types, method names, and assertion APIs when the
+callee has not yet been emitted or when context saturates~\cite{yang2024alphatrans}.
+A monolithic prompt overwhelms small local models; a fragmented prompt
+that omits callee signatures causes the model to invent plausible but
+non-existent symbols.
+
+\paragraph{Challenge 3: The test-translation dichotomy.}
+Validating a translation requires executing tests in the target language.
+Test translation is harder than code translation~\cite{p45_translation_bugs}
+because test logic depends on the same type system as the source. A naive
+separation that places test translation and code translation in different
+agents fails when one buggy callee blocks every downstream test. A
+co-generation approach biases the tests toward the (possibly wrong)
+generated code; the model weakens assertions to report a passing run
+rather than fix the underlying defect~\cite{p25_advtestgen,p02_alphatrans}.
+A practical harness must split translation from validation while keeping
+test translation inside the Translator so the two stay coherent.
+
+\paragraph{Challenge 4: Transparent and process-centric evaluation.}
+Prior agentic techniques rarely discuss the principled design space of
+an agentic translation workflow. They report final pass rates without
+analysing trajectories, rarely compare multi-agent to single-agent
+configurations, and pay limited attention to false positives introduced
+by automatically translated tests~\cite{p02_alphatrans}. Cost reporting
+is uneven and the limitations of test translation (assertion deletion,
+weak-assertion synthesis) are under-examined. A serious evaluation must
+report per-iteration dynamics, ablation deltas, and a failure taxonomy
+rooted in observed logs.
+
+The pipeline initiates with the \emph{Archaeologist Agent}
+(§\ref{sec:method_archaeologist}), which investigates historical boundaries,
+temporal Jaccard churn coupling, and concept bindings. The \emph{Analyzer Agent}
+(§\ref{sec:method_analyzer}) inspects the source AST and build manifest and
+produces three documents that anchor every subsequent stage: a Source Project
+Research report, a Third-Party Library Analysis mapping source libraries to
+idiomatic target crates, and a Target Project Design document that fixes a
+one-to-one structural mapping between source and target layouts. The
+\emph{Planning Agent} (§\ref{sec:method_planning}) fragments the source AST
+into translation units, resolves ambiguous symbol names through an LSP-backed
+Navigator, builds a cycle-free reverse-topological dependency DAG, and emits a
+two-part \emph{Implementation Plan}: Part~A for source code translation and
+Part~B for test translation and validation. The \emph{Translator Agent}
+(§\ref{sec:method_translator}) executes the plan in topological order,
+replacing skeleton stubs with concrete target code. Each fragment is synthesised
+with a bounded context ($\le 4\,\text{KB}$) assembled from a Symbol Navigator
+and a Prior-Modules Memory, keeping the local 4B coding model within its
+effective attention budget. A \emph{Reviewer Agent}
+(§\ref{sec:method_reviewer}) executes role-flipped inspection to catch
+hallucinated claims. The \emph{Validator Agent} (§\ref{sec:method_validator})
+executes the target compiler and test suite, emits a structured validation
+report, and feeds failures back for repair. Auxiliary \emph{Verdict Panel} and
+\emph{Recruiter} agents coordinate majority consensus and adaptive strategy
+switching during iterative repair.
+A Strategy Registry (§\ref{sec:method_strategies}) replaces a prior
+hard-coded cascade with a slice of named strategies matched against a
+repository profile. The analyzer iterates the registry and runs the
+first strategy whose predicate accepts the profile, falling through to
+the next strategy if the chosen one fails. This addresses challenge 1
+by removing hard-coded behaviour and makes the harness extensible
+without editing the analyzer loop. To address challenge 4, every
+iteration of the translate--validate loop writes a checkpoint to disk
+(under \texttt{.artifacts/<run-id>/checkpoints/iter-NNNN.json}) and emits
+structured log events for every agent invocation. The empirical
+evaluation in §\ref{sec:eval} reports per-iteration compilation status,
+per-iteration test pass rate, per-failure error codes, and a four-class
+root-cause failure taxonomy computed from those events.
+
+\subsection{Contributions}
+
+The contributions of this paper are:
+\begin{enumerate}
+    \item \textbf{Technique.} MAgHARCM is the first multi-agent,
+    PL-agnostic pipeline for repository-level code translation that runs
+    entirely on local Small Language Models. It does not require major
+    engineering effort or dependency on cloud APIs per source--target
+    pair.
+    \item \textbf{Empirical Evaluation.} We rigorously evaluate MAgHARCM
+    on four open-source repository benchmarks and three source languages
+    targeting Rust, against ablation conditions and a single-agent
+    baseline. The results indicate that MAgHARCM achieves clean
+    compilation on every benchmark and an average $61.5\%$ test pass
+    rate without cloud inference, and that the multi-agent decomposition
+    contributes $52.1$ percentage points of test pass rate over the
+    single-agent baseline.
+    \item \textbf{Tool.} The implementation of MAgHARCM, the agent logs,
+    and the trajectories required to reproduce the results presented in
+    this paper are publicly available.
+\end{enumerate}
+
+The remainder of this paper is organised as follows.
+§\ref{sec:method} formalises the problem, presents the tool surface,
+and details the eight specialized agents. §\ref{sec:eval} presents the empirical
+evaluation across four benchmarks. §\ref{sec:related} surveys related
+work. §\ref{sec:conclusion} concludes.

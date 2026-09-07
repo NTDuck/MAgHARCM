@@ -1,0 +1,66 @@
+---
+title: "P-120 — Yang et al. 2025 — SWE-smith: Scaling Data for Software Engineering Agents"
+backlink: "[[1.0.0 P-120]]"
+aliases:
+  - "1.0.0 P-120"
+  - "P-120"
+  - "P-120-Yang-SWE-Smith-2025"
+  - "P-120-Yang-SWE-Smith-2025"
+  - "P-120-Yang-SWE-Smith-2025"
+  - "P-120-Yang-SWE-Smith-2025"
+  - "Yang-SWE-smith-2025"
+tags: [paper, benchmark, synthetic-data, environment-first, procedural-mutation, ast-mutation, [[1.0.0 PRIM-22]], [[1.0.0 PRIM-23]], [[1.0.0 PRIM-27]], [[1.0.0 PRIM-31]], [[2.0.0 MAgHARCM]]]
+---
+
+# [[1.0.0 P-120 — Yang et al. 2025 — SWE-smith]]
+
+- **Authors**: John Yang (Stanford), Kilian Lieret (Princeton), Carlos E. Jimenez (Princeton), Alexander Wettig (Princeton), Kabir Khandpur (independent), Yanzhe Zhang (Stanford), Binyuan Hui (Alibaba Qwen), Ofir Press (Princeton), Ludwig Schmidt (Stanford), Diyi Yang (Stanford). arXiv:2504.21798.
+- **Venue / Year**: **NeurIPS 2025 Datasets and Benchmarks Track** (spotlight paper). arXiv:2504.21798 (April 2025).
+- **URL**: https://arxiv.org/abs/2504.21798 ; https://swesmith.com/ ; https://github.com/SWE-bench/SWE-smith.
+- **Anchors**: PRIM-22 (Four Phases of Comprehension), PRIM-23 (Adversarial Test Synthesis), PRIM-27 (Coverage-Guided Plateau Detection), PRIM-31 (Iterative Retrieval Refinement); the **scalable synthetic-task generator** that complements the static SWE-bench family with **environment-first procedural synthesis** and enables the **per-iteration training-time sweeps** that the open-weights SLM regime needs to advance past the contamination plateau.
+
+SWE-smith is the **first SWE-bench-family pipeline that inverts the task-generation direction**. Where [[1.0.0 P-111]] / [[1.0.0 P-109]] / [[1.0.0 P-118]] all start from real-world GitHub issues and attempt to reconstruct compatible evaluation environments, SWE-smith **starts from a robust execution environment and synthesises "bug-driven" task instances within it**. The contribution decomposes into four complementary elements:
+
+1. **Environment-first pipeline.** The SWE-smith pipeline begins by **establishing a deterministic Docker evaluation environment** for a target Python repository (using the existing SWE-bench harness as the substrate; the SWE-smith environment is a strict superset of the SWE-bench environment, retaining the test-suite acceptance criterion and adding per-task bug-introduction hooks). Once the environment is established, the pipeline synthesises **hundreds to thousands of "bug-driven" task instances within that single environment**, eliminating the per-instance environment-reconstruction step that the original SWE-bench methodology requires. The trade-off — environment setup is more expensive per repository but is amortised across thousands of instances — is what makes the **50,000-instance dataset scale** tractable.
+2. **Four complementary bug-introduction strategies.** SWE-smith combines four automated strategies to synthesise realistic test-breaking tasks (where a previously-passing test is forced to fail before the agent's fix restores it):
+   - **LM-based modifications** — a language model is prompted to introduce semantically-plausible bugs into a target function, given the function's signature, docstring, and call-graph context. The bug is verified to break at least one test before it is admitted as a task instance.
+   - **Procedural AST mutations** — the pipeline applies a library of AST-level mutations to a target function (removing a conditional, swapping operators, inverting a boolean, deleting a return statement, replacing a constant with a sentinel), verifies the mutated function breaks at least one test, and admits the mutation as a task instance. The procedural approach gives a **known distribution over bug topology** that the LM-based approach cannot.
+   - **PR mirroring** — the pipeline automatically reverts the changes from existing pull requests against the target repository, producing "fix-this-revert" task instances whose ground-truth fixes are the original PR's commits. This strategy produces **realistic bug topologies** drawn from real developer activity.
+   - **Patch combinations** — the pipeline aggregates multiple bug candidates (typically one LM-based + one procedural, or one PR-mirrored + one procedural) into a single task instance, producing **multi-bug fix tasks** that test the agent's ability to compose fixes rather than apply a single isolated patch.
+3. **50,000+ task instances across 128 repositories.** The pipeline has been run against **128 Python repositories** to produce a dataset of **over 50,000 task instances** — an order of magnitude larger than the 2,294-instance SWE-bench original, the 500-instance Verified subset, the 300-instance Lite subset, or the 21,000-instance SWE-Rebench V1 corpus. The 128 repositories span the same Python ecosystem that SWE-bench targets (Django, scikit-learn, sphinx, matplotlib, sympy, astropy, pytest, xarray, flask, conan, pylint, plus ~117 additional repositories with established CI harnesses), so SWE-smith tasks are **directly comparable** to SWE-bench tasks in terms of language surface and library vocabulary.
+4. **SWE-agent-LM-32B as the headline trained model.** The authors used the SWE-smith dataset to train **SWE-agent-LM-32B**, a 32B-parameter open-weights SWE-bench-flavoured agent that achieves **40.2% Pass@1 on SWE-bench Verified**, setting a state-of-the-art open-weights result at publication. The 40.2% number is **5-10 percentage points above the prior open-weights SOTA** (Qwen2.5-Coder-32B-Instruct and DeepSeek-Coder-V2-Lite cluster in the 30-35% range) and is competitive with the closed-source frontier (Claude 3.5 Sonnet + SWE-agent scaffold clusters in the 45-55% range). The headline result demonstrates that **scalable synthetic-task data can close most of the gap between open-weights and closed-source SWE-bench performance** without requiring a frontier-scale training budget.
+
+**Why this matters for the SLM era**: SWE-smith provides the **synthetic-task generator that the 4B-30B SLM regime needs to advance past the contamination plateau** identified by [[1.0.0 P-119]] SWE-Rebench. Where static benchmarks age out as model training cutoffs catch up to the upstream GitHub commits, SWE-smith's procedural AST mutations produce **bug topologies that no training corpus can have memorised** because they are synthesised on-demand against an arbitrary function. This is the **per-iteration training-time data source** that lets a MAgHARCM-internal pipeline generate fresh, contamination-free training pairs every sprint without depending on the SWE-bench team's manual curation cadence.
+
+## Application in MAgHARCM
+
+- **PRIM-22 (Four Phases of Comprehension)** — SWE-smith's procedural AST mutations are the **bug-generator substrate** for the four-phase comprehension scaffold's Anchoring phase. Where the current Anchoring phase identifies the function-under-test by signature + call-graph + recent diff, a SWE-smith-augmented Anchoring phase would additionally **identify the function-under-test by bug-topology match** — selecting the comprehension scaffold whose inputs best resemble the bug's structural shape (conditional-removal vs operator-swap vs return-deletion). The bug-topology match is a **per-sprint-trainable signal** that improves as the SWE-smith-augmented corpus grows.
+- **PRIM-23 (Adversarial Test Synthesis)** — SWE-smith's bug-introduction strategies are the **training-corpus analogue** for the adversarial test-synthesis primitive. The current Adversarial Test Synthesis primitive synthesises tests that distinguish the Translator's output from a reference implementation; SWE-smith's AST mutation strategies synthesise **bugs that distinguish the Translator's fix from a reference fix**. The two synthesis operations are structurally identical (AST rewrite + test-suite verification); the SWE-smith strategies generalise directly into the existing primitive.
+- **PRIM-27 (Coverage-Guided Plateau Detection)** — SWE-smith's 50,000-instance scale is the **plateau-escape substrate** for the plateau-detection primitive. Where the current Plateau Detection watches for stagnation on the static [[1.0.0 P-118]] Lite benchmark, a SWE-smith-augmented Plateau Detection would **inject synthetic tasks at the boundary of the agent's current capability** — tasks that are easy enough that the agent can solve them but hard enough that they require a meaningful scaffolding change. The synthetic-task injection is the **adaptive difficulty regulator** that the static benchmarks cannot provide.
+- **PRIM-31 (Iterative Retrieval Refinement)** — SWE-smith's PR mirroring is the **realistic-retrieval substrate** for retrieval-refinement training. The PR-mirrored task instances come with **real developer commits as the ground-truth fix**, which means the retrieval-refinement primitive can train against **real fix-paths** rather than against synthesised fix-paths whose distribution over bug topology is artificially narrow.
+- **Headline number applied to MAgHARCM**: the 40.2% Pass@1 of SWE-agent-LM-32B on SWE-bench Verified is **the empirical calibration target for MAgHARCM's own SWE-bench-Verified-anchored agents**. MAgHARCM's 8-agent composition currently lands in the 25-35% Pass@1 range on Lite; a MAgHARCM pipeline augmented with the SWE-smith dataset as additional fine-tuning data should be able to reach the 35-45% range on Verified within 1-2 sprints of focused training-time experimentation.
+- **Cross-reference**: P-120 anchors the **synthetic-task-generation lineage** that supplements the SWE-bench family (P-111 / P-109 / P-118) with on-demand bug synthesis. Add P-120 to PRIM-22, PRIM-23, PRIM-27, PRIM-31 rows in `Software-Archaeology-Lineage.md`. This is the **sixth pillar** of MAgHARCM's evaluation substrate, sitting alongside [[1.0.0 P-111]] (full), [[1.0.0 P-109]] (Verified), [[1.0.0 P-118]] (Lite), [[1.0.0 P-56]] (Multi-SWE-bench multilingual), [[1.0.0 P-119]] SWE-Rebench (decontamination).
+
+## Hop-1 References (papers cited by Yang et al.)
+
+- Jimenez et al. (2024) — SWE-bench [[1.0.0 P-111]] (the Python-only original; SWE-smith's harness is the SWE-bench environment extended with per-task bug-introduction hooks).
+- OpenAI (2024) — SWE-bench Verified [[1.0.0 P-109]] (the 500-instance human-curated subset; SWE-smith's headline model is evaluated on Verified's solvability-filtered instances).
+- Yang et al. (2024) — SWE-agent [[1.0.0 P-112]] (the canonical tool-calling agent scaffold; SWE-smith's 40.2% Pass@1 result uses SWE-agent's scaffold as the substrate).
+- OpenAI (2024) — GPT-4o technical report (referenced as the closed-source frontier baseline that the trained SWE-agent-LM-32B is benchmarked against).
+- Anthropic (2024) — Claude 3.5 Sonnet system card (referenced as a closed-source frontier baseline; cross-link [[1.0.0 P-38]] for the related alignment-evaluation framework).
+- Liu et al. (2024) — DeepSeek-V2 (referenced as the open-weights frontier baseline; SWE-smith's 40.2% Pass@1 is competitive with DeepSeek-Coder-V2-Lite in the same evaluation harness).
+- Yang et al. (2024) — Qwen2.5-Coder-Instruct (referenced as the canonical 7B-32B SLM baseline; SWE-agent-LM-32B's training corpus is built on Qwen2.5-Coder-32B as the base model).
+
+## Hop-2 References (papers-cited-by-hop-1)
+
+- Wang et al. (2024) — OpenHands/CodeAct [[1.0.0 P-115]] (referenced as the multi-turn alternative scaffold that SWE-smith's environment-first pipeline can also support).
+- Zan et al. (2025) — Multi-SWE-bench [[1.0.0 P-56]] (referenced as the multilingual extension; SWE-smith's environment-first pipeline is the natural substrate for a future multilingual synthetic-task generator that pairs with Multi-SWE-bench's per-language evaluation harness).
+- Badertdinov et al. (2025) — SWE-Rebench [[1.0.0 P-119]] (referenced as the contamination-aware benchmark; SWE-smith's procedural AST mutations are the canonical bug-introduction strategy that cannot be memorised by any training corpus, making SWE-smith-synthesised tasks the **natural complement to SWE-Rebench's decontamination methodology**).
+
+## Backlinks
+
+- **PRIM-22** (Four Phases of Comprehension): bug-topology-aware Anchoring phase.
+- **PRIM-23** (Adversarial Test Synthesis): AST-rewrite training-corpus analogue for adversarial synthesis.
+- **PRIM-27** (Coverage-Guided Plateau Detection): adaptive difficulty regulator via synthetic-task injection.
+- **PRIM-31** (Iterative Retrieval Refinement): realistic-retrieval substrate via PR-mirrored ground-truth fixes.
+- **Cross-ref**: add P-120 to PRIM-22, PRIM-23, PRIM-27, PRIM-31 rows in `Software-Archaeology-Lineage.md`. This is the **synthetic-task-generation anchor** for MAgHARCM's per-sprint contamination-free training data.

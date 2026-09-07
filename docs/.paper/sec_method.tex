@@ -1,0 +1,618 @@
+% docs/.paper/sec_method.tex
+\section{Problem Definition and Architecture Design}
+\label{sec:method}
+
+A source project $P_s = (F_s, T_s, D_s)$ consists of source functions
+$F_s = \{f_s^1, \dots, f_s^n\}$, tests $T_s$, and dependencies $D_s$,
+
+\begin{figure*}[!t]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig1_workflow.png}
+    \vspace{-0.5em}
+    \caption{Architecture overview of the MAgHARCM multi-agent
+    translation pipeline. The system coordinates eight specialised
+    agents (Analyzer, Archaeologist, Planning, Translator, Validator,
+    VerdictPanel, Recruiter, RoleFlipReviewer) through an explicit
+    \textsc{Archaeology} $\to$ \textsc{Analyze} $\to$ \textsc{Plan} $\to$
+    \textsc{Translate} $\to$ \textsc{Review} $\to$ \textsc{Validate}
+    $\to$ \textsc{Verdict} $\to$ \textsc{Recruit} loop with
+    reverse-topological scheduling and bounded context assembly.}
+    \label{fig:workflow}
+\end{figure*}
+
+written in language $L_s$. Given a target language $L_t$, the
+\emph{repository-level code translation problem} is to produce
+$P_t = (F_t, T_t, D_t)$ such that: (1) $P_t$ compiles without errors,
+(2) $\forall i, \forall \vec{x_s}, \forall \vec{x_t} : \vec{x_s} \mapsto
+\vec{x_t} \implies \sem{f_s^i}(\vec{x_s}) \simeq \sem{f_t^i}(\vec{x_t})$,
+i.e.\ corresponding functions are semantically equivalent, and (3) all
+translated tests $T_t$ pass. Here $\vec{x_s}$ and $\vec{x_t}$ denote
+function inputs in languages $L_s$ and $L_t$ respectively, $\mapsto$ is
+a mapping of concrete values in $L_s$ to $L_t$, $\sem{\cdot}$ denotes
+semantic interpretation, and $\simeq$ denotes observational equivalence.
+Given the practical limits of testing and verification, we consider a
+subset of all inputs to each $f_s^i$ and $f_t^i$.
+
+Figure~\ref{fig:workflow} presents an overview of MAgHARCM, which takes
+$P_s$ and $L_t$ as input and produces $P_t$. MAgHARCM consists of eight
+components: the \emph{Archaeologist Agent}
+(§\ref{sec:method_archaeologist}), \emph{Analyzer Agent}
+(§\ref{sec:method_analyzer}), \emph{Planning Agent}
+(§\ref{sec:method_planning}), \emph{Translator Agent}
+(§\ref{sec:method_translator}), \emph{RoleFlipReviewer Agent}
+(§\ref{sec:method_roleflip}), \emph{Validator Agent}
+(§\ref{sec:method_validator}), \emph{VerdictPanel Agent}
+(§\ref{sec:method_verdict}), and \emph{Recruiter Agent}
+(§\ref{sec:method_recruiter}). The Archaeologist, Analyzer, and Planning
+agents analyse $P_s$ and generate a dependency-aware implementation
+plan; the Translator, RoleFlipReviewer, Validator, VerdictPanel, and
+Recruiter agents execute an iterative translate--review--validate--
+verdict--recruit--repair loop to produce $P_t$.
+The pipeline design follows the broader multi-agent orchestration pattern
+surveyed by~\cite{p63_multi_agent_survey,p95_roziere_code_llama_2023,p93_rafailov_dpo_2023}. The graph-of-agents architecture follows the
+typed-blackboard model~\cite{p73_nii_blackboard_1986}, with each agent writing to and reading
+from a typed panel of the shared state.
+
+The \emph{Analyzer Agent} performs extensive analysis of $P_s$. It walks
+the source tree through MCP tools and produces a report that
+summarises project structure, data models, classes, interfaces, structs,
+error-handling strategy, and $D_s$. It then analyses library usage in
+$L_s$ by consulting documentation and identifying suitable counterparts
+in $L_t$. This component concludes by producing a target project design
+document that specifies how modules should be translated and which
+libraries should be used to preserve functionality.
+
+The \emph{Planning Agent} decomposes the translation task into concrete
+sub-tasks. It identifies all functions in $F_s$ that require
+translation and constructs a consistent name mapping to ensure
+uniformity in $P_t$. It also generates a skeleton structure for $P_t$,
+outlining file organisation and module boundaries, and produces an
+implementation plan with concrete tasks for translating and validating
+$P_s$. This agent specifically addresses the engineering effort required
+by existing neuro-symbolic techniques---challenge 1---by replacing their
+PL-dependent program analysis component (dependency-graph construction
+via CodeQL, type-driven proofs) with tool-assisted, LLM-centred static
+analysis built on lightweight tools that support many PLs (Tree-sitter
+grammars for C, Go, Java, JavaScript, Python, and Rust). The plan
+guides subsequent agents with concrete steps and avoids the unnecessary
+exploration that causes hallucinations---challenge 2.
+
+The \emph{Translator Agent}, \emph{RoleFlipReviewer Agent},
+\emph{Validator Agent}, \emph{VerdictPanel Agent}, and \emph{Recruiter
+Agent} execute the implementation plan. The Translator translates $F_s$
+and $T_s$ into $F_t$ and $T_t$, incrementally filling in the skeleton
+files; if validation fails, it uses the Validator's report to repair
+translation bugs. The Validator independently validates $P_t$ by
+executing $T_t$ and performing coverage-gap analysis; when functions
+in $F_t$ are uncovered, it triggers additional test generation and
+reports results back to the Translator for repair. Separating the
+dynamic validation workflow from the Validator while the Translator
+co-translates code and tests addresses challenge 3. Translating tests
+is essential for the pipeline's generalisability beyond command-line
+tools, compared with existing agentic systems that rely on language
+interoperability or PL-specific differential fuzzing~\cite{ibrahimzada2026recodeagent}.
+
+The end-to-end orchestration procedure is given in
+Algorithm~\ref{alg:magharcm_pipeline}. The harness runs Archaeologist,
+Analyzer, and Plan once with a shared timeout, then iterates through
+Translate (which produces a translated project fragment-by-fragment),
+RoleFlipReview (which performs communicative de-hallucination
+checks), Validate (which compiles, executes tests, and emits a
+structured report), EvaluateConsensus on the VerdictPanel, and
+Recruit (which adaptively replans the loop) until validation
+succeeds, a coverage plateau is detected, the adversarial weakening
+guard fires, or the iteration budget $K$ is exhausted.
+
+\begin{algorithm}[MAgHARCM Repository Translation Orchestration]
+\label{alg:magharcm_pipeline}
+\begin{algorithmic}[1]
+\Input Source project $P_s$, source language $L_s$, target language $L_t$, max iterations $K$
+\Output Translated target project $P_t$ and validation report $\mathcal{R}$
+\StateIndent $\text{ArchReport} \gets \Call{InvestigateArchaeology}{P_s}$ \Comment{PRIM-14, 18, 19, 20, 22}
+\StateIndent $G_{\text{AST}}, \text{Manifest} \gets \Call{ExtractAST}{P_s}$
+\StateIndent $\text{Strategy}, \text{Design} \gets \Call{Analyze}{G_{\text{AST}}, \text{Manifest}, \text{ArchReport}, L_s, L_t}$
+\StateIndent $DAG, \text{Plan}, \text{Skel} \gets \Call{Plan}{G_{\text{AST}}, \text{Design}, L_s, L_t}$
+\StateIndent $P_t \gets \Call{InitializeCrate}{\text{Skel}, \text{Plan}}$
+\StateIndent $P_t \gets \Call{TranslateChunked}{\text{Translator}, P_t, \text{Plan}}$
+\StateIndent $\Call{SaveCheckpoint}{P_t, \text{iter}=0}$
+\StateIndent $\Call{ReviewRoleFlip}{P_t}$ \Comment{PRIM-25 Role-Flip Reviewer}
+\StateIndent $\mathcal{R} \gets \emptyset$
+\WhileIndent{$\text{iter} < K$}
+    \StateDIndent $\mathcal{R} \gets \text{ValidatorAgent}.\Call{Validate}{P_t, P_s}$
+    \IfDIndent{$\mathcal{R}.\text{AllSuccess} = \text{True}$}
+        \StateTIndent \Return $P_t, \mathcal{R}$ \Comment{Converged}
+    \EndIfIndent
+    \IfDIndent{$\mathcal{R}.\text{PlateauDetected} \lor \mathcal{R}.\text{Weakened}$}
+        \StateTIndent $\text{switched} \gets \Call{SwitchToNextStrategy}{\text{Strategy}}$ \Comment{Incremental Strategy Failover}
+        \IfTIndent{$\neg \text{switched}$} \textbf{break} \EndIfIndent
+    \EndIfIndent
+    \StateDIndent $\Call{EvaluateConsensus}{\text{VerdictPanel}, P_s, P_t}$ \Comment{PRIM-7}
+    \StateDIndent $\Call{RecruitAdaptivePlan}{\text{Recruiter}, \mathcal{R}}$ \Comment{PRIM-29}
+    \StateDIndent $P_t \gets \text{TranslatorAgent}.\Call{Repair}{P_t, \mathcal{R}}$
+    \StateDIndent $\Call{ReviewRoleFlip}{P_t}$
+    \StateDIndent $\text{iter} \gets \text{iter} + 1$
+    \StateDIndent $\Call{SaveCheckpoint}{P_t, \text{iter}}$
+\EndWhile
+\StateIndent \Return $P_t, \mathcal{R}$
+\end{algorithmic}
+\end{algorithm}
+
+\section{MAgHARCM}
+\label{sec:method_magharcm}
+
+Tools are essential components that enable agent autonomy. We first
+explain the tools that assist the specialized MAgHARCM agents with static
+analysis (§\ref{sec:method_tools}) and then detail the workflow of each
+specialized agent unit for code translation, archaeological recovery,
+and validation through reasoning and tool usage
+(§\ref{sec:method_archaeologist}--§\ref{sec:method_recruiter}).
+
+\subsection{Tools}
+\label{sec:method_tools}
+
+MAgHARCM provides a set of Model-Context-Protocol (MCP) tools that
+expose static-analysis capabilities to the agents. The MCP is an open protocol that lets
+LLMs connect to external data, tools, and software systems. We
+implement custom tools and expose them to each agent in MAgHARCM
+through MCP. These tools enable agents to obtain detailed project
+information, modify code, and retrieve documentation in a PL-agnostic
+manner.
+
+\subsubsection{Language Server Protocol (LSP) Tools}
+\label{sec:method_tools_lsp}
+
+LSP is an open, JSON-RPC-based protocol for use between source-code
+editors or IDEs and servers that provide language intelligence:
+PL-specific features like code completion, syntax highlighting, error
+markers, and refactoring routines. The goal of the protocol is to allow
+PL support to be implemented and distributed independently of any
+given IDE. We use LSPs from six PLs (C, Go, Java, JavaScript, Python,
+and Rust) as a set of tools that allow agents to interact with the
+codebase at a semantic level, independent of the underlying PL.
+Extending support to more PLs only requires installing their language
+server, which is usually maintained and available online, without
+writing any additional code. LSP functionalities that we implement
+include:
+
+\begin{enumerate}
+    \item \textbf{definition}: Takes a symbol name as input and
+    retrieves the complete implementation (function, class) along with
+    file path and line numbers from the codebase, enabling agents to
+    understand and extract source-code fragments for translation.
+    \item \textbf{diagnostics}: Provides diagnostic information such as
+    errors and warnings for a specified file, assisting agents in
+    identifying potential issues in both source and translated code.
+    \item \textbf{edit\_file}: Applies a set of text edits to a file
+    atomically, supporting incremental construction and refinement of
+    the translated project. This tool is helpful when there are many
+    edits to apply, as opposed to using the agent's Edit tool once per
+    edit.
+    \item \textbf{hover}: Returns documentation for a symbol at a
+    specified position in the code, including docstrings and
+    deprecation details.
+    \item \textbf{references}: Locates all occurrences and usages of a
+    symbol across the codebase, essential for large-scale refactoring
+    by the agent. The tool returns exact line numbers for every usage,
+    making it easy for agents to refer to them later.
+    \item \textbf{rename\_symbol}: Renames a symbol at a given location
+    and updates all corresponding references throughout the project.
+    This tool is helpful in making consistent changes across the
+    codebase, without performing additional edits.
+\end{enumerate}
+
+The native LSP provider wraps the language servers bundled with the
+development toolchain (\texttt{gopls}, \texttt{rust-analyzer},
+\texttt{clangd}, Eclipse JDT, TypeScript Language Server, Python
+Language Server). An optional ABCoderMcpProvider delegates the same
+operations to a Model-Context-Protocol server that exposes structural
+queries across the same six language servers used by
+\textsc{ReCodeAgent}~\cite{ibrahimzada2026recodeagent}. When no
+provider is wired the Navigator is a no-op and the Planner falls back
+to a conservative name mapping.
+
+\subsubsection{Project Analysis (PA) Tools}
+\label{sec:method_tools_pa}
+
+These tools extract structural information from the codebase, aiding
+agents in project comprehension and planning. The goal of these tools
+is to reduce the token consumption the agent would otherwise spend on
+exploring the codebase and files. Functionalities included are:
+
+\begin{enumerate}
+    \item \textbf{get\_directory\_tree}: Returns a structured
+    representation of the project directory, printing files such as
+    main, test, and configuration, with their directory hierarchy.
+    \item \textbf{get\_file\_structure}: Generates a structured
+    representation of a given source file, identifying key code
+    elements such as classes, functions, structs, and global
+    variables.
+\end{enumerate}
+
+The ABCoderMcpProvider (\texttt{lsp.provider: abcoder-mcp}) is the
+default across configurations. It delegates structural queries to a
+Model-Context-Protocol server exposing UniAST semantic anchors across
+heterogeneous language targets. ABCoder MCP exposes a Code Property
+Graph~\cite{p72_yamaguchi_cpg_2014} unifying abstract syntax trees,
+control flow graphs, and data flow graphs; concept-cluster extraction
+and mutation-delta analysis are implemented as traversals over this
+graph. The native Tree-sitter backend is retained as a local fallback when external MCP processes are disabled.
+
+\subsection{Archaeologist Agent}
+\label{sec:method_archaeologist}
+
+The Archaeologist Agent (§\ref{sec:method_archaeologist}) executes an
+initial pre-planning software archaeology pass over $P_s$, combining
+foundational techniques from Rajlich~\cite{p28_weiser},
+M\"uller~\cite{p06_codes_bench}, Foltz~\cite{p30_lfm25}, and
+Kazman~\cite{p51_kazman_drspaces}. The design-rule taxonomy follows Baldwin
+and Clark~\cite{p70_baldwin_clark_design_rules_2006}; obsolete design rules
+that fall into the ``modularity trap'' are flagged via the Fleming and Baldwin
+2024 retrospective~\cite{p71_fleming_baldwin_arch_complexity_2024}.
+It produces an
+\texttt{ArchaeologyReport} with five components:
+\begin{enumerate}
+    \item \emph{Boundary Extraction}: identifies module and file boundaries.
+    \item \emph{Time-Capsule Harness}: captures reproduction shell commands for historical toolchains.
+    \item \emph{Temporal Churn Coupling}: computes pairwise commit co-change Jaccard similarity to detect hidden coupling invisible to static import graphs (PRIM-18).
+    \item \emph{Design Rule Hierarchy Partitioning}: categorizes elements into L1 design-rule interfaces, L2 subsystems, and L3 concrete leaves, flagging modularity violations where L1 interfaces depend on L3 leaves (PRIM-19).
+    \item \emph{Concept Assignment \& Redocumentation}: clusters lexical tokens into domain concept bindings mapped to physical file paths (PRIM-20). The static-first / dynamic-fallback concept-locator strategy~\cite{p74_biggerstaff_concept_assignment_1993,p79_wilde_scully_1995} is implemented as the comprehension phase's traversal order over the CPG.
+\end{enumerate}
+The archaeology pass is informed by long-running engineering case
+studies of mission-critical software evolution, such as the Digital
+Apollo account~\cite{p59_digital_apollo_case}.
+
+\subsection{Analyzer Agent}
+\label{sec:method_analyzer}
+
+The Analyzer Agent (§\ref{sec:method_analyzer}) inspects the incoming
+codebase $P_s$ to build an architectural specification. It emits three
+documents that anchor every subsequent stage.
+
+\paragraph{(1) Source Project Research.}
+The agent walks the source tree through \texttt{get\_directory\_tree},
+then calls \texttt{get\_file\_structure} on each entry point to recover
+the directory hierarchy, error-handling strategy, and dependency
+declarations recorded in the build manifest.
+
+\paragraph{(2) Third-Party Library Analysis.}
+For each external dependency declared in $D_s$, the agent looks up the
+idiomatic target-language counterpart. The mapping is recorded in a
+canonical table (\texttt{internal/agents/canonical\_crates.go}) that
+fixes the third-party crate choice for every supported source library.
+The agent may override the canonical choice with a justification but
+cannot silently introduce unvetted dependencies.
+
+\paragraph{(3) Target Project Design.}
+The agent synthesises a strict one-to-one structural mapping between
+source and target layouts (file paths, module boundaries, identifier
+naming conventions) and records source-to-target type mappings (e.g.\ Go
+\texttt{struct} $\to$ Rust \texttt{struct}, Java \texttt{interface}
+$\to$ Rust \texttt{trait}). This document is the authoritative reference
+for the Planning, Translator, and Validator agents.
+
+\subsubsection{Strategy Registry}
+\label{sec:method_strategies}
+
+The analyzer selects one of five migration strategies through a
+strategy registry rather than a hard-coded \texttt{if}-cascade. Each
+strategy exposes a \texttt{Matches(Profile) bool} predicate and an
+\texttt{Attempt(*State) error} method. The registry iterates its
+members and returns the first strategy whose predicate accepts the
+repository profile. Strategies are listed in try-and-fail order: the
+registry retries the next strategy if the active one fails, before
+falling back to a final always-accept entry. Adding a strategy is a
+one-line append to \texttt{NewDefaultRegistry}.
+This cascading-fallback structure mirrors the migration strategy
+This cascading-fallback structure mirrors the migration strategy taxonomy proposed for legacy system modernisation~\cite{p60_bisbal_cascading_fallback,p84_s1_test_time_scaling_2025,p108_eagle3_2025,p122_zhang_reasoningbank_2026,p123_wang_codechemist_2026},
+with the informal wrap/reengineer/replace/migrate coping-strategy framing discussed in Bennett's 1995 editorial~\cite{p75_bennett_legacy_coping_success_1995},
+with the broader research-agenda mapping of grand challenges (concept location,
+impact analysis, comprehension at scale, migration strategies, empirical validation)
+to primitives~\cite{p76_bennett_rajlich_roadmap_2000}.
+
+\begin{table}[!t]
+\centering
+\small
+\begin{tabular}{ll}
+\toprule
+\textbf{Strategy} & \textbf{Matches when} \\
+\midrule
+\textsc{Pilot} & $\text{FileCount} > 50$ or $\text{LoC} > 10{,}000$ \\
+\textsc{FrozenLegacy} & source has no test suite \\
+\textsc{ParallelCutover} & source has tests and $\text{FileCount} > 10$ \\
+\textsc{Incremental} & always true (default fallback) \\
+\textsc{BigBang} & $\text{FileCount} \le 3$ and $\text{LoC} < 500$ \\
+\bottomrule
+\end{tabular}
+\vspace{0.3em}
+\caption{Strategy registry used by the Analyzer Agent. Entries are tried
+in order; each strategy exposes a predicate and an attempt method.}
+\label{tab:strategies}
+\end{table}
+
+\subsection{Qwen2.5-Coder SLM Anchor (PRIM-22, PRIM-23, PRIM-31)}
+\label{sec:method_qwen25coder_anchor}
+
+MAgHARCM is tuned for the Qwen2.5-Coder family of coding SLMs at the 7B, 14B, and 32B scales~\cite{p58_hui_qwen25coder_2024,p94_zhou_lima_2023,p96_kojima_zsr_2022,p99_suzgun_bigbench_cot_2022,p100_khot_decomposed_2022,p101_zhou_l2m_2023,p102_smallcode_4b_2025,p104_s_star_2025,p105_chunkkv_2025,p106_bfcl_2025,p121_patil_bfcl_2025,p107_decomposed_prompting_slm_reanchor_2025,p108_eagle3_2025,p110_graphcoder_2024,p122_zhang_reasoningbank_2026,p124_shetty_syzygy_2025,p86_xu_modernization_survey_2024_unverified,p88_hityper_peng_2022,...
+fragment context ($\le 4\,\text{KB}$), reverse-topological scheduling,
+and the role-flipped reviewer are calibrated so that the prompt
+window, scratch reasoning budget, and instruction-following fidelity
+of these Qwen2.5-Coder checkpoints can drive the loop without the
+full-thinker overhead of larger general-purpose models. Domain-adapter training
+follows the ULMFiT transfer recipe~\cite{p66_howard_ruder_ulmfit_2018} with Adam
+optimisation~\cite{p67_kingma_ba_adam_2015}; long-context inference relies on
+multi-query attention~\cite{p68_shazeer_mqa_2019,p80_streaming_llm_2024,p87_hou_slr_2024} for tractable KV-cache
+footprint.
+
+\subsection{Planning Agent}
+\label{sec:method_planning}
+
+The Planning Agent (§\ref{sec:method_planning}) converts the
+architectural analysis into an executable dependency schedule. It
+emits four artefacts that anchor the Translator Agent.
+
+\paragraph{(1) Fragment Extraction.}
+The agent parses every source file into AST fragments using the
+configured Tree-sitter backend, then groups fragments by file and
+assigns each a stable identifier of the form
+\texttt{file\_path:fragment\_name}. To validate that no file has been
+omitted, the planner generates a verification script that confirms
+every extracted fragment exists in the source codebase. This
+validation step mitigates agent hallucination, where the agent
+erroneously concludes that a task has been completed when it has not.
+
+\paragraph{(2) Name Mapping.}
+To ensure one-to-one translation and naming consistency, the agent
+constructs a mapping from source fragments to their target
+counterparts, strictly preserving symbol names (e.g.\ \texttt{camelCase},
+\texttt{snake\_case}, \texttt{PascalCase}) to maintain functional parity
+across the project. This mapping is then used during skeleton
+generation.
+
+\paragraph{(3) Skeleton Generation.}
+The planner materialises the target directory tree and populates it
+with skeleton files that declare every type, function signature, and
+trait bound but contain no implementation. This produces a compilable
+framework that mirrors the source architecture and enables incremental
+construction by the Translator Agent. Skeleton generation is
+performed using the \texttt{get\_file\_structure} tool, while
+maintaining a strict validation-in-the-loop process.
+
+\paragraph{(4) Implementation Plan.}
+The planner emits an ordered plan partitioned into Part~A (source-code
+translation steps) and Part~B (test translation and validation steps).
+The plan follows a strict bottom-up ordering so that every dependency
+is implemented before the modules that depend on it.
+
+\subsubsection{Cycle-Free Reverse-Topological Scheduling}
+
+A frequent failure mode in multi-file translation is
+caller-before-callee synthesis: if module $A$ depends on module $B$,
+translating $A$ first causes the model to hallucinate the signatures
+of $B$. The planner therefore builds a directed call graph
+$G = (V, E)$ over the extracted fragments and computes a
+reverse-topological order using depth-first search with back-edge
+removal. Algorithm~\ref{alg:reverse_topo} gives the procedure.
+
+\begin{algorithm}[Cycle-Free Reverse-Topological Scheduling]
+\label{alg:reverse_topo}
+\begin{algorithmic}[1]
+\Input Directed dependency graph $G = (V, E)$
+\Output Reverse-topological execution sequence $\mathcal{Q}$
+\StateIndent $\text{Visited} \gets \emptyset, \quad \text{OnStack} \gets \emptyset, \quad \mathcal{Q} \gets []$
+\StateIndent \Function{Visit}{$u$}
+    \StateDIndent $\text{Visited} \gets \text{Visited} \cup \{u\}$
+    \StateDIndent $\text{OnStack} \gets \text{OnStack} \cup \{u\}$
+    \ForIndent{$(u, v) \in E$}
+        \IfDIndent{$v \in \text{OnStack}$}
+            \StateTIndent $E \gets E \setminus \{(u, v)\}$ \Comment{Cut cyclic back-edge}
+        \ElsIfIndent{$v \notin \text{Visited}$}
+            \StateTIndent \Call{Visit}{$v$}
+        \EndIfIndent
+    \EndFor
+    \StateDIndent $\text{OnStack} \gets \text{OnStack} \setminus \{u\}$
+    \StateDIndent $\mathcal{Q}.\Call{append}{u}$
+\StateIndent \EndFunction
+\ForIndent{$u \in V$}
+    \IfDIndent{$u \notin \text{Visited}$}
+        \StateTIndent \Call{Visit}{$u$}
+    \EndIfIndent
+\EndFor
+\StateIndent \Return $\mathcal{Q}$
+\end{algorithmic}
+\end{algorithm}
+
+When a back-edge is detected (node $v$ is on the active recursion
+stack), the edge is removed from the planning DAG and recorded in the
+repair ledger so that the Translator Agent can resolve the resulting
+forward dependency by emitting a stub for the missing callee in the
+same fragment~\cite{yang2024alphatrans,p07_rustrepotrans}. After
+topological ordering, the Canonical Manifest Rewriter maps each source
+dependency to a standard target crate in \texttt{Cargo.toml}, drawing
+entries from the canonical table populated by the Analyzer Agent.
+
+\begin{figure*}[!t]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig3_dataflow.png}
+    \vspace{-0.5em}
+    \caption{Data flow architecture for chunked translation and context
+    synthesis. The Symbol Navigator and Prior-Modules Memory bound each
+    fragment's context to $\le 4\,\text{KB}$ so the local coding SLM
+    never saturates.}
+    \label{fig:dataflow}
+\end{figure*}
+
+\subsection{Translator Agent}
+\label{sec:method_translator}
+
+The Translator Agent (§\ref{sec:method_translator}) executes Part~A and
+Part~B of the plan in topological order. Its objective is to translate
+$F_s$ and $T_s$ into $F_t$ and $T_t$ while preserving functional
+equivalence. When the Validator reports failures, the Translator enters
+repair mode and applies targeted fixes based on the validation report.
+The Translator operates in four modes.
+The four-mode structure follows a decomposed prompting
+style~\cite{p62_decomposed_prompting}, and the Translator may offload
+arithmetic and symbolic computation to a program-aided code-execution
+pass~\cite{p65_gao_pal_2022} when a fragment requires deterministic
+evaluation. When the source and target languages can both execute,
+a cross-lingual I/O test oracle can replace the frontier-model judge
+with a training-free executable verifier~\cite{p123_wang_codechemist_2026}.
+
+\paragraph{(1) Context Integration.}
+The agent loads the Implementation Plan, the Target Project Design
+document, and the name mapping. The bounded context per fragment is
+assembled from two mechanisms (Figure~\ref{fig:dataflow}). The
+Symbol-Aware Navigator returns the upstream struct definitions,
+function signatures, and trait bounds the fragment depends on, capped
+at $\le 4\,\text{KB}$. The Prior-Modules Memory maintains a running
+summary ($\le 4\,\text{KB}$) of emitted module paths and exported
+signatures so that newly generated modules import and reuse already
+emitted types consistently. The navigator's subgraph ranking follows
+the existing code-property-graph~\cite{p110_graphcoder_2024,p113_zhang_autocoderover_2024,p116_gauthier_aider_2024,p117_zhang_repocoder_2023,p120_yang_swesmith_2025,p124_shetty_syzygy_2025}, raising small-model (4B--13B) comprehension to large-model parity on repo-level tasks. When the legacy codebase can be compiled, runtime-mined type, bounds, and nullability properties from instrumented execution complement the static code-property-graph~\cite{p124_shetty_syzygy_2025}.
+challenge 2: long-horizon agents lose high-level goals without an
+explicit plan and degrade as interaction history grows unbounded; the
+bounded context per fragment prevents both failure modes on small
+local models.
+
+\paragraph{(2) Incremental Implementation.}
+The agent follows the dependency-aware ordering from the Planner and
+replaces each skeleton stub with a concrete implementation for the
+corresponding Part~A step. It then translates developer-written tests
+for Part~B, creating the corresponding test files in the target
+project. Each fragment writes through to disk before the next
+fragment is emitted; a checkpoint is serialised after every fragment
+to enable idempotent resume.
+
+\paragraph{(3) Language-Specific Adaptation.}
+When translating between languages with divergent feature sets, the
+agent applies targeted adaptation strategies that preserve behaviour
+(e.g.\ emulating Go method receivers via explicit \texttt{self}
+parameters, emulating Java interfaces via Rust traits, emulating
+function overloading via default arguments or trait-based dispatch).
+Each adaptation is recorded in the implementation plan so subsequent
+fragments observe consistent conventions.
+
+\paragraph{(4) Repair Mode.}
+When provided with a non-empty validation report, the agent diagnoses
+the reported failures (compiler error codes, assertion traces, AST
+syntax errors) and updates the translated source and/or test code
+accordingly, iterating until validation succeeds or the iteration
+budget is exhausted. The output of this agent is a translated project
+that includes both translated source code and tests, ready for the
+Validator Agent.
+
+\subsection{Validator Agent}
+\label{sec:method_validator}
+
+The Validator Agent validates the functional correctness of the
+translated project (Algorithm~\ref{alg:magharcm_pipeline},
+lines~12--18). Given a translated project (including translated tests)
+produced by the Translator, this agent executes tests, performs
+coverage-gap analysis, and produces a validation report that is fed
+back to the Translator for repair in the next iteration. The
+Validator operates in two stages.
+
+\paragraph{(1) Validation and Failure Reporting.}
+The agent executes the translated test suite in the target environment
+and checks whether all tests pass. If failures occur (compilation
+errors or assertion failures), the agent consolidates
+diagnostics---including stack traces and failing test cases---into a
+structured validation report. This report identifies the failing
+functions and provides actionable feedback for the Translator's
+repair step in the next iteration. The cascade runs five checks in
+sequence: AST syntax pre-check (Tree-sitter validation of every
+emitted file before invoking the compiler), native toolchain build
+validation (compiler diagnostics including borrow-checker error codes
+\texttt{E0382}, \texttt{E0502}, \texttt{E0597} for Rust), test-suite
+execution (per-test pass/fail status and assertion traces), the
+adversarial test-weakening guard (halts with a \textsc{Weakened}
+signal if the assertion count decreases across iterations), and the
+coverage plateau detector (a CodaMOSA-style stagnation heuristic on
+the test pass rate; plateau remedies run inside the validator before
+the loop exits). Failure modes are aligned with the human-verified solvability taxonomy of~\cite{p109_swebench_verified_2024,p111_jimenez_swebench_2024,p118_jimenez_swebench_lite_2024,p119_badertdinov_swerebench_2025}, with the canonical tool-calling agent scaffold and test-run loop~\cite{p112_yang_sweagent_2024}, where the oracle benchmark pins down which failure traces are spurious and which are real regressions.
+
+\paragraph{(2) Coverage-Guided Test Generation.}
+To fully validate the translated modules, the agent performs a
+coverage-gap analysis by comparing the executed tests against the
+complete list of functions identified during the planning phase. If
+uncovered functions remain, it generates additional tests in both
+the source and target PLs to exercise the uncovered functions and
+adds them to the translated project. The generated tests are
+executed in both PLs to ensure matching behaviour. The agent then
+re-executes validation to update the validation report, ensuring that
+the translated code is both functionally correct (with respect to the
+available tests) and more rigorously exercised. The iterative loop
+continues until all tests pass or the maximum iteration limit is
+reached.
+\subsection{Reviewer Agent}
+\label{sec:method_reviewer}
+
+The Reviewer Agent (§\ref{sec:method_reviewer}) executes a communicative
+de-hallucination pass over generated code using a role-flipped prompt
+(PRIM-25~\cite{p46_chatdev_deepread}). Rather than accepting the Translator's
+sycophantic assertions that generated code is bug-free, the Reviewer
+is explicitly primed to find defects and surface potential discrepancies
+before the code reaches the compiler.
+
+\subsection{Role-Flip Reviewer Agent}
+\label{sec:method_roleflip}
+
+The Role-Flip Reviewer Agent (PRIM-25~\cite{p46_chatdev_deepread,p69_anthropic_sycophancy_2025_acl,p81_gorilla_2023,p85_function_calling_yue_2025_unverified}) inspects the Translator's
+output with an adversary-prompted second pass: the role-flipped system message
+forces the model to find at least one defect rather than to confirm correctness.
+The reviewer emits a binary accepted/defect verdict and, on defect, a targeted
+repair hint that the Translator consumes on the next iteration. The role-flip
+pattern is the empirically grounded mitigation for the sycophancy baseline
+(47\% flip rate per the Anthropic 2025 evaluation suite).
+
+\subsection{Verdict Panel Agent}
+\label{sec:method_verdict}
+
+
+When validation fails during iterative repair, the Verdict Panel Agent
+(§\ref{sec:method_verdict}) queries independent reasoning models
+to evaluate functional equivalence between source and target fragments
+(PRIM-7~\cite{p08_matchfixagent,p108_eagle3_2025}). The consensus decision (agreement
+Vulnerability-aware fragments additionally cross-reference the
+RedCode benchmark~\cite{p61_redcode}, and latency-sensitive
+consensus rounds may delegate token-level decoding to a
+speculative-decoding helper following the EAGLE line of
+work~\cite{p64_eagle,p93_rafailov_dpo_2023,p78_eagle3_2025,p108_eagle3_2025,p91_snell_test_time_scaling_2024,p114_cai_medusa_2024}.
+prompt generation for breadth, human/role-flip review for depth~\cite{p77_openai_red_teaming_2024}---is
+the methodological precedent for MAgHARCM's verifier-of-verifier pattern.
+
+\subsection{Recruiter Agent}
+\label{sec:method_recruiter}
+
+The Recruiter Agent (§\ref{sec:method_recruiter}) evaluates runtime
+validation signals (compilation status, test pass rate, coverage plateau,
+and test weakening) to adapt the pipeline dynamically
+(PRIM-29~\cite{p26_agentverse,p112_yang_sweagent_2024,p115_wang_openhands_2024,p121_patil_bfcl_2025,p122_zhang_reasoningbank_2026}).
+plateau, the Recruiter triggers incremental try-and-fail strategy
+failover, switching from the current migration strategy to the next
+viable strategy in the registry.
+
+\begin{figure*}[!t]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig4_lifecycle.png}
+    \vspace{-0.5em}
+    \caption{State-machine lifecycle of MAgHARCM. The system
+    transitions through archaeology, analysis, planning, chunked translation,
+    review, multi-stage validation, and repair until convergence, plateau
+    detection, weakening, or budget exhaustion.}
+    \label{fig:lifecycle}
+\end{figure*}
+
+\subsection{State Container, Locality of Behaviour, and Checkpointing}
+
+Every agent reads from and writes back into a shared
+\texttt{State} container that coordinates data flow across explicit
+typed contracts. To enforce \emph{Locality of Behaviour} and deep
+cohesion, each agent declares its intermediate role artifacts directly
+within its own module (\texttt{AnalyzerOutput} in \texttt{analyzer.go},
+\texttt{PlanningOutput} in \texttt{planning.go},
+\texttt{ValidationReport} in \texttt{validator.go}). Centralized
+compile-time configurations, enums, sentinels, and initialization
+helpers live in \texttt{internal/compiletime}, enforcing the strict
+\texttt{Must} pattern without default fallbacks. State snapshots are
+persisted to disk after each stage, enabling idempotent checkpoint resumption.

@@ -1,0 +1,56 @@
+% docs/.paper/sec_conclusion.tex
+\section{Conclusion}
+\label{sec:conclusion}
+
+This paper presented \textbf{MAgHARCM}, a multi-agent harness for
+repository-scale code translation that runs entirely on local Small
+Language Models. MAgHARCM coordinates eight specialised agents
+(Archaeologist, Analyzer, Planning, Translator, Reviewer, Validator,
+Verdict Panel, Recruiter) through an explicit multi-stage pipeline,
+accessed through an MCP tool surface that wraps ABCoder UniAST project
+analysis and LSP-backed symbol resolution. Cycle-free reverse-topological
+scheduling with back-edge removal enforces callee-before-caller
+ordering. A bounded context per fragment ($\le 4\,\text{KB}$ Symbol
+Navigator plus $\le 4\,\text{KB}$ Prior-Modules Memory) prevents the
+small coding model from saturating. A Validator cascade combines AST
+syntax pre-checks, compiler feedback, an adversarial test-weakening
+guard that halts the loop if assertions are removed, and a
+CodaMOSA-style coverage-plateau detector that bounds repair spinning.
+
+Our empirical evaluation on four open-source benchmark repositories
+spanning C, Go, and Java targeting Rust shows that local pairings of
+a $30\,\text{B}$ reasoning model with an instruction-tuned $4\,\text{B}$
+coding model achieve clean compilation on every project without cloud
+dependencies or data exposure. MAgHARCM converges to a $100.0\%$
+test pass rate on algorithmic code (GildedRose), $62.5\%$ on streaming
+libraries (Gohistogram), $57.1\%$ on statistical suites (Stats), and
+$26.5\%$ on enterprise validation frameworks (Apache Commons
+Validator) before the plateau detector terminates the repair loop.
+Removing the Analyzer, Planning, or Validator agents drops the test
+pass rate by $8.2$, $11.7$, and $14.8$ percentage points respectively,
+while a single-agent baseline collapses to $9.4\%$---a $52.1$ point
+gap that quantifies the value of decomposition. Our failure taxonomy
+identifies borrow-checker lifetime errors ($38\%$) and cyclic package
+references ($26\%$) as the dominant bottlenecks for local-SLM
+repository migration.
+
+Several limitations remain. First, MAgHARCM currently targets only
+Rust as the output language; extending to Go, Python, or JavaScript
+requires updating the canonical-crate table and adding a Tree-sitter
+extraction handler per source PL. Second, the four-project benchmark
+is small compared to ReCodeAgent's $118$-project evaluation; broader
+PL-pair coverage would tighten the empirical claims. Third, the
+adversarial weakening guard catches most assertion-removal patterns
+but a small fraction of weakened assertions survive because they
+preserve assertion count while changing meaning. Fourth, dense
+single-file functions ($> 800$ LoC) saturate even the bounded
+context window and require manual pre-fragmentation by the operator.
+
+Future work will extend the target language beyond Rust, evaluate the
+eight-agent decomposition on multi-PL pairs (Go-to-Rust \emph{and}
+Java-to-Python) using a single harness configuration, and replace the
+threshold-based plateau
+detector with a learned coverage model trained on prior run logs.
+MAgHARCM is open-source and reproducible; the artifacts (harness,
+benchmark configurations, agent logs, and per-iteration checkpoints)
+accompany this submission.

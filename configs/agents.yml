@@ -1,0 +1,22 @@
+# configs/agents.yml — per-agent runtime tunables.
+#
+# Each section corresponds to a typed config struct declared next to the
+# producer agent that consumes it (ADR-C-014 Locality of Behaviour). The
+# config loader (internal/config/loader.go) decodes the file via
+# MustLoadConfig[T] and panics on any missing/unparseable field — there
+# are no default fallbacks.
+
+agent_timeouts:
+  # Maximum wall-clock budget for a single reasoning-model call.
+  reasoning_timeout: 90s
+  # Maximum wall-clock budget for a single coding-model call.
+  coding_timeout: 120s
+  # Upper bound on coverage-remediation iterations before plateau exit.
+  max_iterations: 3
+
+# AST / LSP provider for agent-side code navigation. Agents MUST go
+# through abcoder MCP; the compile-time `native` constant exists only
+# as the offline structural-parser fallback for source-language feature
+# extraction in internal/languages/.
+lsp:
+  provider: abcoder-mcp

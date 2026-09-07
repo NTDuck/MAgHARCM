@@ -1,0 +1,44 @@
+% docs/.paper/abstract.tex
+\begin{abstract}
+Repository-level code translation converts an entire codebase from one
+programming language to another. The task is critical for removing memory
+safety bugs, retiring legacy stacks, and lowering maintenance cost, but it
+remains under-served by current tooling. Rule-based transpilers demand
+hundreds of thousands of lines of hand-written rewrite rules per
+language pair and emit unidiomatic code. Neuro-symbolic systems replace
+the rules with LLM synthesis but still bind each pair to a bespoke program
+analysis stack. Recent agentic systems drop the analysis stack but pivot
+to closed-source cloud models whose monetary cost and data exposure rule
+them out for many users.
+
+This paper presents \textbf{MAgHARCM}, the first multi-agent repository
+translation harness engineered for local Small Language Models. MAgHARCM
+coordinates eight specialised agents (Archaeologist, Analyzer, Planning,
+Translator, Reviewer, Validator, Verdict Panel, Recruiter) through an
+explicit multi-stage pipeline that runs entirely on a 30B reasoning model
+paired with a 4B coding model served by Ollama. The agents coordinate
+through a shared state container and access the codebase through
+Model-Context-Protocol tools that wrap ABCoder UniAST structural analysis
+and LSP-backed symbol resolution. Cycle-free
+reverse-topological scheduling with back-edge removal enforces
+callee-before-caller ordering. A bounded context per fragment ($\le 4$\,KB
+Symbol Navigator plus $\le 4$\,KB Prior-Modules Memory) prevents the
+small coding model from saturating. A Validator cascade combines AST
+syntax pre-checks, compiler feedback, an adversarial test-weakening guard
+that halts the loop if assertions are removed, and a CodaMOSA-style
+coverage-plateau detector that bounds repair spinning.
+
+We evaluate MAgHARCM on four open-source repository benchmarks spanning
+three source languages (C, Go, Java) targeting Rust. Across $K{=}3$
+stochastic runs, MAgHARCM achieves clean compilation on every project
+and an average $61.5\%$ test pass rate without cloud inference. The
+eight-agent pipeline coordinates Archaeologist, Analyzer, Planning,
+Translator, RoleFlipReviewer, Validator, VerdictPanel, and Recruiter
+agents. Removing the Analyzer, Planning, or Validator agents drops
+the test pass rate by $8.2$, $11.7$, and $14.8$ percentage points
+respectively, while a single-agent baseline collapses to $9.4\%$
+test pass rate---a $52.1$ point gap that quantifies the value of
+decomposition. These results show
+that a repository translation harness can run entirely on local SLMs and
+deliver reliable test-pass outcomes on multi-file projects.
+\end{abstract}
