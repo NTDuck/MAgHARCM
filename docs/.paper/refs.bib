@@ -1681,3 +1681,45 @@
   doi       = {10.1145/3808189},
   note      = {Triplet of (a) Hallu-Eval: 800-pair benchmark of original + semantically-perturbed code/summary pairs covering natural + induced logical hallucinations, (b) Hallu-Det: semantic-perturbation-aware detection approach, (c) Hallu-Shield: inference-time mitigation that uses Hallu-Det signal at decode time via re-ranking. Anchors PRIM-22 (Four Phases Comprehension: systematic hallucination-evaluation substrate) and PRIM-25 (Role-Flip De-Hallucination: inference-time mitigation). Source: dl.acm.org/doi/10.1145/3808189.}
 }
+
+@inproceedings{p153_badihi_corex_2026,
+  title     = {{CoReX: Context-Aware Refinement-Based Slicing for Debugging Regression Failures}},
+  author    = {Badihi, Sahar and Rubin, Julia},
+  booktitle = {ACM/IEEE International Conference on Software Engineering (ICSE 2026)},
+  year      = {2026},
+  address   = {Rio de Janeiro, Brazil},
+  note      = {Context-aware refinement-based slicing for regression-failure debugging. Iteratively refines the candidate slice using observed execution behaviour + recent change history + regression-relevant control-flow landmarks; the refined slice localises the regression-causing code with higher precision than vanilla slicing. Function-level granularity extends the P-133 ADI Frame Lifetime Trace pattern to regression debugging. Closes the strict program-comprehension-mechanism residual slot carried forward from Wave-17 first opening. Anchors PRIM-22 (Four Phases Comprehension: Structure-phase strict-mechanism closure) and PRIM-25 (Role-Flip De-Hallucination: refinement-based slicing as partition-aligned summary-pass substrate). Source: conf.researchr.org/details/icse-2026/icse-2026-research-track/60.}
+}
+
+@inproceedings{p154_yuan_transagent_2026,
+  title     = {{TransAgent: Enhancing LLM-Based Code Translation via Fine-Grained Execution Alignment}},
+  author    = {Yuan, Zhiqiang and Chen, Weitong and Wang, Hanlin and Peng, Xin and Chen, Zhenpeng and Lou, Yiling},
+  booktitle = {ACM International Conference on the Foundations of Software Engineering (FSE 2026) / PACMSE},
+  year      = {2026},
+  volume    = {3},
+  number    = {FSE},
+  series    = {Proceedings of the ACM on Software Engineering (PACMSE)},
+  doi       = {10.1145/3797099},
+  note      = {Multi-agent translation pipeline with translator + critic + repairer role decomposition; error-prone code blocks are localised by comparing execution behaviour of source vs translated code (fine-grained execution alignment) rather than test-output-only diffs; iterative repair loop drives agents to fix localised errors. Outperforms UniTrans by up to 33.3\% in accuracy; improves program repair by 56.7\% on average over Agentless. Anchors PRIM-2 (Multi-Agent Translation Pipeline) and PRIM-31 (Iterative Retrieval Refinement: execution-aligned critic feedback = retrieval refinement by execution-behaviour comparison). Source: dl.acm.org/doi/abs/10.1145/3797099; arXiv:2409.19894.}
+}
+
+@inproceedings{p155_joos_codecureagent_2026,
+  title     = {{CodeCureAgent: Automatic Classification and Repair of Static Analysis Warnings}},
+  author    = {Joos, Pascal and Bouzenia, Islem and Pradel, Michael},
+  booktitle = {ACM International Conference on the Foundations of Software Engineering (FSE 2026) / PACMSE},
+  year      = {2026},
+  volume    = {3},
+  number    = {FSE},
+  series    = {Proceedings of the ACM on Software Engineering (PACMSE)},
+  doi       = {10.1145/3808139},
+  note      = {Agentic LLM framework that iterates code-search + multi-file-edit tool invocations; classification + repair twin objective distinguishes false positives from true positives before repair; three-step validation heuristic (build clean + target warning removed + tests green) gates patch approval. Evaluated on 1000 SonarQube warnings across 106 Java projects: 96.8\% plausible-fix rate, 86.3\% manual-inspection correct-fix rate, \$\\sim\$0.029 + \$\\sim\$4 min per warning. Anchors PRIM-12 (Static Analysis Co-Evolution: agentic warning-classification + repair twin-objective framework) and PRIM-29 (Dynamic Iteration Recruiter: three-step build+test validation as concrete acceptance heuristic). Source: dl.acm.org/doi/10.1145/3808139; arXiv:2509.11787.}
+}
+
+@inproceedings{p156_le_testweaver_2026,
+  title     = {{TestWeaver: Execution-aware, Feedback-driven Regression Testing Generation with Large Language Models}},
+  author    = {Le, Cuong Chi and Van, Cuong Duc and Vu, Tung Duy and Pham, Minh V. T. and Phan, Hoang N. and Phan, Huy N. and Nguyen, Tien N.},
+  booktitle = {ACM/IEEE International Conference on Software Engineering (ICSE 2026)},
+  year      = {2026},
+  doi       = {10.1145/3744916.3787805},
+  note      = {Execution-aware, feedback-driven regression test generation. Three-mechanism composition: (a) backward slicing for context reduction (LLM receives a backward slice from the target line); (b) close-test retrieval (identifies prior tests sharing control-flow similarity with the path to the target line); (c) execution in-line annotations (variable-state comments along the executed path injected into the prompt). Addresses the coverage-plateau problem in LLM-based regression test generation. Anchors PRIM-22 (Four Phases Comprehension: three new comprehension-mechanism anchors via backward slicing + close-test retrieval + execution annotation) and PRIM-29 (Dynamic Iteration Recruiter: retrieval-and-recruitment substrate for test-generation agents). Source: dl.acm.org/doi/10.1145/3744916.3787805; arXiv:2508.01255.}
+}

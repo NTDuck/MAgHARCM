@@ -1,7 +1,7 @@
 ---
 title: MAgHARCM Benchmark Results & Empirical Evaluation
-date: 2026-09-07
-last_updated: 2026-09-07 (iter-6, wave-22)
+date: 2026-09-08
+last_updated: 2026-09-08 (iter-1, wave-23)
 aliases:
   - "Benchmark-Results-And-Evaluation"
   - "Benchmark Results and Evaluation"
@@ -74,3 +74,5 @@ tags: [adhoc, benchmark, evaluation, slm, metrics, "[[2.0.0 MAgHARCM]]"]
 - **Benchmark numbers (Table §1) carried over unchanged from Wave-21.** No empirical re-run authorized this sprint (BLK-04 still active: no GPU/LLM endpoint reachable; BLK-02 Commons-Validator plateau persists; sandbox blocker from Wave-21 carry-over still active in Wave-22). Wave-22 acceptance is paper-driven, not benchmark-driven. Wave-22 papers (P-151..P-152) are research-only anchors for `PRIM-23` / `PRIM-29` / `PRIM-31` / `PRIM-22` / `PRIM-25`; integration is deferred to future sprints.
 - **Wave-22 new substrate gates (forthcoming, future sprint):** `agents.translation.feedback_driven: true` (P-151 SmartC2Rust) for `PRIM-23` / `PRIM-29` / `PRIM-31`; `agents.comprehension.hallucination_evaluation: true` (P-152 Hallu-Eval) for `PRIM-22` / `PRIM-25` — all opt-in via `configs/agents.yml`.
 - **Empirical rebase required for Wave-23:** if any Wave-22 opt-in is enabled and BLK-04 resolves, re-run `K=3` trials on all four benchmarks and refresh Table §1. Sandbox blocker: git state mutations blocked this sprint; Wave-22 artifacts land in next batch commit.
+
+## 7. Wave-23 Audit Trail (2026-09-08 iter-1)

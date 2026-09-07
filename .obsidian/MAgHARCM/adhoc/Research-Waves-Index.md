@@ -1,18 +1,18 @@
 ---
 title: MAgHARCM Research Waves Synthesis & Literature Index
-date: 2026-09-07
-last_updated: 2026-09-07 (iter-6, wave-22)
+date: 2026-09-08
+last_updated: 2026-09-08 (iter-1, wave-23)
 aliases:
   - "Research-Waves-Index"
   - "Research Waves Index"
   - "Waves"
 tags: [adhoc, research-waves, literature, synthesis, papers, "[[2.0.0 MAgHARCM]]"]
 ---
-# [[2.0.0 MAgHARCM Research Waves Index (Waves 1–22)]]
+# [[2.0.0 MAgHARCM Research Waves Index (Waves 1–23)]]
 
-> **Executive Overview**: Complete chronological catalog and thematic synthesis of all 22 research waves, connecting 152 literature papers to the MAgHARCM multi-agent modernization substrate.
+> **Executive Overview**: Complete chronological catalog and thematic synthesis of all 23 research waves, connecting 156 literature papers to the MAgHARCM multi-agent modernization substrate.
 
-> **Wave 22 (this sprint, 2026-09-07 iter-6)** adds 2 ACCEPT (P-151 SmartC2Rust, P-152 Hallu-Eval) for 152 total paper anchors. Vault paper count: 150 -> 152.
+> **Wave 23 (this sprint, 2026-09-08 iter-1)** adds 4 ACCEPT (P-153 CoReX, P-154 TransAgent, P-155 POLA-Tester, P-156 ACONITE) for 156 total paper anchors. Vault paper count: 152 -> 156. Closes the strict program-comprehension-mechanism residual slot.
 
 ---
 
@@ -24,6 +24,7 @@ tags: [adhoc, research-waves, literature, synthesis, papers, "[[2.0.0 MAgHARCM]]
 | **Wave 21** | KV-Cache × Speculative-Decoding Substrate + Static-Analysis Context Pruning | `PRIM-21, 22, 31` | SpecKV (`[[1.0.0 P-147]]`), LookaheadKV (`[[1.0.0 P-148]]`), Speculative Speculative Decoding (`[[1.0.0 P-149]]`), TestPrune (`[[1.0.0 P-150]]`) |
 
 | **Wave 22** | Feedback-Driven C-to-Rust Translation + Systematic Hallucination Evaluation | `PRIM-22, 23, 25, 29, 31` | SmartC2Rust (`[[1.0.0 P-151]]`), Hallu-Eval (`[[1.0.0 P-152]]`) |
+| **Wave 23** | Context-Aware Refinement-Based Slicing + Multi-Agent Translation + Static-Analysis Co-Evolution + LLM-Augmented Test Generation | `PRIM-12, 22, 23, 29, 31` | CoReX (`[[1.0.0 P-153]]`), TransAgent (`[[1.0.0 P-154]]`), POLA-Tester (`[[1.0.0 P-155]]`), ACONITE (`[[1.0.0 P-156]]`) |
 
 | **Waves 1–5** | Core Systems & Foundations | `PRIM-1` through `PRIM-30` | ReCodeAgent (`[[1.0.0 P-01]]`), AlphaTrans (`[[1.0.0 P-02]]`), CodePlan (`[[1.0.0 P-03]]`), MetaGPT (`[[1.0.0 P-11]]`), ChatDev (`[[1.0.0 P-12]]`), ABCoder (`[[1.0.0 P-14]]`) |
 | **Wave 6** | Software Archaeology Foundations | `PRIM-14, 18, 19, 20` | Parnas 1972 (`[[1.0.0 P-31]]`), Lehman 1980 (`[[1.0.0 P-32]]`), Chikofsky & Cross (`[[1.0.0 P-33]]`), Baldwin & Clark (`[[1.0.0 P-34]]`) |
@@ -51,3 +52,5 @@ tags: [adhoc, research-waves, literature, synthesis, papers, "[[2.0.0 MAgHARCM]]
 - **Wave 20 (P-142..P-146)**: Program-comprehension-mechanism substrate + SLM-grounded hallucination defence + prompt-trace training data + workflow-aware PRM. P-142 NESA self-evolving graph pre-analysis (partially closes the strict program-comprehension-mechanism slot open since Wave-17). P-143 HalluShield SLM-grounded speculative-decoding hallucination defence. P-144 TraceCoder prompt-trace training-data construction. P-145 TerraMod LLM-driven lexical-based translation strategy selection. P-146 ContextPRM workflow-aware cross-document process reward modelling. 4 candidates REJECTED (Q1+Q3): R1 Nexus ICSE 2026 (ablations only, no mechanism), R2 SWE-Lego ICSE 2026 NIER (engineering pattern, no mechanism), R3 CoPS ICML 2026 (speculative venue), R4 SHIELD-ASR ACL 2026 Findings (off-list venue). 1 candidate UNVERIFIED (Watchlist): U1 NSE ICML 2026 placeholder venue, no DOI / OpenReview / arXiv. 2 watchlist items re-verified: SliceMate (REJECTED — ISSTA 2026 program slot absent on conf.researchr.org); SWE-TRACE (CONFIRMED arXiv-only preprint, REJECTED).
 - **Wave 21 (P-147..P-150)**: KV-cache × speculative-decoding substrate reinforcement + static-analysis context pruning for SLM agent comprehension. P-147 SpecKV draft-model-driven KV eviction (Galim et al., ICLR 2026, OpenReview 0vbYakkECY). P-148 LookaheadKV parameter-efficient LoRA-modules on target model (Ahn et al., ICLR 2026, OpenReview RVLMGPXt2i). P-149 SSD/Saguaro asynchronous speculative-decoding pipeline (Kumar, Dao, May, ICLR 2026, OpenReview aL1Wnml9Ef). P-150 TestPrune coverage-driven regression-test minimization (Chen, Ahmed et al., IBM Research, FSE 2026, DOI 10.1145/3808148). 3 candidates REJECTED (Q1+Q3): R1 ABC (Bhardwaj, arXiv:2602.22302 — no peer-reviewed venue; the pre-existing 'Wang et al. ICSE 2026' attribution is a hallucination), R2 NSE Workshop (off-list workshop venue co-located with ICSE 2026), R3 Speculative Actions (ICLR 2026 poster — mechanism overlap with P-137 SuffixDecoding). 1 UNVERIFIED (Watchlist): W1 SWE-TRACE carried Wave-19 W2 → Wave-20 W1 → Wave-21 W1 (arXiv:2604.14820; NeurIPS 2026 notifications scheduled 2026-09-24). Vault paper count: 146 → 150.
 
+- **Wave 22 (P-151, P-152)**: Feedback-driven multi-language translation + systematic hallucination evaluation. P-151 SmartC2Rust context-aware segmentation + three-signal feedback loop (target-language compiler errors, semantic-equivalence diffs, residual unsafe-block counts) for C-to-Rust (Sun, Liu, et al., ICSE 2026, DOI 10.1145/3744916.3773259). P-152 Hallu-Eval / Hallu-Shield triplet = (Hallu-Eval 800-pair benchmark) + (Hallu-Det detection) + (Hallu-Shield inference-time mitigation) (Liu, Wang, et al., FSE 2026, DOI 10.1145/3808189). 3 candidates REJECTED: R1 Code vs. Serialized AST LLM4Code workshop (Q1 off-list workshop), R2 SmartComment (Q3 off-axis Solidity target), R3 Beyond Accuracy DeepTest workshop (Q1 off-list workshop diagnostic-framework). 1 UNVERIFIED carried: W1 SWE-TRACE arXiv:2604.14820 (fifth carry; NeurIPS 2026 notifications pending 2026-09-24).
+- **Wave 23 (P-153..P-156)**: Context-aware refinement-based slicing + multi-agent translation + static-analysis co-evolution + LLM-augmented test generation. **Closes the strict program-comprehension-mechanism residual slot** carried forward from Wave-17. P-153 CoReX (Sun et al., ICSE 2026, April 12-18 2026, Rio de Janeiro) - context-aware refinement-based slicing for regression-failure localisation; complementing P-129 LλMDA partial-PDG pattern and extending P-133 ADI Frame Lifetime Trace. P-154 TransAgent (Roh et al., FSE 2026 / PACMSE Vol 3 Issue FSE, July 5-9 2026, Montréal) - multi-agent translation pipeline with fine-grained execution-aligned critic feedback; complements P-151 SmartC2Rust single-LLM iterative feedback loop. P-155 POLA-Tester (Sun et al., ICSE 2026, April 2026, Rio de Janeiro) - agentic wait + syntactic dependency mining + iterative retrofit validation for LLM-augmented static analysis. P-156 ACONITE (Sun et al., ICSE 2026, April 2026, Rio de Janeiro) - backward slicing + close-test retrieval + execution in-line annotations for coverage-plateau LLM regression test generation. Triage ledger per `Wave-23-Candidates.md` line 57: 4 ACCEPT + 1 REJECT Q1 (R1 AutoCodeSherpa Yunbo Lyu et al. ISSTA 2026, off-list venue) + 1 watchlist carry (W23-W1 SWE-TRACE arXiv:2604.14820 fifth carry); total triaged = 6. All four ACCEPT papers pass §7 trigger gate (Q1 venue confirmed flagship SE, Q2 mechanism-not-benchmark, Q3 anchoring-to-existing-primitive).

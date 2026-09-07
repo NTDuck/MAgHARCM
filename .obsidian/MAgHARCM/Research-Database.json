@@ -5478,6 +5478,209 @@
       "doi": "10.1145/3808189",
       "arxiv": "-",
       "openreview_id": "-"
+    },
+    {
+      "id": "P-153",
+      "version_marker": "[[1.0.0 P-153]]",
+      "title": "P-153 CoReX: Context-Aware Refinement-Based Slicing for Debugging Regression Failures",
+      "bibkey": "corex2026icse",
+      "authors": "Badihi, S. and Rubin, J.",
+      "year": 2026,
+      "venue": "ICSE 2026 (Research Track)",
+      "eprint_or_doi": "DOI pending ACM assignment (researchr slot #60); arXiv: none confirmed",
+      "anchored_primitives": [
+        "PRIM-22",
+        "PRIM-31"
+      ],
+      "tags": [
+        "paper",
+        "program-slicing",
+        "regression-debugging",
+        "context-refinement",
+        "strict-mechanism",
+        "[[1.0.0 PRIM-22]]",
+        "[[1.0.0 P-133]]",
+        "[[1.0.0 P-129]]",
+        "[[1.0.0 P-139]]",
+        "[[1.0.0 P-140]]",
+        "wave-23",
+        "[[1.0.0 PRIM-31]]"
+      ],
+      "verified": true,
+      "hop1_references": [
+        "P-133 ADI (ICSE/FSE 2026)",
+        "P-129 LλMDA (ICSE 2026)",
+        "P-139 TypePro (FSE 2026)",
+        "P-140 Panta (ICSE 2026)"
+      ],
+      "hop2_references": [
+        "Weiser 1981 IEEE TSE (program slicing)",
+        "Hind 2001 (context-sensitive interprocedural slicing)",
+        "Zeller 2009 (regression fault localization)",
+        "Agrawal 1993 (slicing for debugging)"
+      ],
+      "summary": "Context-aware refinement-based slicing for regression-failure debugging. Conditions the slice on the regression failure context by iteratively refining the candidate slice using observed execution behaviour and recent change history; the refined slice localises the regression-causing code with higher precision than vanilla slicing. Closes the strict program-comprehension-mechanism residual slot carried forward from Wave-17 first opening.",
+      "venue_verification": "Verified via conf.researchr.org/details/icse-2026/icse-2026-research-track/60 (ICSE 2026 Rio de Janeiro April 12-18 2026).",
+      "mechanism_summary": "(a) context-conditioned refinement; (b) iterative refinement loop; (c) regression-failure localisation; (d) function-level granularity.",
+      "anchor_table": {
+        "PRIM-22": "CoReX as the strict-mechanism closure for the residual slot; closes Wave-17 first-opened program-comprehension-mechanism gap. Extends P-133 ADI function-level DA pattern to regression-debugging setting.",
+        "PRIM-31": "CoReX refinement-based slicing as iterative retrieval refinement substrate = partition-aligned summary-pass pattern."
+      }
+    },
+    {
+      "id": "P-154",
+      "version_marker": "[[1.0.0 P-154]]",
+      "title": "P-154 TransAgent: Enhancing LLM-Based Code Translation via Fine-Grained Execution Alignment",
+      "bibkey": "transagent2026fse",
+      "authors": "Yuan, Z. and Chen, W. and Wang, H. and Peng, X. and Chen, Z. and Lou, Y.",
+      "year": 2026,
+      "venue": "FSE 2026 (Research Track, PACMSE Vol. 3 Issue FSE)",
+      "eprint_or_doi": "DOI 10.1145/3797099; arXiv:2409.19894",
+      "anchored_primitives": [
+        "PRIM-23",
+        "PRIM-29",
+        "PRIM-31"
+      ],
+      "tags": [
+        "paper",
+        "code-translation",
+        "multi-agent",
+        "execution-alignment",
+        "fine-grained-feedback",
+        "[[1.0.0 PRIM-31]]",
+        "[[1.0.0 P-124]]",
+        "[[1.0.0 P-145]]",
+        "[[1.0.0 P-151]]",
+        "[[1.0.0 P-131]]",
+        "wave-23",
+        "[[1.0.0 PRIM-23]]",
+        "[[1.0.0 PRIM-29]]"
+      ],
+      "verified": true,
+      "hop1_references": [
+        "P-151 SmartC2Rust (ICSE 2026)",
+        "P-145 TerraMod (ICSE 2026)",
+        "P-124 Syzygy (ICLR 2025 Workshop)",
+        "P-131 SemArc (TSE 2026)"
+      ],
+      "hop2_references": [
+        "UniTrans (Yan et al., ASE 2023)",
+        "Agentless (Xia et al., 2024)",
+        "Multi-agent code generation lineage (Wu et al., 2023)",
+        "Execution-alignment translation surveys"
+      ],
+      "summary": "Multi-agent translation pipeline with translator + critic + repairer role decomposition; error-prone code blocks are localised by comparing the execution behaviour of source vs translated code (fine-grained execution alignment) rather than test-output-only diffs; iterative repair loop drives agents to fix localised errors. Outperforms UniTrans by up to 33.3% in accuracy; improves program repair by 56.7% on average over Agentless.",
+      "venue_verification": "Verified via dl.acm.org/doi/abs/10.1145/3797099 (FSE 2026 Montreal July 5-9 2026).",
+      "mechanism_summary": "(a) multi-agent translation pipeline with role decomposition; (b) fine-grained execution alignment via execution-behaviour comparison; (c) iterative repair loop.",
+      "anchor_table": {
+        "PRIM-23": "TransAgent as the multi-agent translation pipeline with translator + critic + repairer role decomposition; extends the chunked-translation lineage (P-124/P-145/P-151) to multi-agent + execution-aligned critic.",
+        "PRIM-29": "TransAgent iterative-repair-loop as concrete iteration-recruiter anchor with execution-aligned critic feedback.",
+        "PRIM-31": "TransAgent execution-aligned critic feedback = retrieval refinement by execution-behaviour comparison."
+      }
+    },
+    {
+      "id": "P-155",
+      "version_marker": "[[1.0.0 P-155]]",
+      "title": "P-155 CodeCureAgent: Automatic Classification and Repair of Static Analysis Warnings",
+      "bibkey": "codecureagent2026fse",
+      "authors": "Joos, P. and Bouzenia, I. and Pradel, M.",
+      "year": 2026,
+      "venue": "FSE 2026 (Research Track, PACMSE Vol. 3 Issue FSE)",
+      "eprint_or_doi": "DOI 10.1145/3808139; arXiv:2509.11787",
+      "anchored_primitives": [
+        "PRIM-13",
+        "PRIM-22",
+        "PRIM-29"
+      ],
+      "tags": [
+        "paper",
+        "static-analysis",
+        "warning-classification",
+        "automated-repair",
+        "agentic-llm",
+        "validation-heuristic",
+        "[[1.0.0 PRIM-29]]",
+        "[[1.0.0 P-42]]",
+        "[[1.0.0 P-124]]",
+        "[[1.0.0 P-142]]",
+        "[[1.0.0 P-151]]",
+        "wave-23",
+        "[[1.0.0 PRIM-13]]",
+        "[[1.0.0 PRIM-22]]"
+      ],
+      "verified": true,
+      "hop1_references": [
+        "P-124 Syzygy (ICLR 2025 Workshop)",
+        "P-142 NESA (FSE 2026)",
+        "P-151 SmartC2Rust (ICSE 2026)",
+        "LLM4Code warning-repair lineage"
+      ],
+      "hop2_references": [
+        "SonarQube static-analysis warning taxonomy",
+        "Build-and-test patch validation lineage",
+        "Agentic framework tooling (ReAct, Toolformer)",
+        "Multi-file code repair lineage"
+      ],
+      "summary": "Agentic LLM framework that iterates code-search + multi-file-edit tool invocations; classification + repair twin objective distinguishes false positives from true positives before repair; three-step validation heuristic (build clean + warning removed + tests green) gates patch approval. Evaluated on 1000 SonarQube warnings across 106 Java projects: 96.8% plausible-fix rate, 86.3% manual-inspection correct-fix rate, ~$0.029 + ~4 min per warning.",
+      "venue_verification": "Verified via dl.acm.org/doi/10.1145/3808139 (FSE 2026 Montreal July 5-9 2026).",
+      "mechanism_summary": "(a) agentic LLM framework with tool invocations; (b) classification + repair twin objective; (c) three-step validation heuristic (build / warning removed / tests pass).",
+      "anchor_table": {
+        "PRIM-13": "CodeCureAgent as the agentic LLM warning-classification + repair twin-objective framework; extends the static-analysis validation lineage (P-42/P-48/P-124/P-142) to LLM-driven classification + repair. Closes the agent-loop static-analysis gap.",
+        "PRIM-22": "CodeCureAgent as the agentic warning-classification substrate for the Four Phases Comprehension Observation phase.",
+        "PRIM-29": "CodeCureAgent three-step build+test validation = concrete acceptance heuristic for the iteration recruiter."
+      }
+    },
+    {
+      "id": "P-156",
+      "version_marker": "[[1.0.0 P-156]]",
+      "title": "P-156 TestWeaver: Execution-aware, Feedback-driven Regression Testing Generation with Large Language Models",
+      "bibkey": "testweaver2026icse",
+      "authors": "Le, C.C. and Van, C.D. and Vu, T.D. and Pham, M.V.T. and Phan, H.N. and Phan, H.N. and Nguyen, T.N.",
+      "year": 2026,
+      "venue": "ICSE 2026 (Research Track)",
+      "eprint_or_doi": "DOI 10.1145/3744916.3787805; arXiv:2508.01255",
+      "anchored_primitives": [
+        "PRIM-22",
+        "PRIM-29",
+        "PRIM-31"
+      ],
+      "tags": [
+        "paper",
+        "test-generation",
+        "llm-augmented-static-analysis",
+        "backward-slicing",
+        "close-test-retrieval",
+        "execution-annotation",
+        "[[1.0.0 PRIM-22]]",
+        "[[1.0.0 PRIM-29]]",
+        "[[1.0.0 P-129]]",
+        "[[1.0.0 P-133]]",
+        "[[1.0.0 P-140]]",
+        "[[1.0.0 P-150]]",
+        "wave-23",
+        "[[1.0.0 PRIM-31]]"
+      ],
+      "verified": true,
+      "hop1_references": [
+        "P-129 LλMDA (ICSE 2026)",
+        "P-133 ADI (ICSE/FSE 2026)",
+        "P-140 Panta (ICSE 2026)",
+        "P-150 TestPrune (FSE 2026)"
+      ],
+      "hop2_references": [
+        "Weiser 1981 IEEE TSE (program slicing)",
+        "Code coverage lineage (Miller 1963)",
+        "Regression test selection (Rothermel 1998)",
+        "Hybrid static+dynamic test generation surveys"
+      ],
+      "summary": "Execution-aware, feedback-driven regression test generation. Three-mechanism composition: (a) backward slicing for context reduction; (b) close-test retrieval that identifies prior tests sharing control-flow similarity with the path to the target line; (c) execution in-line annotations that inject variable-state comments along the executed path into the prompt. Addresses the coverage-plateau problem in LLM-based regression test generation.",
+      "venue_verification": "Verified via dl.acm.org/doi/10.1145/3744916.3787805 (ICSE 2026 Rio de Janeiro April 12-18 2026).",
+      "mechanism_summary": "(a) backward slicing for context reduction; (b) close-test retrieval; (c) execution in-line annotations.",
+      "anchor_table": {
+        "PRIM-22": "TestWeaver extends the LLM-augmented static-analysis pattern with backward slicing + close-test retrieval + execution annotation; three new comprehension-mechanism anchors.",
+        "PRIM-29": "TestWeaver close-test retrieval + execution annotation = retrieval-and-recruitment substrate for test-generation agents.",
+        "PRIM-31": "TestWeaver close-test retrieval + backward slicing = iterative retrieval refinement substrate for test-generation agents."
+      }
     }
   ],
   "reject_registry": {
@@ -5632,6 +5835,15 @@
         "verdict": "Q1 (off-list workshop venue, diagnostic-framework not mechanism)",
         "rationale": "DeepTest 2026 is a workshop co-located with ICSE 2026, not the ICSE 2026 main track. The paper proposes a diagnostic framework (binary I/O consistency task + shadow models) rather than a method-level mechanism for code comprehension itself. Diagnostic frameworks are evaluation tools, not method-level mechanisms in the section 7 sense."
       }
+    ],
+    "wave-23": [
+      {
+        "bibkey": "autocodesherpa2026issta",
+        "title": "AutoCodeSherpa: Symbolic Explanations for Agentic Code (Yunbo Lyu et al.)",
+        "venue": "ISSTA 2026",
+        "verdict": "Q1 (off-list venue)",
+        "rationale": "ISSTA 2026 is not on the section 7 trigger list (NeurIPS / ICML / ICLR / ICSE / ASE / TOSEM / TSE / FSE). Section 7 trigger list permits workshop-track ACCEPT only for method-level single-paper mechanism work, and ISSTA is a main conference (not workshop). Off-list per section 7 strict-venue interpretation. Watch for a section 7-list venue companion paper (ICSE 2027 / FSE 2027)."
+      }
     ]
   },
   "watchlist": {
@@ -5731,6 +5943,18 @@
         "carry_count": 4,
         "next_verification_trigger": "NeurIPS 2026 author notifications (2026-09-24)",
         "rationale": "arXiv preprint only; no peer-reviewed venue confirmation. NeurIPS 2026 notifications 17 days out. Carry to Wave-23."
+      }
+    ],
+    "wave-23": [
+      {
+        "candidate_id": "W23-W1",
+        "short_name": "SWE-TRACE",
+        "title": "Optimizing Long-Horizon SWE Agents Through Rubric Process Reward Models and Heuristic Test-Time Scaling",
+        "arxiv": "2604.14820",
+        "first_carried": "Wave-19 (W2)",
+        "carry_count": 5,
+        "next_verification_trigger": "NeurIPS 2026 author notifications (2026-09-24); sixth carry = retire threshold per Wave-21 carry rule",
+        "rationale": "arXiv preprint only; no peer-reviewed venue confirmation at any section 7 venue. NeurIPS 2026 notifications 17 days out. Sixth carry triggers retire-or-confirm decision in Wave-24."
       }
     ]
   }

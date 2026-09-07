@@ -1,7 +1,7 @@
 ---
 title: MAgHARCM Project Progress & Milestones Tracker
-date: 2026-09-07
-last_updated: 2026-09-07 (iter-6, wave-22)
+date: 2026-09-08
+last_updated: 2026-09-08 (iter-1, wave-23)
 aliases:
   - "Project-Progress-And-Milestones"
   - "Project Progress and Milestones"
@@ -15,8 +15,8 @@ tags: [adhoc, progress, milestones, status, parity, "[[2.0.0 MAgHARCM]]"]
 | :--- | :--- | :--- | :--- |
 | **Primitives Implemented** | 31 | 31 | **100.0%** (`[[1.0.0 PRIM-1]]`..`[[1.0.0 PRIM-31]]`) |
 | **Agent Units Wired** | 8 | 8 | **100.0%** (Eino cyclic graph in `internal/graph/graph.go`) |
-| **Research Papers Cataloged** | 145+ | 152 | **100.0%** (`[[1.0.0 P-01]]`..`[[1.0.0 P-152]]`) |
-| **Research Waves Fired** | 20 | 22 | **100.0%** (Wave-1 through Wave-22 closed; Wave-22 added 2026-09-07 iter-6) |
+| **Research Papers Cataloged** | 145+ | 156 | **100.0%** (`[[1.0.0 P-01]]`..`[[1.0.0 P-156]]`) |
+| **Research Waves Fired** | 20 | 23 | **100.0%** (Wave-1 through Wave-23 closed; Wave-23 added 2026-09-08 iter-1) |
 | **Architecture Decision Records** | Active | 3 ADRs | ADR-C-001..015, ADR-V-001..007 captured |
 
 ---
@@ -53,6 +53,7 @@ tags: [adhoc, progress, milestones, status, parity, "[[2.0.0 MAgHARCM]]"]
 ## 3. Sprint Velocity & Historical Timeline
 
 - **Sprint 2026-09-04 to 2026-09-08**: Initial 4-agent to 8-agent decomposition; Eino cyclic loop setup; baseline primitives implementation.
+- **Sprint 2026-09-08 (iter-1)**: Wave-23 anchors (P-153..P-156). Wave-23 **closes the strict program-comprehension-mechanism residual slot** carried forward from Wave-17 first opening. Four ACCEPT papers: P-153 CoReX (Sun et al., ICSE 2026) context-aware refinement-based slicing for regression-failure localisation (anchors PRIM-22 Four Phases + PRIM-31 Iterative Retrieval Refinement); P-154 TransAgent (Roh et al., FSE 2026) multi-agent translation pipeline with fine-grained execution-aligned critic feedback (anchors PRIM-23 Chunked Translation + PRIM-31 Iterative Retrieval Refinement, complementing P-151 SmartC2Rust single-LLM loop); P-155 POLA-Tester (Sun et al., ICSE 2026) agentic wait + syntactic dependency mining + iterative retrofit validation for LLM-augmented static analysis (anchors PRIM-12 Static Analysis Co-Evolution); P-156 ACONITE (Sun et al., ICSE 2026) backward slicing + close-test retrieval + execution in-line annotations for coverage-plateau LLM regression test generation (anchors PRIM-22 + PRIM-29). Triage ledger per `Wave-23-Candidates.md` line 57: 4 ACCEPT (P-153..P-156) + 1 REJECT Q1 (R1 AutoCodeSherpa Yunbo Lyu et al. ISSTA 2026, off-list venue) + 1 watchlist carry (W23-W1 SWE-TRACE arXiv:2604.14820, fifth carry from Wave-19 W2; NeurIPS 2026 notifications pending 2026-09-24; sixth carry = retire threshold per Wave-21 carry rule). Total triaged = 6. All four ACCEPT papers pass §7 trigger gate (Q1 venue confirmed flagship SE, Q2 mechanism-not-benchmark, Q3 anchoring-to-existing-primitive). Methodology §21 Wave-23 Anchor Table + §22 Wave-23 Forward Plan appended (§23 negative-evidence registry retracted in same pass: only R1 AutoCodeSherpa exists, ISSTA off-list, no negative-evidence value); §9 changelog Wave-23 entry corrected (1 REJECT, 1 watchlist); §18 retitled to Wave-24 Anchor Plan with Wave-23 close-out bullet; Primitives-Index 4 ACCEPT rows appended. Research-Database.json: 4 papers + reject_registry.wave-23 (1 entry) + watchlist.wave-23 (1 item) appended. Paper sec_method.tex + sec_eval.tex Wave-23 paragraphs added. Forward to Wave-24: re-verify W23-W1 SWE-TRACE venue after NeurIPS 2026 author notifications (2026-09-24). Wave-24 may consider formalizing cross-pattern surveys among Wave-17..Wave-23 anchors (P-129×P-150, P-154×P-151, P-155×P-153, P-156×P-140) as new §11.9-§11.12 patterns (forward plan, not Wave-23 watchlist).
 - **Sprint 2026-09-09 to 2026-09-14**: Strict versioning convention (`[[x.y.z ...]]`) enforcement; single source of truth established in `primitives/Primitives-Index.md`.
 - **Sprint 2026-09-15 to 2026-09-20**: Waves 9–10 research anchors (P-96 through P-107); prompt contract enforcement; elimination of magic strings into `compiletime/`.
 - **Sprint 2026-09-21 to 2026-09-24**: Waves 11–13 anchors (SWE-bench, OpenHands, Aider, Medusa); ADR-V-001 sweep eliminating stray version parentheses.
