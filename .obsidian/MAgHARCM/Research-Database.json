@@ -5034,16 +5034,7 @@
       "version_marker": "[[1.0.0 P-142]]",
       "title": "P-142 NESA: Relational Neuro-Symbolic Static Program Analysis",
       "bibkey": "nesa2026fse",
-      "authors": [
-        "Chengpeng Wang",
-        "Yifei Gao",
-        "Wuqi Zhang",
-        "Xuwei Liu",
-        "Jinyao Guo",
-        "Mingwei Zheng",
-        "Qingkai Shi",
-        "Xiangyu Zhang"
-      ],
+      "authors": "Wang, Chengpeng and Gao, Yifei and Zhang, Wuqi and Liu, Xuwei and Guo, Jinyao and Zheng, Mingwei and Shi, Qingkai and Zhang, Xiangyu",
       "year": 2026,
       "venue": "FSE 2026 (Research Track)",
       "eprint_or_doi": "arXiv:2412.14399; DOI 10.1145/3808161; PACMSE Vol 3 Issue FSE Article FSE154",
@@ -5072,16 +5063,16 @@
       "hop2_references": [
         "P-87"
       ],
-      "summary": "Restricted Datalog analysis-policy language decomposes complex program-analysis problems into syntactic (parsing-based) and semantic (LLM) sub-problems. Lazy and incremental prompting reduces LLM hallucinations. F1 0.72 on TaintBench (+0.20 over industrial baseline); 13 real-world memory-leak bugs detected and developer-fixed."
+      "summary": "Restricted Datalog analysis-policy language decomposes complex program-analysis problems into syntactic (parsing-based) and semantic (LLM) sub-problems. Lazy and incremental prompting reduces LLM hallucinations. F1 0.72 on TaintBench (+0.20 over industrial baseline); 13 real-world memory-leak bugs detected and developer-fixed.",
+      "doi": "10.1145/3808161",
+      "arxiv": "2412.14399"
     },
     {
       "id": "P-143",
       "version_marker": "[[1.0.0 P-143]]",
       "title": "P-143 Hallucinations in LLM-based Code Summarization (Hallu-Eval / Hallu-Det / Hallu-Shield)",
       "bibkey": "hallushield2026fse",
-      "authors": [
-        "Hallucinations-in-LLM-Code-Summarization authors (FSE 2026 paper 66)"
-      ],
+      "authors": "Wan, Guanghua and Feng, Yuanning and Wan, Yao and Chu, Zhaoyang and Bi, Zhangqian and Han, Junxiao and Zhao, Zhou and Zhang, Hongyu and Yuan, Pingpeng and Shi, Xuanhua and Jin, Hai",
       "year": 2026,
       "venue": "FSE 2026 (Research Track)",
       "eprint_or_doi": "DOI 10.1145/3808139; PACMSE Vol 3 Issue FSE Article 66",
@@ -5110,21 +5101,16 @@
       "hop2_references": [
         "P-87"
       ],
-      "summary": "Hallu-Det synergistic entity-level detection + synonymous-mutation-based refinement (F1 0.95 on Qwen2.5-Coder-7B summaries). Hallu-Shield inference-time mitigation via external value model (10.6% relative hallucination reduction on DeepSeek-Coder-6.7B; 74.0% LLM-as-a-judge win rate)."
+      "summary": "Hallu-Det synergistic entity-level detection + synonymous-mutation-based refinement (F1 0.95 on Qwen2.5-Coder-7B summaries). Hallu-Shield inference-time mitigation via external value model (10.6% relative hallucination reduction on DeepSeek-Coder-6.7B; 74.0% LLM-as-a-judge win rate).",
+      "doi": "10.1145/3808139",
+      "arxiv": "-"
     },
     {
       "id": "P-144",
       "version_marker": "[[1.0.0 P-144]]",
       "title": "P-144 TraceCoder: A Trace-Driven Multi-Agent Framework for Automated Debugging of LLM-Generated Code",
       "bibkey": "tracecoder2026icse",
-      "authors": [
-        "Jiangping Huang",
-        "Wenguang Ye",
-        "Weisong Sun",
-        "Jian Zhang",
-        "Mingyue Zhang",
-        "Yang Liu"
-      ],
+      "authors": "Huang, Jiangping and Ye, Wenguang and Sun, Weisong and Zhang, Jian and Zhang, Mingyue and Liu, Yang",
       "year": 2026,
       "venue": "ICSE 2026 (Research Track)",
       "eprint_or_doi": "arXiv:2602.06875; researchr.org/details/icse-2026/icse-2026-research-track/145",
@@ -5153,21 +5139,16 @@
       "hop2_references": [
         "P-109"
       ],
-      "summary": "Trace-driven multi-agent debugging: runtime instrumentation + causal analysis + Historical Lesson Learning Mechanism (HLLM) + Rollback Mechanism (RM). 34.43% relative Pass@1 improvement; iterative repair contributes 65.61% relative gain."
+      "summary": "Trace-driven multi-agent debugging: runtime instrumentation + causal analysis + Historical Lesson Learning Mechanism (HLLM) + Rollback Mechanism (RM). 34.43% relative Pass@1 improvement; iterative repair contributes 65.61% relative gain.",
+      "doi": "-",
+      "arxiv": "2602.06875"
     },
     {
       "id": "P-145",
       "version_marker": "[[1.0.0 P-145]]",
       "title": "P-145 TerraMod: Automating Terraform Code Migration through Provider Evolution Knowledge",
       "bibkey": "terramod2026icse",
-      "authors": [
-        "Pranjal Gupta",
-        "Pooja Aggarwal",
-        "Brent Paulovicks",
-        "Prateeti Mohapatra",
-        "Rong Lee",
-        "Vadim Sheinin"
-      ],
+      "authors": "Gupta, Pranjal and Aggarwal, Pooja and Paulovicks, Brent and Mohapatra, Prateeti and Lee, Rong and Sheinin, Vadim",
       "year": 2026,
       "venue": "ICSE 2026 (NIER Track)",
       "eprint_or_doi": "researchr.org/details/icse-2026/icse-2026-nier/43; IBM Research publication 145",
@@ -5195,23 +5176,16 @@
       "hop2_references": [
         "P-02"
       ],
-      "summary": "Knowledge-augmented Terraform migration context from changelogs + API schemas + deprecation links guides LLM-driven provider-version upgrades. Significantly reduces manual effort vs standard prompting on AWS Terraform Provider breaking changes."
+      "summary": "Knowledge-augmented Terraform migration context from changelogs + API schemas + deprecation links guides LLM-driven provider-version upgrades. Significantly reduces manual effort vs standard prompting on AWS Terraform Provider breaking changes.",
+      "doi": "10.1145/3786582.3786841",
+      "arxiv": "-"
     },
     {
       "id": "P-146",
       "version_marker": "[[1.0.0 P-146]]",
       "title": "P-146 ContextPRM: Leveraging Contextual Coherence for Multi-Domain Test-Time Scaling",
       "bibkey": "contextprm2026iclr",
-      "authors": [
-        "Haotian Zhang",
-        "Liu Liu",
-        "Baosheng Yu",
-        "Jiayan Qiu",
-        "Likang Xiao",
-        "Yanwei Ren",
-        "Quan Chen",
-        "Xianglong Liu"
-      ],
+      "authors": "Zhang, Haotian and Liu, Liu and Yu, Baosheng and Qiu, Jiayan and Xiao, Likang and Ren, Yanwei and Chen, Quan and Liu, Xianglong",
       "year": 2026,
       "venue": "ICLR 2026 (Conference Paper)",
       "eprint_or_doi": "arXiv:2509.24460; iclr.cc/virtual/2026/poster/10011128; proceedings.iclr.cc paper ce186a37",
@@ -5240,7 +5214,10 @@
       "hop2_references": [
         "P-90"
       ],
-      "summary": "Domain-agnostic PRM trained on contextual coherence (logical transitions between CoT steps) rather than domain-specific facts. 6.5% average accuracy improvement on MMLU-Pro across nine non-mathematical domains; outperforms VersaPRM (2.2%) and math-focused PRMs (0.5%)."
+      "summary": "Domain-agnostic PRM trained on contextual coherence (logical transitions between CoT steps) rather than domain-specific facts. 6.5% average accuracy improvement on MMLU-Pro across nine non-mathematical domains; outperforms VersaPRM (2.2%) and math-focused PRMs (0.5%).",
+      "doi": "-",
+      "arxiv": "-",
+      "openreview_id": "10011128"
     }
   ],
   "reject_registry": {

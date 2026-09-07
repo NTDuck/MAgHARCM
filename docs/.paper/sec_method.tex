@@ -255,7 +255,8 @@ It produces an
     \item \emph{Time-Capsule Harness}: captures reproduction shell commands for historical toolchains.
     \item \emph{Temporal Churn Coupling}: computes pairwise commit co-change Jaccard similarity to detect hidden coupling invisible to static import graphs (PRIM-18).
     \item \emph{Design Rule Hierarchy Partitioning}: categorizes elements into L1 design-rule interfaces, L2 subsystems, and L3 concrete leaves, flagging modularity violations where L1 interfaces depend on L3 leaves (PRIM-19).
-    \item \emph{Concept Assignment \& Redocumentation}: clusters lexical tokens into domain concept bindings mapped to physical file paths (PRIM-20). The static-first / dynamic-fallback concept-locator strategy~\cite{p74_biggerstaff_concept_assignment_1993,p79_wilde_scully_1995} is implemented as the comprehension phase's traversal order over the CPG.
+    \item \emph{Concept Assignment \& Redocumentation}: clusters lexical tokens into domain concept bindings mapped to physical file paths (PRIM-20). The static-first / dynamic-fallback concept-locator strategy~\cite{p74_biggerstaff_concept_assignment_1993,p79_wilde_scully_1995} is implemented as the comprehension phase's traversal order over the CPG. The static-program-graph pre-analysis is augmented by Wave-20 NESA~\cite{p142_wang_nesa_2026}, whose restricted-Datalog analysis-policy language decomposes complex comprehension sub-problems into deterministic syntactic and LLM-handled semantic slices, allowing the Reorganization phase to encode what is known mechanically versus what must be inferred.
+    \item \emph{Summarization-Fidelity Pass}: the Insight phase emits code summaries that drive downstream Reverse-Topo-Plan and Migration Strategy Selection; the Hallu-Shield inference-time value-model guidance~\cite{p143_wan_hallushield_2026} suppresses entity-level hallucinations before they enter downstream primitives.
 \end{enumerate}
 The archaeology pass is informed by long-running engineering case
 studies of mission-critical software evolution, such as the Digital
@@ -331,7 +332,7 @@ in order; each strategy exposes a predicate and an attempt method.}
 \subsection{Qwen2.5-Coder SLM Anchor (PRIM-22, PRIM-23, PRIM-31)}
 \label{sec:method_qwen25coder_anchor}
 
-MAgHARCM is tuned for the Qwen2.5-Coder family of coding SLMs at the 7B, 14B, and 32B scales~\cite{p58_hui_qwen25coder_2024,p94_zhou_lima_2023,p96_kojima_zsr_2022,p99_suzgun_bigbench_cot_2022,p100_khot_decomposed_2022,p101_zhou_l2m_2023,p102_smallcode_4b_2025,p104_s_star_2025,p105_chunkkv_2025,p106_bfcl_2025,p121_patil_bfcl_2025,p107_decomposed_prompting_slm_reanchor_2025,p108_eagle3_2025,p110_graphcoder_2024,p122_zhang_reasoningbank_2026,p124_shetty_syzygy_2025,p125_kang_t1_2026,p127_crupi_slmjudge_2026,p128_kim_kvzip_2025,p129_rong_lamda_2026,p130_ding_ssar_2026,p131_zhao_semarc_2026,p132_zhang_semref_2026,p133_xiang_adi_2026,p134_geng_relaycaching_2026,p137_oliaro_suffixdecoding_2025,p138_rusli_repairkv_2026,p139_lin_typepro_2026,p140_gu_panta_2026,p141_kvflow_2025,p86_xu_modernization_survey_2024_unverified,p88_hityper_peng_2022,...
+MAgHARCM is tuned for the Qwen2.5-Coder family of coding SLMs at the 7B, 14B, and 32B scales~\cite{p58_hui_qwen25coder_2024,p94_zhou_lima_2023,p96_kojima_zsr_2022,p99_suzgun_bigbench_cot_2022,p100_khot_decomposed_2022,p101_zhou_l2m_2023,p102_smallcode_4b_2025,p104_s_star_2025,p105_chunkkv_2025,p106_bfcl_2025,p121_patil_bfcl_2025,p107_decomposed_prompting_slm_reanchor_2025,p108_eagle3_2025,p110_graphcoder_2024,p122_zhang_reasoningbank_2026,p124_shetty_syzygy_2025,p125_kang_t1_2026,p127_crupi_slmjudge_2026,p128_kim_kvzip_2025,p129_rong_lamda_2026,p130_ding_ssar_2026,p131_zhao_semarc_2026,p132_zhang_semref_2026,p133_xiang_adi_2026,p134_geng_relaycaching_2026,p137_oliaro_suffixdecoding_2025,p138_rusli_repairkv_2026,p139_lin_typepro_2026,p140_gu_panta_2026,p141_kvflow_2025,p142_li_nesa_2026,p143_wang_hallushield_2026,p144_zhou_tracecoder_2026,p145_zhang_terramod_2026,p146_park_contextprm_2026}.
 fragment context ($\le 4\,\text{KB}$), reverse-topological scheduling,
 and the role-flipped reviewer are calibrated so that the prompt
 window, scratch reasoning budget, and instruction-following fidelity
@@ -577,7 +578,7 @@ RedCode benchmark~\cite{p61_redcode}, and latency-sensitive
 consensus rounds may delegate token-level decoding to a
 speculative-decoding helper following the EAGLE line of
 work~\cite{p64_eagle,p93_rafailov_dpo_2023,p78_eagle3_2025,p108_eagle3_2025,p91_snell_test_time_scaling_2024,p114_cai_medusa_2024}.
-prompt generation for breadth, human/role-flip review for depth~\cite{p77_openai_red_teaming_2024}---is
+Domain-agnostic contextual-coherence verification follows ContextPRM~\cite{p146_zhang_contextprm_2026}, which generalises PRM scoring from mathematics-only to non-mathematical domains by training on logical transitions between chain-of-thought steps rather than domain-specific knowledge.
 the methodological precedent for MAgHARCM's verifier-of-verifier pattern.
 
 \subsection{Recruiter Agent}
@@ -589,7 +590,7 @@ and test weakening) to adapt the pipeline dynamically
 (PRIM-29~\cite{p26_agentverse,p112_yang_sweagent_2024,p115_wang_openhands_2024,p121_patil_bfcl_2025,p122_zhang_reasoningbank_2026}).
 plateau, the Recruiter triggers incremental try-and-fail strategy
 failover, switching from the current migration strategy to the next
-viable strategy in the registry.
+viable strategy in the registry. The migration-strategy selection is informed by TerraMod-style knowledge-augmented migration contexts~\cite{p145_gupta_terramod_2026}, which harvest provider changelogs + API schemas + deprecation links to construct a structured migration context as a runtime signal for strategy choice. Trace-driven repair cycles borrow the TraceCoder Historical Lesson Learning + Rollback Mechanism~\cite{p144_huang_tracecoder_2026}, enforcing that each iterative repair step is a strict improvement toward a correct solution.
 
 \begin{figure*}[!t]
     \centering

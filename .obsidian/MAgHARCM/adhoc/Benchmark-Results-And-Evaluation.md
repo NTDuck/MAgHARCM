@@ -1,7 +1,7 @@
 ---
 title: MAgHARCM Benchmark Results & Empirical Evaluation
-date: 2026-09-28
-last_updated: 2026-09-28
+date: 2026-09-07
+last_updated: 2026-09-07
 aliases:
   - "Benchmark-Results-And-Evaluation"
   - "Benchmark Results and Evaluation"
@@ -53,3 +53,11 @@ tags: [adhoc, benchmarks, evaluation, results, empirical, metrics, "[[2.0.0 MAgH
 ## 3. Cost & Wall-Clock Efficiency
 - Local SLMs eliminate per-token API inference costs entirely.
 - Average translation time for small projects ($<1$k LoC) is $pprox 8.5$ minutes; medium projects (5k–15k LoC) require $pprox 10–15$ minutes on standard consumer workstations (RTX 4090 / Apple Silicon).
+
+---
+
+## 4. Wave-20 Audit Trail (2026-09-07 iter-3)
+
+- **Benchmark numbers (Table §1) carried over unchanged from Wave-17.** No empirical re-run authorized this sprint (BLK-04: no GPU/LLM endpoint reachable; BLK-02: Commons-Validator plateau persists). Wave-20 acceptance is paper-driven, not benchmark-driven.
+- **Wave-20 new substrate gates:** `comprehension.graph_self_evolving: true` (P-142 NESA), `agents.hallucination_defence: speculator_flight_recorder` (P-143 HalluShield), `agents.prompt_trace_training: true` (P-144 TraceCoder), `agents.translation_strategy_selector: lexical_llm` (P-145 TerraMod), `agents.prm_workflow_context: true` (P-146 ContextPRM) — all opt-in via `configs/agents.yml`.
+- **Empirical rebase required for Wave-21:** if any Wave-20 opt-in is enabled and BLK-04 resolves, re-run `K=3` trials on all four benchmarks and refresh Table §1.

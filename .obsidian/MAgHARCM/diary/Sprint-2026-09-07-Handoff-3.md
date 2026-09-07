@@ -16,11 +16,11 @@ Wave-20 fired on top of Wave-19. **5 ACCEPT + 4 REJECT + 1 UNVERIFIED = 10 triag
 
 ### Accepted (5)
 
-- **P-142 NESA** (Li et al., FSE 2026) — self-evolving graph pre-analysis; LLM-aided iterative refinement of the static program graph. **Partially closes the strict program-comprehension-mechanism slot.** Anchors PRIM-9 + PRIM-22.
-- **P-143 HalluShield** (Wang et al., FSE 2026) — SLM-grounded speculative-decoding hallucination defence for 4B-30B substrates. Re-anchors the frontier-PRM-as-judge gap. Anchors PRIM-7 + PRIM-21.
-- **P-144 TraceCoder** (Zhou et al., ICSE 2026) — prompt-trace training-data construction for LLM/SLM coding agents. Anchors PRIM-29 + PRIM-31.
-- **P-145 TerraMod** (Zhang et al., ICSE 2026 NIER) — LLM-driven lexical-based translation strategy selection. Anchors PRIM-21.
-- **P-146 ContextPRM** (Park et al., ICLR 2026) — workflow-aware cross-document process reward modelling for agentic SLMs. Anchors PRIM-7 + PRIM-31.
+- **P-142 NESA** (Wang et al., FSE 2026, DOI 10.1145/3808161) — relational neuro-symbolic static program analysis: restricted Datalog analysis-policy language decomposes complex sub-problems into syntactic (parsing-based) and semantic (LLM-handled) slices; F1 0.72 on TaintBench (+0.20 over industrial baseline); 13 real-world memory-leak bugs detected. **Partially closes the strict program-comprehension-mechanism slot.** Anchors PRIM-9 + PRIM-22.
+- **P-143 HalluShield** (Wan et al., FSE 2026, DOI 10.1145/3808139) — three artefacts: Hallu-Eval (800-pair benchmark), Hallu-Det (entity-level detection + synonymous-mutation refinement; F1 0.95 on Qwen2.5-Coder-7B), and Hallu-Shield (inference-time external value-model guidance; 10.6% relative hallucination reduction on DeepSeek-Coder-6.7B; 74.0% LLM-as-judge win rate). Re-anchors the SLM-scale PRIM-7 verdict-validation pattern with a summarization-specific verifier. Anchors PRIM-7 + PRIM-22.
+- **P-144 TraceCoder** (Huang et al., ICSE 2026, arXiv 2602.06875) — four-component trace-driven multi-agent repair: runtime trace instrumentation + causal analysis + Historical Lesson Learning Mechanism (HLLM) + Rollback Mechanism (RM); up to 34.43% relative Pass@1 improvement. Anchors PRIM-22 + PRIM-25.
+- **P-145 TerraMod** (Gupta et al., IBM Research, ICSE 2026 NIER, DOI 10.1145/3786582.3786841) — knowledge-augmented Terraform migration context (changelogs + API schemas + deprecation links) guides LLM-driven upgrades across provider versions. Anchors PRIM-21 + PRIM-22.
+- **P-146 ContextPRM** (Zhang et al., ICLR 2026, OpenReview 10011128) — domain-agnostic contextual-coherence PRM trained on logical transitions between CoT steps rather than domain-specific knowledge; 6.5% average accuracy improvement on MMLU-Pro across nine non-mathematical domains. Anchors PRIM-7 + PRIM-31.
 
 ### Rejected (4)
 
@@ -47,10 +47,9 @@ Wave-20 fired on top of Wave-19. **5 ACCEPT + 4 REJECT + 1 UNVERIFIED = 10 triag
 
 ## Substrate Closure (Wave-20)
 
-- **PRIM-9 Tri-Representation Hybrid Code Graph + PRIM-22 Four Phases of Comprehension** — substrate closed-loop: static CPG (`P-113 AutoCodeRover`, `P-110 GraphCoder`) → ADI function-level DA (`P-133`) → NESA self-evolving refinement (`P-142`) → SSAR alignment (`P-130`) → SemArc partition (`P-131`) → SemRef iterative LLM refinement (`P-132`). The strict program-comprehension-mechanism slot is **partially closed**; the residual gap (function-level → partition-aligned summary) carries into Wave-21.
-- **PRIM-7 Verdict Validation** — substrate closed-loop: judgement (`P-125 T1` / `P-127 SLM-as-Judge`) → defence (`P-143 HalluShield`) → validation (`P-135 SPECS` / `P-136 CaTS` / `P-146 ContextPRM`).
-- **PRIM-21 Migration Strategy Selection** — substrate closed-loop: try-and-fail registry (`P-122 ReasoningBank`) → strategy selection (`P-145 TerraMod` / `P-123 CodeChemist`) → execution (`P-137 SuffixDecoding`) → judgement (`P-143 HalluShield`).
-- **PRIM-29 Recruiter + PRIM-31 Iterative Retrieval** — substrate extended with prompt-trace training data construction (`P-144 TraceCoder`).
+- **PRIM-7 Verdict Validation** — substrate closed-loop: judgement (`P-125 T1` / `P-127 SLM-as-Judge`) → defence (`P-143 HalluShield` inference-time value-model guidance) → validation (`P-135 SPECS` / `P-136 CaTS` / `P-146 ContextPRM` domain-agnostic coherence PRM).
+- **PRIM-21 Migration Strategy Selection** — substrate closed-loop: try-and-fail registry (`P-122 ReasoningBank`) → strategy selection (`P-145 TerraMod` external-knowledge migration context / `P-123 CodeChemist`) → execution (`P-137 SuffixDecoding`) → judgement (`P-143 HalluShield`).
+- **PRIM-22 + PRIM-25** — substrate extended: `P-144 TraceCoder` (trace-driven multi-agent repair with HLLM + Rollback) anchors PRIM-22 Observation phase + PRIM-25 Role-Flip Reviewer cross-iteration review.
 
 ## Commits (in order)
 

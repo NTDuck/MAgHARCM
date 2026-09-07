@@ -1588,3 +1588,45 @@
   year      = {2025},
   note      = {Agent Step Graph + steps-to-execution metric + prefetching; workflow-aware KV cache eviction that preserves cross-agent dependency chains rather than per-request locality. Anchors PRIM-31, PRIM-21.}
 }
+
+@inproceedings{p142_wang_nesa_2026,
+  title     = {{NESA: Relational Neuro-Symbolic Static Program Analysis}},
+  author    = {Wang, Chengpeng and Gao, Yifei and Zhang, Wuqi and Liu, Xuwei and Guo, Jinyao and Zheng, Mingwei and Shi, Qingkai and Zhang, Xiangyu},
+  booktitle = {ACM International Conference on the Foundations of Software Engineering (FSE 2026)},
+  year      = {2026},
+  doi       = {10.1145/3808161},
+  note      = {Restricted Datalog analysis-policy language decomposes complex static-analysis problems into syntactic (parsing-based) and semantic (LLM) sub-problems; compilation-free and customizable. F1 0.72 on TaintBench (+0.20 over industrial baseline); 13 real-world memory-leak bugs detected. Anchors PRIM-22 (Reorganization via Datalog policy), PRIM-9 (fourth representation on top of syntactic / lexical / semantic). Partially closes the strict program-comprehension-mechanism slot. Source: arXiv:2412.14399; PACMSE Vol 3 FSE Issue Article FSE154.}
+}
+
+@inproceedings{p143_wan_hallushield_2026,
+  title     = {{Hallucinations in LLM-based Code Summarization: Unveiling, Detection, and Mitigation}},
+  author    = {Wan, Guanghua and Feng, Yuanning and Wan, Yao and Chu, Zhaoyang and Bi, Zhangqian and Han, Junxiao and Zhao, Zhou and Zhang, Hongyu and Yuan, Pingpeng and Shi, Xuanhua and Jin, Hai},
+  booktitle = {ACM International Conference on the Foundations of Software Engineering (FSE 2026)},
+  year      = {2026},
+  doi       = {10.1145/3808139},
+  note      = {Three artefacts: Hallu-Eval (800-pair code-summary hallucination benchmark), Hallu-Det (entity-level detection + synonymous-mutation refinement; F1 0.95 on Qwen2.5-Coder-7B), and Hallu-Shield (inference-time external value-model guidance; 10.6\% relative hallucination reduction on DeepSeek-Coder-6.7B; 74.0\% LLM-as-judge win rate). Re-anchors the SLM-scale PRIM-7 verdict-validation pattern with a summarization-specific verifier. Anchors PRIM-7, PRIM-22. Source: PACMSE Vol 3 FSE Issue Article 66.}
+}
+
+@inproceedings{p144_huang_tracecoder_2026,
+  title     = {{TraceCoder: A Trace-Driven Multi-Agent Framework for Automated Debugging of LLM-Generated Code}},
+  author    = {Huang, Jiangping and Ye, Wenguang and Sun, Weisong and Zhang, Jian and Zhang, Mingyue and Liu, Yang},
+  booktitle = {IEEE/ACM 48th International Conference on Software Engineering (ICSE 2026)},
+  year      = {2026},
+  note      = {Four-component mechanism: runtime trace instrumentation captures fine-grained execution traces; causal analysis localizes root cause; Historical Lesson Learning Mechanism (HLLM) distills insights from prior repair attempts; Rollback Mechanism (RM) enforces monotonic improvement. Up to 34.43\% relative Pass@1 improvement; iterative repair contributes 65.61\% relative gain. Anchors PRIM-22 (Observation phase via trace instrumentation), PRIM-25 (Role-Flip Reviewer: HLLM is the cross-iteration review substrate). Source: researchr.org/details/icse-2026/icse-2026-research-track/145; CSMA-Research-Group/TraceCoder GitHub repository; arXiv:2602.06875.}
+}
+
+@inproceedings{p145_gupta_terramod_2026,
+  title     = {{Automating Terraform Code Migration through Provider Evolution Knowledge}},
+  author    = {Gupta, Pranjal and Aggarwal, Pooja and Paulovicks, Brent and Mohapatra, Prateeti and Lee, Rong and Sheinin, Vadim},
+  booktitle = {IEEE/ACM 48th International Conference on Software Engineering, New Ideas and Emerging Results Track (ICSE 2026 NIER)},
+  year      = {2026},
+  note      = {Knowledge-augmented Terraform configuration migration: scrapes provider changelogs + API schemas + deprecation links to build a structured migration context that guides LLM-driven upgrades across provider versions. Evaluated on real-world AWS Terraform Provider breaking changes. NIER is a peer-reviewed double-anonymous sub-track of ICSE main conference (treated as in-list per §7 ICSE entry). Anchors PRIM-21 (Migration Strategy Selection: knowledge-augmented migration context as a runtime signal for strategy choice), PRIM-22 (Reorganization phase via external knowledge context). Source: researchr.org/details/icse-2026/icse-2026-nier/43; IBM Research publication page.}
+}
+
+@inproceedings{p146_zhang_contextprm_2026,
+  title     = {{ContextPRM: Leveraging Contextual Coherence for Multi-Domain Test-Time Scaling}},
+  author    = {Zhang, Haotian and Liu, Liu and Yu, Baosheng and Qiu, Jiayan and Xiao, Likang and Ren, Yanwei and Chen, Quan and Liu, Xianglong},
+  booktitle = {International Conference on Learning Representations (ICLR 2026)},
+  year      = {2026},
+  note      = {Process Reward Model trained on domain-agnostic contextual coherence (logical transitions between consecutive CoT steps) rather than domain-specific knowledge. 6.5\% average accuracy improvement on MMLU-Pro across nine non-mathematical domains over majority voting; significantly outperforms VersaPRM (2.2\%) and math-focused PRMs (0.5\%). Strong cross-domain generalization even when fine-tuned on a single domain. Anchors PRIM-7 as the eighth SLM-scale verifier in the Wave-18 + Wave-19 + Wave-20 cluster. Source: iclr.cc/virtual/2026/poster/10011128; proceedings.iclr.cc paper ce186a37e63b37638ecd06dee6b9a355.}
+}

@@ -1,7 +1,7 @@
 ---
 title: MAgHARCM Strategic Direction & Future Roadmap
-date: 2026-09-28
-last_updated: 2026-09-28
+date: 2026-09-07
+last_updated: 2026-09-07
 aliases:
   - "Strategic-Direction-And-Roadmap"
   - "Strategic Direction and Roadmap"
@@ -40,8 +40,10 @@ Phase 1: Foundations & Parity (COMPLETED)
          ▼
 Phase 2: Local SLM Fine-Tuning & Prompt Specialization (CURRENT)
   ├── Structured output cloze slots (PRIM-22, PRIM-24)
-  ├── KV Cache chunk compression (KVPress, ChunkKV P-105)
-  └── Memory-augmented Test-Time Scaling (MaTTS in internal/memorystore)
+  ├── KV Cache chunk compression (KVPress, ChunkKV P-105; KVzip P-128 + RepairKV P-138 + KVFlow P-141 for agent-loop substrate)
+  ├── Memory-augmented Test-Time Scaling (MaTTS in internal/memorystore)
+  ├── SLM-as-Judge pipeline (T1 P-125 + SLM-as-a-Judge P-127; defended by HalluShield P-143 + validated by SPECS P-135 + CaTS P-136 + ContextPRM P-146)
+  └── Program-comprehension mechanism substrate (NESA P-142 + SSAR/SemArc/SemRef P-130..P-132 + ADI P-133; §11.6)
          │
          ▼
 Phase 3: Deep Enterprise Modernization (UPCOMING)
@@ -67,3 +69,12 @@ Phase 4: Autonomous Verified SWE-Bench Zero-Shot Modernizer (FUTURE)
    - Secondary: Python 2 $	o$ Python 3 / Go (addressing scientific computing stacks).
 3. **Formalize Benchmark Telemetry**:
    - Integrate automated wall-clock, memory, and token telemetry into the Charm TUI dashboard.
+4. **Wave-20 program-comprehension-mechanism substrate**:
+   - The strict program-comprehension-mechanism slot (open since Wave-17) is partially closed by `[[1.0.0 P-142]]` NESA self-evolving graph pre-analysis. The substrate is opt-in via `configs/agents.yml:comprehension.graph_self_evolving: true`.
+   - Wave-21 priority: function-level → partition-aligned summary pass (residual gap); re-scout NeurIPS 2026 / ICML 2027 / ICLR 2027.
+5. **Wave-20 SLM-as-Judge closed-loop**:
+   - PRIM-7 substrate is now closed-loop: judgement (`[[1.0.0 P-125]]` T1 / `[[1.0.0 P-127]]` SLM-as-a-Judge) → defence (`[[1.0.0 P-143]]` HalluShield) → validation (`[[1.0.0 P-135]]` SPECS / `[[1.0.0 P-136]]` CaTS / `[[1.0.0 P-146]]` ContextPRM).
+6. **Wave-20 PRIM-21 strategy-selection closed-loop**:
+   - PRIM-21 substrate is now closed-loop: try-and-fail registry (`[[1.0.0 P-122]]` ReasoningBank) → strategy selection (`[[1.0.0 P-145]]` TerraMod / `[[1.0.0 P-123]]` CodeChemist) → execution (`[[1.0.0 P-137]]` SuffixDecoding) → judgement (`[[1.0.0 P-143]]` HalluShield).
+7. **Wave-20 prompt-trace training data**:
+   - `[[1.0.0 P-144]]` TraceCoder extends the PRIM-29 + PRIM-31 substrate with prompt-trace training-data construction.

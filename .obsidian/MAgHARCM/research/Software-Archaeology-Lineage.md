@@ -410,4 +410,40 @@ CMU + UCSD; **dual code-test C-to-safe-Rust translation via LLMs + dynamic analy
 - Wave-19 paper notes: `.obsidian/MAgHARCM/research/papers/P-134..P-141-*.md`
 - REJECT registry: `.obsidian/MAgHARCM/Research-Database.json::reject_registry.wave-19` (BLK-08 resolved)
 - Watchlist: `.obsidian/MAgHARCM/Research-Database.json::watchlist.wave-19`
+
+## 11. Wave-20 SLM-Era Anchors (2026-09-07 iter-3)
+
+5 ACCEPT + 4 REJECT + 1 UNVERIFIED = 10 triaged. Wave-20 partially closes the strict program-comprehension-mechanism slot (open since Wave-17) via P-142 NESA self-evolving graph pre-analysis; anchors SLM-grounded hallucination defence (P-143 HalluShield), prompt-trace training data (P-144 TraceCoder), LLM-driven translation strategy selection (P-145 TerraMod), and workflow-aware cross-document PRM (P-146 ContextPRM).
+
+### 11.1 Accepted anchors
+
+- `[[1.0.0 P-142]]` **NESA: Relational Neuro-Symbolic Static Program Analysis** (Li et al., FSE 2026) — self-evolving graph pre-analysis; LLM-aided iterative refinement of the static program graph. **Partially closes the strict program-comprehension-mechanism slot.** Anchors `[[1.0.0 PRIM-9]]` + `[[1.0.0 PRIM-22]]`.
+- `[[1.0.0 P-143]]` **HalluShield / Hallucination Detection and Mitigation for LLM-based Code Summarization** (Wang et al., FSE 2026) — SLM-grounded speculative-decoding hallucination defence for 4B-30B substrates. Re-anchors the frontier-PRM-as-judge gap. Anchors `[[1.0.0 PRIM-7]]` + `[[1.0.0 PRIM-21]]`.
+- `[[1.0.0 P-144]]` **TraceCoder: A Trace-Driven Multi-Agent Framework for Automated Debugging of LLM-Generated Code** (Zhou et al., ICSE 2026) — prompt-trace training-data construction; preserves successful trajectories as agent supervision. Anchors `[[1.0.0 PRIM-29]]` + `[[1.0.0 PRIM-31]]`.
+- `[[1.0.0 P-145]]` **TerraMod: LLM-Driven Lexical-Based Translation Strategy Selection** (Zhang et al., ICSE 2026 NIER) — LLM-driven lexical-based translation strategy selection for legacy migration. Anchors `[[1.0.0 PRIM-21]]`.
+- `[[1.0.0 P-146]]` **ContextPRM: Workflow-Aware Cross-Document Process Reward Modelling for Agentic SLMs** (Park et al., ICLR 2026) — workflow-aware cross-document process reward modelling; re-anchors P-91..P-92 frontier-PRM-as-judge gap with workflow context. Anchors `[[1.0.0 PRIM-7]]` + `[[1.0.0 PRIM-31]]`.
+
+### 11.2 Rejected (4)
+
+- **R1 Nexus** (ICSE 2026) — REJECTED Q3 (ablations only, no mechanism). Same pattern as Wave-19 REJECTs: ablations do not introduce a new substrate.
+- **R2 SWE-Lego** (ICSE 2026 NIER) — REJECTED Q3 (engineering pattern, no mechanism). NIER track is the right venue but the contribution is a scaffolding pattern, not a mechanism.
+- **R3 CoPS** (ICML 2026) — REJECTED Q1 (speculative venue, no venue confirmation). Same rationale as Wave-19 R2 HELIOS off-list handling.
+- **R4 SHIELD-ASR** (ACL 2026 Findings) — REJECTED Q1 (off-list venue). ACL is not in the §7 trigger-list.
+
+### 11.3 Watchlist — UNVERIFIED (1)
+
+- **U1 NSE** (ICML 2026 placeholder venue, no DOI / OpenReview / arXiv) — Watchlist for Wave-21 venue re-verification.
+
+### 11.4 Watchlist Resolved (2)
+
+- **W1 SliceMate** — REJECTED. ISSTA 2026 program slot still absent on conf.researchr.org; Yunbo Lyu's homepage claim is unsupported. Removed from watchlist.
+- **W2 SWE-TRACE** — REJECTED. April 2026 arXiv preprint only (arXiv:2604.14820); no peer-reviewed venue confirmation. Removed from watchlist.
+
+**Cross-reference**:
+- Wave-20 candidates memo: `.obsidian/MAgHARCM/research/diary/Wave-20-Candidates.md`
+- Wave-20 paper notes: `.obsidian/MAgHARCM/research/papers/P-142..P-146-*.md`
+- REJECT registry: `.obsidian/MAgHARCM/Research-Database.json::reject_registry.wave-20` (BLK-08 standing rule applied)
+- Watchlist: `.obsidian/MAgHARCM/Research-Database.json::watchlist.wave-20`
+- Sprint 2026-09-07 (iter-3) audit block: `.obsidian/MAgHARCM/diary/Sprint-2026-09-07-Handoff-3.md`
+- Methodology §11.6 (NEW): Program-Comprehension Mechanism substrate anchored by P-142 + Wave-18 architecture-recovery trio + P-133 ADI
 - Sprint 2026-09-07 (iter-2) audit block: `.obsidian/MAgHARCM/primitives/Primitives-Index.md` §Sprint 2026-09-07 (Wave-19)
