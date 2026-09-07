@@ -148,7 +148,6 @@ Optional focus argument: `$ARGUMENTS`
 1. Each research wave writes a `.obsidian/MAgHARCM/research/diary/Wave-NN-Candidates.md` memo before any paper notes are persisted.
 2. The memo is the triage ledger: every fired candidate appears with verdict + rationale.
 3. The memo's bibkeys MUST match the bibkeys written to `refs.bib` and `Research-Database.json`.
-3. The memo's bibkeys MUST match the bibkeys written to `refs.bib` and `Research-Database.json`.
 4. The memo's ACCEPT list MUST equal the new entries appended to `Research-Database.json`.
 
 ## 12. Wave-19 Insights (2026-09-07 iter-2)

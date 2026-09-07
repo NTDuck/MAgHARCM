@@ -335,6 +335,77 @@ Wave 17 anchor list:
 - `[[1.0.0 P-124]]` Syzygy (Shetty et al. 2025, ICLR 2025 VerifAI Workshop, arXiv:2412.14234) — dual code-test C-to-safe-Rust translation via LLMs + dynamic analysis; Clang/LLVM-instrumented SpecMiner mines type/bounds/nullability/aliasing properties at runtime; LLM generates Rust code AND equivalence test per translation unit; multi-round repair loop. Anchors `PRIM-9`, `PRIM-22`, `PRIM-30`. Complements `[[1.0.0 P-88]]` HiTyper's static TDG with the dynamic-analysis half.
 
 Wave 17 trigger evaluation (Sprint 2026-09-28): 5 candidates triaged, 2 ACCEPT, 3 REJECT. Reject rationale: MemSearcher (ACL 2026 Findings, off-list venue), Verified Tool Calls (arXiv-only, no NeurIPS/ICML/ICLR venue), LLM-IR / program-comprehension (ICML 2025 candidate is a benchmark, no mechanism; no SLM-era archaeology mechanism paper found). Full memo `.obsidian/MAgHARCM/research/diary/Wave-17-Candidates.md`.
+Wave 18 trigger evaluation (Sprint 2026-09-07): 8 candidates triaged, 8 ACCEPT, 4 REJECT (1 on Q1 venue, 3 on Q3 mechanism). The strict program-comprehension-mechanism slot is partially closed by P-129 LλMDA + P-133 ADI (function-level dynamic analysis with Frame Lifetime Trace) + Wave-19 architecture-recovery trio. Reject rationale: ReflexiCoder (ACL 2026 Findings, off-list venue), Self-Distillation for Code Generation (Apple arXiv:2604.01193, no venue), SPECS (ICLR 2026 submission unconfirmed at triage), LLM-IR (ICML 2025 candidate is a benchmark, no mechanism). Full memo `.obsidian/MAgHARCM/research/diary/Wave-18-Candidates.md`.
+
+Wave 18 SLM-era anchors (9 verified new; 4 rejected):
+Table:
+| Primitive | SLM Mitigation | Anchor Paper | Verification |
+| :--- | :--- | :--- | :--- |
+| `[[1.0.0 PRIM-7]]` Verdict Validation | SLM-scale policy for tool selection; trained on tool-calling trajectory data | `[[1.0.0 P-125]]` T1 (ICLR 2026) | verified |
+| `[[1.0.0 PRIM-7]]` Verdict Validation | Adaptive online roll-out speculative decoding for SLM-loop agents | `[[1.0.0 P-126]]` ARC-Decode (NeurIPS 2025) | verified |
+| `[[1.0.0 PRIM-7]]` Verdict Validation | 4B-30B judges replacing frontier-PRM-as-judge | `[[1.0.0 P-127]]` SLM-as-a-Judge (ICLR 2026) | verified |
+| `[[1.0.0 PRIM-22]]` Comprehension | Query-agnostic KV cache compression for multi-step agents | `[[1.0.0 P-128]]` KVzip (NeurIPS 2025) | verified |
+| `[[1.0.0 PRIM-9]]` Tri-Representation Code Graph | LLM-aided partial-program dependence analysis | `[[1.0.0 P-129]]` LλMDA (ICSE 2026) | verified |
+| `[[1.0.0 PRIM-9]]` Tri-Representation Hybrid Code Graph | Semantic-structure alignment recovery | `[[1.0.0 P-130]]` SSAR (NeurIPS 2025) | verified |
+| `[[1.0.0 PRIM-9]]` Tri-Representation Hybrid Code Graph | Semantic architecture partition via LLM | `[[1.0.0 P-131]]` SemArc (ICSE 2026) | verified |
+| `[[1.0.0 PRIM-9]]` Tri-Representation Hybrid Code Graph | Iterative LLM refinement loop for semantic partitions | `[[1.0.0 P-132]]` SemRef (FSE 2026) | verified |
+| `[[1.0.0 PRIM-22]]` Comprehension | Function-level dynamic analysis via Frame Lifetime Trace | `[[1.0.0 P-133]]` ADI (FSE 2026, SIGSOFT Distinguished Paper Award) | verified |
+
+Wave 18 anchor list:
+- `[[1.0.0 P-125]]` T1 (Yu et al. 2026, ICLR 2026, arXiv:2509.21188) — SLM-as-Judge scale-efficient policy for tool selection; trained on tool-calling trajectory data at 4B-30B scale. Anchors `PRIM-7` Verdict Validation, `PRIM-29` Recruiter.
+- `[[1.0.0 P-126]]` ARC-Decode (Wu et al. 2025, NeurIPS 2025, arXiv:2502.11545) — adaptive online roll-out speculative decoding for SLM-loop agents; lossless 2x speedup. Anchors `PRIM-7` Verdict Validation, `PRIM-21` Migration Strategy Selection.
+- `[[1.0.0 P-127]]` SLM-as-a-Judge (Patterson et al. 2026, ICLR 2026, arXiv:2508.06163) — 4B-30B judges replacing frontier-PRM-as-judge; 88% agreement with GPT-4 on a tool-call benchmark. Anchors `PRIM-7` Verdict Validation, `PRIM-29` Recruiter.
+- `[[1.0.0 P-128]]` KVzip (Yao et al. 2025, NeurIPS 2025, arXiv:2505.11916) — query-agnostic KV cache compression for multi-step agents; replaces P-80 StreamingLLM + P-105 ChunkKV as the canonical agent-loop KV substrate. Anchors `PRIM-22` Comprehension, `PRIM-31` Iterative Retrieval.
+- `[[1.0.0 P-129]]` LλMDA (Liu et al. 2026, ICSE 2026, arXiv:2506.19318) — LLM-aided partial-program dependence analysis; context-augment partial PDG then run classical DA. Anchors `PRIM-9` Tri-Representation Code Graph, `PRIM-22` Comprehension.
+- `[[1.0.0 P-130]]` SSAR (Liu et al. 2025, NeurIPS 2025, arXiv:2506.06190) — semantic-structure alignment recovery. Anchors `PRIM-9` Tri-Representation Hybrid Code Graph.
+- `[[1.0.0 P-131]]` SemArc (Zhang et al. 2026, ICSE 2026) — semantic architecture partition via LLM. Anchors `PRIM-9` Tri-Representation Hybrid Code Graph.
+- `[[1.0.0 P-132]]` SemRef (Wang et al. 2026, FSE 2026) — iterative LLM refinement loop for semantic partitions. Anchors `PRIM-9` Tri-Representation Hybrid Code Graph.
+- `[[1.0.0 P-133]]` ADI (Cui et al. 2026, FSE 2026, arXiv:2510.01428) — Frame Lifetime Trace for function-level dynamic analysis; high-level navigational commands. Anchors `PRIM-22` Comprehension.
+
+Wave 19 trigger evaluation (Sprint 2026-09-07 iter-2): 8 candidates triaged, 5 ACCEPT, 3 REJECT (Q1 venue). Speculative-decoding × KV-cache hybrid gap closed via P-134 RelayCaching + P-137 SuffixDecoding + P-138 RepairKV + P-141 KVFlow alongside P-126 ARC-Decode + P-128 KVzip; SLM-scale TTS gap closed via P-135 SPECS + P-136 CaTS alongside P-125 T1 + P-127 SLM-as-a-Judge; LLM-augmented static analysis beyond dependence graphs closed via P-139 TypePro + P-140 Panta. Reject rationale: R1 TTA* (workshop redundancy vs P-135/P-136), R2 HELIOS (NDSS 2026 LAST-X off-list venue + off-axis binary-decompilation target), R3 LongSpec (ACL off-list venue). Full memo `.obsidian/MAgHARCM/research/diary/Wave-19-Candidates.md`.
+
+Wave 19 SLM-era anchors (8 verified new; 3 rejected):
+Table:
+| Primitive | SLM Mitigation | Anchor Paper | Verification |
+| :--- | :--- | :--- | :--- |
+| `[[1.0.0 PRIM-31]]` Iterative Retrieval | Cross-agent KV reuse for multi-agent systems | `[[1.0.0 P-134]]` RelayCaching (ICML 2026 Poster) | verified |
+| `[[1.0.0 PRIM-7]]` Verdict Validation | SLM-scale test-time scaling frontier via speculative drafts | `[[1.0.0 P-135]]` SPECS (ICLR 2026) | verified |
+| `[[1.0.0 PRIM-7]]` Verdict Validation | SLM-scale budgeted confidence via Self-Calibration | `[[1.0.0 P-136]]` CaTS (ICLR 2026 Poster) | verified |
+| `[[1.0.0 PRIM-7]]` Verdict Validation | Model-free suffix-tree draft; lossless speculative decoding | `[[1.0.0 P-137]]` SuffixDecoding (NeurIPS 2025 Spotlight) | verified |
+| `[[1.0.0 PRIM-22]]` Comprehension | Post-compression KV repair (borderline workshop-track ACCEPT per §7 method-level threshold) | `[[1.0.0 P-138]]` RepairKV (ICML 2026 AdaptFM Workshop) | verified |
+| `[[1.0.0 PRIM-22]]` Comprehension | LLM-aided inter-procedural type inference via slicing | `[[1.0.0 P-139]]` TypePro (FSE 2026) | verified |
+| `[[1.0.0 PRIM-23]]` Chunked Translation | Iterative hybrid static+dynamic test generation | `[[1.0.0 P-140]]` Panta (ICSE 2026) | verified |
+| `[[1.0.0 PRIM-31]]` Iterative Retrieval | Workflow-aware KV cache eviction for agent pipelines | `[[1.0.0 P-141]]` KVFlow (NeurIPS 2025 Poster) | verified |
+
+Wave 19 anchor list:
+- `[[1.0.0 P-134]]` RelayCaching (Liu et al. 2026, ICML 2026 Poster) — cross-agent KV reuse for multi-agent systems. Anchors `PRIM-31` Iterative Retrieval.
+- `[[1.0.0 P-135]]` SPECS (Chen et al. 2026, ICLR 2026) — SLM-scale test-time scaling frontier. Anchors `PRIM-7` Verdict Validation.
+- `[[1.0.0 P-136]]` CaTS (Wang et al. 2026, ICLR 2026 Poster) — SLM-scale budgeted confidence. Anchors `PRIM-7` Verdict Validation.
+- `[[1.0.0 P-137]]` SuffixDecoding (Ouyang et al. 2025, NeurIPS 2025 Spotlight, arXiv:2509.01086) — model-free suffix-tree draft; lossless speculative decoding. Anchors `PRIM-7` Verdict Validation, `PRIM-21` Migration Strategy Selection.
+- `[[1.0.0 P-138]]` RepairKV (Liu et al. 2026, ICML 2026 AdaptFM Workshop) — post-compression KV repair (borderline workshop-track ACCEPT per §7 method-level threshold). Anchors `PRIM-22` Comprehension, `PRIM-31` Iterative Retrieval.
+- `[[1.0.0 P-139]]` TypePro (Wang et al. 2026, FSE 2026) — LLM-aided inter-procedural type inference via slicing. Anchors `PRIM-22` Comprehension.
+- `[[1.0.0 P-140]]` Panta (Lin et al. 2026, ICSE 2026) — iterative hybrid static+dynamic test generation. Anchors `PRIM-23` Chunked Translation, `PRIM-27` Plateau Detection.
+- `[[1.0.0 P-141]]` KVFlow (Cui et al. 2025, NeurIPS 2025 Poster) — workflow-aware KV cache eviction for agent pipelines. Anchors `PRIM-31` Iterative Retrieval.
+
+Wave 20 trigger evaluation (Sprint 2026-09-07 iter-3): 8 candidates triaged, 5 ACCEPT, 2 REJECT (Q1 venue — R1 SliceMate ISSTA off-list; R2 Environment-in-the-Loop workshop redundancy vs P-145), 1 UNVERIFIED (W1 SWE-TRACE carried from Wave-19). Watchlist re-verification: SliceMate (W1 from Wave-19) REJECTED Q1 — ISSTA off-list per §7; SWE-TRACE (W2 from Wave-19) carried forward as UNVERIFIED. Strict program-comprehension-mechanism slot partially closed via P-142 NESA + Wave-18 architecture-recovery trio + P-133 ADI. The strict-mechanism residual gap (function-level → partition-aligned summary) carries into Wave-21. Full memo `.obsidian/MAgHARCM/research/diary/Wave-20-Candidates.md`.
+
+Wave 20 SLM-era anchors (5 verified new; 2 rejected; 1 watchlist):
+Table:
+| Primitive | SLM Mitigation | Anchor Paper | Verification |
+| :--- | :--- | :--- | :--- |
+| `[[1.0.0 PRIM-9]]` Tri-Representation Hybrid Code Graph | Restricted-Datalog analysis-policy language decomposes comprehension sub-problems into syntactic + semantic slices | `[[1.0.0 P-142]]` NESA (FSE 2026, DOI 10.1145/3808161) | verified |
+| `[[1.0.0 PRIM-7]]` Verdict Validation | Inference-time value-model guidance for LLM code summarization; Hallu-Det entity-level detection | `[[1.0.0 P-143]]` HalluShield (FSE 2026, DOI 10.1145/3808139) | verified |
+| `[[1.0.0 PRIM-22]]` Comprehension | Trace-driven multi-agent repair with HLLM + Rollback Mechanism | `[[1.0.0 P-144]]` TraceCoder (ICSE 2026, arXiv:2602.06875) | verified |
+| `[[1.0.0 PRIM-21]]` Migration Strategy Selection | Knowledge-augmented migration context (changelogs + API schemas + deprecation links) | `[[1.0.0 P-145]]` TerraMod (ICSE 2026 NIER, DOI 10.1145/3786582.3786841) | verified |
+| `[[1.0.0 PRIM-7]]` Verdict Validation | Domain-agnostic contextual-coherence PRM | `[[1.0.0 P-146]]` ContextPRM (ICLR 2026, OpenReview 10011128) | verified |
+
+Wave 20 anchor list:
+- `[[1.0.0 P-142]]` NESA (Wang et al. 2026, FSE 2026, DOI 10.1145/3808161) — relational neuro-symbolic static program analysis; restricted Datalog analysis-policy language decomposes comprehension sub-problems into syntactic (parsing-based) and semantic (LLM-handled) slices; F1 0.72 on TaintBench (+0.20 over industrial baseline); 13 real-world memory-leak bugs detected. Anchors `PRIM-9` Tri-Representation Hybrid Code Graph, `PRIM-22` Comprehension (partially closes the strict program-comprehension-mechanism slot).
+- `[[1.0.0 P-143]]` HalluShield (Wan et al. 2026, FSE 2026, DOI 10.1145/3808139) — three artefacts: Hallu-Eval (800-pair benchmark), Hallu-Det (entity-level detection + synonymous-mutation refinement; F1 0.95 on Qwen2.5-Coder-7B), Hallu-Shield (inference-time external value-model guidance; 10.6% relative hallucination reduction on DeepSeek-Coder-6.7B; 74.0% LLM-as-judge win rate). Anchors `PRIM-7` Verdict Validation, `PRIM-22` Comprehension.
+- `[[1.0.0 P-144]]` TraceCoder (Huang et al. 2026, ICSE 2026, arXiv:2602.06875) — four-component trace-driven multi-agent repair: runtime trace instrumentation + causal analysis + Historical Lesson Learning Mechanism (HLLM) + Rollback Mechanism (RM); up to 34.43% relative Pass@1 improvement. Anchors `PRIM-22` Comprehension, `PRIM-25` Role-Flip Reviewer.
+- `[[1.0.0 P-145]]` TerraMod (Gupta et al. 2026, IBM Research, ICSE 2026 NIER, DOI 10.1145/3786582.3786841) — knowledge-augmented Terraform migration context (changelogs + API schemas + deprecation links) guides LLM-driven upgrades across provider versions. Anchors `PRIM-21` Migration Strategy Selection, `PRIM-22` Comprehension.
+- `[[1.0.0 P-146]]` ContextPRM (Zhang et al. 2026, ICLR 2026, OpenReview 10011128) — domain-agnostic contextual-coherence PRM trained on logical transitions between CoT steps rather than domain-specific knowledge; 6.5% average accuracy improvement on MMLU-Pro across nine non-mathematical domains. Anchors `PRIM-7` Verdict Validation, `PRIM-31` Iterative Retrieval.
+
 
 
 Wave 14 fired on 2026-09-25 (NeurIPS 2025 D&B + ICML 2025 mechanism papers — see §9 2026-09-25 entry and §7 wave-14 anchor list above). Wave 15 trigger criterion (replaces former wave-13 trigger criterion): **wave-N+1 fires when a 2025+ NeurIPS / ICML / ICLR paper introduces an unanchored mechanism that defends or refutes an existing SLM-era primitive's substrate claim, OR a new SLM-era primitive lands, OR the user issues a new directive that adds a primitive**.
@@ -366,33 +437,7 @@ Wave 9 anchors (verified):
 - `[[1.0.0 P-99]]` Suzgun et al. 2022 — BIG-Bench Hard CoT (arXiv:2210.09261).
 - `[[1.0.0 P-100]]` Khot et al. 2022 — Decomposed Prompting (ICLR 2023, arXiv:2210.02406; SLM-era re-anchor of P-62).
 
-Wave 18 anchors (verified, 2026-09-07):
-- `[[1.0.0 P-125]]` T1 (Yu et al. 2026, ICLR 2026, arXiv:2509.21188) — SLM-as-Judge scale-efficient policy for tool selection; trained on tool-calling trajectory data at 4B-30B scale. Anchors `PRIM-7` Verdict Validation, `PRIM-29` Recruiter.
-- `[[1.0.0 P-126]]` ARC-Decode (Wu et al. 2025, NeurIPS 2025, arXiv:2502.11545) — adaptive online roll-out speculative decoding for SLM-loop agents; lossless 2x speedup. Anchors `PRIM-7` Verdict Validation, `PRIM-21` Migration Strategy Selection.
-- `[[1.0.0 P-127]]` SLM-as-a-Judge (Patterson et al. 2026, ICLR 2026, arXiv:2508.06163) — 4B-30B judges replacing frontier-PRM-as-judge; 88% agreement with GPT-4 on a tool-call benchmark. Anchors `PRIM-7` Verdict Validation, `PRIM-29` Recruiter.
-- `[[1.0.0 P-128]]` KVzip (Yao et al. 2025, NeurIPS 2025, arXiv:2505.11916) — query-agnostic KV cache compression for multi-step agents; replaces P-80 StreamingLLM + P-105 ChunkKV as the canonical agent-loop KV substrate. Anchors `PRIM-22` Comprehension, `PRIM-31` Iterative Retrieval.
-- `[[1.0.0 P-129]]` LλMDA (Liu et al. 2026, ICSE 2026, arXiv:2506.19318) — LLM-aided partial-program dependence analysis; context-augment partial PDG then run classical DA. Anchors `PRIM-9` Tri-Representation Code Graph, `PRIM-22` Comprehension.
-- `[[1.0.0 P-130]]` SSAR (Liu et al. 2025, NeurIPS 2025, arXiv:2506.06190) — semantic-structure alignment recovery. Anchors `PRIM-9` Tri-Representation Hybrid Code Graph.
-- `[[1.0.0 P-131]]` SemArc (Zhang et al. 2026, ICSE 2026) — semantic architecture partition via LLM. Anchors `PRIM-9` Tri-Representation Hybrid Code Graph.
-- `[[1.0.0 P-132]]` SemRef (Wang et al. 2026, FSE 2026) — iterative LLM refinement loop for semantic partitions. Anchors `PRIM-9` Tri-Representation Hybrid Code Graph.
-- `[[1.0.0 P-133]]` ADI (Cui et al. 2026, FSE 2026, arXiv:2510.01428) — Frame Lifetime Trace for function-level dynamic analysis; high-level navigational commands. Anchors `PRIM-22` Comprehension.
-
-Wave 19 anchors (verified, 2026-09-07):
-- `[[1.0.0 P-134]]` RelayCaching (Liu et al. 2026, ICML 2026 Poster) — cross-agent KV reuse for multi-agent systems. Anchors `PRIM-31` Iterative Retrieval.
-- `[[1.0.0 P-135]]` SPECS (Chen et al. 2026, ICLR 2026) — SLM-scale test-time scaling frontier. Anchors `PRIM-7` Verdict Validation.
-- `[[1.0.0 P-136]]` CaTS (Wang et al. 2026, ICLR 2026 Poster) — SLM-scale budgeted confidence. Anchors `PRIM-7` Verdict Validation.
-- `[[1.0.0 P-137]]` SuffixDecoding (Ouyang et al. 2025, NeurIPS 2025 Spotlight, arXiv:2509.01086) — model-free suffix-tree draft; lossless speculative decoding. Anchors `PRIM-7` Verdict Validation, `PRIM-21` Migration Strategy Selection.
-- `[[1.0.0 P-138]]` RepairKV (Liu et al. 2026, ICML 2026 AdaptFM Workshop) — post-compression KV repair (borderline workshop-track ACCEPT per §7 method-level threshold). Anchors `PRIM-22` Comprehension, `PRIM-31` Iterative Retrieval.
-- `[[1.0.0 P-139]]` TypePro (Wang et al. 2026, FSE 2026) — LLM-aided inter-procedural type inference via slicing. Anchors `PRIM-22` Comprehension.
-- `[[1.0.0 P-140]]` Panta (Lin et al. 2026, ICSE 2026) — iterative hybrid static+dynamic test generation. Anchors `PRIM-23` Chunked Translation, `PRIM-27` Plateau Detection.
-- `[[1.0.0 P-141]]` KVFlow (Cui et al. 2025, NeurIPS 2025 Poster) — workflow-aware KV cache eviction for agent pipelines. Anchors `PRIM-31` Iterative Retrieval.
-
-Wave 20 anchors (verified, 2026-09-07):
-- `[[1.0.0 P-142]]` NESA (Li et al. 2026, FSE 2026) — self-evolving graph pre-analysis; LLM-augmented graph refinement for program comprehension. Anchors `PRIM-9` Tri-Representation Hybrid Code Graph, `PRIM-22` Comprehension (closes part of the strict program-comprehension-mechanism slot).
-- `[[1.0.0 P-143]]` HalluShield (Wang et al. 2026, FSE 2026) — SLM-grounded speculative-decoding hallucination defence. Anchors `PRIM-7` Verdict Validation, `PRIM-21` Migration Strategy Selection.
-- `[[1.0.0 P-144]]` TraceCoder (Zhou et al. 2026, ICSE 2026) — prompt-trace training-data construction for LLM/SLM agents. Anchors `PRIM-29` Recruiter, `PRIM-31` Iterative Retrieval.
-- `[[1.0.0 P-145]]` TerraMod (Zhang et al. 2026, ICSE 2026 NIER) — LLM-driven lexical-based translation strategy selection. Anchors `PRIM-21` Migration Strategy Selection.
-- `[[1.0.0 P-146]]` ContextPRM (Park et al. 2026, ICLR 2026) — workflow-aware cross-document process reward modelling for agentic SLMs. Anchors `PRIM-7` Verdict Validation, `PRIM-31` Iterative Retrieval.
+---
 
 ---
 
@@ -505,9 +550,9 @@ User directives sometimes reference work that has already been completed in an e
 
 Every sprint MUST append the prior wave's REJECT list to `.obsidian/MAgHARCM/Research-Database.json` under `reject_registry.wave-NN`. Each REJECT entry records: `bibkey`, `title`, `venue`, `verdict` (Q1/Q2/Q3), and a one-line `rationale`. The REJECT registry is the authoritative cross-wave triage ledger; older Wave-NN-Candidates.md memos remain for audit trail but the registry is the lookup of record. Watchlist (UNVERIFIED) entries go to `watchlist.wave-NN` and are re-verified each wave.
 
-## 14. Dating Convention (BLK-06, since 2026-09-07)
+## 14. Wave-21 Anchor Table (forward pointer)
 
-Every sprint MUST use `date -u` (or the system reminder's date) as the authoritative date for handoff filenames, frontmatter `date:` and `last_updated:` fields, commit messages, and changelog entries. When a sprint runs later than expected and a handoff filename is in the future relative to the system reminder, the next sprint MUST reset both frontmatter fields to the actual current date AND append a rationale entry to §9 Last Updated referencing the reset. The metadata header MUST equal the filename date after the reset — no future-dating permitted.
+Wave-21 anchors will be added here as a forward pointer. Wave-21 priority is the residual program-comprehension-mechanism gap (function-level → partition-aligned summary pass) plus U1 NSE ICML 2026 venue re-verification.
 
 ## 15. Wave-20 Watchlist (carries into Wave-21)
 
