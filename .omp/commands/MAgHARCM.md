@@ -148,4 +148,30 @@ Optional focus argument: `$ARGUMENTS`
 1. Each research wave writes a `.obsidian/MAgHARCM/research/diary/Wave-NN-Candidates.md` memo before any paper notes are persisted.
 2. The memo is the triage ledger: every fired candidate appears with verdict + rationale.
 3. The memo's bibkeys MUST match the bibkeys written to `refs.bib` and `Research-Database.json`.
+3. The memo's bibkeys MUST match the bibkeys written to `refs.bib` and `Research-Database.json`.
 4. The memo's ACCEPT list MUST equal the new entries appended to `Research-Database.json`.
+
+## 12. Wave-19 Insights (2026-09-07 iter-2)
+
+1. **Speculative-decoding × KV-cache hybrid is now canonical.** P-134 RelayCaching (cross-agent KV reuse), P-137 SuffixDecoding (model-free suffix-tree draft), P-138 RepairKV (post-compression KV repair), and P-141 KVFlow (workflow-aware KV cache eviction) close the speculative-decoding × KV-cache gap alongside P-126 ARC-Decode + P-128 KVzip. PRIM-21 + PRIM-31 are now both anchored by this family; future waves MUST cite at least one P-134 / P-137 / P-141 paper in any SLM-loop architecture claim.
+2. **SLM-scale TTS is convergent.** P-135 SPECS + P-136 CaTS close the frontier-PRM-as-judge gap left by P-91..P-92. Combined with P-125 T1 + P-127 SLM-as-a-Judge, the four-paper cluster (T1, ARC-Decode, SPECS, CaTS) forms the canonical PRIM-7 anchor for SLM substrates.
+3. **Software-archaeology strict-mechanism gap is partially closed.** P-129 LλMDA (LLM-aided partial PDG) + P-133 ADI (Frame Lifetime Trace) close the program-comprehension-mechanism gap. LLM-augmented static analysis beyond dependence graphs is now anchored (P-139 TypePro for type inference via inter-procedural slicing; P-140 Panta for iterative hybrid static+dynamic test generation). The strict program-comprehension-mechanism slot remains open and is the Wave-20 priority.
+
+## 13. REJECT Registry Rule (BLK-08)
+
+1. Every sprint MUST append the prior wave's REJECT list to `Research-Database.json` under `reject_registry.wave-NN`.
+2. Each REJECT entry records: `bibkey`, `title`, `venue`, `verdict` (Q1/Q2/Q3), and a one-line `rationale`.
+3. The REJECT registry is the authoritative cross-wave triage ledger; older Wave-NN-Candidates.md memos remain, but the registry is the lookup of record.
+4. Watchlist (UNVERIFIED) entries go to `watchlist.wave-NN` and are re-verified each wave.
+
+## 14. Dating Convention (BLK-06)
+
+1. Every sprint MUST use `date -u` (or the system reminder's date) as the authoritative date.
+2. If a sprint is run later than expected and a handoff filename is in the future, the next sprint MUST reset the metadata header (`date:` + `last_updated:`) to the actual current date and document the rationale in `Methodology.md §6`.
+3. No future-dating permitted under any circumstance; the metadata header MUST equal the filename date after the reset.
+
+## 15. Wave-20 Watchlist
+
+1. **SliceMate venue re-verification** (W1 from Wave-19). Yunbo Lyu's homepage claims ISSTA 2026 acceptance, but no ISSTA 2026 program slot for SliceMate is listed on conf.researchr.org. Re-verify in Wave-20.
+2. **SWE-TRACE venue confirmation** (W2 from Wave-19). arXiv:2604.14820 — April 2026 arXiv preprint only; no peer-reviewed venue confirmation. Re-verify in Wave-20.
+3. **Strict program-comprehension-mechanism slot** — Wave-20 scout carries an explicit `program-comprehension-mechanism` query against NeurIPS 2026 / ICML 2027 / ICLR 2027 listings.
