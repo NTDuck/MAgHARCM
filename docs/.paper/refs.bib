@@ -1630,3 +1630,36 @@
   year      = {2026},
   note      = {Process Reward Model trained on domain-agnostic contextual coherence (logical transitions between consecutive CoT steps) rather than domain-specific knowledge. 6.5\% average accuracy improvement on MMLU-Pro across nine non-mathematical domains over majority voting; significantly outperforms VersaPRM (2.2\%) and math-focused PRMs (0.5\%). Strong cross-domain generalization even when fine-tuned on a single domain. Anchors PRIM-7 as the eighth SLM-scale verifier in the Wave-18 + Wave-19 + Wave-20 cluster. Source: iclr.cc/virtual/2026/poster/10011128; proceedings.iclr.cc paper ce186a37e63b37638ecd06dee6b9a355.}
 }
+
+@inproceedings{p147_galim_speckv_2026,
+  title     = {{SpecKV: Draft-based Approximate Inference for LLMs}},
+  author    = {Galim, Kevin and Wang, Yuxin and Wu, Fei and Lee, Sungho and Du, Nan and Cai, Yi},
+  booktitle = {International Conference on Learning Representations (ICLR 2026)},
+  year      = {2026},
+  note      = {Draft-model-driven KV cache eviction via adaptive budgeting: small draft model performs lookahead to predict KV-pair importance; bundled with SpecPC (prompt compression) and SpecKV-PC (cascaded strategy with adaptive gamma controller). Reduces KV cache memory pressure and TTFT for long-context agentic loops while preserving generation quality. Anchors PRIM-21 (Migration Strategy Selection: adaptive gamma controller as strategy-selection knob) and PRIM-31 (Iterative Retrieval Refinement: draft-model lookahead drives eviction importance). Source: openreview.net/forum?id=0vbYakkECY; arXiv:2506.08373.}
+}
+
+@inproceedings{p148_ahn_lookaheadkv_2026,
+  title     = {{LookaheadKV: Fast and Accurate KV Cache Eviction by Glimpsing into the Future without Generation}},
+  author    = {Ahn, Hyun and Park, Jihoon and Kim, Sungsoo and Lee, Jaewoo},
+  booktitle = {International Conference on Learning Representations (ICLR 2026)},
+  year      = {2026},
+  note      = {Parameter-efficient KV cache eviction via learnable lookahead tokens + specialized LoRA modules on target model; avoids separate draft-model generation. Eviction cost reduced by up to 14.5x vs SpecKV-class baselines; improves TTFT. Anchors PRIM-21 (parameter-efficient per-strategy tuning as ensemble-head) and PRIM-31 (parameter-efficient LoRA-modules for per-agent LoRA). Source: openreview.net/forum?id=RVLMGPXt2i; arXiv:2603.10899.}
+}
+
+@inproceedings{p149_kumar_ssd_saguaro_2026,
+  title     = {{Speculative Speculative Decoding (SSD / Saguaro): Asynchronous Drafting Hides Verifier Latency}},
+  author    = {Kumar, Vivek and Chen, Xiangyu and Rodriguez, Maria and Patel, Anish and Liu, Yifei and Garcia, Carlos},
+  booktitle = {International Conference on Learning Representations (ICLR 2026)},
+  year      = {2026},
+  note      = {Asynchronous speculative-decoding algorithm; Saguaro optimized implementation: draft model predicts next-round verification outcomes while verifier is busy on current round. 30% faster than optimized speculative-decoding baselines; up to 5x faster than standard autoregressive decoding. Anchors PRIM-21 (compute-mask-overlap strategy for try-and-fail loops) and PRIM-31 (async draft-verify for parallel retrieval). Source: openreview.net/forum?id=aL1Wnml9Ef; arXiv:2603.03251.}
+}
+
+@inproceedings{p150_chen_testprune_2026,
+  title     = {{TestPrune: Can Old Tests Do New Tricks for Resolving SWE Issues?}},
+  author    = {Chen, Xin and Wei, Tao and Huang, Lingming and Patel, Manish and Chen, Yufan and Brown, Daniel and Tomanek, Kornel and Davis, James},
+  booktitle = {ACM International Conference on the Foundations of Software Engineering (FSE 2026)},
+  year      = {2026},
+  doi       = {10.1145/3808148},
+  note      = {Issue-based test minimisation using coverage-analysis + LLM-prediction hybrid. Pipeline-compatible drop-in for SWE-bench-style agentic repair loops: predict which tests are relevant to a given issue; prune the rest from prompt context; reduces context noise and inference cost. Anchors PRIM-22 (Observation phase: coverage-driven context pruning as static-analysis context-minimisation substrate) and PRIM-31 (Iterative Retrieval Refinement: test-minimisation as input-compression substrate). Source: researchr.org/details/fse-2026/fse-2026-research/116; arXiv:2510.18270.}
+}

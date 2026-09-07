@@ -78,3 +78,11 @@ Phase 4: Autonomous Verified SWE-Bench Zero-Shot Modernizer (FUTURE)
    - PRIM-21 substrate is now closed-loop: try-and-fail registry (`[[1.0.0 P-122]]` ReasoningBank) → strategy selection (`[[1.0.0 P-145]]` TerraMod / `[[1.0.0 P-123]]` CodeChemist) → execution (`[[1.0.0 P-137]]` SuffixDecoding) → judgement (`[[1.0.0 P-143]]` HalluShield).
 7. **Wave-20 prompt-trace training data**:
    - `[[1.0.0 P-144]]` TraceCoder extends the PRIM-29 + PRIM-31 substrate with prompt-trace training-data construction.
+8. **Wave-21 KV-cache × speculative-decoding substrate**:
+   - PRIM-21 / PRIM-31 substrate is now closed-loop for KV-cache eviction + speculative-decoding: draft-model-driven lookahead (`[[1.0.0 P-147]]` SpecKV) → parameter-efficient LoRA-modules on target model (`[[1.0.0 P-148]]` LookaheadKV) → asynchronous draft-verify pipeline (`[[1.0.0 P-149]]` SSD/Saguaro). All three are opt-in via `configs/agents.yml:agents.kv_cache.eviction.strategy` / `agents.speculative.async_pipeline`.
+9. **Wave-21 coverage-driven context pruning**:
+   - `[[1.0.0 P-150]]` TestPrune extends PRIM-22 Observation-phase substrate with coverage-driven test minimisation. The substrate is opt-in via `configs/agents.yml:agents.comprehension.observation.test_prune: true`.
+10. **Wave-21 forward to Wave-22**:
+   - The residual strict-mechanism program-comprehension-mechanism slot (function-level → partition-aligned summary pass) carries to Wave-22; explicit query against NeurIPS 2026 / ICML 2027 / ICLR 2027 listings.
+   - W1 SWE-TRACE re-verification after NeurIPS 2026 author notifications (2026-09-24); fourth carry if no peer-reviewed venue.
+   - Wave-22 to integrate SpecKV's draft-model KV-eviction path into the existing benchmark harness and re-run the four repositories if BLK-04 (GPU/LLM endpoint) resolves.

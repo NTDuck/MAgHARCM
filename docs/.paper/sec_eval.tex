@@ -429,3 +429,8 @@ $12$ runs, we categorise root causes into four classes:
     help here because the issue is per-fragment density rather than
     cross-fragment consistency.
 \end{enumerate}
+
+\subsection{Wave-21 Substrate Notes}
+\label{sec:eval_wave21}
+
+Wave-21 (Sprint 2026-09-07 iter-4) introduces four SLM-scale substrate anchors at ICLR 2026 + FSE 2026: SpecKV~\cite{p147_galim_speckv_2026}, LookaheadKV~\cite{p148_ahn_lookaheadkv_2026}, SSD/Saguaro~\cite{p149_kumar_ssd_saguaro_2026}, and TestPrune~\cite{p150_chen_testprune_2026}. These are research anchors for \texttt{PRIM-21}, \texttt{PRIM-22}, and \texttt{PRIM-31}; no new benchmark re-runs were performed in this sprint because no new implementation primitives were added (the Wave-21 papers are research-only anchors; integration is deferred to future sprints). The benchmark numbers reported in RQ1--RQ4 above are preserved from the last known-good Wave-20 sprint. Wave-22 (post this sprint) is expected to integrate SpecKV's draft-model KV-eviction path into the existing benchmark harness and re-run the four repositories.
