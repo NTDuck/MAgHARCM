@@ -1,18 +1,18 @@
 ---
 title: MAgHARCM Research Waves Synthesis & Literature Index
 date: 2026-09-07
-last_updated: 2026-09-07 (iter-4, wave-21)
+last_updated: 2026-09-07 (iter-6, wave-22)
 aliases:
   - "Research-Waves-Index"
   - "Research Waves Index"
   - "Waves"
 tags: [adhoc, research-waves, literature, synthesis, papers, "[[2.0.0 MAgHARCM]]"]
 ---
-# [[2.0.0 MAgHARCM Research Waves Index (Waves 1–21)]]
+# [[2.0.0 MAgHARCM Research Waves Index (Waves 1–22)]]
 
-> **Executive Overview**: Complete chronological catalog and thematic synthesis of all 21 research waves, connecting 150 literature papers to the MAgHARCM multi-agent modernization substrate.
+> **Executive Overview**: Complete chronological catalog and thematic synthesis of all 22 research waves, connecting 152 literature papers to the MAgHARCM multi-agent modernization substrate.
 
-> **Wave 21 (this sprint, 2026-09-07 iter-4)** adds 4 ACCEPT (P-147 SpecKV, P-148 LookaheadKV, P-149 SSD/Saguaro, P-150 TestPrune) for 150 total paper anchors. Vault paper count: 146 -> 150.
+> **Wave 22 (this sprint, 2026-09-07 iter-6)** adds 2 ACCEPT (P-151 SmartC2Rust, P-152 Hallu-Eval) for 152 total paper anchors. Vault paper count: 150 -> 152.
 
 ---
 
@@ -22,6 +22,8 @@ tags: [adhoc, research-waves, literature, synthesis, papers, "[[2.0.0 MAgHARCM]]
 | :--- | :--- | :--- | :--- |
 | **Wave 20** | Program-Comprehension Mechanism + SLM Verification Substrate | `PRIM-7, 9, 21, 22, 25, 31` | NESA (`[[1.0.0 P-142]]`), HalluShield (`[[1.0.0 P-143]]`), TraceCoder (`[[1.0.0 P-144]]`), TerraMod (`[[1.0.0 P-145]]`), ContextPRM (`[[1.0.0 P-146]]`) |
 | **Wave 21** | KV-Cache × Speculative-Decoding Substrate + Static-Analysis Context Pruning | `PRIM-21, 22, 31` | SpecKV (`[[1.0.0 P-147]]`), LookaheadKV (`[[1.0.0 P-148]]`), Speculative Speculative Decoding (`[[1.0.0 P-149]]`), TestPrune (`[[1.0.0 P-150]]`) |
+
+| **Wave 22** | Feedback-Driven C-to-Rust Translation + Systematic Hallucination Evaluation | `PRIM-22, 23, 25, 29, 31` | SmartC2Rust (`[[1.0.0 P-151]]`), Hallu-Eval (`[[1.0.0 P-152]]`) |
 
 | **Waves 1–5** | Core Systems & Foundations | `PRIM-1` through `PRIM-30` | ReCodeAgent (`[[1.0.0 P-01]]`), AlphaTrans (`[[1.0.0 P-02]]`), CodePlan (`[[1.0.0 P-03]]`), MetaGPT (`[[1.0.0 P-11]]`), ChatDev (`[[1.0.0 P-12]]`), ABCoder (`[[1.0.0 P-14]]`) |
 | **Wave 6** | Software Archaeology Foundations | `PRIM-14, 18, 19, 20` | Parnas 1972 (`[[1.0.0 P-31]]`), Lehman 1980 (`[[1.0.0 P-32]]`), Chikofsky & Cross (`[[1.0.0 P-33]]`), Baldwin & Clark (`[[1.0.0 P-34]]`) |

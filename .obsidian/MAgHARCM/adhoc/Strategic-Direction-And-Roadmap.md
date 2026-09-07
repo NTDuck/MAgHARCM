@@ -1,7 +1,7 @@
 ---
 title: MAgHARCM Strategic Direction & Future Roadmap
 date: 2026-09-07
-last_updated: 2026-09-07
+last_updated: 2026-09-07 (iter-6, wave-22)
 aliases:
   - "Strategic-Direction-And-Roadmap"
   - "Strategic Direction and Roadmap"
@@ -86,3 +86,12 @@ Phase 4: Autonomous Verified SWE-Bench Zero-Shot Modernizer (FUTURE)
    - The residual strict-mechanism program-comprehension-mechanism slot (function-level → partition-aligned summary pass) carries to Wave-22; explicit query against NeurIPS 2026 / ICML 2027 / ICLR 2027 listings.
    - W1 SWE-TRACE re-verification after NeurIPS 2026 author notifications (2026-09-24); fourth carry if no peer-reviewed venue.
    - Wave-22 to integrate SpecKV's draft-model KV-eviction path into the existing benchmark harness and re-run the four repositories if BLK-04 (GPU/LLM endpoint) resolves.
+
+11. **Wave-22 feedback-driven C-to-Rust translation substrate**:
+   - `[[1.0.0 P-151]]` SmartC2Rust (ICSE 2026, DOI 10.1145/3744916.3773259) extends the Phase-3 C/C++ → Safe Rust oracle with iterative context-aware segmentation + three-signal feedback loop (target compiler errors, semantic-equivalence diffs, residual unsafe-block counts). The C-to-Rust analogue of `[[1.0.0 P-124]]` Syzygy's Go-to-Rust three-signal loop. Anchors `PRIM-23` Chunked Translation, `PRIM-29` Dynamic Iteration Recruiter, `PRIM-31` Iterative Retrieval. The substrate is opt-in via `configs/agents.yml:translation.feedback_driven: true`.
+12. **Wave-22 hallucination-evaluation triplet substrate**:
+   - `[[1.0.0 P-152]]` Hallu-Eval / Hallu-Shield (FSE 2026, DOI 10.1145/3808189) closes the systematic hallucination-evaluation slot for SLM-scale comprehension + translation. Triplet = (Hallu-Eval 800-pair benchmark with natural + induced logical hallucinations) + (Hallu-Det detection approach) + (Hallu-Shield inference-time mitigation). Anchors `PRIM-22` Four Phases Comprehension, `PRIM-25` Role-Flip De-Hallucination. The substrate is opt-in via `configs/agents.yml:comprehension.hallucination_evaluation: true`.
+13. **Wave-22 forward to Wave-23**:
+   - The residual strict-mechanism program-comprehension-mechanism slot (function-level → partition-aligned summary pass) carries to Wave-23; explicit query against NeurIPS 2026 / ICML 2027 / ICLR 2027 listings.
+   - W1 SWE-TRACE re-verification after NeurIPS 2026 author notifications (2026-09-24); fifth carry if no peer-reviewed venue, then retire.
+   - Wave-23 to integrate SmartC2Rust's three-signal feedback loop + Hallu-Eval's hallucination-evaluation triplet into the benchmark harness and re-run the four repositories if BLK-04 (GPU/LLM endpoint) resolves.

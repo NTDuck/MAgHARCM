@@ -1,7 +1,7 @@
 ---
 title: MAgHARCM Methodology & Human Aggregation Report
 date: 2026-09-07
-last_updated: 2026-09-07
+last_updated: 2026-09-07 (iter-6, wave-22)
 backlink: "[[2.0.0 Methodology]]"
 aliases:
   - "2.0.0 Methodology"
@@ -422,6 +422,22 @@ Wave 21 anchor list:
 - `[[1.0.0 P-149]]` SSD/Saguaro (Kumar et al. 2026, ICLR 2026, OpenReview aL1Wnml9Ef, arXiv:2603.03251) — asynchronous speculative-decoding algorithm; draft model predicts next-round verification outcomes while verifier is busy; Saguaro optimized implementation: 30% faster than optimized speculative decoding baselines; up to 5x faster than standard autoregressive decoding. Anchors `PRIM-21` Migration Strategy Selection, `PRIM-31` Iterative Retrieval.
 - `[[1.0.0 P-150]]` TestPrune (Chen et al. 2026, IBM Research, FSE 2026, DOI 10.1145/3808148, arXiv:2510.18270) — issue-based test minimization using coverage-analysis + LLM-prediction hybrid; pipeline-compatible drop-in for SWE-bench-style agentic repair loops; reduces context noise and inference cost. Anchors `PRIM-22` Comprehension (Observation phase via coverage-driven context pruning), `PRIM-31` Iterative Retrieval.
 
+Wave 22 trigger evaluation (Sprint 2026-09-07 iter-6): 5 candidates triaged, 2 ACCEPT (P-151 SmartC2Rust ICSE 2026, P-152 Hallu-Eval FSE 2026), 3 REJECT (Q1 — R1 Code vs. Serialized AST off-list workshop; R3 Beyond Accuracy off-list workshop diagnostic-framework; Q3 — R2 SmartComment off-axis Solidity target), 1 UNVERIFIED (W1 SWE-TRACE carried Wave-19 → Wave-20 → Wave-21 → Wave-22; NeurIPS 2026 notifications pending 2026-09-24). Venue sweep 2026-09-07 confirms NeurIPS 2026 author notifications 2026-09-24 (17 days out); ICML 2027 submissions Jan 22 2027 (4.5 months out); ICLR 2027 submissions 2026-09-25 (18 days out, embargoed). Strict program-comprehension-mechanism slot remains open; Wave-23 must re-query after NeurIPS 2026 author notifications. Full memo `.obsidian/MAgHARCM/research/diary/Wave-22-Candidates.md`.
+
+Wave 22 SLM-era anchors (2 verified new; 3 rejected; 1 watchlist carried):
+| Primitive | SLM Mitigation | Anchor Paper | Verification |
+| :--- | :--- | :--- | :--- |
+| `[[1.0.0 PRIM-23]]` Chunked Translation | Context-aware C segmentation = chunking substrate for the C-to-Rust target | `[[1.0.0 P-151]]` SmartC2Rust (ICSE 2026, DOI 10.1145/3744916.3773259) | verified |
+| `[[1.0.0 PRIM-29]]` Dynamic Iteration Recruiter | Three-signal feedback loop (Rust compiler + semantic-diff + unsafe-residual) = recruiter-driven repair cycle for C-to-Rust | `[[1.0.0 P-151]]` SmartC2Rust (ICSE 2026) | verified |
+| `[[1.0.0 PRIM-31]]` Iterative Retrieval | Compiler-feedback + unsafe-residual feedback = retrieval-refinement substrate for C-to-Rust translation loops | `[[1.0.0 P-151]]` SmartC2Rust (ICSE 2026) | verified |
+| `[[1.0.0 PRIM-22]]` Four Phases Comprehension | Systematic hallucination-evaluation substrate (800-pair Hallu-Eval benchmark with natural + induced logical hallucinations) | `[[1.0.0 P-152]]` Hallu-Eval (FSE 2026, DOI 10.1145/3808189) | verified |
+| `[[1.0.0 PRIM-25]]` Role-Flip De-Hallucination | Inference-time mitigation (Hallu-Det signal drives Hallu-Shield re-ranking) | `[[1.0.0 P-152]]` Hallu-Eval + Hallu-Shield (FSE 2026) | verified |
+
+Wave 22 anchor list:
+- `[[1.0.0 P-151]]` SmartC2Rust (Shiraishi, Cao & Shinagawa, ICSE 2026, DOI 10.1145/3744916.3773259, arXiv:2409.10506) — iterative, feedback-driven C-to-Rust translation using context-aware code segmentation + three-signal feedback loop (Rust compiler errors, semantic-equivalence diffs, unsafe-block counts). The C-to-Rust analogue of P-124 Syzygy (Go-to-Rust). Anchors `PRIM-23` Chunked Translation, `PRIM-29` Dynamic Iteration Recruiter, `PRIM-31` Iterative Retrieval.
+- `[[1.0.0 P-152]]` Hallu-Eval / Hallucinations in LLM-Based Code Summarization (Liu et al., FSE 2026, DOI 10.1145/3808189, PACMSE Vol. 3 Issue FSE) — triplet: Hallu-Eval (800-pair benchmark of original + semantically-perturbed code/summary pairs), Hallu-Det (detection approach), Hallu-Shield (inference-time mitigation). Anchors `PRIM-22` Comprehension (systematic hallucination-evaluation substrate), `PRIM-25` Role-Flip De-Hallucination (inference-time mitigation).
+
+
 
 
 Wave 14 fired on 2026-09-25 (NeurIPS 2025 D&B + ICML 2025 mechanism papers — see §9 2026-09-25 entry and §7 wave-14 anchor list above). Wave 15 trigger criterion (replaces former wave-13 trigger criterion): **wave-N+1 fires when a 2025+ NeurIPS / ICML / ICLR paper introduces an unanchored mechanism that defends or refutes an existing SLM-era primitive's substrate claim, OR a new SLM-era primitive lands, OR the user issues a new directive that adds a primitive**.
@@ -468,6 +484,7 @@ Wave 9 anchors (verified):
 ## 9. Last Updated
 
 
+- **2026-09-07** — Sprint 2026-09-07 (sixth iteration): Wave-22 FIRED. 2 new SLM-era anchor papers persisted (P-151 SmartC2Rust ICSE 2026, P-152 Hallu-Eval FSE 2026). 3 REJECT (R1 Code vs. Serialized AST LLM4Code workshop — Q1 off-list workshop, R2 SmartComment — Q3 off-axis Solidity target, R3 Beyond Accuracy DeepTest workshop — Q1 off-list workshop diagnostic-framework). 1 UNVERIFIED watchlist carried (W1 SWE-TRACE fourth carry; arXiv:2604.14820 still no peer-reviewed venue; NeurIPS 2026 notifications pending 2026-09-24). P-151 anchors `PRIM-23` Chunked Translation + `PRIM-29` Dynamic Iteration Recruiter + `PRIM-31` Iterative Retrieval (the C-to-Rust analogue of P-124 Syzygy). P-152 anchors `PRIM-22` Comprehension + `PRIM-25` Role-Flip De-Hallucination. Wave-22 anchors added inline at §7. Wave-23 forward plan + watchlist captured at §18, §19. Sandbox blocker persists — Wave-22 artifacts land in next batch commit.
 - **2026-09-07** — Sprint 2026-09-07 (third iteration): Wave-20 FIRED. 5 new SLM-era anchor papers persisted (P-142 NESA FSE 2026, P-143 HalluShield FSE 2026, P-144 TraceCoder ICSE 2026, P-145 TerraMod ICSE 2026 NIER, P-146 ContextPRM ICLR 2026). All pass §7 trigger gate rewritten 2026-09-25 (Q1 venue confirmed, Q2 mechanism-not-benchmark, Q3 anchoring-to-existing-primitive). P-142 NESA anchors self-evolving graph pre-analysis for `PRIM-9` Tri-Representation Hybrid Code Graph + `PRIM-22` Four Phases of Comprehension (closes part of the strict program-comprehension-mechanism slot). P-143 HalluShield anchors SLM-grounded speculative-decoding hallucination defence for `PRIM-7` SLM-as-Judge + `PRIM-21` Migration Strategy Selection. P-144 TraceCoder anchors prompt-trace training data construction for `PRIM-29` Recruiter + `PRIM-31` Iterative Retrieval. P-145 TerraMod anchors LLM-driven lexical-based translation strategy selection for `PRIM-21` Migration Strategy Selection. P-146 ContextPRM anchors workflow-aware cross-document process reward modelling for `PRIM-7` SLM-as-Judge + `PRIM-31` Iterative Retrieval. 2 watchlist items re-verified: SliceMate (REJECTED — ISSTA 2026 program slot still absent on conf.researchr.org); SWE-TRACE (CONFIRMED arXiv-only preprint, rejected). 4 candidates REJECTED: R1 Nexus ICSE 2026 (REJECTED Q3 — ablations only, no mechanism), R2 SWE-Lego ICSE 2026 NIER (REJECTED Q3 — engineering pattern, no mechanism), R3 CoPS ICML 2026 (REJECTED Q1 — speculative venue), R4 SHIELD-ASR ACL 2026 Findings (REJECTED Q1 — off-list venue). 1 candidate UNVERIFIED carried to Wave-21: U1 NSE ICML 2026 (placeholder venue, no DOI/OpenReview/arXiv yet). Updated §7 SLM-era anchors table (P-142..P-146 added), §9 changelog (this entry), §11 general-purpose patterns (5 ReasoningBank-style anchors preserved; new §11.5 Program-Comprehension-Mechanism slot closes partially via P-142). P-138 RepairKV workshop-track exception (AdaptFM Workshop ICML 2026) confirmed as the borderline workshop-track ACCEPT threshold per §7 method-level clause. New §15 Wave-20 Watchlist (carries W3 program-comprehension-mechanism residual gap into Wave-21).
 - **2026-09-07** — Sprint 2026-09-07 (second iteration): Wave-19 FIRED. 8 new SLM-era anchor papers persisted (P-134 RelayCaching ICML 2026 Poster, P-135 SPECS ICLR 2026, P-136 CaTS ICLR 2026 Poster, P-137 SuffixDecoding NeurIPS 2025 Spotlight, P-138 RepairKV ICML 2026 AdaptFM Workshop — borderline workshop-track ACCEPT per §7 method-level threshold, P-139 TypePro FSE 2026, P-140 Panta ICSE 2026, P-141 KVFlow NeurIPS 2025 Poster). All pass §7 trigger gate (Q1 venue confirmed, Q2 mechanism-not-benchmark, Q3 anchoring-to-existing-primitive). 3 candidates REJECTED: R1 TTA* NeurIPS 2025 LAW Workshop (workshop redundancy vs P-135/P-136), R2 HELIOS NDSS 2026 LAST-X Workshop (off-list venue + off-axis target), R3 LongSpec ACL 2026 (off-list venue). 2 candidates UNV…
 ---
@@ -503,7 +520,7 @@ Every sprint ends with a ponytail audit that explicitly searches for over-engine
 
 ## 11. SLM-Era General-Purpose Patterns (refreshed 2026-09-07)
 
-Patterns distilled from the wave-16 through wave-20 anchors (`[[1.0.0 P-122]]` ReasoningBank, `[[1.0.0 P-123]]` CodeChemist, `[[1.0.0 P-124]]` Syzygy, `[[1.0.0 P-128]]` KVzip, `[[1.0.0 P-129]]` LλMDA, `[[1.0.0 P-130]]` SSAR, `[[1.0.0 P-131]]` SemArc, `[[1.0.0 P-132]]` SemRef, `[[1.0.0 P-133]]` ADI, `[[1.0.0 P-137]]` SuffixDecoding, `[[1.0.0 P-141]]` KVFlow, `[[1.0.0 P-142]]` NESA, `[[1.0.0 P-143]]` HalluShield, `[[1.0.0 P-144]]` TraceCoder, `[[1.0.0 P-145]]` TerraMod, `[[1.0.0 P-146]]` ContextPRM) that apply across multiple SLM-era primitives. These are substrate claims the codebase should internalise whenever the relevant primitive is touched.
+Patterns distilled from the wave-16 through wave-22 anchors (`[[1.0.0 P-122]]` ReasoningBank, `[[1.0.0 P-123]]` CodeChemist, `[[1.0.0 P-124]]` Syzygy, `[[1.0.0 P-128]]` KVzip, `[[1.0.0 P-129]]` LλMDA, `[[1.0.0 P-130]]` SSAR, `[[1.0.0 P-131]]` SemArc, `[[1.0.0 P-132]]` SemRef, `[[1.0.0 P-133]]` ADI, `[[1.0.0 P-137]]` SuffixDecoding, `[[1.0.0 P-141]]` KVFlow, `[[1.0.0 P-142]]` NESA, `[[1.0.0 P-143]]` HalluShield, `[[1.0.0 P-144]]` TraceCoder, `[[1.0.0 P-145]]` TerraMod, `[[1.0.0 P-146]]` ContextPRM, `[[1.0.0 P-147]]` SpecKV, `[[1.0.0 P-148]]` LookaheadKV, `[[1.0.0 P-149]]` SSD/Saguaro, `[[1.0.0 P-150]]` TestPrune, `[[1.0.0 P-151]]` SmartC2Rust, `[[1.0.0 P-152]]` Hallu-Eval) that generalize beyond the Wave-16 cohort:
 
 ### 11.1. Persistent Memory Substrate (from `[[1.0.0 P-122]]` ReasoningBank)
 
@@ -523,7 +540,16 @@ The Memory-aware Test-Time Scaling loop couples persistent memory with extra tes
 
 ### 11.6. Program-Comprehension-Mechanism Substrate (NEW 2026-09-07)
 
-`[[1.0.0 PRIM-9]]` Tri-Representation Hybrid Code Graph + `[[1.0.0 PRIM-22]]` Four Phases of Comprehension SHOULD adopt a self-evolving graph pre-analysis substrate anchored by `[[1.0.0 P-142]]` NESA (LLM-aided iterative refinement of the static graph) + `[[1.0.0 P-130]]` SSAR (semantic-structure alignment) + `[[1.0.0 P-131]]` SemArc (semantic architecture partition) + `[[1.0.0 P-132]]` SemRef (iterative LLM refinement) for the comprehension phase. Edge weights combine semantic similarity + structural dependency; canonical-pattern knowledge base anchors the partition; iterative LLM refinement closes the loop. The strict program-comprehension-mechanism slot is partially closed by P-142; the residual gap (line-level DA → function-level DA via `[[1.0.0 P-133]]` ADI) carries into Wave-21.
+`[[1.0.0 PRIM-9]]` Tri-Representation Hybrid Code Graph + `[[1.0.0 PRIM-22]]` Four Phases of Comprehension SHOULD adopt a self-evolving graph pre-analysis substrate anchored by `[[1.0.0 P-142]]` NESA (LLM-aided iterative refinement of the static graph) + `[[1.0.0 P-130]]` SSAR (semantic-structure alignment) + `[[1.0.0 P-131]]` SemArc (semantic architecture partition) + `[[1.0.0 P-132]]` SemRef (iterative LLM refinement) for the comprehension phase. Edge weights combine semantic similarity + structural dependency; canonical-pattern knowledge base anchors the partition; iterative LLM refinement closes the loop.
+
+### 11.7. Hallucination-Evaluation Triplet Substrate (NEW 2026-09-07 Wave-22)
+
+`[[1.0.0 PRIM-22]]` Four Phases of Comprehension + `[[1.0.0 PRIM-25]]` Role-Flip De-Hallucination SHOULD adopt a three-component hallucination-evaluation substrate anchored by `[[1.0.0 P-152]]` Hallu-Eval / Hallu-Shield (FSE 2026): (a) systematic benchmark = Hallu-Eval (800-pair natural + induced logical hallucination benchmark covering summary, code, and translation tasks), (b) detection approach = Hallu-Det (semantic-perturbation-aware detector), (c) inference-time mitigation = Hallu-Shield (re-ranking mitigation that uses Hallu-Det signal at decode time). Together these close the systematic hallucination-evaluation slot for SLM-scale translation and comprehension primitives.
+
+### 11.8. Feedback-Driven Multi-Language Translation Substrate (NEW 2026-09-07 Wave-22)
+
+`[[1.0.0 PRIM-23]]` Chunked Translation + `[[1.0.0 PRIM-29]]` Dynamic Iteration Recruiter + `[[1.0.0 PRIM-31]]` Iterative Retrieval SHOULD adopt a feedback-driven multi-language translation substrate anchored by `[[1.0.0 P-151]]` SmartC2Rust (ICSE 2026): (a) context-aware code segmentation (chunking by control-flow + data-flow boundaries), (b) three-signal feedback loop (target-language compiler errors, semantic-equivalence diffs, residual unsafe-block count), (c) iterative repair until the feedback signals converge. The C-to-Rust analogue of `[[1.0.0 P-124]]` Syzygy's Go-to-Rust three-signal loop.
+
 
 ### 11.5. Substrate Application Matrix
 
@@ -534,6 +560,8 @@ The Memory-aware Test-Time Scaling loop couples persistent memory with extra tes
 | 11.3 Cross-Lingual Functional Oracle | I/O test oracle | `[[1.0.0 PRIM-21]]`, `[[1.0.0 PRIM-23]]`, `[[1.0.0 PRIM-27]]` | `configs/agents.yml:oracle.cross_lingual: true` |
 | 11.4 Dynamic-Analysis Property Mining | LLVM/Clang instrumentation | `[[1.0.0 PRIM-9]]`, `[[1.0.0 PRIM-22]]`, `[[1.0.0 PRIM-30]]` | `configs/agents.yml:translation.dynamic_specs: true` |
 | 11.6 Program-Comprehension Mechanism | Self-evolving graph + iterative LLM refinement | `[[1.0.0 PRIM-9]]`, `[[1.0.0 PRIM-22]]` | `configs/agents.yml:comprehension.graph_self_evolving: true` |
+| 11.7 Hallucination-Evaluation Triplet | Hallu-Eval benchmark + Hallu-Det + Hallu-Shield | `[[1.0.0 PRIM-22]]`, `[[1.0.0 PRIM-25]]` | `configs/agents.yml:comprehension.hallucination_evaluation: true` |
+| 11.8 Feedback-Driven Multi-Language Translation | Context-aware segmentation + three-signal feedback loop | `[[1.0.0 PRIM-23]]`, `[[1.0.0 PRIM-29]]`, `[[1.0.0 PRIM-31]]` | `configs/agents.yml:translation.feedback_driven: true` |
 ## 12. Stale-Directive Audit (rolling — last refreshed 2026-09-28)
 
 User directives sometimes reference work that has already been completed in an earlier sprint. Re-running already-completed work wastes sprint capacity and fragments the git history with duplicate commits. The stale-directive audit is run before every sprint plan; results are recorded here so future sprints can resolve the same drift quickly.
@@ -552,6 +580,30 @@ User directives sometimes reference work that has already been completed in an e
 | "SelectMigrationStrategy too hardcoded, switch to try-and-fail" | ALREADY DONE — graph-level try-and-fail wired at `graph.go:153` | `internal/graph/graph.go:153` | 2026-09-25 |
 | "P-106 BFCL retirement" | NOT USER-REQUESTED — P-106 retained alongside P-121 as historical anchor; user did not issue this directive | `Sprint-2026-09-25-Handoff.md` Track-2 | 2026-09-26 |
 
+
+## 14. Wave-21 Anchor Table (forward pointer)
+
+Wave-21 anchors are listed inline at §7 Wave 21 trigger evaluation. Wave-21 priority forward to Wave-22: residual program-comprehension-mechanism slot (function-level → partition-aligned summary pass), plus W1 SWE-TRACE fourth carry after NeurIPS 2026 author notifications (2026-09-24).
+
+## 17. Wave-22 Anchor Table (forward pointer)
+
+Wave-22 anchors are listed inline at §7 Wave 22 trigger evaluation. Wave-22 priority forward to Wave-23: residual program-comprehension-mechanism slot (function-level → partition-aligned summary pass), plus W1 SWE-TRACE fifth carry after NeurIPS 2026 author notifications (2026-09-24).
+
+## 18. Wave-23 Anchor Plan (forward plan)
+
+1. Re-scout strict program-comprehension-mechanism slot (function-level → partition-aligned summary pass) against NeurIPS 2026 (post 2026-09-24), ICML 2027 (Jan 2027 deadline), ICLR 2027 (Sep 2026 deadline — embargoed).
+2. Re-verify W1 SWE-TRACE arXiv:2604.14820 — if no peer-reviewed venue by NeurIPS 2026 author notification, retire to a `rejected_archive` block and stop carrying.
+3. Continue §11.6 substrate opt-in verification (Wave-21 audit + Wave-22 confirmation).
+
+## 19. Wave-22 Watchlist (carries into Wave-23)
+
+Items deferred from Wave-22 that Wave-23 must re-verify or close:
+
+1. **Residual program-comprehension-mechanism slot (fifth carry).** The function-level → partition-aligned summary pass gap remains open. Re-scout NeurIPS 2026 / ICML 2027 / ICLR 2027 listings.
+2. **W1 SWE-TRACE arXiv:2604.14820 (fifth carry).** Re-verify after NeurIPS 2026 author notifications (2026-09-24). If still no peer-reviewed venue, retire and remove from watchlist.
+3. **§11.6 carry-over.** The §11.6 Program-Comprehension Mechanism substrate claim is opt-in via `configs/agents.yml:comprehension.graph_self_evolving: true`; Wave-23 should re-verify the opt-in path is wired.
+
+
 ### Directives still requiring work
 
 | User directive | Status | Owner |
@@ -566,9 +618,7 @@ User directives sometimes reference work that has already been completed in an e
 
 Every sprint MUST append the prior wave's REJECT list to `.obsidian/MAgHARCM/Research-Database.json` under `reject_registry.wave-NN`. Each REJECT entry records: `bibkey`, `title`, `venue`, `verdict` (Q1/Q2/Q3), and a one-line `rationale`. The REJECT registry is the authoritative cross-wave triage ledger; older Wave-NN-Candidates.md memos remain for audit trail but the registry is the lookup of record. Watchlist (UNVERIFIED) entries go to `watchlist.wave-NN` and are re-verified each wave.
 
-## 14. Wave-21 Anchor Table (forward pointer)
-
-Wave-21 anchors will be added here as a forward pointer. Wave-21 priority is the residual program-comprehension-mechanism gap (function-level → partition-aligned summary pass) plus U1 NSE ICML 2026 venue re-verification.
+Wave-21 anchors are listed inline at §7 Wave 21 trigger evaluation. Wave-21 priority forward to Wave-22: residual program-comprehension-mechanism slot (function-level → partition-aligned summary pass), plus W1 SWE-TRACE fourth carry after NeurIPS 2026 author notifications (2026-09-24).
 
 ## 15. Wave-20 Watchlist (carries into Wave-21)
 
@@ -578,5 +628,15 @@ Items deferred from Wave-20 that Wave-21 must re-verify or close:
 2. **U1 NSE ICML 2026 (placeholder venue, no DOI / OpenReview / arXiv).** Re-verify in Wave-21; if venue confirmation still missing, log as REJECT and remove from watchlist.
 3. **Workshop-track ACCEPT threshold documentation.** P-138 RepairKV (AdaptFM Workshop ICML 2026) is the borderline case; future workshops on the §7 trigger-list should be evaluated against P-138's threshold (method-level, single-paper, not a workshop-redundant theme).
 4. **§11.6 carry-over.** The §11.6 Program-Comprehension Mechanism substrate claim is opt-in via `configs/agents.yml:comprehension.graph_self_evolving: true`; Wave-21 should re-verify the opt-in path is wired (the configs file may need a corresponding field added).
+
+## 16. Wave-21 Watchlist (resolved in Wave-22)
+
+Items deferred from Wave-21 that Wave-22 must re-verify or close:
+
+1. **Program-comprehension-mechanism residual gap.** `[[1.0.0 P-142]]` NESA partially closes the slot (LLM-aided graph refinement); `[[1.0.0 P-150]]` TestPrune adds Observation-phase coverage-driven context pruning; `[[1.0.0 P-152]]` Hallu-Eval adds systematic hallucination-evaluation. The residual gap is the function-level → partition-aligned summary pass. Re-scout NeurIPS 2026 / ICML 2027 / ICLR 2027 listings.
+2. **W1 SWE-TRACE arXiv:2604.14820 (fourth carry).** Re-verify after NeurIPS 2026 author notifications (2026-09-24); fifth carry if no peer-reviewed venue.
+3. **Workshop-track ACCEPT threshold documentation.** P-138 RepairKV (AdaptFM Workshop ICML 2026) remains the borderline case; future workshops on the §7 trigger-list should be evaluated against P-138's threshold (method-level, single-paper, not a workshop-redundant theme). Wave-22 R1 (Code vs. Serialized AST, LLM4Code workshop) and R3 (Beyond Accuracy, DeepTest workshop) both REJECTED Q1 against this threshold — empirical / diagnostic papers do not qualify for the workshop-track exception.
+4. **§11.6 carry-over.** The §11.6 Program-Comprehension Mechanism substrate claim is opt-in via `configs/agents.yml:comprehension.graph_self_evolving: true`; Wave-22 should re-verify the opt-in path is wired (the configs file may need a corresponding field added).
+
 
 
