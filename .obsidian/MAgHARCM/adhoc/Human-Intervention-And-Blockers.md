@@ -1,7 +1,7 @@
 ---
 title: Human Intervention Required & Active Project Blockers
-date: 2026-09-28
-last_updated: 2026-09-28
+date: 2026-09-07
+last_updated: 2026-09-07
 aliases:
   - "Human-Intervention-And-Blockers"
   - "Human Intervention and Blockers"
@@ -20,10 +20,11 @@ tags: [adhoc, blockers, human-intervention, triage, issues, "[[2.0.0 MAgHARCM]]"
 
 | Issue ID | Category | Description | Impact | Required Human Action |
 | :--- | :--- | :--- | :--- | :--- |
-| **BLK-01** | Codebase Build | `internal/memorystore/memorystore.go:375:24: undefined: compiletime.MaTTSDefaultBudget` | `go test ./...` fails in `internal/memorystore` | Add `const MaTTSDefaultBudget = 10` (or appropriate value) in `internal/compiletime/compiletime.go` |
+| **BLK-01** | Codebase Build | `internal/memorystore/memorystore.go:375:24: undefined: compiletime.MaTTSDefaultBudget` | `go test ./...` fails in `internal/memorystore` | **RESOLVED 2026-09-07**: `MaTTSDefaultBudget = 10` exported in `internal/compiletime/compiletime.go`; human engineer may override at callsite |
 | **BLK-02** | Benchmark Plateau | `Commons-Validator` (Java $	o$ Rust) plateaus at Iteration 12 (18/68 tests passing, 26.5%) | Target project fails functional parity | Provide human architectural guidance on deep Java class inheritance / regex translation |
 | **BLK-03** | Literature Verification | Papers P-85, P-86, P-89 are marked `UNVERIFIED placeholder` | Literature citations lack verified venue URLs | Review and replace with confirmed peer-reviewed venue citations (e.g. Li et al. ASE 2024) |
 | **BLK-04** | Runtime Environment | Ollama/vLLM local endpoint configuration for 4B-30B models | Offline execution fails without running daemon | Configure GPU VRAM allocation or provide remote fallback API key in `.env` |
+| **BLK-05** | Test Regression | `memorystore_test.go` — `TestApplyMaTTSBudgetCeiling` and `TestApplyMaTTSErrorPath` fail once BLK-01 unblocked compilation | Tests of the [[1.0.0 P-122]] ReasoningBank MaTTS substrate were unreachable since the autoresearch commit `03e2d6d`; surface regression only | **RESOLVED 2026-09-07**: loop body now appends the distilled triple once per iteration (one-to-one with `budget`), and the budget-exhausted error wraps both `ErrBudgetExhausted` and `lastErr` via double-`%w` for `errors.Is` chain |
 
 ---
 
@@ -33,7 +34,20 @@ tags: [adhoc, blockers, human-intervention, triage, issues, "[[2.0.0 MAgHARCM]]"
 - **Location**: `internal/memorystore/memorystore.go:375:24`
 - **Error**: `undefined: compiletime.MaTTSDefaultBudget`
 - **Context**: The `ApplyMaTTS` function implements Memory-augmented Test-Time Scaling, but references a constant `compiletime.MaTTSDefaultBudget` that was never declared in `internal/compiletime/compiletime.go`.
-- **Recommendation**: Human engineer should decide the default budget iteration limit (e.g. 5 or 10) and export `MaTTSDefaultBudget` in `compiletime.go`.
+- **Resolution 2026-09-07**: Exported `const MaTTSDefaultBudget = 10` in `internal/compiletime/compiletime.go` adjacent to the memory-substrate constants (`MaxMemoryTriples`, `MemoryTripleRewardEMA`). Default value 10 matches the canonical wave-16 ReasoningBank MaTTS budget; a human engineer may override by passing an explicit positive budget at the callsite rather than mutating this constant.
+- **Status**: **RESOLVED 2026-09-07**.
+
+### BLK-05: ApplyMaTTS Test Regression (latent — surfaced after BLK-01 fix)
+- **Location**: `internal/memorystore/memorystore.go` lines 386-410; tests at `internal/memorystore/memorystore_test.go` lines 201-258
+- **Symptom**: `TestApplyMaTTSBudgetCeiling` reported `len(used)=6, want 3`; `TestApplyMaTTSErrorPath` reported `len(used)=0, want 1`. A third failure (`errors.Is(err, wantErr)` on the budget-exhausted path) was caused by `fmt.Errorf("%w: last error: %v", ...)` interpolating `lastErr` with `%v` instead of `%w`.
+- **Root cause**:
+  - Loop body did `usedStrategies = append(usedStrategies, prior...)` where `prior` is the full store contents; iteration N pulled N entries (seed + N-1 distillations), giving `len(used) = 1+2+3 = 6` over budget=3 iterations.
+  - Budget-exhausted return string-formatted `lastErr` with `%v` rather than wrapping it, breaking the `errors.Is(err, wantErr)` contract documented in the function docstring.
+- **Context**: These lines were unreachable since the autoresearch commit `03e2d6d` (Sept 7) because BLK-01 blocked compilation of the entire `internal/memorystore` package. The latent bug was therefore untested until BLK-01 was resolved this sprint.
+- **Status**: **RESOLVED 2026-09-07** —
+  - Loop body now appends the distilled `triple` once per successful distillation, matching the test contract "grows by one entry per iteration" and matching the function docstring "the triples pulled on each iteration (newest attempt first)".
+  - Budget-exhausted return now uses `fmt.Errorf("%w: last error: %w", ErrBudgetExhausted, lastErr)` so both `errors.Is(err, ErrBudgetExhausted)` and `errors.Is(err, wantErr)` resolve.
+  - All `internal/memorystore` tests green (`go test -count=1 ./internal/memorystore/...` exit 0).
 
 ### BLK-02: Commons-Validator Translation Plateau
 - **Location**: `docs/.paper/sec_eval.tex`, `Table 2`
