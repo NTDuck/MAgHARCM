@@ -387,7 +387,6 @@ func ApplyMaTTS(ctx context.Context, store Store, attempt func() error, budget i
 		// iteration. A future revision can switch to a vector
 		// retriever once the store graduates from in-memory.
 		prior := store.Query("", compiletime.MaxMemoryTriples)
-		usedStrategies = append(usedStrategies, prior...)
 
 		attemptErr := attempt()
 		summary := attemptSummary(prior, attemptErr)
@@ -395,8 +394,11 @@ func ApplyMaTTS(ctx context.Context, store Store, attempt func() error, budget i
 		triple, distilErr := DistillFromTrajectory(summary, attemptErr == nil)
 		if distilErr != nil {
 			logger.LogWarning("memorystore: distill failed on attempt %d: %v", i+1, distilErr)
-		} else if addErr := store.Add(triple); addErr != nil {
-			logger.LogWarning("memorystore: persist failed on attempt %d: %v", i+1, addErr)
+		} else {
+			if addErr := store.Add(triple); addErr != nil {
+				logger.LogWarning("memorystore: persist failed on attempt %d: %v", i+1, addErr)
+			}
+			usedStrategies = append(usedStrategies, triple)
 		}
 
 		if attemptErr == nil {
@@ -405,7 +407,7 @@ func ApplyMaTTS(ctx context.Context, store Store, attempt func() error, budget i
 		lastErr = attemptErr
 	}
 
-	return fmt.Errorf("%w: last error: %v", ErrBudgetExhausted, lastErr), usedStrategies
+	return fmt.Errorf("%w: last error: %w", ErrBudgetExhausted, lastErr), usedStrategies
 }
 
 // attemptSummary renders the trajectory line fed into DistillFromTrajectory:
