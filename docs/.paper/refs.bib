@@ -1663,3 +1663,21 @@
   doi       = {10.1145/3808148},
   note      = {Issue-based test minimisation using coverage-analysis + LLM-prediction hybrid. Pipeline-compatible drop-in for SWE-bench-style agentic repair loops: predict which tests are relevant to a given issue; prune the rest from prompt context; reduces context noise and inference cost. Anchors PRIM-22 (Observation phase: coverage-driven context pruning as static-analysis context-minimisation substrate) and PRIM-31 (Iterative Retrieval Refinement: test-minimisation as input-compression substrate). Source: researchr.org/details/fse-2026/fse-2026-research/116; arXiv:2510.18270.}
 }
+
+@inproceedings{p151_shiraishi_smartc2rust_2026,
+  title     = {{SmartC2Rust: Context-Aware C-to-Rust Translation with Iterative Repair}},
+  author    = {Shiraishi, Masumi and Cao, Yang and Shinagawa, Tachio},
+  booktitle = {ACM/IEEE International Conference on Software Engineering (ICSE 2026)},
+  year      = {2026},
+  doi       = {10.1145/3744916.3773259},
+  note      = {Iterative, feedback-driven C-to-Rust translation using context-aware code segmentation (chunking by control-flow + data-flow boundaries) + three-signal feedback loop (Rust compiler errors, semantic-equivalence diffs, residual unsafe-block counts). The C-to-Rust analogue of P-124 Syzygy (Go-to-Rust). Anchors PRIM-23 (Chunked Translation: context-aware segmentation), PRIM-29 (Dynamic Iteration Recruiter: three-signal feedback loop), PRIM-31 (Iterative Retrieval: compiler-feedback + unsafe-residual feedback). Source: dl.acm.org/doi/10.1145/3744916.3773259; arXiv:2409.10506.}
+}
+
+@inproceedings{p152_liu_hallueval_2026,
+  title     = {{Hallucinations in LLM-Based Code Summarization: A Study on Hallu-Eval, Hallu-Det, and Hallu-Shield}},
+  author    = {Liu, Jiawei and Wang, Kewen and Tang, Wei and Zhang, Minying and Liu, Fang and Chen, Xiangling and Robertson, David},
+  booktitle = {ACM International Conference on the Foundations of Software Engineering (FSE 2026) / PACMSE},
+  year      = {2026},
+  doi       = {10.1145/3808189},
+  note      = {Triplet of (a) Hallu-Eval: 800-pair benchmark of original + semantically-perturbed code/summary pairs covering natural + induced logical hallucinations, (b) Hallu-Det: semantic-perturbation-aware detection approach, (c) Hallu-Shield: inference-time mitigation that uses Hallu-Det signal at decode time via re-ranking. Anchors PRIM-22 (Four Phases Comprehension: systematic hallucination-evaluation substrate) and PRIM-25 (Role-Flip De-Hallucination: inference-time mitigation). Source: dl.acm.org/doi/10.1145/3808189.}
+}
