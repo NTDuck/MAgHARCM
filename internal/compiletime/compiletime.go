@@ -486,6 +486,15 @@ const MaxMemoryTriples = 256
 // applied to per-iteration rewards when ranking memory triples for eviction.
 // Larger values give more weight to recent rewards; smaller values smooth.
 const MemoryTripleRewardEMA = 0.3
+// MaTTSDefaultBudget is the default iteration ceiling for the Memory-aware
+// Test-Time Scaling loop ([[1.0.0 P-122]] ReasoningBank anchor) invoked from
+// memorystore.ApplyMaTTS. When a caller passes budget <= 0 the package falls
+// back to this value so the contract is satisfied without forcing every
+// callsite to thread the constant through. Value 10 matches the canonical
+// wave-16 ReasoningBank MaTTS budget and the bounded-discover ceiling; a
+// human engineer may override by passing an explicit positive budget at
+// the callsite rather than mutating this constant.
+const MaTTSDefaultBudget = 10
 
 // BanditPolicyDefault is the safe-blind default for the migration-strategy
 // registry when bandit_policy is not opted in via YAML. "greedy" matches the
