@@ -76,6 +76,7 @@ last_updated: 2026-09-07
 ### W2 — SWE-TRACE: Optimizing Long-Horizon SWE Agents Through Rubric PRMs and Heuristic Test-Time Scaling (Han, Xie, Ma, Zhu, Zhang, Long, Chen & Ye, arXiv:2604.14820)
 
 **Status: UNVERIFIED.** April 2026 arXiv preprint only; no peer-reviewed venue confirmation at NeurIPS/ICML/ICLR/FSE/ICSE/ASE/TOSEM as of 2026-09-07. Mechanism concrete (cascaded trajectory optimisation + rubric-PRM + heuristic TTS) and 8B scale matches Wave-19 SLM focus. Watchlist for Wave-20 venue confirmation.
+
 > **Partition summary.** ACCEPT = 8 (P-134..P-141). REJECT Q1 = 3 (R1 TTA*, R2 HELIOS, R3 LongSpec). UNVERIFIED = 2 (W1 SliceMate, W2 SWE-TRACE). Total triaged = 13. Watchlist carries UNVERIFIED items only; off-list-venue items live in REJECT.
 
 ## Wave-19 outcome
@@ -89,6 +90,7 @@ last_updated: 2026-09-07
   - PRIM-21 Migration Strategy Selection: P-135 (SPECS), P-137 (SuffixDecoding), P-140 (Panta), P-141 (KVFlow). Four draft / coverage / scheduling budget knobs.
   - PRIM-22 Four Phases of Comprehension: P-138 (RepairKV), P-139 (TypePro), P-140 (Panta). Three comprehension-substrate anchors at long-context / type-inference / coverage scale.
   - PRIM-31 Iterative Retrieval Refinement: P-134 (RelayCaching), P-138 (RepairKV), P-141 (KVFlow). Three multi-turn / multi-agent correction anchors.
+
 - **Vault paper count: 133 → 141.**
 
 ## Watchlist for Wave-20+
