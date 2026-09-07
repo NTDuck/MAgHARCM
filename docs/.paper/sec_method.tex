@@ -302,8 +302,7 @@ repository profile. Strategies are listed in try-and-fail order: the
 registry retries the next strategy if the active one fails, before
 falling back to a final always-accept entry. Adding a strategy is a
 one-line append to \texttt{NewDefaultRegistry}.
-This cascading-fallback structure mirrors the migration strategy
-This cascading-fallback structure mirrors the migration strategy taxonomy proposed for legacy system modernisation~\cite{p60_bisbal_cascading_fallback,p84_s1_test_time_scaling_2025,p108_eagle3_2025,p122_zhang_reasoningbank_2026,p123_wang_codechemist_2026},
+This cascading-fallback structure mirrors the migration strategy taxonomy proposed for legacy system modernisation~\cite{p60_bisbal_cascading_fallback,p84_s1_test_time_scaling_2025,p108_eagle3_2025,p122_zhang_reasoningbank_2026,p123_wang_codechemist_2026,p135_cemri_specs_2026,p136_huang_cats_2026},
 with the informal wrap/reengineer/replace/migrate coping-strategy framing discussed in Bennett's 1995 editorial~\cite{p75_bennett_legacy_coping_success_1995},
 with the broader research-agenda mapping of grand challenges (concept location,
 impact analysis, comprehension at scale, migration strategies, empirical validation)
@@ -332,7 +331,7 @@ in order; each strategy exposes a predicate and an attempt method.}
 \subsection{Qwen2.5-Coder SLM Anchor (PRIM-22, PRIM-23, PRIM-31)}
 \label{sec:method_qwen25coder_anchor}
 
-MAgHARCM is tuned for the Qwen2.5-Coder family of coding SLMs at the 7B, 14B, and 32B scales~\cite{p58_hui_qwen25coder_2024,p94_zhou_lima_2023,p96_kojima_zsr_2022,p99_suzgun_bigbench_cot_2022,p100_khot_decomposed_2022,p101_zhou_l2m_2023,p102_smallcode_4b_2025,p104_s_star_2025,p105_chunkkv_2025,p106_bfcl_2025,p121_patil_bfcl_2025,p107_decomposed_prompting_slm_reanchor_2025,p108_eagle3_2025,p110_graphcoder_2024,p122_zhang_reasoningbank_2026,p124_shetty_syzygy_2025,p86_xu_modernization_survey_2024_unverified,p88_hityper_peng_2022,...
+MAgHARCM is tuned for the Qwen2.5-Coder family of coding SLMs at the 7B, 14B, and 32B scales~\cite{p58_hui_qwen25coder_2024,p94_zhou_lima_2023,p96_kojima_zsr_2022,p99_suzgun_bigbench_cot_2022,p100_khot_decomposed_2022,p101_zhou_l2m_2023,p102_smallcode_4b_2025,p104_s_star_2025,p105_chunkkv_2025,p106_bfcl_2025,p121_patil_bfcl_2025,p107_decomposed_prompting_slm_reanchor_2025,p108_eagle3_2025,p110_graphcoder_2024,p122_zhang_reasoningbank_2026,p124_shetty_syzygy_2025,p125_kang_t1_2026,p127_crupi_slmjudge_2026,p128_kim_kvzip_2025,p129_rong_lamda_2026,p130_ding_ssar_2026,p131_zhao_semarc_2026,p132_zhang_semref_2026,p133_xiang_adi_2026,p134_geng_relaycaching_2026,p137_oliaro_suffixdecoding_2025,p138_rusli_repairkv_2026,p139_lin_typepro_2026,p140_gu_panta_2026,p141_kvflow_2025,p86_xu_modernization_survey_2024_unverified,p88_hityper_peng_2022,...
 fragment context ($\le 4\,\text{KB}$), reverse-topological scheduling,
 and the role-flipped reviewer are calibrated so that the prompt
 window, scratch reasoning budget, and instruction-following fidelity

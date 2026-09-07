@@ -1451,3 +1451,140 @@
   eprint    = {2412.14234},
   note      = {Dual code-test C-to-safe-Rust translation; Clang/LLVM-instrumented SpecMiner mines type/bounds/nullability/aliasing properties at runtime; LLM generates Rust code AND equivalence test per translation unit; multi-round repair loop with I/O-equivalence validation. Complements P-88 HiTyper's static TDG with the dynamic-analysis half. Anchors PRIM-9, PRIM-22, PRIM-30.}
 }
+
+@inproceedings{p125_kang_t1_2026,
+  title     = {{T1: Tool-Integrated Verification for Test-time Compute Scaling in SLMs}},
+  author    = {Kang, [Sungjae] and Jeong, [Yongrae] and Cho, [Sungwoong]},
+  booktitle = {International Conference on Learning Representations (ICLR 2026)},
+  year      = {2026},
+  note      = {Tool-integrated verification as the SLM-scale replacement for frontier PRM/ORM in test-time scaling loops; small LMs (~3-7B) act as code-verifier agents that close the loop without an external 70B+ judge. Anchors PRIM-7, PRIM-22.}
+}
+
+@inproceedings{p126_li_arcdecode_2026,
+  title     = {{ARC-Decode: Risk-Bounded Acceptance for Speculative Decoding},
+  author    = {Li, [Yi] and [others]},
+  booktitle = {Proceedings of the 43rd International Conference on Machine Learning (ICML 2026)},
+  year      = {2026},
+  note      = {Risk-bounded speculative decoding; continuous risk-budget knob that controls draft-token acceptance vs.\ draft accuracy; replaces the binary accept/reject heuristic with a bounded statistical gate. Anchors PRIM-7, PRIM-21.}
+}
+
+@inproceedings{p127_crupi_slmjudge_2026,
+  title     = {{SLM-as-a-Judge for Code Generation: Quality-Aware Evaluation for Software Engineering}},
+  author    = {Crupi, [Giovanni] and [others]},
+  booktitle = {IEEE/ACM 48th International Conference on Software Engineering (ICSE 2026)},
+  year      = {2026},
+  note      = {Small LM as code-generation judge; replaces frontier PRM with a calibrated 7-13B SLM that achieves parity on code-generation verdict tasks at fraction of compute cost. Anchors PRIM-7.}
+}
+
+@inproceedings{p128_kim_kvzip_2025,
+  title     = {{KVzip: Query-Agnostic KV Cache Compression with Context Reconstruction}},
+  author    = {Kim, [Jang-Hyun] and [others]},
+  booktitle = {Advances in Neural Information Processing Systems 38 (NeurIPS 2025, Oral)},
+  year      = {2025},
+  note      = {Query-agnostic KV cache compression via offline importance-scoring + reconstruction pass; achieves 3-4x compression with negligible quality loss on long-context benchmarks; complements P-141 KVFlow's workflow-aware eviction for multi-agent retention. Anchors PRIM-22, PRIM-31.}
+}
+
+@inproceedings{p129_rong_lamda_2026,
+  title     = {{L{\lambda}MDA: LLM-Aided Partial Program Dependence Analysis for Static Analysis Recovery}},
+  author    = {Rong, [Lu] and Yadavally, [Aishwarya] and Nguyen, [Tien N.]},
+  booktitle = {IEEE/ACM 48th International Conference on Software Engineering (ICSE 2026)},
+  year      = {2026},
+  note      = {LLM-aided partial program dependence graph (PDG) construction; recovers missing static-analysis edges when source is incomplete or unavailable; closes the source-only archaeology gap for legacy modernization. Anchors PRIM-9, PRIM-22.}
+}
+
+@inproceedings{p130_ding_ssar_2026,
+  title     = {{SSAR: Software Architecture Recovery via Structural and Semantic Hybrid Analysis}},
+  author    = {Ding, [Wenxin] and Mo, [Yuanrui] and Wu, [Qiuyang] and Song, [Ming]},
+  booktitle = {IEEE/ACM 48th International Conference on Software Engineering (ICSE 2026)},
+  year      = {2026},
+  note      = {Structural+semantic hybrid architecture recovery; combines static module-dependency evidence with LLM-derived semantic module signatures; produces higher-precision recovered modules than either approach alone. Anchors PRIM-9, PRIM-22.}
+}
+
+@article{p131_zhao_semarc_2026,
+  title     = {{SemArc: Software Architecture Recovery Augmented with Semantics}},
+  author    = {Zhao, [Hao] and [others]},
+  booktitle = {IEEE Transactions on Software Engineering (TSE)},
+  year      = {2026},
+  note      = {Semantic-enhanced architecture recovery; embeds LLM-derived symbol descriptions into the architecture-recovery objective; produces more semantically coherent module boundaries. Anchors PRIM-9, PRIM-22.}
+}
+
+@inproceedings{p132_zhang_semref_2026,
+  title     = {{SemRef: Semantic-Enhanced Refinement of Architecture Recovery}},
+  author    = {Zhang, [Yi] and [others]},
+  booktitle = {IEEE/ACM 48th International Conference on Software Engineering (ICSE 2026)},
+  year      = {2026},
+  note      = {Iterative semantic refinement of architecture recovery outputs; refines initial coarse recovered architecture through LLM-driven semantic feedback; complements P-130 SSAR + P-131 SemArc with refinement-loop structure. Anchors PRIM-9, PRIM-22, PRIM-31.}
+}
+
+@inproceedings{p133_xiang_adi_2026,
+  title     = {{ADI: Empowering Autonomous Debugging Agents with Efficient Dynamic Analysis}},
+  author    = {Xiang, [Chao] and [others]},
+  booktitle = {ACM International Conference on the Foundations of Software Engineering (FSE 2026)},
+  year      = {2026},
+  note      = {SIGSOFT Distinguished Paper Award. Frame Lifetime Trace dynamic-analysis runtime + function-level interactive debugging; efficient dynamic instrumentation with low runtime overhead; augments autonomous debugging agents with verifiable execution traces. Anchors PRIM-22, PRIM-31.}
+}
+
+@inproceedings{p134_geng_relaycaching_2026,
+  title     = {{RelayCaching: Accelerating LLM Collaboration via Decoding KV Cache Reuse}},
+  author    = {Geng, [Shiwei] and [others]},
+  booktitle = {Proceedings of the 43rd International Conference on Machine Learning (ICML 2026 Poster \#1915)},
+  year      = {2026},
+  eprint    = {2508.06975},
+  note      = {Cross-agent KV cache reuse via sparse deviation recompute; >80\% reuse rate and 4.7x TTFT speedup across multi-agent collaboration turns; first mechanism that treats the KV cache as a shared collaboration substrate rather than a per-request resource. Anchors PRIM-31, PRIM-9.}
+}
+
+@inproceedings{p135_cemri_specs_2026,
+  title     = {{SPECS: Faster Test-Time Scaling through Speculative Drafts}},
+  author    = {Cemri, [Sopan] and [others]},
+  booktitle = {International Conference on Learning Representations (ICLR 2026)},
+  year      = {2026},
+  note      = {Speculative drafts as SLM-scale test-time scaling substrate; soft verification + dynamic switch between draft-only and full-exploration modes; closes Wave-18 R3 deferral; demonstrates that TTS gain is achievable without frontier PRM. Anchors PRIM-7, PRIM-21.}
+}
+
+@inproceedings{p136_huang_cats_2026,
+  title     = {{CaTS: Calibrated Test-Time Scaling for Efficient LLM Reasoning}},
+  author    = {Huang, [Jianzhi] and [others]},
+  booktitle = {International Conference on Learning Representations (ICLR 2026 Poster)},
+  year      = {2026},
+  note      = {Self-Calibration distilled confidence as SLM-scale frontier-PRM replacement; achieves frontier-comparable TTS accuracy with calibrated exit at low-entropy tokens. Anchors PRIM-7.}
+}
+
+@inproceedings{p137_oliaro_suffixdecoding_2025,
+  title     = {{SuffixDecoding: Extreme Speculative Decoding for Emerging AI Applications}},
+  author    = {Oliaro, [Gabriele] and [others]},
+  booktitle = {Advances in Neural Information Processing Systems 38 (NeurIPS 2025, Spotlight)},
+  year      = {2025},
+  note      = {Model-free suffix-tree speculative decoding; deployed in Snowflake ArcticInference and vLLM; eliminates the need for a draft model by deriving drafts from a suffix tree of recent outputs. Anchors PRIM-7, PRIM-21.}
+}
+
+@inproceedings{p138_rusli_repairkv_2026,
+  title     = {{RepairKV (Cache You Later): Post-Compression KV Cache Repair for Multi-Agent Workflows}},
+  author    = {Rusli, [Emmanuel] and [others]},
+  booktitle = {ICML 2026 AdaptFM Workshop (Workshop-track, borderline ACCEPT per §7 method-level threshold)},
+  year      = {2026},
+  note      = {Post-compression KV cache repair runtime operator; corrects precision drift introduced by aggressive KV compression (P-128 KVzip, P-141 KVFlow) without recomputation. Workshop-track ACCEPT per §7 method-level threshold. Anchors PRIM-22, PRIM-31.}
+}
+
+@inproceedings{p139_lin_typepro_2026,
+  title     = {{TypePro: Boosting LLM-Based Type Inference via Inter-Procedural Slicing}},
+  author    = {Lin, [Wei] and [others]},
+  booktitle = {ACM International Conference on the Foundations of Software Engineering (FSE 2026)},
+  year      = {2026},
+  note      = {System Dependence Graph (SDG) + inter-procedural backward/forward slicing to bound LLM type-inference context; brings program-slicing discipline to LLM-augmented type recovery; replaces fragile retrieval-augmented generation with deterministic slicing. Anchors PRIM-9, PRIM-22.}
+}
+
+@inproceedings{p140_gu_panta_2026,
+  title     = {{Panta: LLM Test Generation via Iterative Hybrid Program Analysis}},
+  author    = {Gu, [Qiuhan] and Nashid, [Mohammad] and Mesbah, [Ali]},
+  booktitle = {IEEE/ACM 48th International Conference on Software Engineering (ICSE 2026)},
+  year      = {2026},
+  note      = {Static (cyclomatic complexity) + dynamic (coverage) iterative loop drives LLM test generation; demonstrated 27-31\% branch coverage improvement over single-mode baselines on Java/JS/Python subjects. Anchors PRIM-22, PRIM-21.}
+}
+
+@inproceedings{p141_kvflow_2025,
+  title     = {{KVFlow: Workflow-Aware KV Cache Eviction for Multi-Agent LLM Serving}},
+  author    = {[KVFlow authors]},
+  booktitle = {Advances in Neural Information Processing Systems 38 (NeurIPS 2025 Poster)},
+  year      = {2025},
+  note      = {Agent Step Graph + steps-to-execution metric + prefetching; workflow-aware KV cache eviction that preserves cross-agent dependency chains rather than per-request locality. Anchors PRIM-31, PRIM-21.}
+}
