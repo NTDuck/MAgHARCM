@@ -5028,6 +5028,219 @@
         "P-68"
       ],
       "summary": "Workflow-aware eviction via Agent Step Graph + steps-to-execution metric + KV prefetching. 1.83x single-workflow, 2.19x concurrent-workflow speedups vs SGLang hierarchical radix cache."
+    },
+    {
+      "id": "P-142",
+      "version_marker": "[[1.0.0 P-142]]",
+      "title": "P-142 NESA: Relational Neuro-Symbolic Static Program Analysis",
+      "bibkey": "nesa2026fse",
+      "authors": [
+        "Chengpeng Wang",
+        "Yifei Gao",
+        "Wuqi Zhang",
+        "Xuwei Liu",
+        "Jinyao Guo",
+        "Mingwei Zheng",
+        "Qingkai Shi",
+        "Xiangyu Zhang"
+      ],
+      "year": 2026,
+      "venue": "FSE 2026 (Research Track)",
+      "eprint_or_doi": "arXiv:2412.14399; DOI 10.1145/3808161; PACMSE Vol 3 Issue FSE Article FSE154",
+      "anchored_primitives": [
+        "PRIM-22",
+        "PRIM-9"
+      ],
+      "tags": [
+        "paper",
+        "neuro-symbolic",
+        "static-analysis",
+        "datalog",
+        "comprehension",
+        "[[1.0.0 PRIM-22]]",
+        "[[1.0.0 PRIM-9]]",
+        "[[1.0.0 P-87]]",
+        "[[1.0.0 P-129]]",
+        "[[1.0.0 P-139]]",
+        "wave-20"
+      ],
+      "verified": true,
+      "hop1_references": [
+        "P-129",
+        "P-139"
+      ],
+      "hop2_references": [
+        "P-87"
+      ],
+      "summary": "Restricted Datalog analysis-policy language decomposes complex program-analysis problems into syntactic (parsing-based) and semantic (LLM) sub-problems. Lazy and incremental prompting reduces LLM hallucinations. F1 0.72 on TaintBench (+0.20 over industrial baseline); 13 real-world memory-leak bugs detected and developer-fixed."
+    },
+    {
+      "id": "P-143",
+      "version_marker": "[[1.0.0 P-143]]",
+      "title": "P-143 Hallucinations in LLM-based Code Summarization (Hallu-Eval / Hallu-Det / Hallu-Shield)",
+      "bibkey": "hallushield2026fse",
+      "authors": [
+        "Hallucinations-in-LLM-Code-Summarization authors (FSE 2026 paper 66)"
+      ],
+      "year": 2026,
+      "venue": "FSE 2026 (Research Track)",
+      "eprint_or_doi": "DOI 10.1145/3808139; PACMSE Vol 3 Issue FSE Article 66",
+      "anchored_primitives": [
+        "PRIM-7",
+        "PRIM-22"
+      ],
+      "tags": [
+        "paper",
+        "code-summarization",
+        "hallucination-detection",
+        "value-model",
+        "slm-as-judge",
+        "[[1.0.0 PRIM-7]]",
+        "[[1.0.0 PRIM-22]]",
+        "[[1.0.0 P-87]]",
+        "[[1.0.0 P-92]]",
+        "[[1.0.0 P-127]]",
+        "wave-20"
+      ],
+      "verified": true,
+      "hop1_references": [
+        "P-127",
+        "P-92"
+      ],
+      "hop2_references": [
+        "P-87"
+      ],
+      "summary": "Hallu-Det synergistic entity-level detection + synonymous-mutation-based refinement (F1 0.95 on Qwen2.5-Coder-7B summaries). Hallu-Shield inference-time mitigation via external value model (10.6% relative hallucination reduction on DeepSeek-Coder-6.7B; 74.0% LLM-as-a-judge win rate)."
+    },
+    {
+      "id": "P-144",
+      "version_marker": "[[1.0.0 P-144]]",
+      "title": "P-144 TraceCoder: A Trace-Driven Multi-Agent Framework for Automated Debugging of LLM-Generated Code",
+      "bibkey": "tracecoder2026icse",
+      "authors": [
+        "Jiangping Huang",
+        "Wenguang Ye",
+        "Weisong Sun",
+        "Jian Zhang",
+        "Mingyue Zhang",
+        "Yang Liu"
+      ],
+      "year": 2026,
+      "venue": "ICSE 2026 (Research Track)",
+      "eprint_or_doi": "arXiv:2602.06875; researchr.org/details/icse-2026/icse-2026-research-track/145",
+      "anchored_primitives": [
+        "PRIM-22",
+        "PRIM-25"
+      ],
+      "tags": [
+        "paper",
+        "multi-agent",
+        "debugging",
+        "trace-instrumentation",
+        "role-flip-reviewer",
+        "[[1.0.0 PRIM-22]]",
+        "[[1.0.0 PRIM-25]]",
+        "[[1.0.0 P-109]]",
+        "[[1.0.0 P-115]]",
+        "[[1.0.0 P-133]]",
+        "wave-20"
+      ],
+      "verified": true,
+      "hop1_references": [
+        "P-133",
+        "P-115"
+      ],
+      "hop2_references": [
+        "P-109"
+      ],
+      "summary": "Trace-driven multi-agent debugging: runtime instrumentation + causal analysis + Historical Lesson Learning Mechanism (HLLM) + Rollback Mechanism (RM). 34.43% relative Pass@1 improvement; iterative repair contributes 65.61% relative gain."
+    },
+    {
+      "id": "P-145",
+      "version_marker": "[[1.0.0 P-145]]",
+      "title": "P-145 TerraMod: Automating Terraform Code Migration through Provider Evolution Knowledge",
+      "bibkey": "terramod2026icse",
+      "authors": [
+        "Pranjal Gupta",
+        "Pooja Aggarwal",
+        "Brent Paulovicks",
+        "Prateeti Mohapatra",
+        "Rong Lee",
+        "Vadim Sheinin"
+      ],
+      "year": 2026,
+      "venue": "ICSE 2026 (NIER Track)",
+      "eprint_or_doi": "researchr.org/details/icse-2026/icse-2026-nier/43; IBM Research publication 145",
+      "anchored_primitives": [
+        "PRIM-21",
+        "PRIM-22"
+      ],
+      "tags": [
+        "paper",
+        "code-migration",
+        "knowledge-augmentation",
+        "infrastructure-as-code",
+        "[[1.0.0 PRIM-21]]",
+        "[[1.0.0 PRIM-22]]",
+        "[[1.0.0 P-02]]",
+        "[[1.0.0 P-103]]",
+        "[[1.0.0 P-140]]",
+        "wave-20"
+      ],
+      "verified": true,
+      "hop1_references": [
+        "P-140",
+        "P-103"
+      ],
+      "hop2_references": [
+        "P-02"
+      ],
+      "summary": "Knowledge-augmented Terraform migration context from changelogs + API schemas + deprecation links guides LLM-driven provider-version upgrades. Significantly reduces manual effort vs standard prompting on AWS Terraform Provider breaking changes."
+    },
+    {
+      "id": "P-146",
+      "version_marker": "[[1.0.0 P-146]]",
+      "title": "P-146 ContextPRM: Leveraging Contextual Coherence for Multi-Domain Test-Time Scaling",
+      "bibkey": "contextprm2026iclr",
+      "authors": [
+        "Haotian Zhang",
+        "Liu Liu",
+        "Baosheng Yu",
+        "Jiayan Qiu",
+        "Likang Xiao",
+        "Yanwei Ren",
+        "Quan Chen",
+        "Xianglong Liu"
+      ],
+      "year": 2026,
+      "venue": "ICLR 2026 (Conference Paper)",
+      "eprint_or_doi": "arXiv:2509.24460; iclr.cc/virtual/2026/poster/10011128; proceedings.iclr.cc paper ce186a37",
+      "anchored_primitives": [
+        "PRIM-7"
+      ],
+      "tags": [
+        "paper",
+        "process-reward-model",
+        "domain-agnostic",
+        "contextual-coherence",
+        "tts",
+        "[[1.0.0 PRIM-7]]",
+        "[[1.0.0 P-90]]",
+        "[[1.0.0 P-91]]",
+        "[[1.0.0 P-92]]",
+        "[[1.0.0 P-127]]",
+        "[[1.0.0 P-143]]",
+        "wave-20"
+      ],
+      "verified": true,
+      "hop1_references": [
+        "P-92",
+        "P-91"
+      ],
+      "hop2_references": [
+        "P-90"
+      ],
+      "summary": "Domain-agnostic PRM trained on contextual coherence (logical transitions between CoT steps) rather than domain-specific facts. 6.5% average accuracy improvement on MMLU-Pro across nine non-mathematical domains; outperforms VersaPRM (2.2%) and math-focused PRMs (0.5%)."
     }
   ],
   "reject_registry": {
@@ -5075,6 +5288,46 @@
         "reject_class": "Q1 (off-list venue)",
         "rationale": "ACL is not in Wave-19 venue whitelist (NeurIPS/ICML/ICLR/ICSE/FSE/ESEC/ASE/TOSEM/TSE). Same rationale as Wave-18 R1 ReflexiCoder. Mechanism fits Wave-19 (a) precisely; venue is the only blocker. Watchlist for ICLR/NeurIPS companion."
       }
+    ],
+    "wave-20": [
+      {
+        "candidate_id": "W20-R1",
+        "short_name": "SliceMate",
+        "title": "SLICEMATE: Accurate and Scalable Static Program Slicing via LLM-Powered Agents",
+        "authors": [
+          "Jianming Chang",
+          "Jieke Shi",
+          "Yunbo Lyu",
+          "Xin Zhou",
+          "Lulu Wang",
+          "Zhou Yang",
+          "Bixin Li",
+          "David Lo"
+        ],
+        "year": 2025,
+        "venue": "ISSTA 2025 (PACMSE Vol 2, ISSTA:2362-2383)",
+        "eprint_or_doi": "arXiv:2507.18957",
+        "reject_class": "Q1 (off-list venue)",
+        "rationale": "Re-verification of Wave-19 W1: Yunbo Lyu's homepage lists PTMware at ISSTA 2026, but SliceMate itself is published at ISSTA 2025 (PACMSE Vol 2, ISSTA:2362-2383). ISSTA is not in section 7 whitelist (NeurIPS/ICML/ICLR/FSE/ESEC/ASE/TOSEM/TSE). Mechanism concrete (three LLM agents replace explicit PDG/SDG construction; 22% acc / 28% F1 improvement on SliceBench 2,200-program benchmark) and high-relevance for Wave-20 focus area (b) program-comprehension-mechanism. Watchlist for FSE 2027 / TOSEM 2026 companion paper at an in-list venue. Promoted from Wave-19 W1 (UNVERIFIED) to Wave-20 R1 (REJECT Q1) on 2026-09-07 after venue re-verification."
+      },
+      {
+        "candidate_id": "W20-R2",
+        "short_name": "Environment-in-the-Loop",
+        "title": "Environment-in-the-Loop: Rethinking Code Migration with LLM-based Agents",
+        "authors": [
+          "Xiang Li",
+          "Zhiwei Fei",
+          "Ying Ma",
+          "Jerry Zhang",
+          "Federica Sarro",
+          "He Ye"
+        ],
+        "year": 2026,
+        "venue": "ReCode 2026 Workshop (co-located with ICSE 2026)",
+        "eprint_or_doi": "researchr.org/details/recode26/recode-2026-papers/5; arXiv:2606.21822",
+        "reject_class": "Q1 (off-list workshop)",
+        "rationale": "ReCode 2026 is the 1st International Workshop on Code Translation, Transformation, and Modernization co-located with ICSE 2026; workshop-track. Section 7 workshop-track ACCEPT rationale requires main-track alternative be unavailable; MAgHARCM already anchors the environment-in-the-loop substrate via P-145 TerraMod (ICSE 2026 NIER, main-track subvenue) and existing PRIM-1/22 substrate, so this paper is redundant. Mechanism (semantic code-error feedback guiding LLM agents during migration) concrete but redundant. Watchlist for ICSE 2027 main-track version."
+      }
     ]
   },
   "watchlist": {
@@ -5096,8 +5349,8 @@
         "year": 2025,
         "venue": "arXiv preprint (ISSTA 2026 acceptance claimed by author homepage, unconfirmed)",
         "eprint_or_doi": "arXiv:2507.18957",
-        "status": "UNVERIFIED",
-        "rationale": "Mechanism concrete (three LLM agents replace explicit PDG/SDG construction; 22% acc / 28% F1 improvement). Method-level relevance high for Wave-19 focus area (c). ISSTA 2026 venue not confirmed in official program. Watchlist for Wave-20 venue re-verification."
+        "status": "PROMOTED -> wave-20 reject_registry (ISSTA off-list confirmed)",
+        "rationale": "PROMOTED 2026-09-07 from wave-19 watchlist to wave-20 reject_registry as W20-R1 after venue re-verification: published at ISSTA 2025, not ISSTA 2026; ISSTA is off-list per section 7."
       },
       {
         "candidate_id": "W19-W2",
@@ -5116,8 +5369,30 @@
         "year": 2026,
         "venue": "arXiv:2604.14820 (April 2026)",
         "eprint_or_doi": "arXiv:2604.14820",
+        "status": "CARRIED -> wave-20 watchlist (NeurIPS 2026 notifications pending 2026-09-24)",
+        "rationale": "Carried 2026-09-07 from wave-19 to wave-20 watchlist after re-verification: arXiv:2604.14820 remains preprint only; no peer-reviewed venue acceptance at NeurIPS/ICML/ICLR/FSE/ICSE/ASE/TOSEM/TSE. NeurIPS 2026 author notifications scheduled 2026-09-24 (post this wave). Watchlist for Wave-21 venue confirmation."
+      }
+    ],
+    "wave-20": [
+      {
+        "candidate_id": "W20-W1",
+        "short_name": "SWE-TRACE",
+        "title": "SWE-TRACE: Optimizing Long-Horizon SWE Agents Through Rubric Process Reward Models and Heuristic Test-Time Scaling",
+        "authors": [
+          "Hao Han",
+          "Jin Xie",
+          "Xuehao Ma",
+          "Weiquan Zhu",
+          "Ziyao Zhang",
+          "ZhiLiang Long",
+          "Hongkai Chen",
+          "Qingwen Ye"
+        ],
+        "year": 2026,
+        "venue": "arXiv:2604.14820 (April 2026); NeurIPS 2026 notifications pending 2026-09-24",
+        "eprint_or_doi": "arXiv:2604.14820",
         "status": "UNVERIFIED",
-        "rationale": "arXiv preprint only; no peer-reviewed venue confirmation at NeurIPS/ICML/ICLR/FSE/ICSE/ASE/TOSEM as of 2026-09-07. Mechanism concrete (cascaded trajectory optimisation + rubric-PRM + heuristic TTS); 8B scale matches Wave-19 SLM focus. Watchlist for Wave-20 venue confirmation."
+        "rationale": "Carried from Wave-19 W2 after re-verification: still preprint-only; no peer-reviewed acceptance at in-list venues. Mechanism concrete (60K SFT corpus distillation + rubric-PRM + heuristic TTS); 8B scale matches Wave-19 SLM focus. Watchlist for Wave-21 venue confirmation after NeurIPS 2026 decisions."
       }
     ]
   }
