@@ -581,28 +581,6 @@ User directives sometimes reference work that has already been completed in an e
 | "P-106 BFCL retirement" | NOT USER-REQUESTED — P-106 retained alongside P-121 as historical anchor; user did not issue this directive | `Sprint-2026-09-25-Handoff.md` Track-2 | 2026-09-26 |
 
 
-## 14. Wave-21 Anchor Table (forward pointer)
-
-Wave-21 anchors are listed inline at §7 Wave 21 trigger evaluation. Wave-21 priority forward to Wave-22: residual program-comprehension-mechanism slot (function-level → partition-aligned summary pass), plus W1 SWE-TRACE fourth carry after NeurIPS 2026 author notifications (2026-09-24).
-
-## 17. Wave-22 Anchor Table (forward pointer)
-
-Wave-22 anchors are listed inline at §7 Wave 22 trigger evaluation. Wave-22 priority forward to Wave-23: residual program-comprehension-mechanism slot (function-level → partition-aligned summary pass), plus W1 SWE-TRACE fifth carry after NeurIPS 2026 author notifications (2026-09-24).
-
-## 18. Wave-23 Anchor Plan (forward plan)
-
-1. Re-scout strict program-comprehension-mechanism slot (function-level → partition-aligned summary pass) against NeurIPS 2026 (post 2026-09-24), ICML 2027 (Jan 2027 deadline), ICLR 2027 (Sep 2026 deadline — embargoed).
-2. Re-verify W1 SWE-TRACE arXiv:2604.14820 — if no peer-reviewed venue by NeurIPS 2026 author notification, retire to a `rejected_archive` block and stop carrying.
-3. Continue §11.6 substrate opt-in verification (Wave-21 audit + Wave-22 confirmation).
-
-## 19. Wave-22 Watchlist (carries into Wave-23)
-
-Items deferred from Wave-22 that Wave-23 must re-verify or close:
-
-1. **Residual program-comprehension-mechanism slot (fifth carry).** The function-level → partition-aligned summary pass gap remains open. Re-scout NeurIPS 2026 / ICML 2027 / ICLR 2027 listings.
-2. **W1 SWE-TRACE arXiv:2604.14820 (fifth carry).** Re-verify after NeurIPS 2026 author notifications (2026-09-24). If still no peer-reviewed venue, retire and remove from watchlist.
-3. **§11.6 carry-over.** The §11.6 Program-Comprehension Mechanism substrate claim is opt-in via `configs/agents.yml:comprehension.graph_self_evolving: true`; Wave-23 should re-verify the opt-in path is wired.
-
 
 ### Directives still requiring work
 
@@ -618,7 +596,13 @@ Items deferred from Wave-22 that Wave-23 must re-verify or close:
 
 Every sprint MUST append the prior wave's REJECT list to `.obsidian/MAgHARCM/Research-Database.json` under `reject_registry.wave-NN`. Each REJECT entry records: `bibkey`, `title`, `venue`, `verdict` (Q1/Q2/Q3), and a one-line `rationale`. The REJECT registry is the authoritative cross-wave triage ledger; older Wave-NN-Candidates.md memos remain for audit trail but the registry is the lookup of record. Watchlist (UNVERIFIED) entries go to `watchlist.wave-NN` and are re-verified each wave.
 
+## 14. Wave-21 Anchor Table (forward pointer)
+
 Wave-21 anchors are listed inline at §7 Wave 21 trigger evaluation. Wave-21 priority forward to Wave-22: residual program-comprehension-mechanism slot (function-level → partition-aligned summary pass), plus W1 SWE-TRACE fourth carry after NeurIPS 2026 author notifications (2026-09-24).
+
+
+
+
 
 ## 15. Wave-20 Watchlist (carries into Wave-21)
 
@@ -638,5 +622,27 @@ Items deferred from Wave-21 that Wave-22 must re-verify or close:
 3. **Workshop-track ACCEPT threshold documentation.** P-138 RepairKV (AdaptFM Workshop ICML 2026) remains the borderline case; future workshops on the §7 trigger-list should be evaluated against P-138's threshold (method-level, single-paper, not a workshop-redundant theme). Wave-22 R1 (Code vs. Serialized AST, LLM4Code workshop) and R3 (Beyond Accuracy, DeepTest workshop) both REJECTED Q1 against this threshold — empirical / diagnostic papers do not qualify for the workshop-track exception.
 4. **§11.6 carry-over.** The §11.6 Program-Comprehension Mechanism substrate claim is opt-in via `configs/agents.yml:comprehension.graph_self_evolving: true`; Wave-22 should re-verify the opt-in path is wired (the configs file may need a corresponding field added).
 
+## 17. Wave-22 Anchor Table (forward pointer)
+
+Wave-22 anchors are listed inline at §7 Wave 22 trigger evaluation. Wave-22 priority forward to Wave-23: residual program-comprehension-mechanism slot (function-level → partition-aligned summary pass), plus W1 SWE-TRACE fifth carry after NeurIPS 2026 author notifications (2026-09-24).
+
+## 18. Wave-23 Anchor Plan (forward plan)
+
+1. Re-scout strict program-comprehension-mechanism slot (function-level → partition-aligned summary pass) against NeurIPS 2026 (post 2026-09-24), ICML 2027 (Jan 2027 deadline), ICLR 2027 (Sep 2026 deadline — embargoed).
+2. Re-verify W1 SWE-TRACE arXiv:2604.14820 — if no peer-reviewed venue by NeurIPS 2026 author notification, retire to a `rejected_archive` block and stop carrying.
+3. Continue §11.6 substrate opt-in verification (Wave-21 audit + Wave-22 confirmation).
+4. Survey TOSEM 2026 concluded program for AST-representation / code-summarization substrates adjacent to P-130/P-131/P-132 architecture-recovery trio (per advisory 2026-09-07). Off-list workshop verification must use the §7 trigger-list whitelist (NeurIPS / ICML / ICLR / ICSE / ASE / TOSEM / TSE / FSE); TOSEM 2026 is on-list.
+
+## 19. Wave-22 Watchlist (carries into Wave-23)
+
+Items deferred from Wave-22 that Wave-23 must re-verify or close:
+
+1. **Residual program-comprehension-mechanism slot (fifth carry).** The function-level → partition-aligned summary pass gap remains open. Re-scout NeurIPS 2026 / ICML 2027 / ICLR 2027 listings; consider TOSEM 2026 concluded program as a venue (Sun et al. AST for PL understanding).
+2. **W1 SWE-TRACE arXiv:2604.14820 (fifth carry).** Re-verify after NeurIPS 2026 author notifications (2026-09-24). If still no peer-reviewed venue, retire and remove from watchlist.
+3. **§11.6 carry-over.** The §11.6 Program-Comprehension Mechanism substrate claim is opt-in via `configs/agents.yml:comprehension.graph_self_evolving: true`; Wave-23 should re-verify the opt-in path is wired.
+
+## 20. Wave-22 Negative-Evidence Registry
+
+Wave-22 REJECT R3 (Beyond Accuracy) has diagnostic value even though the venue (DeepTest 2026 Workshop) fails the §7 trigger gate. The paper reports AUROC 0.86 for shadow-model prediction vs AUROC 0.63 for human metrics (sovereign-project.de group page; arXiv:2601.12951). The finding is a useful negative-evidence citation for PRIM-22 (Four Phases of Comprehension): shadow-model-based evaluation is more reliable than human-metric-based evaluation, but the diagnostic-framework does not introduce a new mechanism. Logged as Wave-22 negative-evidence entry with venue caveat.
 
 
