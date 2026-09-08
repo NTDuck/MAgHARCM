@@ -80,9 +80,15 @@ const TranslatedPackagePlaceholder = "translated_project"
 const LegacySourceSampleDescriptor = "legacy source code"
 
 // MaxGraphRunSteps is the per-invocation run-step ceiling Eino imposes on
-// the compiled MAgHARCM graph. Tuned to be safe for the bounded repair
-// loop while still aborting runaway cycles.
-const MaxGraphRunSteps = 50
+// the compiled MAgHARCM graph. The repair cycle (save_validator_ckpt ->
+// verdict_panel -> recruiter -> translator -> save_translator_ckpt ->
+// reviewer -> validator -> save_validator_ckpt) consumes 8 steps per
+// iteration; the forward head consumes 8 more. The ceiling MUST scale to
+// the configured iteration budget (default 20) plus headroom, otherwise
+// the graph aborts with GraphRunError "exceeds max steps" long before
+// MaxIterations can terminate the loop gracefully. 200 = 8 head + 8*20
+// cycle steps + 40 margin; Eino aborts runaway cycles well before this.
+const MaxGraphRunSteps = 200
 
 // ModularityTrapYears is the age threshold beyond which a design rule is
 // flagged as potentially obsolete — the "modularity trap" introduced in
