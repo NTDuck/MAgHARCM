@@ -193,12 +193,13 @@ func (t *TranslatorAgent) generateTranslation(ctx context.Context, state *compil
 
 // generateRepair renders the repair prompt and queries the coding model for targeted fixes.
 func (t *TranslatorAgent) generateRepair(ctx context.Context, state *compiletime.State, targetFiles []string, packageName string) (map[string]string, error) {
-	logger.LogStep("Feeding compiler diagnostics and test failures to Coding Model for targeted repair")
+	logger.LogStep("Feeding compiler diagnostics, current files, and test failures to Coding Model for targeted repair")
 	prompt, err := renderPromptTemplate("translator_repair", translatorRepairPromptTemplate, map[string]any{
 		"PackageName":         packageName,
 		"TargetLang":          state.Task.TargetLang,
 		"TargetLangLower":     strings.ToLower(state.Task.TargetLang),
 		"Diagnostics":         state.ValidationReport.Diagnostics,
+		"CurrentFiles":        strings.Join(targetFiles, "\n"),
 		"CrateCanonicalHints": CrateCanonicalHints(state.Task.TargetLang),
 	})
 	if err != nil {

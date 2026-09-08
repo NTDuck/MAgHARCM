@@ -170,10 +170,10 @@ The Validator Agent reported compilation or test failures for the translated {{.
 Target Package / Module Name: {{.PackageName}}
 
 === Validation Diagnostics and Errors ===
-:{{.Diagnostics}}
+{{.Diagnostics}}
 
 === Current Codebase Files ===
-:{{.CurrentFiles}}
+{{.CurrentFiles}}
 
 {{if .CrateCanonicalHints}}
 === Known crates.io crate-name corrections ===
@@ -187,9 +187,10 @@ Guidelines:
    - Rust Borrow-Checker (e.g. E0502: cannot borrow as immutable because also borrowed as mutable, such as calling .len() on a collection while indexing &mut into it): evaluate and save lengths/bounds/indices into local variables BEFORE mutably borrowing or slicing (e.g. ` + "`let len = items.len(); let slice = &mut items[..size.min(len)];`" + ` or iterate with ` + "`items.iter_mut()`" + `).
    - Fix all type mismatches, lifetime annotations (e.g. ` + "`pub fn init_item<'a>(item: &'a mut Item, name: &str, sell_in: i32, quality: i32) -> &'a mut Item`" + `), and ownership/clone issues.
 2. Exported Symbols: In the library root (` + "`src/lib.rs` / `lib.go`" + `), ensure all types, structs, constructors (` + "`new`, `init_item`" + `), and functions (` + "`update_quality`, `print_item`" + `) are declared with public visibility or re-exported from submodules (` + "`pub mod ...; pub use ...::*;`" + `).
-3. Package Imports in Tests & Binaries: External test files in ` + "`tests/``" + ` and binaries in ` + "`src/main.rs`" + ` are separate compilation units and MUST import public library symbols from the package root via ` + "`use {{.PackageName}}::*;`" + ` at the top of each test file (never ` + "`use super::*;`" + `, and never declare ` + "`mod tests;`" + ` in ` + "`src/lib.rs`" + ` for files in ` + "`tests/`" + `).
+3. Package Imports in Tests & Binaries: External test files in ` + "`tests/``" + ` and binaries in ` + "`src/main.rs`" + ` are separate compilation units and MUST import public library symbols from the package root via ` + "`use {{.PackageName}}::*;`" + `. In Rust test files the import MUST be placed INSIDE each ` + "`mod tests { ... }`" + ` block (child modules do not inherit the file-top import), and never declare ` + "`mod tests;`" + ` in ` + "`src/lib.rs`" + ` for files in ` + "`tests/`" + `.
 4. Emit All Failing Files: If a compiler error occurs in any source or test file (e.g. ` + "`src/gilded_rose/update.rs`" + ` or ` + "`tests/unit/mod.rs`" + `), you MUST emit the complete corrected file in your response.
-5. Complete Working Files: Output complete, corrected file implementations with all braces and delimiters closed inside code blocks without placeholders or truncation.
+5. Missing Module Files: If a diagnostic reports a module file not found (e.g. error[E0583] "file not found for module item"), either emit the complete missing file (e.g. src/item.rs) as a new file block, or remove the "mod item;" / "pub mod item;" declaration from the parent file if the code already lives elsewhere. Never leave a module declaration pointing at a file that does not exist.
+6. Complete Working Files: Output complete, corrected file implementations with all braces and delimiters closed inside code blocks without placeholders or truncation.
 
 Format output strictly using file blocks:
 FILE: path/to/target/file.ext

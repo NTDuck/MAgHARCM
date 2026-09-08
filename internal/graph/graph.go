@@ -92,13 +92,12 @@ func NewMAgHARCMGraph(ctx context.Context, models *llm.Models, runID string) (*M
 	if err := g.AddLambdaNode("reviewer", compose.InvokableLambda(func(ctx context.Context, state *compiletime.State) (*compiletime.State, error) {
 		models.PrepareReasoning()
 		if len(state.TranslatedProject.Files) > 0 {
-			// Select a representative sample for role-flip inspection
-			var sample string
-			for _, content := range state.TranslatedProject.Files {
-				sample = content
-				break
-			}
-			verdict, err := reviewerAgent.Inspect(ctx, sample)
+			// Deterministic sample: map iteration order is random in Go, so
+			// picking the "first" file would give the reviewer a different file
+			// on every run. Prefer the library root; fall back to the largest
+			// content so the gate inspects real code, not a 98-byte manifest.
+			sample, sampleName := agents.RepresentativeTranslationSample(state.TranslatedProject.Files)
+			verdict, err := reviewerAgent.Inspect(ctx, sampleName, sample)
 			if err != nil {
 				logger.LogWarning("Reviewer role-flip gate error: %v", err)
 			} else if verdict.DefectFound {

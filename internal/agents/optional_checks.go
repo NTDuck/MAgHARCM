@@ -217,11 +217,11 @@ func (c *roleFlipCheck) Run(ctx context.Context, state *compiletime.State) (stri
 	if c.gate == nil || state == nil {
 		return string(compiletime.VerdictSkipped), "no role-flip gate or state", nil
 	}
-	sample := latestEmittedSample(state)
+	sample, samplePath := RepresentativeTranslationSample(state.TranslatedProject.Files)
 	if sample == "" {
 		return string(compiletime.VerdictSkipped), "no translator output to inspect", nil
 	}
-	v, err := c.gate.Inspect(ctx, sample)
+	v, err := c.gate.Inspect(ctx, samplePath, sample)
 	if err != nil {
 		return string(compiletime.VerdictFail), fmt.Sprintf("role-flip reviewer error: %v", err), nil
 	}
@@ -229,16 +229,4 @@ func (c *roleFlipCheck) Run(ctx context.Context, state *compiletime.State) (stri
 		return string(compiletime.VerdictPass), "reviewer accepted translator output", nil
 	}
 	return string(compiletime.VerdictFail), v.Reason, nil
-}
-// iteration order is non-deterministic; any sample suffices for the gate.
-func latestEmittedSample(state *State) string {
-	if state == nil {
-		return ""
-	}
-	for _, code := range state.TranslatedProject.Files {
-		if code != "" {
-			return code
-		}
-	}
-	return ""
 }
