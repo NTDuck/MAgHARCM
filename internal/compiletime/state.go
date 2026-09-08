@@ -72,13 +72,13 @@ func (d DocumentWrapper[T]) SchemaVersion() string { return d.ArtifactSchemaVers
 // Task defines the specification for a translation task. Every required
 // field is populated by the configuration loader before pipeline execution.
 type Task struct {
-	SourceDir   string
-	TargetDir   string
-	SourceLang  string
-	TargetLang  string
-	Toolchain   string
-	LSPProvider string
-	RequestFile string
+	SourceDir   string `json:"source_dir"`
+	TargetDir   string `json:"target_dir"`
+	SourceLang  string `json:"source_lang"`
+	TargetLang  string `json:"target_lang"`
+	Toolchain   string `json:"toolchain"`
+	LSPProvider string `json:"lsp_provider"`
+	RequestFile string `json:"request_file,omitempty"`
 }
 
 // Validate verifies that every required field of Task is populated.

@@ -7,7 +7,6 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
-
 )
 
 // TestCheckpointSaveLoadRoundTrip verifies that a saved checkpoint can be loaded
@@ -154,5 +153,77 @@ func TestCheckpointVersionMismatchReturnsError(t *testing.T) {
 	}
 	if !strings.Contains(err.Error(), "version mismatch") {
 		t.Errorf("expected version-mismatch error, got: %v", err)
+	}
+}
+
+// TestCheckpointTaskRoundTrip guards the resume decode path: compiletime.Task
+// must survive a save/load cycle with every field populated. Regression for
+// the missing json tags (snake_case on disk, Go-default field names expected)
+// that made every resumed run start with an empty Task — Archaeologist skipped
+// silently and Analyzer failed with `stat : no such file or directory`.
+func TestCheckpointTaskRoundTrip(t *testing.T) {
+	runID := "test-task-roundtrip"
+	t.Cleanup(func() { _ = checkpoint.Cleanup(runID) })
+
+	want := compiletime.Task{
+		SourceDir:   "assets/samples/GildedRose-Refactoring-Kata/C",
+		TargetDir:   ".artifacts/GildedRose-Refactoring-Kata/rust",
+		SourceLang:  "C",
+		TargetLang:  "Rust",
+		Toolchain:   "cargo",
+		LSPProvider: compiletime.LSPProviderABCoder,
+	}
+	state := &compiletime.State{
+		Iteration:     4,
+		MaxIterations: 20,
+		Task:          want,
+	}
+	if _, err := checkpoint.Save(runID, state); err != nil {
+		t.Fatalf("checkpoint.Save: %v", err)
+	}
+
+	ckpt, err := checkpoint.LoadLatest(runID)
+	if err != nil {
+		t.Fatalf("checkpoint.LoadLatest: %v", err)
+	}
+	if ckpt == nil || ckpt.State == nil {
+		t.Fatal("checkpoint.LoadLatest returned nil checkpoint/state")
+	}
+	got := ckpt.State.Task
+	if got != want {
+		t.Errorf("Task round-trip mismatch:\n got: %+v\nwant: %+v", got, want)
+	}
+	if err := got.Validate(); err != nil {
+		t.Errorf("resumed Task fails Validate: %v", err)
+	}
+}
+
+// TestCheckpointNilStateTreatedAsFresh verifies the runner-facing contract:
+// a checkpoint whose State failed to decode must not hand a nil state to the
+// graph. LoadLatest surfaces it as a nil State on a non-nil Checkpoint; the
+// runner branch treats that exactly like "no checkpoint exists".
+func TestCheckpointNilStateTreatedAsFresh(t *testing.T) {
+	runID := "test-nil-state"
+	t.Cleanup(func() { _ = checkpoint.Cleanup(runID) })
+
+	dir := checkpoint.Dir(runID)
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		t.Fatalf("mkdir: %v", err)
+	}
+	bad := `{"version":1,"created_at":"2026-01-01T00:00:00Z","iteration":1,"state":null}`
+	path := filepath.Join(dir, "iter-0001.json")
+	if err := os.WriteFile(path, []byte(bad), 0o644); err != nil {
+		t.Fatalf("write nil-state checkpoint: %v", err)
+	}
+
+	ckpt, err := checkpoint.LoadLatest(runID)
+	if err != nil {
+		t.Fatalf("checkpoint.LoadLatest: %v", err)
+	}
+	if ckpt == nil {
+		t.Fatal("checkpoint.LoadLatest returned nil checkpoint")
+	}
+	if ckpt.State != nil {
+		t.Errorf("expected nil State for state:null checkpoint, got %+v", ckpt.State)
 	}
 }

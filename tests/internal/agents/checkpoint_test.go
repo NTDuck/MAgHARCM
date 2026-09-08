@@ -25,3 +25,11 @@ func TestCheckpointCleanupRemovesDirectoryRunner(t *testing.T) {
 func TestCheckpointVersionMismatchReturnsErrorRunner(t *testing.T) {
 	TestCheckpointVersionMismatchReturnsError(t)
 }
+
+func TestCheckpointTaskRoundTripRunner(t *testing.T) {
+	TestCheckpointTaskRoundTrip(t)
+}
+
+func TestCheckpointNilStateTreatedAsFreshRunner(t *testing.T) {
+	TestCheckpointNilStateTreatedAsFresh(t)
+}

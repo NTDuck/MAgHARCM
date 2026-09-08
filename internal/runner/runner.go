@@ -12,8 +12,8 @@ import (
 	"path/filepath"
 
 	"MAgHARCM/internal/agents"
-	"MAgHARCM/internal/compiletime"
 	"MAgHARCM/internal/checkpoint"
+	"MAgHARCM/internal/compiletime"
 	"MAgHARCM/internal/config"
 	"MAgHARCM/internal/graph"
 	"MAgHARCM/internal/llm"
@@ -53,10 +53,20 @@ func Run(ctx context.Context, cfg *config.Config) (*compiletime.State, error) {
 		return nil, fmt.Errorf("load checkpoint for %s: %w", runID, err)
 	}
 	var initialState *compiletime.State
-	if resumed != nil {
+	if resumed != nil && resumed.State != nil {
 		logger.LogStep("Resume from checkpoint iter-%d", resumed.Iteration)
+		// cfg wins on resume: the checkpoint may predate a config change
+		// (target_dir, lsp.provider, model set, iteration budget). Task is
+		// re-bound and MaxIterations refreshed; all other artifact state
+		// (analysis, plan, translated files, validation report) is carried
+		// over untouched.
+		resumed.State.Task = task
+		resumed.State.MaxIterations = cfg.MaxIterations
 		initialState = resumed.State
 	} else {
+		if resumed != nil {
+			logger.LogWarning("Checkpoint iter-%d has nil state; starting fresh run instead of resuming", resumed.Iteration)
+		}
 		initialState = &compiletime.State{
 			Task:          task,
 			MaxIterations: cfg.MaxIterations,
