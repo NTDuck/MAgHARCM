@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 
 	"github.com/cloudwego/eino/components/model"
@@ -258,65 +257,70 @@ func (t *TranslatorAgent) syncFilesToDisk(targetDir string, files map[string]str
 	return nil
 }
 
-// NormalizeRustTestImports injects the package-root glob import into Rust
-// test modules that reference library symbols but lack the import. Rust
-// child modules do not inherit a file-top `use`, so an SLM that emits
-// `mod tests { ... }` with no import inside the block fails with E0425 no
-// matter how often the repair prompt repeats the guideline. Deterministic
-// write-time normalization removes that reliance entirely.
+// NormalizeRustTestImports injects the package-root glob import into every
+// top-level Rust `mod tests { ... }` block that lacks an import of the
+// package (or of crate::). Rust child modules do not inherit a file-top
+// `use`, so an SLM that emits `mod tests { ... }` with no import inside the
+// block fails with E0425 no matter how often the repair prompt repeats the
+// guideline. Deterministic write-time normalization removes that reliance
+// entirely. An unused glob is only a warning, so the import is injected
+// unconditionally — no project-specific symbol list. The import lands
+// immediately after the mod's opening line, at the block's own indentation,
+// so it is at mod scope and precedes every use site (including any
+// #[test]-attributed fn).
 func NormalizeRustTestImports(content string, state *compiletime.State) string {
+	if !strings.EqualFold(state.Task.TargetLang, "Rust") {
+		return content
+	}
 	pkg := resolvePackageName(state.Task.TargetDir, state.Task.TargetLang)
 	importLine := "use " + pkg + "::*;"
 
+	// Pass 1: locate each top-level `mod tests {` block, its indentation,
+	// and whether it already imports the package or crate::.
 	lines := strings.Split(content, "\n")
-	out := make([]string, 0, len(lines)+2)
-	var identRe = regexp.MustCompile(`\b(init_item|update_quality|print_item|Item)\b`)
-
-	depth := 0          // brace depth inside the current `mod tests` block
-	inTestsMod := false // true between the `mod tests {` line and its close
-	referenced := false // a library symbol appeared at file scope
-	injected := false   // import already added to this mod block
-
-	for _, line := range lines {
+	type modBlock struct {
+		openLine int    // index of the `mod tests {` line
+		indent   string // the mod block's own leading whitespace
+		needs    bool   // lacks an in-block package import
+	}
+	var blocks []modBlock
+	depth := 0
+	current := -1 // index into blocks of the mod currently being scanned
+	for i, line := range lines {
 		trimmed := strings.TrimSpace(line)
-
-		if !inTestsMod {
-			out = append(out, line)
-			if identRe.MatchString(trimmed) {
-				referenced = true
+		if current >= 0 {
+			if strings.Contains(trimmed, "use "+pkg) || strings.Contains(trimmed, "use crate::") {
+				blocks[current].needs = false
 			}
-			if isRustTestsModOpen(trimmed) {
-				inTestsMod = true
-				depth = 1
-				// Reset: only symbols inside the mod block require the import.
-				referenced = false
-				injected = false
+			depth += strings.Count(line, "{") - strings.Count(line, "}")
+			if depth <= 0 {
+				current = -1
 			}
 			continue
 		}
-
-		// Inside a mod tests block.
-		if strings.Contains(trimmed, "use "+pkg) || strings.Contains(trimmed, "use crate::") {
-			injected = true // explicit import present; never double-inject
-		} else if identRe.MatchString(trimmed) {
-			referenced = true
+		if isRustTestsModOpen(trimmed) {
+			indent := line[:len(line)-len(strings.TrimLeft(line, " \t"))]
+			blocks = append(blocks, modBlock{openLine: i, indent: indent, needs: true})
+			current = len(blocks) - 1
+			depth = 1
 		}
+	}
+	if len(blocks) == 0 {
+		return content
+	}
 
-		if referenced && !injected && isRustStmtStart(trimmed) {
-			out = append(out, "\t"+importLine)
-			injected = true
+	// Pass 2: rebuild with the import right after each qualifying mod-open.
+	inject := map[int]string{} // line index -> import line to insert after
+	for _, b := range blocks {
+		if b.needs {
+			inject[b.openLine] = b.indent + "\t" + importLine
 		}
+	}
+	var out []string
+	for i, line := range lines {
 		out = append(out, line)
-
-		depth += strings.Count(line, "{") - strings.Count(line, "}")
-		if depth <= 0 {
-			// mod tests closed. If symbols were referenced but the block ended
-			// without an injection point (e.g. import placed after first use),
-			// append the import just before the close.
-			if referenced && !injected {
-				out = append(out[:len(out)-1], "\t"+importLine, line)
-			}
-			inTestsMod = false
+		if ins, ok := inject[i]; ok {
+			out = append(out, ins)
 		}
 	}
 	return strings.Join(out, "\n")
@@ -326,14 +330,4 @@ func NormalizeRustTestImports(content string, state *compiletime.State) string {
 func isRustTestsModOpen(trimmed string) bool {
 	return strings.HasPrefix(trimmed, "mod ") && strings.HasSuffix(trimmed, "{") &&
 		!strings.Contains(trimmed, ";")
-}
-
-// isRustStmtStart reports whether the line begins a statement (not an
-// attribute, comment, or closing brace) — a safe injection point so the
-// import lands before the first symbol use.
-func isRustStmtStart(trimmed string) bool {
-	if trimmed == "" || trimmed == "}" {
-		return false
-	}
-	return !strings.HasPrefix(trimmed, "#") && !strings.HasPrefix(trimmed, "//")
 }
