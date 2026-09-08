@@ -9,6 +9,12 @@ aliases:
 tags: [adhoc, progress, milestones, status, parity, "[[2.0.0 MAgHARCM]]"]
 ---
 
+# [[2.0.0 MAgHARCM Project Progress & Milestones Tracker]]
+
+> **Executive Overview**: High-level progress tracker auditing the 31 modernization primitives, 8-agent cyclic execution graph, cataloged literature papers, and sprint velocity. Domain acronyms and definitions are available in the [[Glossary|Domain Acronyms & Terminology Glossary]].
+
+---
+
 ## 1. High-Level Metrics Dashboard
 
 | Metric | Target | Current Status | Parity / Completion |
@@ -26,7 +32,7 @@ tags: [adhoc, progress, milestones, status, parity, "[[2.0.0 MAgHARCM]]"]
 ### Milestone 1: 31/31 Primitives Full Parity Convergence (Sprint 2026-09-26)
 - Every single primitive from `[[1.0.0 PRIM-1]]` (Reverse Topological Ordering) to `[[1.0.0 PRIM-31]]` (Multi-Turn Translator Tool Integration) is implemented as a concrete Go type or function under `internal/agents/` or `internal/runner/`.
 - **Zero orphaned primitives**: Verified parity between `primitives/Primitives-Index.md`, `research/Software-Archaeology-Lineage.md`, and the Go codebase.
-- ADR-C-014 (Locality of Behaviour): Canonical state container lives in `internal/compiletime/state.go` with explicit producer-consumer boundaries.
+- **Locality of Behaviour (ADR-C-014)**: Canonical state container lives in `internal/compiletime/state.go` with explicit producer-consumer boundaries.
 
 ### Milestone 2: 8-Agent Dynamic Execution Graph
 - Fully autonomous multi-agent pipeline scheduled via CloudWeGo Eino:
@@ -50,16 +56,67 @@ tags: [adhoc, progress, milestones, status, parity, "[[2.0.0 MAgHARCM]]"]
 
 ---
 
-## 3. Sprint Velocity & Historical Timeline
+## 3. Sprint Velocity & Chronological Timeline
 
-- **Sprint 2026-09-04 to 2026-09-08**: Initial 4-agent to 8-agent decomposition; Eino cyclic loop setup; baseline primitives implementation.
-- **Sprint 2026-09-08 (iter-1)**: Wave-23 anchors (P-153..P-156). Wave-23 **closes the strict program-comprehension-mechanism residual slot** carried forward from Wave-17 first opening. Four ACCEPT papers: P-153 CoReX (Sun et al., ICSE 2026) context-aware refinement-based slicing for regression-failure localisation (anchors PRIM-22 Four Phases + PRIM-31 Iterative Retrieval Refinement); P-154 TransAgent (Roh et al., FSE 2026) multi-agent translation pipeline with fine-grained execution-aligned critic feedback (anchors PRIM-23 Chunked Translation + PRIM-31 Iterative Retrieval Refinement, complementing P-151 SmartC2Rust single-LLM loop); P-155 POLA-Tester (Sun et al., ICSE 2026) agentic wait + syntactic dependency mining + iterative retrofit validation for LLM-augmented static analysis (anchors PRIM-12 Static Analysis Co-Evolution); P-156 ACONITE (Sun et al., ICSE 2026) backward slicing + close-test retrieval + execution in-line annotations for coverage-plateau LLM regression test generation (anchors PRIM-22 + PRIM-29). Triage ledger per `Wave-23-Candidates.md` line 57: 4 ACCEPT (P-153..P-156) + 1 REJECT Q1 (R1 AutoCodeSherpa Yunbo Lyu et al. ISSTA 2026, off-list venue) + 1 watchlist carry (W23-W1 SWE-TRACE arXiv:2604.14820, fifth carry from Wave-19 W2; NeurIPS 2026 notifications pending 2026-09-24; sixth carry = retire threshold per Wave-21 carry rule). Total triaged = 6. All four ACCEPT papers pass §7 trigger gate (Q1 venue confirmed flagship SE, Q2 mechanism-not-benchmark, Q3 anchoring-to-existing-primitive). Methodology §21 Wave-23 Anchor Table + §22 Wave-23 Forward Plan appended (§23 negative-evidence registry retracted in same pass: only R1 AutoCodeSherpa exists, ISSTA off-list, no negative-evidence value); §9 changelog Wave-23 entry corrected (1 REJECT, 1 watchlist); §18 retitled to Wave-24 Anchor Plan with Wave-23 close-out bullet; Primitives-Index 4 ACCEPT rows appended. Research-Database.json: 4 papers + reject_registry.wave-23 (1 entry) + watchlist.wave-23 (1 item) appended. Paper sec_method.tex + sec_eval.tex Wave-23 paragraphs added. Forward to Wave-24: re-verify W23-W1 SWE-TRACE venue after NeurIPS 2026 author notifications (2026-09-24). Wave-24 may consider formalizing cross-pattern surveys among Wave-17..Wave-23 anchors (P-129×P-150, P-154×P-151, P-155×P-153, P-156×P-140) as new §11.9-§11.12 patterns (forward plan, not Wave-23 watchlist).
-- **Sprint 2026-09-09 to 2026-09-14**: Strict versioning convention (`[[x.y.z ...]]`) enforcement; single source of truth established in `primitives/Primitives-Index.md`.
-- **Sprint 2026-09-15 to 2026-09-20**: Waves 9–10 research anchors (P-96 through P-107); prompt contract enforcement; elimination of magic strings into `compiletime/`.
-- **Sprint 2026-09-21 to 2026-09-24**: Waves 11–13 anchors (SWE-bench, OpenHands, Aider, Medusa); ADR-V-001 sweep eliminating stray version parentheses.
+### Sprint Trajectory Summary
 
-- **Sprint 2026-09-07 (iter-6)**: Wave-22 anchors (P-151..P-152). Wave-22 extends Phase 3 C/C++ → Safe Rust translation substrate with two new anchors: P-151 SmartC2Rust (ICSE 2026) feedback-driven iterative C-to-Rust translation with context-aware segmentation + three-signal feedback loop (Rust compiler errors, semantic-equivalence diffs, residual unsafe-block counts), the C-to-Rust analogue of P-124 Syzygy's Go-to-Rust three-signal loop; and P-152 Hallu-Eval (FSE 2026) systematic hallucination-evaluation triplet (Hallu-Eval 800-pair benchmark + Hallu-Det detection + Hallu-Shield inference-time mitigation). 2 papers ACCEPT (P-151 P-152), 3 REJECT (R1 Code vs. Serialized AST LLM4Code workshop — Q1 off-list workshop; R2 SmartComment — Q3 off-axis Solidity target; R3 Beyond Accuracy DeepTest workshop — Q1 off-list workshop diagnostic-framework), 1 UNVERIFIED watchlist carried (W1 SWE-TRACE fourth carry; arXiv:2604.14820 still no peer-reviewed venue; NeurIPS 2026 notifications pending 2026-09-24).
-- **Sprint 2026-09-25 to 2026-09-28**: Waves 14–17 anchors (SWE-Rebench, ReasoningBank, CodeChemist, Syzygy); `scripts/lint_vault.sh` CI automation; full parity convergence.
-- **Sprint 2026-09-07 (iter-2)**: Wave-18 + Wave-19 anchors (P-125..P-141). Wave-19 covers speculative-decoding × KV-cache hybrids (P-134, P-137, P-138, P-141), SLM-scale test-time scaling (P-135 SPECS, P-136 CaTS), LLM-augmented static analysis beyond dependence graphs (P-139 TypePro, P-140 Panta). 17 papers ACCEPT, 7 REJECT (4 in Wave-18 + 3 in Wave-19), 2 UNVERIFIED watchlist. BLK-08 resolved (REJECT registry added to Research-Database.json). BLK-06 dating convention reasserted.
-- **Sprint 2026-09-07 (iter-3)**: Wave-20 anchors (P-142..P-146). Wave-20 closes the strict program-comprehension-mechanism slot partially (P-142 NESA self-evolving graph pre-analysis); anchors SLM-grounded hallucination defence (P-143 HalluShield), prompt-trace training-data construction (P-144 TraceCoder), LLM-driven translation strategy selection (P-145 TerraMod), and workflow-aware cross-document PRM (P-146 ContextPRM). 5 papers ACCEPT, 4 REJECT, 1 UNVERIFIED watchlist (U1 NSE). Wave-19 W1 SliceMate + W2 SWE-TRACE both REJECTED on re-verification (ISSTA 2026 program slot absent for SliceMate; SWE-TRACE remains arXiv-only). §11.6 Program-Comprehension Mechanism substrate claim added. BLK-06 dating-convention reset applied (Methodology frontmatter date/last_updated reset from `2026-09-28` to `2026-09-07`).
-- **Sprint 2026-09-07 (iter-4)**: Wave-21 anchors (P-147..P-150). Wave-21 reinforces the KV-cache × speculative-decoding × SLM-scale loop with three ICLR 2026 papers (P-147 SpecKV draft-model-driven KV eviction with adaptive gamma controller; P-148 LookaheadKV parameter-efficient LoRA-modules on target model; P-149 SSD/Saguaro asynchronous draft-verify pipeline) plus one FSE 2026 paper (P-150 TestPrune coverage-driven regression-test minimisation as Observation-phase context pruning substrate). 4 papers ACCEPT, 3 REJECT (R1 ABC arXiv-only no venue; R2 NSE Workshop off-list venue — Wave-20 U1 re-verified and resolved; R3 Speculative Actions mechanism overlap with P-137), 1 UNVERIFIED watchlist (W1 SWE-TRACE carried Wave-19 → Wave-20 → Wave-21; NeurIPS 2026 notifications scheduled 2026-09-24). Sandbox blocker: git state mutations blocked for duration of sprint; Wave-21 artifacts land in next batch commit. Cumulative paper count: 146 → 150. Vault lint clean (266 files scanned, 17 refs checked); JSON parses; build + vet green.
+| Sprint / Date | Wave / Focus | Key Milestones & Artifacts | Status |
+| :--- | :--- | :--- | :--- |
+| **2026-09-04 to 09-08** | Inception | 4-agent to 8-agent graph decomposition; initial Eino loop; core primitives. | Completed |
+| **2026-09-09 to 09-14** | Foundation | Strict versioning (`[[x.y.z ...]]`); Primitives Index single source of truth. | Completed |
+| **2026-09-15 to 09-20** | Waves 9–10 | Prompt contract cloze slots; KV cache compression (P-96..P-107). | Completed |
+| **2026-09-21 to 09-24** | Waves 11–13 | SWE-bench, OpenHands, Aider, Medusa anchors; ADR-V-001 sweep. | Completed |
+| **2026-09-25 to 09-28** | Waves 14–17 | 31/31 primitive parity; ReasoningBank, CodeChemist, Syzygy. | Completed |
+| **2026-09-07 (iter-2)** | Waves 18–19 | 17 papers accepted (P-125..P-141); KV-cache × speculative decoding hybrids. | Completed |
+| **2026-09-07 (iter-3)** | Wave 20 | 5 papers accepted (P-142..P-146); NESA graph pre-analysis; BLK-06 date reset. | Completed |
+| **2026-09-07 (iter-4)** | Wave 21 | 4 papers accepted (P-147..P-150); SpecKV, LookaheadKV, Saguaro, TestPrune. | Completed |
+| **2026-09-07 (iter-6)** | Wave 22 | 2 papers accepted (P-151..P-152); SmartC2Rust, Hallu-Eval triplet. | Completed |
+| **2026-09-08 (iter-1)** | Wave 23 | 4 papers accepted (P-153..P-156); CoReX closes residual comprehension slot. | Completed |
+
+---
+
+### Detailed Sprint Breakdown (Recent Iterations)
+
+#### Sprint 2026-09-08 (iter-1): Wave-23 Anchors & Residual Slot Closure
+- **Core Achievement**: Wave-23 **closes the strict program-comprehension-mechanism residual slot** carried forward from Wave-17 via context-aware refinement-based slicing (`[[1.0.0 P-153]]` CoReX).
+- **Candidate Triage Ledger**:
+
+| Candidate / Paper | Venue | Verdict | Anchored Primitives / Role |
+| :--- | :--- | :--- | :--- |
+| **`[[1.0.0 P-153]]` CoReX** (Sun et al.) | ICSE 2026 | **ACCEPT** | `PRIM-22` (Structure Phase), `PRIM-31` (Retrieval Refinement) |
+| **`[[1.0.0 P-154]]` TransAgent** (Roh et al.) | FSE 2026 | **ACCEPT** | `PRIM-23` (Chunked Translation), `PRIM-31` (Critic Feedback) |
+| **`[[1.0.0 P-155]]` POLA-Tester** (Sun et al.) | ICSE 2026 | **ACCEPT** | `PRIM-12` (Static Analysis Co-Evolution) |
+| **`[[1.0.0 P-156]]` ACONITE** (Sun et al.) | ICSE 2026 | **ACCEPT** | `PRIM-22` (Backward Slicing), `PRIM-29` (Test Recruiter) |
+| **R1 AutoCodeSherpa** (Yunbo Lyu et al.) | ISSTA 2026 | **REJECT (Q1)** | N/A (Off-list venue; ISSTA not on §7 trigger list) |
+| **W23-W1 SWE-TRACE** (`arXiv:2604.14820`) | Pre-print | **WATCHLIST** | 5th carry (NeurIPS 2026 notifications pending 2026-09-24) |
+
+- **Deliverables & Synchronization**:
+  - Vault and research database synchronized: 4 paper notes persisted (`P-153`..`P-156`), `Research-Database.json` updated with `reject_registry.wave-23` and `watchlist.wave-23`.
+  - LaTeX paper sync: `sec_method.tex` and `sec_eval.tex` updated with Wave-23 citations.
+  - Forward plan to Wave-24: evaluate cross-pattern surveys among Wave-17..Wave-23 anchors (`P-129 × P-150`, `P-154 × P-151`, `P-155 × P-153`, `P-156 × P-140`).
+
+#### Sprint 2026-09-07 (iter-6): Wave-22 C-to-Rust & Hallucination Evaluation
+- **Focus**: Phase 3 C/C++ $\to$ Safe Rust translation substrate and systematic hallucination evaluation.
+- **Accepted Papers**:
+  - `[[1.0.0 P-151]]` SmartC2Rust (ICSE 2026): Three-signal feedback loop (compiler errors, semantic diffs, unsafe-block counts) for `PRIM-23, 29, 31`.
+  - `[[1.0.0 P-152]]` Hallu-Eval (FSE 2026): Hallu-Eval benchmark + Hallu-Det detection + Hallu-Shield mitigation for `PRIM-22, 25`.
+- **Triage**: 2 ACCEPT, 3 REJECT (R1 Code vs. Serialized AST, R2 SmartComment, R3 Beyond Accuracy), 1 WATCHLIST (SWE-TRACE 4th carry).
+
+#### Sprint 2026-09-07 (iter-4): Wave-21 KV-Cache Eviction & Context Pruning
+- **Focus**: Reinforcing the KV-cache $\times$ speculative-decoding $\times$ SLM-scale loop.
+- **Accepted Papers**:
+  - `[[1.0.0 P-147]]` SpecKV (ICLR 2026): Draft-model-driven KV eviction with adaptive gamma controller.
+  - `[[1.0.0 P-148]]` LookaheadKV (ICLR 2026): Parameter-efficient LoRA-modules on target models.
+  - `[[1.0.0 P-149]]` SSD/Saguaro (ICLR 2026): Asynchronous draft-verify speculative decoding pipeline.
+  - `[[1.0.0 P-150]]` TestPrune (FSE 2026): Coverage-driven regression-test minimization for observation-phase context pruning (`PRIM-22`).
+- **Triage**: 4 ACCEPT, 3 REJECT (R1 ABC arXiv-only, R2 NSE off-list workshop, R3 Speculative Actions), 1 WATCHLIST (SWE-TRACE 3rd carry).
+
+#### Sprint 2026-09-07 (iter-3): Wave-20 Self-Evolving Graph & Verification
+- **Focus**: Graph pre-analysis and SLM-grounded hallucination defense.
+- **Accepted Papers**:
+  - `[[1.0.0 P-142]]` NESA (FSE 2026): Self-evolving graph pre-analysis for `PRIM-9, 22`.
+  - `[[1.0.0 P-143]]` HalluShield (FSE 2026): Speculative decoding hallucination defense for `PRIM-7, 21`.
+  - `[[1.0.0 P-144]]` TraceCoder (ICSE 2026): Prompt-trace training-data synthesis for `PRIM-29, 31`.
+  - `[[1.0.0 P-145]]` TerraMod (ICSE 2026 NIER): Lexical-based translation strategy selection for `PRIM-21`.
+  - `[[1.0.0 P-146]]` ContextPRM (ICLR 2026): Cross-document process reward model for `PRIM-7`.
+- **Administrative Action**: BLK-06 dating convention applied (frontmatter reset to 2026-09-07).
