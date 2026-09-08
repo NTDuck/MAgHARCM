@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/cloudwego/eino/components/model"
@@ -241,6 +242,9 @@ func (t *TranslatorAgent) syncFilesToDisk(targetDir string, files map[string]str
 		if relPath == "Cargo.toml" && strings.EqualFold(state.Task.TargetLang, "Rust") {
 			clean = CanonicalizeCargoToml(clean)
 		}
+		if strings.EqualFold(state.Task.TargetLang, "Rust") && strings.HasPrefix(relPath, "tests/") {
+			clean = NormalizeRustTestImports(clean, state)
+		}
 		fullPath := filepath.Join(targetDir, relPath)
 		if err := os.MkdirAll(filepath.Dir(fullPath), 0755); err != nil {
 			return fmt.Errorf("failed to create directory for %s: %w", fullPath, err)
@@ -252,4 +256,84 @@ func (t *TranslatorAgent) syncFilesToDisk(targetDir string, files map[string]str
 		logger.LogTool("write_file", "Wrote `%s` to `%s`, %d bytes", relPath, targetDir, len(content))
 	}
 	return nil
+}
+
+// NormalizeRustTestImports injects the package-root glob import into Rust
+// test modules that reference library symbols but lack the import. Rust
+// child modules do not inherit a file-top `use`, so an SLM that emits
+// `mod tests { ... }` with no import inside the block fails with E0425 no
+// matter how often the repair prompt repeats the guideline. Deterministic
+// write-time normalization removes that reliance entirely.
+func NormalizeRustTestImports(content string, state *compiletime.State) string {
+	pkg := resolvePackageName(state.Task.TargetDir, state.Task.TargetLang)
+	importLine := "use " + pkg + "::*;"
+
+	lines := strings.Split(content, "\n")
+	out := make([]string, 0, len(lines)+2)
+	var identRe = regexp.MustCompile(`\b(init_item|update_quality|print_item|Item)\b`)
+
+	depth := 0          // brace depth inside the current `mod tests` block
+	inTestsMod := false // true between the `mod tests {` line and its close
+	referenced := false // a library symbol appeared at file scope
+	injected := false   // import already added to this mod block
+
+	for _, line := range lines {
+		trimmed := strings.TrimSpace(line)
+
+		if !inTestsMod {
+			out = append(out, line)
+			if identRe.MatchString(trimmed) {
+				referenced = true
+			}
+			if isRustTestsModOpen(trimmed) {
+				inTestsMod = true
+				depth = 1
+				// Reset: only symbols inside the mod block require the import.
+				referenced = false
+				injected = false
+			}
+			continue
+		}
+
+		// Inside a mod tests block.
+		if strings.Contains(trimmed, "use "+pkg) || strings.Contains(trimmed, "use crate::") {
+			injected = true // explicit import present; never double-inject
+		} else if identRe.MatchString(trimmed) {
+			referenced = true
+		}
+
+		if referenced && !injected && isRustStmtStart(trimmed) {
+			out = append(out, "\t"+importLine)
+			injected = true
+		}
+		out = append(out, line)
+
+		depth += strings.Count(line, "{") - strings.Count(line, "}")
+		if depth <= 0 {
+			// mod tests closed. If symbols were referenced but the block ended
+			// without an injection point (e.g. import placed after first use),
+			// append the import just before the close.
+			if referenced && !injected {
+				out = append(out[:len(out)-1], "\t"+importLine, line)
+			}
+			inTestsMod = false
+		}
+	}
+	return strings.Join(out, "\n")
+}
+
+// isRustTestsModOpen reports whether the line opens a test module block.
+func isRustTestsModOpen(trimmed string) bool {
+	return strings.HasPrefix(trimmed, "mod ") && strings.HasSuffix(trimmed, "{") &&
+		!strings.Contains(trimmed, ";")
+}
+
+// isRustStmtStart reports whether the line begins a statement (not an
+// attribute, comment, or closing brace) — a safe injection point so the
+// import lands before the first symbol use.
+func isRustStmtStart(trimmed string) bool {
+	if trimmed == "" || trimmed == "}" {
+		return false
+	}
+	return !strings.HasPrefix(trimmed, "#") && !strings.HasPrefix(trimmed, "//")
 }

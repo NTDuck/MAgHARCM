@@ -379,6 +379,7 @@ func (v *ValidatorAgent) generateAdditionalTests(ctx context.Context, state *com
 		for relPath, testCode := range files {
 			if strings.HasPrefix(relPath, "tests/") {
 				cleaned := tools.CleanCodeContent(testCode)
+				cleaned = NormalizeRustTestImports(cleaned, state)
 				testPath := filepath.Join(state.Task.TargetDir, relPath)
 				_ = os.WriteFile(testPath, []byte(cleaned), 0644)
 				state.TranslatedProject.Files[relPath] = cleaned
