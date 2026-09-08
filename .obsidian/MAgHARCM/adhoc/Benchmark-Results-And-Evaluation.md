@@ -69,7 +69,7 @@ An empirical rebase will be scheduled once BLK-04 resolves and the respective op
 
 ### Consolidated Substrate Evolution Matrix
 
-| Wave | Sprint Date | Newly Anchored Substrates & Literature | Opt-in Configuration Gates (`configs/agents.yml`) | Re-run Condition |
+| Wave | Sprint Date | Newly Anchored Substrates & Literature | Specified Target Config Gates (configs/agents.yml) | Re-run Condition |
 | :--- | :--- | :--- | :--- | :--- |
 | **Wave 20** | 2026-09-07 (iter-3) | - Graph Pre-Analysis (`[[1.0.0 P-142]]` NESA)<br>- Hallucination Defense (`[[1.0.0 P-143]]` HalluShield)<br>- Prompt-Trace Training (`[[1.0.0 P-144]]` TraceCoder)<br>- Strategy Selection (`[[1.0.0 P-145]]` TerraMod)<br>- Workflow PRM (`[[1.0.0 P-146]]` ContextPRM) | `comprehension.graph_self_evolving: true`<br>`agents.hallucination_defence: speculator_flight_recorder`<br>`agents.prompt_trace_training: true`<br>`agents.translation_strategy_selector: lexical_llm`<br>`agents.prm_workflow_context: true` | Re-run $K=3$ once BLK-04 resolves and any Wave-20 gate is toggled. |
 | **Wave 21** | 2026-09-07 (iter-4) | - Draft KV Eviction (`[[1.0.0 P-147]]` SpecKV)<br>- LoRA-augmented Lookahead (`[[1.0.0 P-148]]` LookaheadKV)<br>- Async Speculative Pipeline (`[[1.0.0 P-149]]` SSD/Saguaro)<br>- Coverage Test Minimization (`[[1.0.0 P-150]]` TestPrune) | `agents.kv_cache.eviction.strategy: speckv`<br>`agents.kv_cache.eviction.strategy: lookaheadkv`<br>`agents.speculative.async_pipeline: true`<br>`agents.comprehension.observation.test_prune: true` | Re-run $K=3$ once BLK-04 resolves and any Wave-21 gate is toggled. |

@@ -87,18 +87,14 @@ Communication across agent boundaries is strictly governed by the cohesive typed
 ### Context & Motivation
 Earlier research waves identified a critical capability gap: small language models (4B–30B) often fail when attempting to translate full-file contexts or arbitrary AST chunks because unrelated code introduces distracting noise. 
 
-Wave-23 anchors four recent flagship SE papers (ICSE 2026, FSE 2026) that provide **fine-grained program slicing, static analysis co-evolution, and critic-feedback loops**. Crucially, this closes the long-standing *strict program-comprehension-mechanism residual slot* carried forward from Wave-17.
-
-### Substrate Integration Matrix
-
-| Anchor Paper | Target Primitives | Benefiting Agent | Architectural Mechanism | Opt-in Config Wire |
+| Anchor Paper | Target Primitives | Benefiting Agent | Architectural Mechanism | Specified Target Config Gate |
 | :--- | :--- | :--- | :--- | :--- |
-| **`[[1.0.0 P-153]]` CoReX**<br>(Sun et al., ICSE 2026) | `[[1.0.0 PRIM-22]]`<br>`[[1.0.0 PRIM-31]]` | `archaeologist`<br>`translator` | **Context-Aware Refinement Slicing**: Replaces naive AST chunking with refinement-based dynamic slicing to isolate regression failures. | `comprehension.graph_self_evolving: true` |
-| **`[[1.0.0 P-154]]` TransAgent**<br>(Roh et al., FSE 2026) | `[[1.0.0 PRIM-23]]`<br>`[[1.0.0 PRIM-31]]` | `translator` | **Multi-Agent Critic Feedback**: Pairs a generation model with an execution-aligned critic to guide iterative AST chunk translation. | `translation.feedback_driven: true` |
-| **`[[1.0.0 P-155]]` POLA-Tester**<br>(Sun et al., ICSE 2026) | `[[1.0.0 PRIM-12]]` | `validator`<br>`verdict_panel` | **Agentic Static Analysis**: Syntactic dependency mining and iterative retrofit validation to detect subtle semantic discrepancies. | `comprehension.graph_self_evolving: true` |
-| **`[[1.0.0 P-156]]` ACONITE**<br>(Sun et al., ICSE 2026) | `[[1.0.0 PRIM-22]]`<br>`[[1.0.0 PRIM-29]]` | `recruiter`<br>`validator` | **Execution-Annotated Backward Slicing**: Retrieves relevant tests and injects runtime execution traces into prompt contexts. | `translation.feedback_driven: true` |
+| **`[[1.0.0 P-153]]` CoReX**<br>(Sun et al., ICSE 2026) | `[[1.0.0 PRIM-22]]`<br>`[[1.0.0 PRIM-31]]` | `archaeologist`<br>`translator` | **Context-Aware Refinement Slicing**: Replaces naive AST chunking with refinement-based dynamic slicing to isolate regression failures. | `comprehension.graph_self_evolving: true` (target) |
+| **`[[1.0.0 P-154]]` TransAgent**<br>(Roh et al., FSE 2026) | `[[1.0.0 PRIM-23]]`<br>`[[1.0.0 PRIM-31]]` | `translator` | **Multi-Agent Critic Feedback**: Pairs a generation model with an execution-aligned critic to guide iterative AST chunk translation. | `translation.feedback_driven: true` (target) |
+| **`[[1.0.0 P-155]]` POLA-Tester**<br>(Sun et al., ICSE 2026) | `[[1.0.0 PRIM-12]]` | `validator`<br>`verdict_panel` | **Agentic Static Analysis**: Syntactic dependency mining and iterative retrofit validation to detect subtle semantic discrepancies. | `comprehension.graph_self_evolving: true` (target) |
+| **`[[1.0.0 P-156]]` ACONITE**<br>(Sun et al., ICSE 2026) | `[[1.0.0 PRIM-22]]`<br>`[[1.0.0 PRIM-29]]` | `recruiter`<br>`validator` | **Execution-Annotated Backward Slicing**: Retrieves relevant tests and injects runtime execution traces into prompt contexts. | `translation.feedback_driven: true` (target) |
 
 ### Architectural Invariants & Stability
 1. **Zero Graph Topology Mutations**: The 8-agent cyclic execution graph (`internal/graph/graph.go`) is structurally unaltered. No new nodes or edge transitions were added.
-2. **Backward-Compatible Configuration**: All Wave-23 substrates operate behind opt-in configuration flags in `configs/agents.yml`. When disabled, the pipeline executes its baseline algorithms.
-3. **State Schema Stability**: The shared pipeline container `compiletime.State` remains identical; enhanced data flows through existing extensible payload fields.
+2. **Opt-in Substrate Gating**: All Wave-23 substrates are specified to operate behind opt-in configuration gates (e.g. `comprehension.graph_self_evolving`, `translation.feedback_driven`). As tracked in the Wave-23 handoff (`Sprint-2026-09-08-Handoff-7.md`), physical wiring into `configs/agents.yml` is an open initiative for Wave-24; the baseline pipeline runs unaffected.
+3. **State Schema Stability**: The shared pipeline container `compiletime.State` remains stable and backwards-compatible.
