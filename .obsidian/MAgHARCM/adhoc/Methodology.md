@@ -26,10 +26,10 @@ tags: [methodology, architecture, pipeline, "[[2.0.0 MAgHARCM]]", "[[1.0.0 PRIM-
 - **Pipeline & Architecture**: [[research/Architecture|Architecture Specification]] (`research/Architecture.md`)
 - **31 Primitives Catalog**: [[primitives/Primitives-Index|Primitives Parity Index]] (`primitives/Primitives-Index.md`)
 - **Software Archaeology Lineage**: [[research/Software-Archaeology-Lineage|2-Hop Literature Matrix]] (`research/Software-Archaeology-Lineage.md`)
-- **Detailed Specification**: [[research/Methodology|In-Depth Methodology Spec]] (`research/Methodology.md`)
+- **Domain Glossary**: [[Glossary|Domain Acronyms & Terminology Glossary]] (`adhoc/Glossary.md`)
+- **Methodology Changelog**: [[Methodology-Changelog|Sprint Changelog & History]] (`adhoc/Methodology-Changelog.md`)
 - **Governance & ADRs**: [[architecture/ADR-2026-09-07-Sprint-Conventions|Sprint Conventions]] (`architecture/ADR-2026-09-07-Sprint-Conventions.md`)
-- **Latest Sprint Tracking**: [[diary/Sprint-2026-09-28-Handoff|Sprint 2026-09-28 Handoff]] (`diary/Sprint-2026-09-28-Handoff.md`)
-
+- **Latest Sprint Tracking**: [[diary/Sprint-2026-09-08-Handoff-7|Sprint 2026-09-08 Handoff]] (`diary/Sprint-2026-09-08-Handoff-7.md`)
 ---
 
 # [[2.0.0 MAgHARCM Methodology]]
@@ -481,13 +481,21 @@ Wave 9 anchors (verified):
 - **Latest Handoff**: `.obsidian/MAgHARCM/diary/Sprint-YYYY-MM-DD-Handoff.md`
 - **Paper**: `docs/.paper/` (root `.tex`, `sec_method.tex`, `refs.bib`)
 
-## 9. Last Updated
+## 9. Current Sprint Status & Changelog Pointer
 
+> **Full Changelog**: Complete chronological logs, paper triage rationale, and historical wave details across all prior sprints are archived in [[Methodology-Changelog|Methodology Changelog & Sprint History]] (`adhoc/Methodology-Changelog.md`).
 
-- **2026-09-08** — Sprint 2026-09-08 (first iteration): Wave-23 FIRED. 4 new SLM-era anchor papers persisted (P-153 CoReX ICSE 2026, P-154 TransAgent FSE 2026, P-155 POLA-Tester ICSE 2026, P-156 ACONITE ICSE 2026). All pass §7 trigger gate (Q1 venue confirmed flagship SE, Q2 mechanism-not-benchmark, Q3 anchoring-to-existing-primitive). 1 candidate REJECTED (R1 AutoCodeSherpa ISSTA 2026 — Q1 off-list venue, ISSTA is not on §7 trigger-list). 1 watchlist carry (W23-W1 SWE-TRACE arXiv:2604.14820 fifth carry — NeurIPS 2026 notifications pending 2026-09-24, sixth carry = retire threshold per Wave-21 carry rule). P-153 CoReX anchors `PRIM-22` Four Phases of Comprehension (Structure phase, function-level DA pattern extended from P-133 ADI) + `PRIM-31` Iterative Retrieval Refinement (refinement-based slicing = context-conditioned summary pass = partition-aligned summary-pass substrate). **Closes the strict program-comprehension-mechanism residual slot.** P-154 TransAgent anchors `PRIM-23` Chunked Translation (multi-agent translator + execution-aligned critic, complementing P-151 SmartC2Rust single-LLM iterative feedback) + `PRIM-31` Iterative Retrieval Refinement (execution-aligned critic feedback = retrieval refinement substrate). P-155 POLA-Tester anchors `PRIM-12` Static Analysis Co-Evolution (agentic wait + syntactic dependency mining + iterative retrofit validation; LLM-augmented static-analysis pattern). P-156 ACONITE anchors `PRIM-22` Four Phases of Comprehension (Structure phase — backward slicing + execution annotations = LLM-augmented static-analysis pattern complementing P-129 LλMDA's partial-PDG pattern) + `PRIM-29` Dynamic Iteration Recruiter (close-test retrieval + execution annotation = retrieval-and-recruitment substrate for test-generation agents). All four anchors persisted with two citation hops in `Research-Database.json` and paper notes. Wave-23 forward plan to Wave-24: see §22.
-- **2026-09-07** — Sprint 2026-09-07 (sixth iteration): Wave-22 FIRED. 2 new SLM-era anchor papers persisted (P-151 SmartC2Rust ICSE 2026, P-152 Hallu-Eval FSE 2026). 3 REJECT (R1 Code vs. Serialized AST LLM4Code workshop — Q1 off-list workshop, R2 SmartComment — Q3 off-axis Solidity target, R3 Beyond Accuracy DeepTest workshop — Q1 off-list workshop diagnostic-framework). 1 UNVERIFIED watchlist carried (W1 SWE-TRACE fourth carry; arXiv:2604.14820 still no peer-reviewed venue; NeurIPS 2026 notifications pending 2026-09-24). P-151 anchors `PRIM-23` Chunked Translation + `PRIM-29` Dynamic Iteration Recruiter + `PRIM-31` Iterative Retrieval (the C-to-Rust analogue of P-124 Syzygy). P-152 anchors `PRIM-22` Comprehension + `PRIM-25` Role-Flip De-Hallucination. Wa…
-- **2026-09-07** — Sprint 2026-09-07 (third iteration): Wave-20 FIRED. 5 new SLM-era anchor papers persisted (P-142 NESA FSE 2026, P-143 HalluShield FSE 2026, P-144 TraceCoder ICSE 2026, P-145 TerraMod ICSE 2026 NIER, P-146 ContextPRM ICLR 2026). All pass §7 trigger gate rewritten 2026-09-25 (Q1 venue confirmed, Q2 mechanism-not-benchmark, Q3 anchoring-to-existing-primitive). P-142 NESA anchors self-evolving graph pre-analysis for `PRIM-9` Tri-Representation Hybrid Code Graph + `PRIM-22` Four Phases of Comprehension (closes part of the strict program-comprehension-mechanism slot). P-143 HalluShield anchors SLM-grounded speculative-decoding hallucination defence for `PRIM-7` SLM-as-Judge + `PRIM-21` Migration Strategy Selection. P-144 TraceCoder anchors prompt-trace training data construction for `PRIM-29` Recruiter + `PRIM-31` Iterative Retrieval. P-145 TerraMod anchors LLM-driven lexical-based translation strategy selection for `PRIM-21` Migration Strategy Selection. P-146 ContextPRM anchors workflow-aware cross-document process reward modelling for `PRIM-7` SLM-as-Judge + `PRIM-31` Iterative Retrieval. 2 watchlist items re-verified: SliceMate (REJECTED — ISSTA 2026 program slot still absent on conf.researchr.org); SWE-TRACE (CONFIRMED arXiv-only preprint, rejected). 4 candidates REJECTED: R1 Nexus ICSE 2026 (REJECTED Q3 — ablations only, no mechanism), R2 SWE-Lego ICSE 2026 NIER (REJECTED Q3 — engineering pattern, no mechanism), R3 CoPS ICML 2026 (REJECTED Q1 — speculative venue), R4 SHIELD-ASR ACL 2026 Findings (REJECTED Q1 — off-list venue). 1 candidate UNVERIFIED carried to Wave-21: U1 NSE ICML 2026 (placeholder venue, no DOI/OpenReview/arXiv yet). Updated §7 SLM-era anchors table (P-142..P-146 added), §9 changelog (this entry), §11 general-purpose patterns (5 ReasoningBank-style anchors preserved; new §11.5 Program-Comprehension-Mechanism slot closes partially via P-142). P-138 RepairKV workshop-track exception (AdaptFM Workshop ICML 2026) confirmed as the borderline workshop-track ACCEPT threshold per §7 method-level clause. New §15 Wave-20 Watchlist (carries W3 program-comprehension-mechanism residual gap into Wave-21).
-- **2026-09-07** — Sprint 2026-09-07 (second iteration): Wave-19 FIRED. 8 new SLM-era anchor papers persisted (P-134 RelayCaching ICML 2026 Poster, P-135 SPECS ICLR 2026, P-136 CaTS ICLR 2026 Poster, P-137 SuffixDecoding NeurIPS 2025 Spotlight, P-138 RepairKV ICML 2026 AdaptFM Workshop — borderline workshop-track ACCEPT per §7 method-level threshold, P-139 TypePro FSE 2026, P-140 Panta ICSE 2026, P-141 KVFlow NeurIPS 2025 Poster). All pass §7 trigger gate (Q1 venue confirmed, Q2 mechanism-not-benchmark, Q3 anchoring-to-existing-primitive). 3 candidates REJECTED: R1 TTA* NeurIPS 2025 LAW Workshop (workshop redundancy vs P-135/P-136), R2 HELIOS NDSS 2026 LAST-X Workshop (off-list venue + off-axis target), R3 LongSpec ACL 2026 (off-list venue). 2 candidates UNV…
+### Current Sprint: 2026-09-08 (Iteration 1: Wave-23 Close-Out)
+- **Wave Status**: Wave-23 FIRED and CLOSED.
+- **Residual Slot Closed**: `[[1.0.0 P-153]]` CoReX closes the strict program-comprehension-mechanism residual slot carried forward from Wave-17.
+- **Accepted Papers (4)**:
+  1. `[[1.0.0 P-153]]` **CoReX** (Sun et al., ICSE 2026): Context-aware refinement-based slicing (`[[1.0.0 PRIM-22]]`, `[[1.0.0 PRIM-31]]`).
+  2. `[[1.0.0 P-154]]` **TransAgent** (Roh et al., FSE 2026): Critic-feedback multi-agent translation (`[[1.0.0 PRIM-23]]`, `[[1.0.0 PRIM-31]]`).
+  3. `[[1.0.0 P-155]]` **POLA-Tester** (Sun et al., ICSE 2026): Static analysis co-evolution (`[[1.0.0 PRIM-12]]`).
+  4. `[[1.0.0 P-156]]` **ACONITE** (Sun et al., ICSE 2026): LLM-augmented regression test generation (`[[1.0.0 PRIM-22]]`, `[[1.0.0 PRIM-29]]`).
+- **Triage Summary**: 4 ACCEPT, 1 REJECT Q1 (R1 AutoCodeSherpa, ISSTA 2026 off-list), 1 WATCHLIST (W23-W1 SWE-TRACE 5th carry, pending NeurIPS notifications 2026-09-24).
+- **Forward Initiative (Wave-24)**: Re-verify SWE-TRACE venue; evaluate cross-pattern surveys among Wave-17..23 anchors; wire target config paths.
+
 ---
 
 ## 10. Ponytail Refactor Sweep
@@ -554,8 +562,9 @@ The Memory-aware Test-Time Scaling loop couples persistent memory with extra tes
 
 ### 11.5. Substrate Application Matrix
 
-| Pattern | Substrate | Affects | Opt-in location |
+| Pattern | Substrate | Affects | Target Opt-in Gate (`configs/agents.yml`) |
 | :--- | :--- | :--- | :--- |
+
 | 11.1 Persistent Memory | `(Title, Description, Content)` triples | `[[1.0.0 PRIM-31]]`, `[[1.0.0 PRIM-29]]`, `[[1.0.0 PRIM-21]]` | `configs/agents.yml:memory.distilled: true` |
 | 11.2 MaTTS Loop | compute-memory symbiosis | iterative primitives | `configs/agents.yml:mattts.enabled: true` |
 | 11.3 Cross-Lingual Functional Oracle | I/O test oracle | `[[1.0.0 PRIM-21]]`, `[[1.0.0 PRIM-23]]`, `[[1.0.0 PRIM-27]]` | `configs/agents.yml:oracle.cross_lingual: true` |
