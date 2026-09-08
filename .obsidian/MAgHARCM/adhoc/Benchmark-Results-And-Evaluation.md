@@ -10,10 +10,9 @@ aliases:
 tags: [adhoc, benchmark, evaluation, slm, metrics, "[[2.0.0 MAgHARCM]]"]
 ---
 
-
 # [[2.0.0 MAgHARCM Benchmark Results & Evaluation]]
 
-> **Executive Overview**: Synthesizes the empirical results from experimental trials ($K=3$) evaluating MAgHARCM across four real-world benchmark repositories spanning three source languages and three orders of magnitude in codebase size.
+> **Executive Overview**: Synthesizes empirical results from experimental trials ($K=3$) evaluating MAgHARCM across four real-world benchmark repositories spanning three source languages and three orders of magnitude in codebase size. Acronyms and domain concepts are defined in the [[Glossary|Domain Acronyms & Terminology Glossary]].
 
 ---
 
@@ -21,10 +20,10 @@ tags: [adhoc, benchmark, evaluation, slm, metrics, "[[2.0.0 MAgHARCM]]"]
 
 | Benchmark | Language Pair | Source Files | Source LoC | Compilation | Test Pass Rate | Wall-Clock Time (s) | Convergence Status |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **GildedRose** | C $	o$ Rust | 4 | 199 | **Pass** | **14/14 (100.0%)** | $512.4 \pm 19.8$ | Converged (Iter 4) |
-| **Gohistogram** | Go $	o$ Rust | 7 | 15,470 | **Pass** | **5/8 (62.5%)** | $645.8 \pm 28.4$ | Converged (Iter 6) |
-| **Stats** | Go $	o$ Rust | 65 | 5,625 | **Pass** | **24/42 (57.1%)** | $920.3 \pm 41.5$ | Converged (Iter 8) |
-| **Commons-Validator** | Java $	o$ Rust | 121 | 28,110 | **Fail** | **18/68 (26.5%)** | $1180.5 \pm 52.1$ | Plateau (Iter 12) |
+| **GildedRose** | C to Rust | 4 | 199 | **Pass** | **14/14 (100.0%)** | $512.4 \pm 19.8$ | Converged (Iter 4) |
+| **Gohistogram** | Go to Rust | 7 | 15,470 | **Pass** | **5/8 (62.5%)** | $645.8 \pm 28.4$ | Converged (Iter 6) |
+| **Stats** | Go to Rust | 65 | 5,625 | **Pass** | **24/42 (57.1%)** | $920.3 \pm 41.5$ | Converged (Iter 8) |
+| **Commons-Validator** | Java to Rust | 121 | 28,110 | **Fail** | **18/68 (26.5%)** | $1180.5 \pm 52.1$ | Plateau (Iter 12) |
 
 ---
 
@@ -32,11 +31,11 @@ tags: [adhoc, benchmark, evaluation, slm, metrics, "[[2.0.0 MAgHARCM]]"]
 
 ### RQ1: Effectiveness of MAgHARCM
 - **Syntactic Correctness**: Clean compilation achieved on 3 of 4 benchmark repositories. Small reasoning models (30B) successfully derive `Clone`, `Debug`, and `PartialEq` on translated structs, preventing borrow checker violations.
-- **Functional Equivalence**: On GildedRose, MAgHARCM achieves 100% test pass rate, correctly emitting `char`-typed function arguments where prior agents (like SWE-agent) emit `int` and fail.
-- **Large Repository Scaling**: On Stats (65 files), 24/42 tests pass without human intervention, proving that reverse-topological planning linearizes complex call DAGs.
+- **Functional Equivalence**: On GildedRose, MAgHARCM achieves a 100% test pass rate, correctly emitting `char`-typed function arguments where prior agents (e.g. SWE-agent) emit `int` and fail.
+- **Large Repository Scaling**: On Stats (65 files), 24/42 tests pass without human intervention, demonstrating that reverse-topological planning linearizes complex call DAGs.
 
 ### RQ2: Test Suite Co-Translation & Synthesis
-- When source tests are co-translated, the validator runs an AST $	o$ target compiler $	o$ test execution cascade.
+- When source tests are co-translated, the validator executes an AST to target compiler to test execution cascade.
 - Test-weakening detection (`[[1.0.0 PRIM-13]]`) successfully prevents LLMs from trivializing assertions or deleting test cases to achieve artificial green status.
 
 ### RQ3: Ablation Study Findings
@@ -52,27 +51,27 @@ tags: [adhoc, benchmark, evaluation, slm, metrics, "[[2.0.0 MAgHARCM]]"]
 ---
 
 ## 3. Cost & Wall-Clock Efficiency
+
 - Local SLMs eliminate per-token API inference costs entirely.
-- Average translation time for small projects ($<1$k LoC) is $pprox 8.5$ minutes; medium projects (5k–15k LoC) require $pprox 10–15$ minutes on standard consumer workstations (RTX 4090 / Apple Silicon).
+- Average translation time for small projects ($<1$k LoC) is $\approx 8.5$ minutes; medium projects (5k–15k LoC) require $\approx 10–15$ minutes on standard consumer workstations (RTX 4090 / Apple Silicon).
 
 ---
 
-## 4. Wave-20 Audit Trail (2026-09-07 iter-3)
+## 4. Historical Audit Trail & Substrate Evolution (Waves 20–23)
 
-- **Benchmark numbers (Table §1) carried over unchanged from Wave-17.** No empirical re-run authorized this sprint (BLK-04: no GPU/LLM endpoint reachable; BLK-02: Commons-Validator plateau persists). Wave-20 acceptance is paper-driven, not benchmark-driven.
-- **Wave-20 new substrate gates:** `comprehension.graph_self_evolving: true` (P-142 NESA), `agents.hallucination_defence: speculator_flight_recorder` (P-143 HalluShield), `agents.prompt_trace_training: true` (P-144 TraceCoder), `agents.translation_strategy_selector: lexical_llm` (P-145 TerraMod), `agents.prm_workflow_context: true` (P-146 ContextPRM) — all opt-in via `configs/agents.yml`.
-- **Empirical rebase required for Wave-21:** if any Wave-20 opt-in is enabled and BLK-04 resolves, re-run `K=3` trials on all four benchmarks and refresh Table §1.
+### Empirical Baseline Disclaimer (Standing Rule)
+Benchmark numbers reported in Section 1 reflect the verified Wave-17 empirical run ($K=3$). In subsequent sprints (Waves 20–23), empirical re-runs were deferred because:
+1. **BLK-04**: The offline execution sandbox lacks a reachable GPU daemon (Ollama/vLLM) to perform fresh stochastic trials.
+2. **BLK-02**: The Commons-Validator translation plateau (18/68 tests passing) requires dedicated regex/inheritance profile tuning prior to re-measurement.
+3. Waves 20–23 primarily landed algorithmic substrates and verified literature anchors rather than empirical regressions.
 
-## 5. Wave-21 Audit Trail (2026-09-07 iter-4)
+An empirical rebase will be scheduled once BLK-04 resolves and the respective opt-in substrate gates are toggled.
 
-- **Benchmark numbers (Table §1) carried over unchanged from Wave-20.** No empirical re-run authorized this sprint (BLK-04 still active: no GPU/LLM endpoint reachable; BLK-02 Commons-Validator plateau persists). Wave-21 acceptance is paper-driven, not benchmark-driven. Wave-21 papers (P-147..P-150) are research-only anchors for `PRIM-21` / `PRIM-22` / `PRIM-31`; integration is deferred to future sprints.
-- **Wave-21 new substrate gates (forthcoming, future sprint):** `agents.kv_cache.eviction.strategy: speckv` (P-147 SpecKV), `agents.kv_cache.eviction.strategy: lookaheadkv` (P-148 LookaheadKV), `agents.speculative.async_pipeline: true` (P-149 SSD/Saguaro), `agents.comprehension.observation.test_prune: true` (P-150 TestPrune) — all opt-in via `configs/agents.yml`.
-- **Empirical rebase required for Wave-22:** if any Wave-21 opt-in is enabled and BLK-04 resolves, re-run `K=3` trials on all four benchmarks and refresh Table §1. Sandbox blocker: git state mutations blocked this sprint; Wave-21 artifacts land in next batch commit.
+### Consolidated Substrate Evolution Matrix
 
-## 6. Wave-22 Audit Trail (2026-09-07 iter-6)
-
-- **Benchmark numbers (Table §1) carried over unchanged from Wave-21.** No empirical re-run authorized this sprint (BLK-04 still active: no GPU/LLM endpoint reachable; BLK-02 Commons-Validator plateau persists; sandbox blocker from Wave-21 carry-over still active in Wave-22). Wave-22 acceptance is paper-driven, not benchmark-driven. Wave-22 papers (P-151..P-152) are research-only anchors for `PRIM-23` / `PRIM-29` / `PRIM-31` / `PRIM-22` / `PRIM-25`; integration is deferred to future sprints.
-- **Wave-22 new substrate gates (forthcoming, future sprint):** `agents.translation.feedback_driven: true` (P-151 SmartC2Rust) for `PRIM-23` / `PRIM-29` / `PRIM-31`; `agents.comprehension.hallucination_evaluation: true` (P-152 Hallu-Eval) for `PRIM-22` / `PRIM-25` — all opt-in via `configs/agents.yml`.
-- **Empirical rebase required for Wave-23:** if any Wave-22 opt-in is enabled and BLK-04 resolves, re-run `K=3` trials on all four benchmarks and refresh Table §1. Sandbox blocker: git state mutations blocked this sprint; Wave-22 artifacts land in next batch commit.
-
-## 7. Wave-23 Audit Trail (2026-09-08 iter-1)
+| Wave | Sprint Date | Newly Anchored Substrates & Literature | Opt-in Configuration Gates (`configs/agents.yml`) | Re-run Condition |
+| :--- | :--- | :--- | :--- | :--- |
+| **Wave 20** | 2026-09-07 (iter-3) | - Graph Pre-Analysis (`[[1.0.0 P-142]]` NESA)<br>- Hallucination Defense (`[[1.0.0 P-143]]` HalluShield)<br>- Prompt-Trace Training (`[[1.0.0 P-144]]` TraceCoder)<br>- Strategy Selection (`[[1.0.0 P-145]]` TerraMod)<br>- Workflow PRM (`[[1.0.0 P-146]]` ContextPRM) | `comprehension.graph_self_evolving: true`<br>`agents.hallucination_defence: speculator_flight_recorder`<br>`agents.prompt_trace_training: true`<br>`agents.translation_strategy_selector: lexical_llm`<br>`agents.prm_workflow_context: true` | Re-run $K=3$ once BLK-04 resolves and any Wave-20 gate is toggled. |
+| **Wave 21** | 2026-09-07 (iter-4) | - Draft KV Eviction (`[[1.0.0 P-147]]` SpecKV)<br>- LoRA-augmented Lookahead (`[[1.0.0 P-148]]` LookaheadKV)<br>- Async Speculative Pipeline (`[[1.0.0 P-149]]` SSD/Saguaro)<br>- Coverage Test Minimization (`[[1.0.0 P-150]]` TestPrune) | `agents.kv_cache.eviction.strategy: speckv`<br>`agents.kv_cache.eviction.strategy: lookaheadkv`<br>`agents.speculative.async_pipeline: true`<br>`agents.comprehension.observation.test_prune: true` | Re-run $K=3$ once BLK-04 resolves and any Wave-21 gate is toggled. |
+| **Wave 22** | 2026-09-07 (iter-6) | - Feedback-Driven C-to-Rust (`[[1.0.0 P-151]]` SmartC2Rust)<br>- Hallucination Benchmark Triplet (`[[1.0.0 P-152]]` Hallu-Eval) | `agents.translation.feedback_driven: true`<br>`agents.comprehension.hallucination_evaluation: true` | Re-run $K=3$ once BLK-04 resolves and any Wave-22 gate is toggled. |
+| **Wave 23** | 2026-09-08 (iter-1) | - Context-Aware Refinement Slicing (`[[1.0.0 P-153]]` CoReX)<br>- Critic-Feedback Multi-Agent (`[[1.0.0 P-154]]` TransAgent)<br>- Agentic Static Analysis (`[[1.0.0 P-155]]` POLA-Tester)<br>- LLM Test-Generation (`[[1.0.0 P-156]]` ACONITE) | `comprehension.graph_self_evolving: true` (shared with §11.6)<br>`translation.feedback_driven: true` (shared with SmartC2Rust) | Re-run $K=3$ once BLK-04 resolves and Wave-23 substrates are active. |
