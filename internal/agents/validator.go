@@ -18,12 +18,17 @@ import (
 	"MAgHARCM/internal/tools"
 )
 
-// Locality of Behaviour: producer-side artifact methods live in this file
-// when local; the artifact structs (FileStatus, OptionalCheckResult) remain
-// compiletime-resident to satisfy the agents ↔ compiletime cycle constraint
-// documented at the top of internal/compiletime/state.go. The producer
-// accesses them via the type aliases below.
-
+// Locality of Behaviour (ADR-C-014): producer-side artifact methods live in
+// this file when local; the artifact structs (FileStatus, OptionalCheckResult,
+// ValidationReport) remain compiletime-resident to satisfy the agents ↔
+// compiletime cycle constraint documented at the top of
+// internal/compiletime/state.go. The producer accesses them via the type
+// aliases below.
+type (
+	FileStatus          = compiletime.FileStatus
+	OptionalCheckResult = compiletime.OptionalCheckResult
+	ValidationReport    = compiletime.ValidationReport
+)
 type ValidatorAgent struct {
 	Model model.BaseChatModel
 	// RunID identifies the current translation run; when set, a checkpoint of
