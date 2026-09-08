@@ -24,12 +24,12 @@
     {
       "type": "text",
       "id": "subtitle",
-      "x": 640,
+      "x": 660,
       "y": 46,
-      "width": 999,
+      "width": 981,
       "height": 19,
-      "text": "8 Specialized Agents \u00b7 Dedicated Capability Tools \u00b7 Atomic Decomposed Artifacts \u00b7 Bounded Adaptive Repair Cycle",
-      "originalText": "8 Specialized Agents \u00b7 Dedicated Capability Tools \u00b7 Atomic Decomposed Artifacts \u00b7 Bounded Adaptive Repair Cycle",
+      "text": "8 Specialized Agents \u00b7 Full Capability Toolsets \u00b7 Atomic Decomposed Artifacts \u00b7 Bounded Adaptive Repair Cycle",
+      "originalText": "8 Specialized Agents \u00b7 Full Capability Toolsets \u00b7 Atomic Decomposed Artifacts \u00b7 Bounded Adaptive Repair Cycle",
       "fontSize": 15,
       "fontFamily": 1,
       "textAlign": "center",
@@ -51,6 +51,7 @@
       "strokeColor": "#1e1e1e",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -86,6 +87,7 @@
       "strokeColor": "#495057",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -96,10 +98,10 @@
       "id": "leg_tool_t",
       "x": 722,
       "y": 71,
-      "width": 164,
+      "width": 32,
       "height": 17,
-      "text": "Capability Tool Block",
-      "originalText": "Capability Tool Block",
+      "text": "Tool",
+      "originalText": "Tool",
       "fontSize": 13,
       "fontFamily": 1,
       "textAlign": "left",
@@ -112,7 +114,7 @@
     {
       "type": "ellipse",
       "id": "leg_art",
-      "x": 880,
+      "x": 775,
       "y": 68,
       "width": 26,
       "height": 22,
@@ -126,12 +128,12 @@
     {
       "type": "text",
       "id": "leg_art_t",
-      "x": 912,
+      "x": 807,
       "y": 71,
-      "width": 117,
+      "width": 63,
       "height": 17,
-      "text": "Atomic Artifact",
-      "originalText": "Atomic Artifact",
+      "text": "Artifact",
+      "originalText": "Artifact",
       "fontSize": 13,
       "fontFamily": 1,
       "textAlign": "left",
@@ -144,7 +146,7 @@
     {
       "type": "diamond",
       "id": "leg_gate",
-      "x": 1030,
+      "x": 880,
       "y": 65,
       "width": 26,
       "height": 26,
@@ -158,7 +160,7 @@
     {
       "type": "text",
       "id": "leg_gate_t",
-      "x": 1062,
+      "x": 912,
       "y": 71,
       "width": 102,
       "height": 17,
@@ -176,7 +178,7 @@
     {
       "type": "arrow",
       "id": "leg_fwd",
-      "x": 1170,
+      "x": 1025,
       "y": 79,
       "width": 30,
       "height": 0,
@@ -198,12 +200,12 @@
     {
       "type": "text",
       "id": "leg_fwd_t",
-      "x": 1206,
+      "x": 1061,
       "y": 71,
-      "width": 94,
+      "width": 32,
       "height": 17,
-      "text": "Forward Flow",
-      "originalText": "Forward Flow",
+      "text": "Flow",
+      "originalText": "Flow",
       "fontSize": 13,
       "fontFamily": 1,
       "textAlign": "left",
@@ -216,7 +218,7 @@
     {
       "type": "arrow",
       "id": "leg_rep",
-      "x": 1300,
+      "x": 1120,
       "y": 79,
       "width": 30,
       "height": 0,
@@ -230,7 +232,7 @@
           0
         ]
       ],
-      "strokeColor": "#ef4444",
+      "strokeColor": "#1e1e1e",
       "strokeWidth": 2,
       "strokeStyle": "solid",
       "endArrowhead": "arrow"
@@ -238,7 +240,7 @@
     {
       "type": "text",
       "id": "leg_rep_t",
-      "x": 1336,
+      "x": 1156,
       "y": 71,
       "width": 94,
       "height": 17,
@@ -249,14 +251,14 @@
       "textAlign": "left",
       "verticalAlign": "top",
       "containerId": null,
-      "strokeColor": "#ef4444",
+      "strokeColor": "#1e1e1e",
       "lineHeight": 1.25,
       "baseline": 11
     },
     {
       "type": "arrow",
       "id": "leg_suc",
-      "x": 1430,
+      "x": 1260,
       "y": 79,
       "width": 30,
       "height": 0,
@@ -270,7 +272,7 @@
           0
         ]
       ],
-      "strokeColor": "#22c55e",
+      "strokeColor": "#1e1e1e",
       "strokeWidth": 2,
       "strokeStyle": "solid",
       "endArrowhead": "arrow"
@@ -278,7 +280,7 @@
     {
       "type": "text",
       "id": "leg_suc_t",
-      "x": 1466,
+      "x": 1296,
       "y": 71,
       "width": 78,
       "height": 17,
@@ -289,17 +291,161 @@
       "textAlign": "left",
       "verticalAlign": "top",
       "containerId": null,
-      "strokeColor": "#22c55e",
+      "strokeColor": "#1e1e1e",
+      "lineHeight": 1.25,
+      "baseline": 11
+    },
+    {
+      "type": "rectangle",
+      "id": "phase1_bg",
+      "x": 20,
+      "y": 105,
+      "width": 1090,
+      "height": 525,
+      "backgroundColor": "#dbe4ff",
+      "fillStyle": "solid",
+      "strokeColor": "#91a7ff",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "opacity": 20,
+      "roundness": {
+        "type": 3
+      },
+      "boundElements": []
+    },
+    {
+      "type": "text",
+      "id": "phase1_lbl",
+      "x": 35,
+      "y": 115,
+      "width": 305,
+      "height": 17,
+      "text": "PHASE I: ARCHAEOLOGY & PROJECT ANALYSIS",
+      "originalText": "PHASE I: ARCHAEOLOGY & PROJECT ANALYSIS",
+      "fontSize": 13,
+      "fontFamily": 1,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "containerId": null,
+      "strokeColor": "#3b5bdb",
+      "lineHeight": 1.25,
+      "baseline": 11
+    },
+    {
+      "type": "rectangle",
+      "id": "phase2_bg",
+      "x": 20,
+      "y": 645,
+      "width": 1090,
+      "height": 570,
+      "backgroundColor": "#e5dbff",
+      "fillStyle": "solid",
+      "strokeColor": "#b197fc",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "opacity": 20,
+      "roundness": {
+        "type": 3
+      },
+      "boundElements": []
+    },
+    {
+      "type": "text",
+      "id": "phase2_lbl",
+      "x": 35,
+      "y": 655,
+      "width": 250,
+      "height": 17,
+      "text": "PHASE II: PLANNING & TRANSLATION",
+      "originalText": "PHASE II: PLANNING & TRANSLATION",
+      "fontSize": 13,
+      "fontFamily": 1,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "containerId": null,
+      "strokeColor": "#6741d9",
+      "lineHeight": 1.25,
+      "baseline": 11
+    },
+    {
+      "type": "rectangle",
+      "id": "phase3_bg",
+      "x": 1130,
+      "y": 645,
+      "width": 1150,
+      "height": 570,
+      "backgroundColor": "#ffd8a8",
+      "fillStyle": "solid",
+      "strokeColor": "#ffa94d",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "opacity": 20,
+      "roundness": {
+        "type": 3
+      },
+      "boundElements": []
+    },
+    {
+      "type": "text",
+      "id": "phase3_lbl",
+      "x": 1145,
+      "y": 655,
+      "width": 312,
+      "height": 17,
+      "text": "PHASE III: REVIEW & TOOLCHAIN VALIDATION",
+      "originalText": "PHASE III: REVIEW & TOOLCHAIN VALIDATION",
+      "fontSize": 13,
+      "fontFamily": 1,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "containerId": null,
+      "strokeColor": "#d9480f",
+      "lineHeight": 1.25,
+      "baseline": 11
+    },
+    {
+      "type": "rectangle",
+      "id": "phase4_bg",
+      "x": 1130,
+      "y": 105,
+      "width": 1150,
+      "height": 525,
+      "backgroundColor": "#d3f9d8",
+      "fillStyle": "solid",
+      "strokeColor": "#8ce99a",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "opacity": 20,
+      "roundness": {
+        "type": 3
+      },
+      "boundElements": []
+    },
+    {
+      "type": "text",
+      "id": "phase4_lbl",
+      "x": 1145,
+      "y": 115,
+      "width": 375,
+      "height": 17,
+      "text": "PHASE IV: BEHAVIORAL CONSENSUS & ADAPTIVE REPAIR",
+      "originalText": "PHASE IV: BEHAVIORAL CONSENSUS & ADAPTIVE REPAIR",
+      "fontSize": 13,
+      "fontFamily": 1,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "containerId": null,
+      "strokeColor": "#2b8a3e",
       "lineHeight": 1.25,
       "baseline": 11
     },
     {
       "type": "ellipse",
       "id": "repo",
-      "x": 580,
-      "y": 120,
+      "x": 590,
+      "y": 135,
       "width": 240,
-      "height": 50,
+      "height": 48,
       "backgroundColor": "#e9ecef",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -315,8 +461,8 @@
     {
       "type": "text",
       "id": "repo_txt",
-      "x": 555.5,
-      "y": 128.5,
+      "x": 565.5,
+      "y": 142.5,
       "width": 289,
       "height": 33,
       "text": "Legacy Source Repository\nC sources \u00b7 git history \u00b7 build files",
@@ -333,10 +479,10 @@
     {
       "type": "arrow",
       "id": "e_repo_a1",
-      "x": 700,
-      "y": 170,
+      "x": 710,
+      "y": 183,
       "width": 0,
-      "height": 30,
+      "height": 22,
       "points": [
         [
           0,
@@ -344,7 +490,7 @@
         ],
         [
           0,
-          30
+          22
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -355,15 +501,16 @@
     {
       "type": "rectangle",
       "id": "c1",
-      "x": 30,
-      "y": 170,
+      "x": 35,
+      "y": 175,
       "width": 350,
-      "height": 125,
+      "height": 140,
       "backgroundColor": "#ffffff",
       "fillStyle": "solid",
       "strokeColor": "#ced4da",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -372,8 +519,8 @@
     {
       "type": "text",
       "id": "c1_title",
-      "x": 42,
-      "y": 180,
+      "x": 47,
+      "y": 185,
       "width": 258,
       "height": 17,
       "text": "Pre-planning Software Archaeology",
@@ -390,12 +537,12 @@
     {
       "type": "text",
       "id": "c1_body",
-      "x": 42,
-      "y": 202,
-      "width": 410,
-      "height": 69,
-      "text": "Analyzes legacy Git commits, directory layout, and identifier\npatterns BEFORE code is touched. Recovers co-change coupling\nand churn hotspots, clusters domain concepts, and reconstructs\narchitectural layers so downstream LLMs understand true module\nboundaries without hallucinating legacy idiosyncrasies.",
-      "originalText": "Analyzes legacy Git commits, directory layout, and identifier\npatterns BEFORE code is touched. Recovers co-change coupling\nand churn hotspots, clusters domain concepts, and reconstructs\narchitectural layers so downstream LLMs understand true module\nboundaries without hallucinating legacy idiosyncrasies.",
+      "x": 47,
+      "y": 207,
+      "width": 284,
+      "height": 110,
+      "text": "Analyzes legacy Git commits, directory\nlayout, and identifier patterns BEFORE code\nis touched. Recovers co-change coupling and\nchurn hotspots, clusters domain concepts,\nand reconstructs architectural layers so\ndownstream LLMs understand true module\nboundaries without hallucinating legacy\nidiosyncrasies.",
+      "originalText": "Analyzes legacy Git commits, directory\nlayout, and identifier patterns BEFORE code\nis touched. Recovers co-change coupling and\nchurn hotspots, clusters domain concepts,\nand reconstructs architectural layers so\ndownstream LLMs understand true module\nboundaries without hallucinating legacy\nidiosyncrasies.",
       "fontSize": 11,
       "fontFamily": 1,
       "textAlign": "left",
@@ -408,15 +555,16 @@
     {
       "type": "rectangle",
       "id": "t1a",
-      "x": 400,
-      "y": 170,
+      "x": 410,
+      "y": 160,
       "width": 150,
-      "height": 24,
+      "height": 22,
       "backgroundColor": "#f8f9fa",
       "fillStyle": "solid",
       "strokeColor": "#495057",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -430,8 +578,8 @@
     {
       "type": "text",
       "id": "t1a_txt",
-      "x": 422.0,
-      "y": 175.0,
+      "x": 432.0,
+      "y": 164.0,
       "width": 106,
       "height": 14,
       "text": "git_churn_finder",
@@ -448,10 +596,10 @@
     {
       "type": "line",
       "id": "t1a_link",
-      "x": 550,
-      "y": 182.0,
+      "x": 560,
+      "y": 171.0,
       "width": 30,
-      "height": 50.0,
+      "height": 66.0,
       "points": [
         [
           0,
@@ -459,7 +607,7 @@
         ],
         [
           30,
-          50.0
+          66.0
         ]
       ],
       "strokeColor": "#adb5bd",
@@ -470,15 +618,16 @@
     {
       "type": "rectangle",
       "id": "t1b",
-      "x": 400,
-      "y": 200,
+      "x": 410,
+      "y": 185,
       "width": 150,
-      "height": 24,
+      "height": 22,
       "backgroundColor": "#f8f9fa",
       "fillStyle": "solid",
       "strokeColor": "#495057",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -492,12 +641,12 @@
     {
       "type": "text",
       "id": "t1b_txt",
-      "x": 418.5,
-      "y": 205.0,
-      "width": 113,
+      "x": 432.0,
+      "y": 189.0,
+      "width": 106,
       "height": 14,
-      "text": "cochange_analyzer",
-      "originalText": "cochange_analyzer",
+      "text": "jaccard_coupling",
+      "originalText": "jaccard_coupling",
       "fontSize": 11,
       "fontFamily": 1,
       "textAlign": "center",
@@ -510,10 +659,10 @@
     {
       "type": "line",
       "id": "t1b_link",
-      "x": 550,
-      "y": 212.0,
+      "x": 560,
+      "y": 196.0,
       "width": 30,
-      "height": 20.0,
+      "height": 41.0,
       "points": [
         [
           0,
@@ -521,7 +670,7 @@
         ],
         [
           30,
-          20.0
+          41.0
         ]
       ],
       "strokeColor": "#adb5bd",
@@ -532,15 +681,16 @@
     {
       "type": "rectangle",
       "id": "t1c",
-      "x": 400,
-      "y": 230,
+      "x": 410,
+      "y": 210,
       "width": 150,
-      "height": 24,
+      "height": 22,
       "backgroundColor": "#f8f9fa",
       "fillStyle": "solid",
       "strokeColor": "#495057",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -554,8 +704,8 @@
     {
       "type": "text",
       "id": "t1c_txt",
-      "x": 415.5,
-      "y": 235.0,
+      "x": 425.5,
+      "y": 214.0,
       "width": 119,
       "height": 14,
       "text": "design_rule_matrix",
@@ -572,10 +722,10 @@
     {
       "type": "line",
       "id": "t1c_link",
-      "x": 550,
-      "y": 242.0,
+      "x": 560,
+      "y": 221.0,
       "width": 30,
-      "height": 10.0,
+      "height": 16.0,
       "points": [
         [
           0,
@@ -583,7 +733,7 @@
         ],
         [
           30,
-          -10.0
+          16.0
         ]
       ],
       "strokeColor": "#adb5bd",
@@ -594,15 +744,16 @@
     {
       "type": "rectangle",
       "id": "t1d",
-      "x": 400,
-      "y": 260,
+      "x": 410,
+      "y": 235,
       "width": 150,
-      "height": 24,
+      "height": 22,
       "backgroundColor": "#f8f9fa",
       "fillStyle": "solid",
       "strokeColor": "#495057",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -616,12 +767,12 @@
     {
       "type": "text",
       "id": "t1d_txt",
-      "x": 425.5,
-      "y": 265.0,
-      "width": 99,
+      "x": 428.5,
+      "y": 239.0,
+      "width": 113,
       "height": 14,
-      "text": "naming_analyzer",
-      "originalText": "naming_analyzer",
+      "text": "concept_clusterer",
+      "originalText": "concept_clusterer",
       "fontSize": 11,
       "fontFamily": 1,
       "textAlign": "center",
@@ -634,10 +785,10 @@
     {
       "type": "line",
       "id": "t1d_link",
-      "x": 550,
-      "y": 272.0,
+      "x": 560,
+      "y": 246.0,
       "width": 30,
-      "height": 40.0,
+      "height": 9.0,
       "points": [
         [
           0,
@@ -645,7 +796,70 @@
         ],
         [
           30,
-          -40.0
+          -9.0
+        ]
+      ],
+      "strokeColor": "#adb5bd",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "rectangle",
+      "id": "t1e",
+      "x": 410,
+      "y": 260,
+      "width": 150,
+      "height": 22,
+      "backgroundColor": "#f8f9fa",
+      "fillStyle": "solid",
+      "strokeColor": "#495057",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "opacity": 100,
+      "roundness": {
+        "type": 3
+      },
+      "boundElements": [
+        {
+          "id": "t1e_txt",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "t1e_txt",
+      "x": 432.0,
+      "y": 264.0,
+      "width": 106,
+      "height": 14,
+      "text": "naming_forensics",
+      "originalText": "naming_forensics",
+      "fontSize": 11,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "t1e",
+      "strokeColor": "#343a40",
+      "lineHeight": 1.25,
+      "baseline": 9
+    },
+    {
+      "type": "line",
+      "id": "t1e_link",
+      "x": 560,
+      "y": 271.0,
+      "width": 30,
+      "height": 34.0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          30,
+          -34.0
         ]
       ],
       "strokeColor": "#adb5bd",
@@ -656,8 +870,8 @@
     {
       "type": "rectangle",
       "id": "a1",
-      "x": 580,
-      "y": 200,
+      "x": 590,
+      "y": 205,
       "width": 240,
       "height": 65,
       "backgroundColor": "#a5d8ff",
@@ -665,6 +879,7 @@
       "strokeColor": "#1e1e1e",
       "strokeWidth": 2,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -678,8 +893,8 @@
     {
       "type": "text",
       "id": "a1_txt",
-      "x": 594.0,
-      "y": 222.5,
+      "x": 604.0,
+      "y": 227.5,
       "width": 212,
       "height": 20,
       "text": "1. Archaeologist Agent",
@@ -697,9 +912,9 @@
       "type": "ellipse",
       "id": "art1a",
       "x": 880,
-      "y": 180,
+      "y": 175,
       "width": 180,
-      "height": 34,
+      "height": 32,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -716,7 +931,7 @@
       "type": "text",
       "id": "art1a_txt",
       "x": 927.0,
-      "y": 188.5,
+      "y": 182.5,
       "width": 86,
       "height": 17,
       "text": "BoundaryMap",
@@ -734,9 +949,9 @@
       "type": "ellipse",
       "id": "art1b",
       "x": 880,
-      "y": 225,
+      "y": 220,
       "width": 180,
-      "height": 34,
+      "height": 32,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -753,7 +968,7 @@
       "type": "text",
       "id": "art1b_txt",
       "x": 919.0,
-      "y": 233.5,
+      "y": 227.5,
       "width": 102,
       "height": 17,
       "text": "ChurnHotspots",
@@ -771,9 +986,9 @@
       "type": "ellipse",
       "id": "art1c",
       "x": 880,
-      "y": 270,
+      "y": 265,
       "width": 180,
-      "height": 34,
+      "height": 32,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -790,7 +1005,7 @@
       "type": "text",
       "id": "art1c_txt",
       "x": 911.5,
-      "y": 278.5,
+      "y": 272.5,
       "width": 117,
       "height": 17,
       "text": "NamingForensics",
@@ -805,20 +1020,64 @@
       "baseline": 11
     },
     {
-      "type": "arrow",
-      "id": "f1_a",
-      "x": 820,
-      "y": 232,
-      "width": 60,
-      "height": -35,
+      "type": "line",
+      "id": "f1_trunk",
+      "x": 830,
+      "y": 237,
+      "width": 25,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          60,
-          -35
+          25,
+          0
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "line",
+      "id": "f1_bus",
+      "x": 855,
+      "y": 191,
+      "width": 0,
+      "height": 90,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          90
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "arrow",
+      "id": "f1_b_0",
+      "x": 855,
+      "y": 191,
+      "width": 25,
+      "height": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          25,
+          0
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -828,19 +1087,19 @@
     },
     {
       "type": "arrow",
-      "id": "f1_b",
-      "x": 820,
-      "y": 232,
-      "width": 60,
-      "height": 10,
+      "id": "f1_b_1",
+      "x": 855,
+      "y": 236,
+      "width": 25,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          60,
-          10
+          25,
+          0
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -850,19 +1109,19 @@
     },
     {
       "type": "arrow",
-      "id": "f1_c",
-      "x": 820,
-      "y": 232,
-      "width": 60,
-      "height": 55,
+      "id": "f1_b_2",
+      "x": 855,
+      "y": 281,
+      "width": 25,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          60,
-          55
+          25,
+          0
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -871,64 +1130,116 @@
       "endArrowhead": "arrow"
     },
     {
-      "type": "arrow",
-      "id": "m1_a",
-      "x": 880,
-      "y": 197,
-      "width": -180,
-      "height": 293,
+      "type": "line",
+      "id": "m1_b_0",
+      "x": 1060,
+      "y": 191,
+      "width": 25,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          -180,
-          293
+          25,
+          0
         ]
       ],
       "strokeColor": "#1e1e1e",
       "strokeWidth": 2,
       "strokeStyle": "solid",
-      "endArrowhead": "arrow"
+      "endArrowhead": null
     },
     {
-      "type": "arrow",
-      "id": "m1_b",
-      "x": 880,
-      "y": 242,
-      "width": -180,
-      "height": 248,
+      "type": "line",
+      "id": "m1_b_1",
+      "x": 1060,
+      "y": 236,
+      "width": 25,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          -180,
-          248
+          25,
+          0
         ]
       ],
       "strokeColor": "#1e1e1e",
       "strokeWidth": 2,
       "strokeStyle": "solid",
-      "endArrowhead": "arrow"
+      "endArrowhead": null
     },
     {
-      "type": "arrow",
-      "id": "m1_c",
-      "x": 880,
-      "y": 287,
-      "width": -180,
-      "height": 203,
+      "type": "line",
+      "id": "m1_b_2",
+      "x": 1060,
+      "y": 281,
+      "width": 25,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          -180,
-          203
+          25,
+          0
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "line",
+      "id": "m1_bus",
+      "x": 1085,
+      "y": 191,
+      "width": 0,
+      "height": 90,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          90
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "arrow",
+      "id": "m1_trunk",
+      "x": 1085,
+      "y": 236.0,
+      "width": -375,
+      "height": 249.0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -150.0,
+          0
+        ],
+        [
+          -150.0,
+          249.0
+        ],
+        [
+          -375,
+          249.0
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -939,15 +1250,16 @@
     {
       "type": "rectangle",
       "id": "c2",
-      "x": 30,
-      "y": 460,
+      "x": 35,
+      "y": 455,
       "width": 350,
-      "height": 125,
+      "height": 140,
       "backgroundColor": "#ffffff",
       "fillStyle": "solid",
       "strokeColor": "#ced4da",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -956,8 +1268,8 @@
     {
       "type": "text",
       "id": "c2_title",
-      "x": 42,
-      "y": 470,
+      "x": 47,
+      "y": 465,
       "width": 273,
       "height": 17,
       "text": "Deep Codebase & Invariant Profiling",
@@ -974,12 +1286,12 @@
     {
       "type": "text",
       "id": "c2_body",
-      "x": 42,
-      "y": 492,
-      "width": 443,
-      "height": 69,
-      "text": "Builds static and dynamic representations of the source tree.\nUses Tree-Sitter for AST parsing, runs dynamic invariant mining\n(pointer nullability, allocation ranges) from test executions, maps\nobsolete third-party libraries to idiomatic target crates, and\nselects the global migration strategy (Big Bang / Incremental).",
-      "originalText": "Builds static and dynamic representations of the source tree.\nUses Tree-Sitter for AST parsing, runs dynamic invariant mining\n(pointer nullability, allocation ranges) from test executions, maps\nobsolete third-party libraries to idiomatic target crates, and\nselects the global migration strategy (Big Bang / Incremental).",
+      "x": 47,
+      "y": 487,
+      "width": 291,
+      "height": 110,
+      "text": "Builds static and dynamic representations of\nthe source tree. Uses Tree-Sitter for AST\nparsing, runs dynamic invariant mining\n(pointer nullability, allocation ranges)\nfrom test executions, maps obsolete third-\nparty libraries to idiomatic target crates,\nand selects the global migration strategy\n(Big Bang / Incremental).",
+      "originalText": "Builds static and dynamic representations of\nthe source tree. Uses Tree-Sitter for AST\nparsing, runs dynamic invariant mining\n(pointer nullability, allocation ranges)\nfrom test executions, maps obsolete third-\nparty libraries to idiomatic target crates,\nand selects the global migration strategy\n(Big Bang / Incremental).",
       "fontSize": 11,
       "fontFamily": 1,
       "textAlign": "left",
@@ -992,15 +1304,16 @@
     {
       "type": "rectangle",
       "id": "t2a",
-      "x": 400,
-      "y": 460,
+      "x": 410,
+      "y": 440,
       "width": 150,
-      "height": 24,
+      "height": 22,
       "backgroundColor": "#f8f9fa",
       "fillStyle": "solid",
       "strokeColor": "#495057",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -1014,8 +1327,8 @@
     {
       "type": "text",
       "id": "t2a_txt",
-      "x": 415.5,
-      "y": 465.0,
+      "x": 425.5,
+      "y": 444.0,
       "width": 119,
       "height": 14,
       "text": "get_directory_tree",
@@ -1032,10 +1345,10 @@
     {
       "type": "line",
       "id": "t2a_link",
-      "x": 550,
-      "y": 472.0,
+      "x": 560,
+      "y": 451.0,
       "width": 30,
-      "height": 50.0,
+      "height": 66.0,
       "points": [
         [
           0,
@@ -1043,7 +1356,7 @@
         ],
         [
           30,
-          50.0
+          66.0
         ]
       ],
       "strokeColor": "#adb5bd",
@@ -1054,15 +1367,16 @@
     {
       "type": "rectangle",
       "id": "t2b",
-      "x": 400,
-      "y": 490,
+      "x": 410,
+      "y": 465,
       "width": 150,
-      "height": 24,
+      "height": 22,
       "backgroundColor": "#f8f9fa",
       "fillStyle": "solid",
       "strokeColor": "#495057",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -1076,8 +1390,8 @@
     {
       "type": "text",
       "id": "t2b_txt",
-      "x": 425.5,
-      "y": 495.0,
+      "x": 435.5,
+      "y": 469.0,
       "width": 99,
       "height": 14,
       "text": "tree_sitter_ast",
@@ -1094,10 +1408,10 @@
     {
       "type": "line",
       "id": "t2b_link",
-      "x": 550,
-      "y": 502.0,
+      "x": 560,
+      "y": 476.0,
       "width": 30,
-      "height": 20.0,
+      "height": 41.0,
       "points": [
         [
           0,
@@ -1105,7 +1419,7 @@
         ],
         [
           30,
-          20.0
+          41.0
         ]
       ],
       "strokeColor": "#adb5bd",
@@ -1116,15 +1430,16 @@
     {
       "type": "rectangle",
       "id": "t2c",
-      "x": 400,
-      "y": 520,
+      "x": 410,
+      "y": 490,
       "width": 150,
-      "height": 24,
+      "height": 22,
       "backgroundColor": "#f8f9fa",
       "fillStyle": "solid",
       "strokeColor": "#495057",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -1138,8 +1453,8 @@
     {
       "type": "text",
       "id": "t2c_txt",
-      "x": 442.0,
-      "y": 525.0,
+      "x": 452.0,
+      "y": 494.0,
       "width": 66,
       "height": 14,
       "text": "spec_miner",
@@ -1156,10 +1471,10 @@
     {
       "type": "line",
       "id": "t2c_link",
-      "x": 550,
-      "y": 532.0,
+      "x": 560,
+      "y": 501.0,
       "width": 30,
-      "height": 10.0,
+      "height": 16.0,
       "points": [
         [
           0,
@@ -1167,7 +1482,7 @@
         ],
         [
           30,
-          -10.0
+          16.0
         ]
       ],
       "strokeColor": "#adb5bd",
@@ -1178,15 +1493,16 @@
     {
       "type": "rectangle",
       "id": "t2d",
-      "x": 400,
-      "y": 550,
+      "x": 410,
+      "y": 515,
       "width": 150,
-      "height": 24,
+      "height": 22,
       "backgroundColor": "#f8f9fa",
       "fillStyle": "solid",
       "strokeColor": "#495057",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -1200,8 +1516,8 @@
     {
       "type": "text",
       "id": "t2d_txt",
-      "x": 409.0,
-      "y": 555.0,
+      "x": 419.0,
+      "y": 519.0,
       "width": 132,
       "height": 14,
       "text": "crate_library_mapper",
@@ -1218,10 +1534,10 @@
     {
       "type": "line",
       "id": "t2d_link",
-      "x": 550,
-      "y": 562.0,
+      "x": 560,
+      "y": 526.0,
       "width": 30,
-      "height": 40.0,
+      "height": 9.0,
       "points": [
         [
           0,
@@ -1229,7 +1545,70 @@
         ],
         [
           30,
-          -40.0
+          -9.0
+        ]
+      ],
+      "strokeColor": "#adb5bd",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "rectangle",
+      "id": "t2e",
+      "x": 410,
+      "y": 540,
+      "width": 150,
+      "height": 22,
+      "backgroundColor": "#f8f9fa",
+      "fillStyle": "solid",
+      "strokeColor": "#495057",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "opacity": 100,
+      "roundness": {
+        "type": 3
+      },
+      "boundElements": [
+        {
+          "id": "t2e_txt",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "t2e_txt",
+      "x": 428.5,
+      "y": 544.0,
+      "width": 113,
+      "height": 14,
+      "text": "strategy_selector",
+      "originalText": "strategy_selector",
+      "fontSize": 11,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "t2e",
+      "strokeColor": "#343a40",
+      "lineHeight": 1.25,
+      "baseline": 9
+    },
+    {
+      "type": "line",
+      "id": "t2e_link",
+      "x": 560,
+      "y": 551.0,
+      "width": 30,
+      "height": 34.0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          30,
+          -34.0
         ]
       ],
       "strokeColor": "#adb5bd",
@@ -1240,8 +1619,8 @@
     {
       "type": "rectangle",
       "id": "a2",
-      "x": 580,
-      "y": 490,
+      "x": 590,
+      "y": 485,
       "width": 240,
       "height": 65,
       "backgroundColor": "#c3fae8",
@@ -1249,6 +1628,7 @@
       "strokeColor": "#1e1e1e",
       "strokeWidth": 2,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -1262,8 +1642,8 @@
     {
       "type": "text",
       "id": "a2_txt",
-      "x": 618.0,
-      "y": 512.5,
+      "x": 628.0,
+      "y": 507.5,
       "width": 164,
       "height": 20,
       "text": "2. Analyzer Agent",
@@ -1281,9 +1661,9 @@
       "type": "ellipse",
       "id": "art2a",
       "x": 880,
-      "y": 470,
+      "y": 455,
       "width": 180,
-      "height": 34,
+      "height": 32,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -1300,7 +1680,7 @@
       "type": "text",
       "id": "art2a_txt",
       "x": 907.5,
-      "y": 478.5,
+      "y": 462.5,
       "width": 125,
       "height": 17,
       "text": "SourceASTProfile",
@@ -1318,9 +1698,9 @@
       "type": "ellipse",
       "id": "art2b",
       "x": 880,
-      "y": 515,
+      "y": 500,
       "width": 180,
-      "height": 34,
+      "height": 32,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -1337,7 +1717,7 @@
       "type": "text",
       "id": "art2b_txt",
       "x": 895.5,
-      "y": 523.5,
+      "y": 507.5,
       "width": 149,
       "height": 17,
       "text": "LibraryMappingTable",
@@ -1355,9 +1735,9 @@
       "type": "ellipse",
       "id": "art2c",
       "x": 880,
-      "y": 560,
+      "y": 545,
       "width": 180,
-      "height": 34,
+      "height": 32,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -1374,7 +1754,7 @@
       "type": "text",
       "id": "art2c_txt",
       "x": 895.5,
-      "y": 568.5,
+      "y": 552.5,
       "width": 149,
       "height": 17,
       "text": "TargetProjectDesign",
@@ -1389,20 +1769,64 @@
       "baseline": 11
     },
     {
-      "type": "arrow",
-      "id": "f2_a",
-      "x": 820,
-      "y": 522,
-      "width": 60,
-      "height": -35,
+      "type": "line",
+      "id": "f2_trunk",
+      "x": 830,
+      "y": 517,
+      "width": 25,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          60,
-          -35
+          25,
+          0
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "line",
+      "id": "f2_bus",
+      "x": 855,
+      "y": 471,
+      "width": 0,
+      "height": 90,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          90
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "arrow",
+      "id": "f2_b_0",
+      "x": 855,
+      "y": 471,
+      "width": 25,
+      "height": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          25,
+          0
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -1412,19 +1836,19 @@
     },
     {
       "type": "arrow",
-      "id": "f2_b",
-      "x": 820,
-      "y": 522,
-      "width": 60,
-      "height": 10,
+      "id": "f2_b_1",
+      "x": 855,
+      "y": 516,
+      "width": 25,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          60,
-          10
+          25,
+          0
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -1434,19 +1858,19 @@
     },
     {
       "type": "arrow",
-      "id": "f2_c",
-      "x": 820,
-      "y": 522,
-      "width": 60,
-      "height": 55,
+      "id": "f2_b_2",
+      "x": 855,
+      "y": 561,
+      "width": 25,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          60,
-          55
+          25,
+          0
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -1455,64 +1879,116 @@
       "endArrowhead": "arrow"
     },
     {
-      "type": "arrow",
-      "id": "m2_a",
-      "x": 880,
-      "y": 487,
-      "width": -180,
-      "height": 293,
+      "type": "line",
+      "id": "m2_b_0",
+      "x": 1060,
+      "y": 471,
+      "width": 25,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          -180,
-          293
+          25,
+          0
         ]
       ],
       "strokeColor": "#1e1e1e",
       "strokeWidth": 2,
       "strokeStyle": "solid",
-      "endArrowhead": "arrow"
+      "endArrowhead": null
     },
     {
-      "type": "arrow",
-      "id": "m2_b",
-      "x": 880,
-      "y": 532,
-      "width": -180,
-      "height": 248,
+      "type": "line",
+      "id": "m2_b_1",
+      "x": 1060,
+      "y": 516,
+      "width": 25,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          -180,
-          248
+          25,
+          0
         ]
       ],
       "strokeColor": "#1e1e1e",
       "strokeWidth": 2,
       "strokeStyle": "solid",
-      "endArrowhead": "arrow"
+      "endArrowhead": null
     },
     {
-      "type": "arrow",
-      "id": "m2_c",
-      "x": 880,
-      "y": 577,
-      "width": -180,
-      "height": 203,
+      "type": "line",
+      "id": "m2_b_2",
+      "x": 1060,
+      "y": 561,
+      "width": 25,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          -180,
-          203
+          25,
+          0
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "line",
+      "id": "m2_bus",
+      "x": 1085,
+      "y": 471,
+      "width": 0,
+      "height": 90,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          90
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "arrow",
+      "id": "m2_trunk",
+      "x": 1085,
+      "y": 516.0,
+      "width": -375,
+      "height": 249.0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -150.0,
+          0
+        ],
+        [
+          -150.0,
+          249.0
+        ],
+        [
+          -375,
+          249.0
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -1523,15 +1999,16 @@
     {
       "type": "rectangle",
       "id": "c3",
-      "x": 30,
-      "y": 750,
+      "x": 35,
+      "y": 735,
       "width": 350,
-      "height": 125,
+      "height": 140,
       "backgroundColor": "#ffffff",
       "fillStyle": "solid",
       "strokeColor": "#ced4da",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -1540,8 +2017,8 @@
     {
       "type": "text",
       "id": "c3_title",
-      "x": 42,
-      "y": 760,
+      "x": 47,
+      "y": 745,
       "width": 328,
       "height": 17,
       "text": "Dependency Ordering & Skeleton Scaffolding",
@@ -1558,12 +2035,12 @@
     {
       "type": "text",
       "id": "c3_body",
-      "x": 42,
-      "y": 782,
-      "width": 436,
-      "height": 69,
-      "text": "Decomposes large codebases into atomic AST fragments that fit\nLLM context limits. Performs reverse-topological sorting so\ndependencies translate before consumers, resolves cyclic import\ndependencies with stub scheduling, and generates compilable target\nskeleton files to anchor downstream translation passes.",
-      "originalText": "Decomposes large codebases into atomic AST fragments that fit\nLLM context limits. Performs reverse-topological sorting so\ndependencies translate before consumers, resolves cyclic import\ndependencies with stub scheduling, and generates compilable target\nskeleton files to anchor downstream translation passes.",
+      "x": 47,
+      "y": 767,
+      "width": 278,
+      "height": 110,
+      "text": "Decomposes large codebases into atomic AST\nfragments that fit LLM context limits.\nPerforms reverse-topological sorting so\ndependencies translate before consumers,\nresolves cyclic import dependencies with\nstub scheduling, and generates compilable\ntarget skeleton files to anchor downstream\ntranslation passes.",
+      "originalText": "Decomposes large codebases into atomic AST\nfragments that fit LLM context limits.\nPerforms reverse-topological sorting so\ndependencies translate before consumers,\nresolves cyclic import dependencies with\nstub scheduling, and generates compilable\ntarget skeleton files to anchor downstream\ntranslation passes.",
       "fontSize": 11,
       "fontFamily": 1,
       "textAlign": "left",
@@ -1576,15 +2053,16 @@
     {
       "type": "rectangle",
       "id": "t3a",
-      "x": 400,
-      "y": 750,
+      "x": 410,
+      "y": 720,
       "width": 150,
-      "height": 24,
+      "height": 22,
       "backgroundColor": "#f8f9fa",
       "fillStyle": "solid",
       "strokeColor": "#495057",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -1598,8 +2076,8 @@
     {
       "type": "text",
       "id": "t3a_txt",
-      "x": 428.5,
-      "y": 755.0,
+      "x": 438.5,
+      "y": 724.0,
       "width": 93,
       "height": 14,
       "text": "ast_fragmenter",
@@ -1616,10 +2094,10 @@
     {
       "type": "line",
       "id": "t3a_link",
-      "x": 550,
-      "y": 762.0,
+      "x": 560,
+      "y": 731.0,
       "width": 30,
-      "height": 50.0,
+      "height": 66.0,
       "points": [
         [
           0,
@@ -1627,7 +2105,7 @@
         ],
         [
           30,
-          50.0
+          66.0
         ]
       ],
       "strokeColor": "#adb5bd",
@@ -1638,15 +2116,16 @@
     {
       "type": "rectangle",
       "id": "t3b",
-      "x": 400,
-      "y": 780,
+      "x": 410,
+      "y": 745,
       "width": 150,
-      "height": 24,
+      "height": 22,
       "backgroundColor": "#f8f9fa",
       "fillStyle": "solid",
       "strokeColor": "#495057",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -1660,12 +2139,12 @@
     {
       "type": "text",
       "id": "t3b_txt",
-      "x": 438.5,
-      "y": 785.0,
-      "width": 73,
+      "x": 422.0,
+      "y": 749.0,
+      "width": 126,
       "height": 14,
-      "text": "topo_sorter",
-      "originalText": "topo_sorter",
+      "text": "reverse_topo_sorter",
+      "originalText": "reverse_topo_sorter",
       "fontSize": 11,
       "fontFamily": 1,
       "textAlign": "center",
@@ -1678,10 +2157,10 @@
     {
       "type": "line",
       "id": "t3b_link",
-      "x": 550,
-      "y": 792.0,
+      "x": 560,
+      "y": 756.0,
       "width": 30,
-      "height": 20.0,
+      "height": 41.0,
       "points": [
         [
           0,
@@ -1689,7 +2168,7 @@
         ],
         [
           30,
-          20.0
+          41.0
         ]
       ],
       "strokeColor": "#adb5bd",
@@ -1700,15 +2179,16 @@
     {
       "type": "rectangle",
       "id": "t3c",
-      "x": 400,
-      "y": 810,
+      "x": 410,
+      "y": 770,
       "width": 150,
-      "height": 24,
+      "height": 22,
       "backgroundColor": "#f8f9fa",
       "fillStyle": "solid",
       "strokeColor": "#495057",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -1722,8 +2202,8 @@
     {
       "type": "text",
       "id": "t3c_txt",
-      "x": 428.5,
-      "y": 815.0,
+      "x": 438.5,
+      "y": 774.0,
       "width": 93,
       "height": 14,
       "text": "cycle_resolver",
@@ -1740,10 +2220,10 @@
     {
       "type": "line",
       "id": "t3c_link",
-      "x": 550,
-      "y": 822.0,
+      "x": 560,
+      "y": 781.0,
       "width": 30,
-      "height": 10.0,
+      "height": 16.0,
       "points": [
         [
           0,
@@ -1751,7 +2231,7 @@
         ],
         [
           30,
-          -10.0
+          16.0
         ]
       ],
       "strokeColor": "#adb5bd",
@@ -1762,15 +2242,16 @@
     {
       "type": "rectangle",
       "id": "t3d",
-      "x": 400,
-      "y": 840,
+      "x": 410,
+      "y": 795,
       "width": 150,
-      "height": 24,
+      "height": 22,
       "backgroundColor": "#f8f9fa",
       "fillStyle": "solid",
       "strokeColor": "#495057",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -1784,8 +2265,8 @@
     {
       "type": "text",
       "id": "t3d_txt",
-      "x": 425.5,
-      "y": 845.0,
+      "x": 435.5,
+      "y": 799.0,
       "width": 99,
       "height": 14,
       "text": "skeleton_writer",
@@ -1802,10 +2283,10 @@
     {
       "type": "line",
       "id": "t3d_link",
-      "x": 550,
-      "y": 852.0,
+      "x": 560,
+      "y": 806.0,
       "width": 30,
-      "height": 40.0,
+      "height": 9.0,
       "points": [
         [
           0,
@@ -1813,7 +2294,70 @@
         ],
         [
           30,
-          -40.0
+          -9.0
+        ]
+      ],
+      "strokeColor": "#adb5bd",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "rectangle",
+      "id": "t3e",
+      "x": 410,
+      "y": 820,
+      "width": 150,
+      "height": 22,
+      "backgroundColor": "#f8f9fa",
+      "fillStyle": "solid",
+      "strokeColor": "#495057",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "opacity": 100,
+      "roundness": {
+        "type": 3
+      },
+      "boundElements": [
+        {
+          "id": "t3e_txt",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "t3e_txt",
+      "x": 428.5,
+      "y": 824.0,
+      "width": 113,
+      "height": 14,
+      "text": "manifest_rewriter",
+      "originalText": "manifest_rewriter",
+      "fontSize": 11,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "t3e",
+      "strokeColor": "#343a40",
+      "lineHeight": 1.25,
+      "baseline": 9
+    },
+    {
+      "type": "line",
+      "id": "t3e_link",
+      "x": 560,
+      "y": 831.0,
+      "width": 30,
+      "height": 34.0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          30,
+          -34.0
         ]
       ],
       "strokeColor": "#adb5bd",
@@ -1824,8 +2368,8 @@
     {
       "type": "rectangle",
       "id": "a3",
-      "x": 580,
-      "y": 780,
+      "x": 590,
+      "y": 765,
       "width": 240,
       "height": 65,
       "backgroundColor": "#fff3bf",
@@ -1833,6 +2377,7 @@
       "strokeColor": "#1e1e1e",
       "strokeWidth": 2,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -1846,8 +2391,8 @@
     {
       "type": "text",
       "id": "a3_txt",
-      "x": 623.0,
-      "y": 802.5,
+      "x": 633.0,
+      "y": 787.5,
       "width": 154,
       "height": 20,
       "text": "3. Planner Agent",
@@ -1865,9 +2410,9 @@
       "type": "ellipse",
       "id": "art3a",
       "x": 880,
-      "y": 760,
+      "y": 735,
       "width": 180,
-      "height": 34,
+      "height": 32,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -1884,7 +2429,7 @@
       "type": "text",
       "id": "art3a_txt",
       "x": 907.5,
-      "y": 768.5,
+      "y": 742.5,
       "width": 125,
       "height": 17,
       "text": "OrderedFragments",
@@ -1902,9 +2447,9 @@
       "type": "ellipse",
       "id": "art3b",
       "x": 880,
-      "y": 805,
+      "y": 780,
       "width": 180,
-      "height": 34,
+      "height": 32,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -1921,7 +2466,7 @@
       "type": "text",
       "id": "art3b_txt",
       "x": 895.5,
-      "y": 813.5,
+      "y": 787.5,
       "width": 149,
       "height": 17,
       "text": "CompilableSkeletons",
@@ -1939,9 +2484,9 @@
       "type": "ellipse",
       "id": "art3c",
       "x": 880,
-      "y": 850,
+      "y": 825,
       "width": 180,
-      "height": 34,
+      "height": 32,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -1958,7 +2503,7 @@
       "type": "text",
       "id": "art3c_txt",
       "x": 923.0,
-      "y": 858.5,
+      "y": 832.5,
       "width": 94,
       "height": 17,
       "text": "TwoPhasePlan",
@@ -1973,20 +2518,64 @@
       "baseline": 11
     },
     {
-      "type": "arrow",
-      "id": "f3_a",
-      "x": 820,
-      "y": 812,
-      "width": 60,
-      "height": -35,
+      "type": "line",
+      "id": "f3_trunk",
+      "x": 830,
+      "y": 797,
+      "width": 25,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          60,
-          -35
+          25,
+          0
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "line",
+      "id": "f3_bus",
+      "x": 855,
+      "y": 751,
+      "width": 0,
+      "height": 90,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          90
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "arrow",
+      "id": "f3_b_0",
+      "x": 855,
+      "y": 751,
+      "width": 25,
+      "height": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          25,
+          0
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -1996,19 +2585,19 @@
     },
     {
       "type": "arrow",
-      "id": "f3_b",
-      "x": 820,
-      "y": 812,
-      "width": 60,
-      "height": 10,
+      "id": "f3_b_1",
+      "x": 855,
+      "y": 796,
+      "width": 25,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          60,
-          10
+          25,
+          0
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -2018,19 +2607,19 @@
     },
     {
       "type": "arrow",
-      "id": "f3_c",
-      "x": 820,
-      "y": 812,
-      "width": 60,
-      "height": 55,
+      "id": "f3_b_2",
+      "x": 855,
+      "y": 841,
+      "width": 25,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          60,
-          55
+          25,
+          0
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -2039,64 +2628,116 @@
       "endArrowhead": "arrow"
     },
     {
-      "type": "arrow",
-      "id": "m3_a",
-      "x": 880,
-      "y": 777,
-      "width": -180,
-      "height": 293,
+      "type": "line",
+      "id": "m3_b_0",
+      "x": 1060,
+      "y": 751,
+      "width": 25,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          -180,
-          293
+          25,
+          0
         ]
       ],
       "strokeColor": "#1e1e1e",
       "strokeWidth": 2,
       "strokeStyle": "solid",
-      "endArrowhead": "arrow"
+      "endArrowhead": null
     },
     {
-      "type": "arrow",
-      "id": "m3_b",
-      "x": 880,
-      "y": 822,
-      "width": -180,
-      "height": 248,
+      "type": "line",
+      "id": "m3_b_1",
+      "x": 1060,
+      "y": 796,
+      "width": 25,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          -180,
-          248
+          25,
+          0
         ]
       ],
       "strokeColor": "#1e1e1e",
       "strokeWidth": 2,
       "strokeStyle": "solid",
-      "endArrowhead": "arrow"
+      "endArrowhead": null
     },
     {
-      "type": "arrow",
-      "id": "m3_c",
-      "x": 880,
-      "y": 867,
-      "width": -180,
-      "height": 203,
+      "type": "line",
+      "id": "m3_b_2",
+      "x": 1060,
+      "y": 841,
+      "width": 25,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          -180,
-          203
+          25,
+          0
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "line",
+      "id": "m3_bus",
+      "x": 1085,
+      "y": 751,
+      "width": 0,
+      "height": 90,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          90
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "arrow",
+      "id": "m3_trunk",
+      "x": 1085,
+      "y": 796.0,
+      "width": -375,
+      "height": 249.0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -150.0,
+          0
+        ],
+        [
+          -150.0,
+          249.0
+        ],
+        [
+          -375,
+          249.0
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -2107,15 +2748,16 @@
     {
       "type": "rectangle",
       "id": "c4",
-      "x": 30,
-      "y": 1040,
+      "x": 35,
+      "y": 1015,
       "width": 350,
-      "height": 125,
+      "height": 140,
       "backgroundColor": "#ffffff",
       "fillStyle": "solid",
       "strokeColor": "#ced4da",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -2124,8 +2766,8 @@
     {
       "type": "text",
       "id": "c4_title",
-      "x": 42,
-      "y": 1050,
+      "x": 47,
+      "y": 1025,
       "width": 258,
       "height": 17,
       "text": "Context-Aware Chunked Translation",
@@ -2142,12 +2784,12 @@
     {
       "type": "text",
       "id": "c4_body",
-      "x": 42,
-      "y": 1072,
-      "width": 443,
-      "height": 69,
-      "text": "Translates one AST fragment at a time while threading a rolling\nsummary of translated state to maintain global coherence. Queries\nLSP for definitions/references on demand without blowing context.\nIn repair passes, incorporates compiler diagnostics and test traces\nfor targeted bug fixing.",
-      "originalText": "Translates one AST fragment at a time while threading a rolling\nsummary of translated state to maintain global coherence. Queries\nLSP for definitions/references on demand without blowing context.\nIn repair passes, incorporates compiler diagnostics and test traces\nfor targeted bug fixing.",
+      "x": 47,
+      "y": 1047,
+      "width": 284,
+      "height": 97,
+      "text": "Translates one AST fragment at a time while\nthreading a rolling summary of translated\nstate to maintain global coherence. Queries\nLSP for definitions/references on demand\nwithout blowing context. In repair passes,\nincorporates compiler diagnostics and test\ntraces for targeted bug fixing.",
+      "originalText": "Translates one AST fragment at a time while\nthreading a rolling summary of translated\nstate to maintain global coherence. Queries\nLSP for definitions/references on demand\nwithout blowing context. In repair passes,\nincorporates compiler diagnostics and test\ntraces for targeted bug fixing.",
       "fontSize": 11,
       "fontFamily": 1,
       "textAlign": "left",
@@ -2160,15 +2802,16 @@
     {
       "type": "rectangle",
       "id": "t4a",
-      "x": 400,
-      "y": 1040,
+      "x": 410,
+      "y": 1000,
       "width": 150,
-      "height": 24,
+      "height": 22,
       "backgroundColor": "#f8f9fa",
       "fillStyle": "solid",
       "strokeColor": "#495057",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -2182,8 +2825,8 @@
     {
       "type": "text",
       "id": "t4a_txt",
-      "x": 422.0,
-      "y": 1045.0,
+      "x": 432.0,
+      "y": 1004.0,
       "width": 106,
       "height": 14,
       "text": "chunked_dispatch",
@@ -2200,10 +2843,10 @@
     {
       "type": "line",
       "id": "t4a_link",
-      "x": 550,
-      "y": 1052.0,
+      "x": 560,
+      "y": 1011.0,
       "width": 30,
-      "height": 50.0,
+      "height": 66.0,
       "points": [
         [
           0,
@@ -2211,7 +2854,7 @@
         ],
         [
           30,
-          50.0
+          66.0
         ]
       ],
       "strokeColor": "#adb5bd",
@@ -2222,15 +2865,16 @@
     {
       "type": "rectangle",
       "id": "t4b",
-      "x": 400,
-      "y": 1070,
+      "x": 410,
+      "y": 1025,
       "width": 150,
-      "height": 24,
+      "height": 22,
       "backgroundColor": "#f8f9fa",
       "fillStyle": "solid",
       "strokeColor": "#495057",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -2244,8 +2888,8 @@
     {
       "type": "text",
       "id": "t4b_txt",
-      "x": 432.0,
-      "y": 1075.0,
+      "x": 442.0,
+      "y": 1029.0,
       "width": 86,
       "height": 14,
       "text": "lsp_navigator",
@@ -2262,10 +2906,10 @@
     {
       "type": "line",
       "id": "t4b_link",
-      "x": 550,
-      "y": 1082.0,
+      "x": 560,
+      "y": 1036.0,
       "width": 30,
-      "height": 20.0,
+      "height": 41.0,
       "points": [
         [
           0,
@@ -2273,7 +2917,7 @@
         ],
         [
           30,
-          20.0
+          41.0
         ]
       ],
       "strokeColor": "#adb5bd",
@@ -2284,15 +2928,16 @@
     {
       "type": "rectangle",
       "id": "t4c",
-      "x": 400,
-      "y": 1100,
+      "x": 410,
+      "y": 1050,
       "width": 150,
-      "height": 24,
+      "height": 22,
       "backgroundColor": "#f8f9fa",
       "fillStyle": "solid",
       "strokeColor": "#495057",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -2306,8 +2951,8 @@
     {
       "type": "text",
       "id": "t4c_txt",
-      "x": 422.0,
-      "y": 1105.0,
+      "x": 432.0,
+      "y": 1054.0,
       "width": 106,
       "height": 14,
       "text": "context_threader",
@@ -2324,10 +2969,10 @@
     {
       "type": "line",
       "id": "t4c_link",
-      "x": 550,
-      "y": 1112.0,
+      "x": 560,
+      "y": 1061.0,
       "width": 30,
-      "height": 10.0,
+      "height": 16.0,
       "points": [
         [
           0,
@@ -2335,7 +2980,7 @@
         ],
         [
           30,
-          -10.0
+          16.0
         ]
       ],
       "strokeColor": "#adb5bd",
@@ -2346,15 +2991,16 @@
     {
       "type": "rectangle",
       "id": "t4d",
-      "x": 400,
-      "y": 1130,
+      "x": 410,
+      "y": 1075,
       "width": 150,
-      "height": 24,
+      "height": 22,
       "backgroundColor": "#f8f9fa",
       "fillStyle": "solid",
       "strokeColor": "#495057",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -2368,12 +3014,12 @@
     {
       "type": "text",
       "id": "t4d_txt",
-      "x": 415.5,
-      "y": 1135.0,
-      "width": 119,
+      "x": 445.0,
+      "y": 1079.0,
+      "width": 80,
       "height": 14,
-      "text": "diagnostics_repair",
-      "originalText": "diagnostics_repair",
+      "text": "code_cleaner",
+      "originalText": "code_cleaner",
       "fontSize": 11,
       "fontFamily": 1,
       "textAlign": "center",
@@ -2386,10 +3032,10 @@
     {
       "type": "line",
       "id": "t4d_link",
-      "x": 550,
-      "y": 1142.0,
+      "x": 560,
+      "y": 1086.0,
       "width": 30,
-      "height": 40.0,
+      "height": 9.0,
       "points": [
         [
           0,
@@ -2397,7 +3043,70 @@
         ],
         [
           30,
-          -40.0
+          -9.0
+        ]
+      ],
+      "strokeColor": "#adb5bd",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "rectangle",
+      "id": "t4e",
+      "x": 410,
+      "y": 1100,
+      "width": 150,
+      "height": 22,
+      "backgroundColor": "#f8f9fa",
+      "fillStyle": "solid",
+      "strokeColor": "#495057",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "opacity": 100,
+      "roundness": {
+        "type": 3
+      },
+      "boundElements": [
+        {
+          "id": "t4e_txt",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "t4e_txt",
+      "x": 425.5,
+      "y": 1104.0,
+      "width": 119,
+      "height": 14,
+      "text": "diagnostics_repair",
+      "originalText": "diagnostics_repair",
+      "fontSize": 11,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "t4e",
+      "strokeColor": "#343a40",
+      "lineHeight": 1.25,
+      "baseline": 9
+    },
+    {
+      "type": "line",
+      "id": "t4e_link",
+      "x": 560,
+      "y": 1111.0,
+      "width": 30,
+      "height": 34.0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          30,
+          -34.0
         ]
       ],
       "strokeColor": "#adb5bd",
@@ -2408,8 +3117,8 @@
     {
       "type": "rectangle",
       "id": "a4",
-      "x": 580,
-      "y": 1070,
+      "x": 590,
+      "y": 1045,
       "width": 240,
       "height": 65,
       "backgroundColor": "#d0bfff",
@@ -2417,6 +3126,7 @@
       "strokeColor": "#1e1e1e",
       "strokeWidth": 2,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -2430,8 +3140,8 @@
     {
       "type": "text",
       "id": "a4_txt",
-      "x": 608.5,
-      "y": 1092.5,
+      "x": 618.5,
+      "y": 1067.5,
       "width": 183,
       "height": 20,
       "text": "4. Translator Agent",
@@ -2449,9 +3159,9 @@
       "type": "ellipse",
       "id": "art4a",
       "x": 880,
-      "y": 1050,
+      "y": 1015,
       "width": 180,
-      "height": 34,
+      "height": 32,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -2468,7 +3178,7 @@
       "type": "text",
       "id": "art4a_txt",
       "x": 892.0,
-      "y": 1058.5,
+      "y": 1022.5,
       "width": 156,
       "height": 17,
       "text": "TranslatedSourceCode",
@@ -2486,9 +3196,9 @@
       "type": "ellipse",
       "id": "art4b",
       "x": 880,
-      "y": 1095,
+      "y": 1060,
       "width": 180,
-      "height": 34,
+      "height": 32,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -2505,7 +3215,7 @@
       "type": "text",
       "id": "art4b_txt",
       "x": 919.0,
-      "y": 1103.5,
+      "y": 1067.5,
       "width": 102,
       "height": 17,
       "text": "BuildManifest",
@@ -2523,9 +3233,9 @@
       "type": "ellipse",
       "id": "art4c",
       "x": 880,
-      "y": 1140,
+      "y": 1105,
       "width": 180,
-      "height": 34,
+      "height": 32,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -2542,7 +3252,7 @@
       "type": "text",
       "id": "art4c_txt",
       "x": 911.5,
-      "y": 1148.5,
+      "y": 1112.5,
       "width": 117,
       "height": 17,
       "text": "TargetTestSuite",
@@ -2557,20 +3267,64 @@
       "baseline": 11
     },
     {
-      "type": "arrow",
-      "id": "f4_a",
-      "x": 820,
-      "y": 1102,
-      "width": 60,
-      "height": -35,
+      "type": "line",
+      "id": "f4_trunk",
+      "x": 830,
+      "y": 1077,
+      "width": 25,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          60,
-          -35
+          25,
+          0
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "line",
+      "id": "f4_bus",
+      "x": 855,
+      "y": 1031,
+      "width": 0,
+      "height": 90,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          90
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "arrow",
+      "id": "f4_b_0",
+      "x": 855,
+      "y": 1031,
+      "width": 25,
+      "height": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          25,
+          0
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -2580,19 +3334,19 @@
     },
     {
       "type": "arrow",
-      "id": "f4_b",
-      "x": 820,
-      "y": 1102,
-      "width": 60,
-      "height": 10,
+      "id": "f4_b_1",
+      "x": 855,
+      "y": 1076,
+      "width": 25,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          60,
-          10
+          25,
+          0
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -2602,19 +3356,19 @@
     },
     {
       "type": "arrow",
-      "id": "f4_c",
-      "x": 820,
-      "y": 1102,
-      "width": 60,
-      "height": 55,
+      "id": "f4_b_2",
+      "x": 855,
+      "y": 1121,
+      "width": 25,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          60,
-          55
+          25,
+          0
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -2623,20 +3377,108 @@
       "endArrowhead": "arrow"
     },
     {
-      "type": "arrow",
-      "id": "m4_a",
+      "type": "line",
+      "id": "m4_b_0",
       "x": 1060,
-      "y": 1067,
-      "width": 340,
-      "height": 35,
+      "y": 1031,
+      "width": 35,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          340,
-          35
+          35,
+          0
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "line",
+      "id": "m4_b_1",
+      "x": 1060,
+      "y": 1076,
+      "width": 35,
+      "height": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          35,
+          0
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "line",
+      "id": "m4_b_2",
+      "x": 1060,
+      "y": 1121,
+      "width": 35,
+      "height": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          35,
+          0
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "line",
+      "id": "m4_bus",
+      "x": 1095,
+      "y": 1031,
+      "width": 0,
+      "height": 90,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          90
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "arrow",
+      "id": "m4_trunk",
+      "x": 1095,
+      "y": 1076.0,
+      "width": 305,
+      "height": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          305,
+          0
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -2646,13 +3488,13 @@
     },
     {
       "type": "text",
-      "id": "m4_a_lbl",
-      "x": 1195.0,
-      "y": 1074.5,
-      "width": 116,
+      "id": "m4_trunk_lbl",
+      "x": 1212.5,
+      "y": 1066.0,
+      "width": 72,
       "height": 15,
-      "text": "state checkpoint",
-      "originalText": "state checkpoint",
+      "text": "checkpoint",
+      "originalText": "checkpoint",
       "fontSize": 12,
       "fontFamily": 1,
       "textAlign": "center",
@@ -2663,54 +3505,10 @@
       "baseline": 10
     },
     {
-      "type": "arrow",
-      "id": "m4_b",
-      "x": 1060,
-      "y": 1112,
-      "width": 340,
-      "height": -10,
-      "points": [
-        [
-          0,
-          0
-        ],
-        [
-          340,
-          -10
-        ]
-      ],
-      "strokeColor": "#1e1e1e",
-      "strokeWidth": 2,
-      "strokeStyle": "solid",
-      "endArrowhead": "arrow"
-    },
-    {
-      "type": "arrow",
-      "id": "m4_c",
-      "x": 1060,
-      "y": 1157,
-      "width": 340,
-      "height": -55,
-      "points": [
-        [
-          0,
-          0
-        ],
-        [
-          340,
-          -55
-        ]
-      ],
-      "strokeColor": "#1e1e1e",
-      "strokeWidth": 2,
-      "strokeStyle": "solid",
-      "endArrowhead": "arrow"
-    },
-    {
       "type": "rectangle",
       "id": "a5",
       "x": 1400,
-      "y": 1070,
+      "y": 1045,
       "width": 240,
       "height": 65,
       "backgroundColor": "#eebefa",
@@ -2718,6 +3516,7 @@
       "strokeColor": "#1e1e1e",
       "strokeWidth": 2,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -2732,7 +3531,7 @@
       "type": "text",
       "id": "a5_txt",
       "x": 1438.0,
-      "y": 1092.5,
+      "y": 1067.5,
       "width": 164,
       "height": 20,
       "text": "5. Reviewer Agent",
@@ -2750,14 +3549,15 @@
       "type": "rectangle",
       "id": "t5a",
       "x": 1670,
-      "y": 1055,
+      "y": 1025,
       "width": 150,
-      "height": 24,
+      "height": 22,
       "backgroundColor": "#f8f9fa",
       "fillStyle": "solid",
       "strokeColor": "#495057",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -2772,7 +3572,7 @@
       "type": "text",
       "id": "t5a_txt",
       "x": 1685.5,
-      "y": 1060.0,
+      "y": 1029.0,
       "width": 119,
       "height": 14,
       "text": "role_flip_prompter",
@@ -2790,9 +3590,9 @@
       "type": "line",
       "id": "t5a_link",
       "x": 1670,
-      "y": 1067.0,
+      "y": 1036.0,
       "width": 30,
-      "height": 35.0,
+      "height": 41.0,
       "points": [
         [
           0,
@@ -2800,7 +3600,7 @@
         ],
         [
           -30,
-          35.0
+          41.0
         ]
       ],
       "strokeColor": "#adb5bd",
@@ -2812,14 +3612,15 @@
       "type": "rectangle",
       "id": "t5b",
       "x": 1670,
-      "y": 1085,
+      "y": 1050,
       "width": 150,
-      "height": 24,
+      "height": 22,
       "backgroundColor": "#f8f9fa",
       "fillStyle": "solid",
       "strokeColor": "#495057",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -2834,7 +3635,7 @@
       "type": "text",
       "id": "t5b_txt",
       "x": 1698.5,
-      "y": 1090.0,
+      "y": 1054.0,
       "width": 93,
       "height": 14,
       "text": "defect_scanner",
@@ -2852,9 +3653,9 @@
       "type": "line",
       "id": "t5b_link",
       "x": 1670,
-      "y": 1097.0,
+      "y": 1061.0,
       "width": 30,
-      "height": 5.0,
+      "height": 16.0,
       "points": [
         [
           0,
@@ -2862,7 +3663,7 @@
         ],
         [
           -30,
-          5.0
+          16.0
         ]
       ],
       "strokeColor": "#adb5bd",
@@ -2874,14 +3675,15 @@
       "type": "rectangle",
       "id": "t5c",
       "x": 1670,
-      "y": 1115,
+      "y": 1075,
       "width": 150,
-      "height": 24,
+      "height": 22,
       "backgroundColor": "#f8f9fa",
       "fillStyle": "solid",
       "strokeColor": "#495057",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -2896,11 +3698,11 @@
       "type": "text",
       "id": "t5c_txt",
       "x": 1682.0,
-      "y": 1120.0,
+      "y": 1079.0,
       "width": 126,
       "height": 14,
-      "text": "hallucination_guard",
-      "originalText": "hallucination_guard",
+      "text": "syntax_prevalidator",
+      "originalText": "syntax_prevalidator",
       "fontSize": 11,
       "fontFamily": 1,
       "textAlign": "center",
@@ -2914,9 +3716,9 @@
       "type": "line",
       "id": "t5c_link",
       "x": 1670,
-      "y": 1127.0,
+      "y": 1086.0,
       "width": 30,
-      "height": 25.0,
+      "height": 9.0,
       "points": [
         [
           0,
@@ -2924,7 +3726,70 @@
         ],
         [
           -30,
-          -25.0
+          -9.0
+        ]
+      ],
+      "strokeColor": "#adb5bd",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "rectangle",
+      "id": "t5d",
+      "x": 1670,
+      "y": 1100,
+      "width": 150,
+      "height": 22,
+      "backgroundColor": "#f8f9fa",
+      "fillStyle": "solid",
+      "strokeColor": "#495057",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "opacity": 100,
+      "roundness": {
+        "type": 3
+      },
+      "boundElements": [
+        {
+          "id": "t5d_txt",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "t5d_txt",
+      "x": 1675.5,
+      "y": 1104.0,
+      "width": 139,
+      "height": 14,
+      "text": "remediation_annotator",
+      "originalText": "remediation_annotator",
+      "fontSize": 11,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "t5d",
+      "strokeColor": "#343a40",
+      "lineHeight": 1.25,
+      "baseline": 9
+    },
+    {
+      "type": "line",
+      "id": "t5d_link",
+      "x": 1670,
+      "y": 1111.0,
+      "width": 30,
+      "height": 34.0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -30,
+          -34.0
         ]
       ],
       "strokeColor": "#adb5bd",
@@ -2935,15 +3800,16 @@
     {
       "type": "rectangle",
       "id": "c5",
-      "x": 1850,
-      "y": 1040,
+      "x": 1840,
+      "y": 1015,
       "width": 350,
-      "height": 125,
+      "height": 140,
       "backgroundColor": "#ffffff",
       "fillStyle": "solid",
       "strokeColor": "#ced4da",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -2952,8 +3818,8 @@
     {
       "type": "text",
       "id": "c5_title",
-      "x": 1862,
-      "y": 1050,
+      "x": 1852,
+      "y": 1025,
       "width": 297,
       "height": 17,
       "text": "Adversarial Role-Flip De-Hallucination",
@@ -2970,12 +3836,12 @@
     {
       "type": "text",
       "id": "c5_body",
-      "x": 1862,
-      "y": 1072,
-      "width": 436,
-      "height": 69,
-      "text": "Mitigates LLM sycophancy before wasting expensive compiler cycles.\nRe-prompts an independent model as an adversarial code auditor\nmandated to find defects, fabricated APIs, or syntax bugs.\nSurfaces hallucinated calls and blocks broken output before the\ntoolchain compiler ever executes.",
-      "originalText": "Mitigates LLM sycophancy before wasting expensive compiler cycles.\nRe-prompts an independent model as an adversarial code auditor\nmandated to find defects, fabricated APIs, or syntax bugs.\nSurfaces hallucinated calls and blocks broken output before the\ntoolchain compiler ever executes.",
+      "x": 1852,
+      "y": 1047,
+      "width": 291,
+      "height": 97,
+      "text": "Mitigates LLM sycophancy before wasting\nexpensive compiler cycles. Re-prompts an\nindependent model as an adversarial code\nauditor mandated to find defects, fabricated\nAPIs, or syntax bugs. Surfaces hallucinated\ncalls and blocks broken output before the\ntoolchain compiler ever executes.",
+      "originalText": "Mitigates LLM sycophancy before wasting\nexpensive compiler cycles. Re-prompts an\nindependent model as an adversarial code\nauditor mandated to find defects, fabricated\nAPIs, or syntax bugs. Surfaces hallucinated\ncalls and blocks broken output before the\ntoolchain compiler ever executes.",
       "fontSize": 11,
       "fontFamily": 1,
       "textAlign": "left",
@@ -2989,9 +3855,9 @@
       "type": "ellipse",
       "id": "art5a",
       "x": 1140,
-      "y": 960,
+      "y": 935,
       "width": 180,
-      "height": 34,
+      "height": 32,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -3008,7 +3874,7 @@
       "type": "text",
       "id": "art5a_txt",
       "x": 1147.0,
-      "y": 969.5,
+      "y": 943.5,
       "width": 166,
       "height": 15,
       "text": "AdversarialAuditVerdict",
@@ -3026,9 +3892,9 @@
       "type": "ellipse",
       "id": "art5b",
       "x": 1140,
-      "y": 1005,
+      "y": 980,
       "width": 180,
-      "height": 34,
+      "height": 32,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -3045,7 +3911,7 @@
       "type": "text",
       "id": "art5b_txt",
       "x": 1155.5,
-      "y": 1013.5,
+      "y": 987.5,
       "width": 149,
       "height": 17,
       "text": "DefectLocationNotes",
@@ -3060,20 +3926,64 @@
       "baseline": 11
     },
     {
-      "type": "arrow",
-      "id": "f5_a",
+      "type": "line",
+      "id": "f5_trunk",
       "x": 1400,
-      "y": 1080,
-      "width": -80,
-      "height": -100,
+      "y": 1055,
+      "width": -40,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          -80,
-          -100
+          -40,
+          0
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "line",
+      "id": "f5_bus",
+      "x": 1360,
+      "y": 951,
+      "width": 0,
+      "height": 45,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          45
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "arrow",
+      "id": "f5_b_0",
+      "x": 1360,
+      "y": 951,
+      "width": -40,
+      "height": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -40,
+          0
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -3083,19 +3993,19 @@
     },
     {
       "type": "arrow",
-      "id": "f5_b",
-      "x": 1400,
-      "y": 1100,
-      "width": -80,
-      "height": -78,
+      "id": "f5_b_1",
+      "x": 1360,
+      "y": 996,
+      "width": -40,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          -80,
-          -78
+          -40,
+          0
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -3104,42 +4014,94 @@
       "endArrowhead": "arrow"
     },
     {
-      "type": "arrow",
-      "id": "m5_a",
-      "x": 1230,
-      "y": 960,
-      "width": 170,
-      "height": -145,
+      "type": "line",
+      "id": "m5_b_0",
+      "x": 1140,
+      "y": 951,
+      "width": -25,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          170,
-          -145
+          -25,
+          0
         ]
       ],
       "strokeColor": "#1e1e1e",
       "strokeWidth": 2,
       "strokeStyle": "solid",
-      "endArrowhead": "arrow"
+      "endArrowhead": null
     },
     {
-      "type": "arrow",
-      "id": "m5_b",
-      "x": 1230,
-      "y": 1005,
-      "width": 170,
-      "height": -190,
+      "type": "line",
+      "id": "m5_b_1",
+      "x": 1140,
+      "y": 996,
+      "width": -25,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          170,
-          -190
+          -25,
+          0
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "line",
+      "id": "m5_bus",
+      "x": 1115,
+      "y": 951,
+      "width": 0,
+      "height": 45,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          45
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "arrow",
+      "id": "m5_trunk",
+      "x": 1115,
+      "y": 973.5,
+      "width": 285,
+      "height": -176.5,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          114.0,
+          0
+        ],
+        [
+          114.0,
+          -176.5
+        ],
+        [
+          285,
+          -176.5
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -3151,7 +4113,7 @@
       "type": "rectangle",
       "id": "a6",
       "x": 1400,
-      "y": 780,
+      "y": 765,
       "width": 240,
       "height": 65,
       "backgroundColor": "#ffd8a8",
@@ -3159,6 +4121,7 @@
       "strokeColor": "#1e1e1e",
       "strokeWidth": 2,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -3173,7 +4136,7 @@
       "type": "text",
       "id": "a6_txt",
       "x": 1433.5,
-      "y": 802.5,
+      "y": 787.5,
       "width": 173,
       "height": 20,
       "text": "6. Validator Agent",
@@ -3191,14 +4154,15 @@
       "type": "rectangle",
       "id": "t6a",
       "x": 1670,
-      "y": 750,
+      "y": 735,
       "width": 150,
-      "height": 24,
+      "height": 22,
       "backgroundColor": "#f8f9fa",
       "fillStyle": "solid",
       "strokeColor": "#495057",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -3213,7 +4177,7 @@
       "type": "text",
       "id": "t6a_txt",
       "x": 1685.5,
-      "y": 755.0,
+      "y": 739.0,
       "width": 119,
       "height": 14,
       "text": "ast_syntax_checker",
@@ -3231,9 +4195,9 @@
       "type": "line",
       "id": "t6a_link",
       "x": 1670,
-      "y": 762.0,
+      "y": 746.0,
       "width": 30,
-      "height": 50.0,
+      "height": 51.0,
       "points": [
         [
           0,
@@ -3241,7 +4205,7 @@
         ],
         [
           -30,
-          50.0
+          51.0
         ]
       ],
       "strokeColor": "#adb5bd",
@@ -3253,14 +4217,15 @@
       "type": "rectangle",
       "id": "t6b",
       "x": 1670,
-      "y": 780,
+      "y": 760,
       "width": 150,
-      "height": 24,
+      "height": 22,
       "backgroundColor": "#f8f9fa",
       "fillStyle": "solid",
       "strokeColor": "#495057",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -3274,12 +4239,12 @@
     {
       "type": "text",
       "id": "t6b_txt",
-      "x": 1688.5,
-      "y": 785.0,
-      "width": 113,
+      "x": 1698.5,
+      "y": 764.0,
+      "width": 93,
       "height": 14,
-      "text": "toolchain_compile",
-      "originalText": "toolchain_compile",
+      "text": "validate_build",
+      "originalText": "validate_build",
       "fontSize": 11,
       "fontFamily": 1,
       "textAlign": "center",
@@ -3293,9 +4258,9 @@
       "type": "line",
       "id": "t6b_link",
       "x": 1670,
-      "y": 792.0,
+      "y": 771.0,
       "width": 30,
-      "height": 20.0,
+      "height": 26.0,
       "points": [
         [
           0,
@@ -3303,7 +4268,7 @@
         ],
         [
           -30,
-          20.0
+          26.0
         ]
       ],
       "strokeColor": "#adb5bd",
@@ -3315,14 +4280,15 @@
       "type": "rectangle",
       "id": "t6c",
       "x": 1670,
-      "y": 810,
+      "y": 785,
       "width": 150,
-      "height": 24,
+      "height": 22,
       "backgroundColor": "#f8f9fa",
       "fillStyle": "solid",
       "strokeColor": "#495057",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -3336,12 +4302,12 @@
     {
       "type": "text",
       "id": "t6c_txt",
-      "x": 1708.5,
-      "y": 815.0,
-      "width": 73,
+      "x": 1715.0,
+      "y": 789.0,
+      "width": 60,
       "height": 14,
-      "text": "test_runner",
-      "originalText": "test_runner",
+      "text": "run_tests",
+      "originalText": "run_tests",
       "fontSize": 11,
       "fontFamily": 1,
       "textAlign": "center",
@@ -3355,9 +4321,9 @@
       "type": "line",
       "id": "t6c_link",
       "x": 1670,
-      "y": 822.0,
+      "y": 796.0,
       "width": 30,
-      "height": 10.0,
+      "height": 1.0,
       "points": [
         [
           0,
@@ -3365,7 +4331,7 @@
         ],
         [
           -30,
-          -10.0
+          1.0
         ]
       ],
       "strokeColor": "#adb5bd",
@@ -3377,14 +4343,15 @@
       "type": "rectangle",
       "id": "t6d",
       "x": 1670,
-      "y": 840,
+      "y": 810,
       "width": 150,
-      "height": 24,
+      "height": 22,
       "backgroundColor": "#f8f9fa",
       "fillStyle": "solid",
       "strokeColor": "#495057",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -3399,7 +4366,7 @@
       "type": "text",
       "id": "t6d_txt",
       "x": 1685.5,
-      "y": 845.0,
+      "y": 814.0,
       "width": 119,
       "height": 14,
       "text": "weakening_detector",
@@ -3417,9 +4384,9 @@
       "type": "line",
       "id": "t6d_link",
       "x": 1670,
-      "y": 852.0,
+      "y": 821.0,
       "width": 30,
-      "height": 40.0,
+      "height": 24.0,
       "points": [
         [
           0,
@@ -3427,7 +4394,70 @@
         ],
         [
           -30,
-          -40.0
+          -24.0
+        ]
+      ],
+      "strokeColor": "#adb5bd",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "rectangle",
+      "id": "t6e",
+      "x": 1670,
+      "y": 835,
+      "width": 150,
+      "height": 22,
+      "backgroundColor": "#f8f9fa",
+      "fillStyle": "solid",
+      "strokeColor": "#495057",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "opacity": 100,
+      "roundness": {
+        "type": 3
+      },
+      "boundElements": [
+        {
+          "id": "t6e_txt",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "t6e_txt",
+      "x": 1692.0,
+      "y": 839.0,
+      "width": 106,
+      "height": 14,
+      "text": "plateau_detector",
+      "originalText": "plateau_detector",
+      "fontSize": 11,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "t6e",
+      "strokeColor": "#343a40",
+      "lineHeight": 1.25,
+      "baseline": 9
+    },
+    {
+      "type": "line",
+      "id": "t6e_link",
+      "x": 1670,
+      "y": 846.0,
+      "width": 30,
+      "height": 49.0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -30,
+          -49.0
         ]
       ],
       "strokeColor": "#adb5bd",
@@ -3438,15 +4468,16 @@
     {
       "type": "rectangle",
       "id": "c6",
-      "x": 1850,
-      "y": 750,
+      "x": 1840,
+      "y": 735,
       "width": 350,
-      "height": 125,
+      "height": 140,
       "backgroundColor": "#ffffff",
       "fillStyle": "solid",
       "strokeColor": "#ced4da",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -3455,8 +4486,8 @@
     {
       "type": "text",
       "id": "c6_title",
-      "x": 1862,
-      "y": 760,
+      "x": 1852,
+      "y": 745,
       "width": 281,
       "height": 17,
       "text": "Cascaded Toolchain Build & Test Gate",
@@ -3473,12 +4504,12 @@
     {
       "type": "text",
       "id": "c6_body",
-      "x": 1862,
-      "y": 782,
-      "width": 416,
-      "height": 69,
-      "text": "Executes target compiler and test tools in a strict cascade:\nAST syntax check -> toolchain compilation -> test suite run.\nCo-translates and synthesizes tests, detects coverage plateaus,\nand enforces a test-weakening guard that rejects test suites\nsilently simplified or loosened by the model.",
-      "originalText": "Executes target compiler and test tools in a strict cascade:\nAST syntax check -> toolchain compilation -> test suite run.\nCo-translates and synthesizes tests, detects coverage plateaus,\nand enforces a test-weakening guard that rejects test suites\nsilently simplified or loosened by the model.",
+      "x": 1852,
+      "y": 767,
+      "width": 291,
+      "height": 110,
+      "text": "Executes target compiler and test tools in a\nstrict cascade: AST syntax check ->\ntoolchain compilation -> test suite run. Co-\ntranslates and synthesizes tests, detects\ncoverage plateaus, and enforces a test-\nweakening guard that rejects test suites\nsilently simplified or loosened by the\nmodel.",
+      "originalText": "Executes target compiler and test tools in a\nstrict cascade: AST syntax check ->\ntoolchain compilation -> test suite run. Co-\ntranslates and synthesizes tests, detects\ncoverage plateaus, and enforces a test-\nweakening guard that rejects test suites\nsilently simplified or loosened by the\nmodel.",
       "fontSize": 11,
       "fontFamily": 1,
       "textAlign": "left",
@@ -3492,9 +4523,9 @@
       "type": "ellipse",
       "id": "art6a",
       "x": 1140,
-      "y": 670,
+      "y": 680,
       "width": 180,
-      "height": 34,
+      "height": 32,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -3511,7 +4542,7 @@
       "type": "text",
       "id": "art6a_txt",
       "x": 1150.5,
-      "y": 679.5,
+      "y": 688.5,
       "width": 159,
       "height": 15,
       "text": "CompilationDiagnostics",
@@ -3529,9 +4560,9 @@
       "type": "ellipse",
       "id": "art6b",
       "x": 1140,
-      "y": 715,
+      "y": 720,
       "width": 180,
-      "height": 34,
+      "height": 32,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -3548,7 +4579,7 @@
       "type": "text",
       "id": "art6b_txt",
       "x": 1158.0,
-      "y": 724.5,
+      "y": 728.5,
       "width": 144,
       "height": 15,
       "text": "TestExecutionSummary",
@@ -3568,7 +4599,7 @@
       "x": 1140,
       "y": 760,
       "width": 180,
-      "height": 34,
+      "height": 32,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -3585,7 +4616,7 @@
       "type": "text",
       "id": "art6c_txt",
       "x": 1175.0,
-      "y": 768.5,
+      "y": 767.5,
       "width": 110,
       "height": 17,
       "text": "CoverageReport",
@@ -3600,20 +4631,64 @@
       "baseline": 11
     },
     {
-      "type": "arrow",
-      "id": "f6_a",
+      "type": "line",
+      "id": "f6_trunk",
       "x": 1400,
-      "y": 790,
-      "width": -80,
-      "height": -100,
+      "y": 775,
+      "width": -40,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          -80,
-          -100
+          -40,
+          0
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "line",
+      "id": "f6_bus",
+      "x": 1360,
+      "y": 696,
+      "width": 0,
+      "height": 80,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          80
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "arrow",
+      "id": "f6_b_0",
+      "x": 1360,
+      "y": 696,
+      "width": -40,
+      "height": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -40,
+          0
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -3623,19 +4698,19 @@
     },
     {
       "type": "arrow",
-      "id": "f6_b",
-      "x": 1400,
-      "y": 810,
-      "width": -80,
-      "height": -78,
+      "id": "f6_b_1",
+      "x": 1360,
+      "y": 736,
+      "width": -40,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          -80,
-          -78
+          -40,
+          0
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -3645,19 +4720,137 @@
     },
     {
       "type": "arrow",
-      "id": "f6_c",
-      "x": 1400,
-      "y": 830,
-      "width": -80,
-      "height": -55,
+      "id": "f6_b_2",
+      "x": 1360,
+      "y": 776,
+      "width": -40,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          -80,
-          -55
+          -40,
+          0
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": "arrow"
+    },
+    {
+      "type": "line",
+      "id": "m6_b_0",
+      "x": 1140,
+      "y": 696,
+      "width": -25,
+      "height": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -25,
+          0
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "line",
+      "id": "m6_b_1",
+      "x": 1140,
+      "y": 736,
+      "width": -25,
+      "height": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -25,
+          0
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "line",
+      "id": "m6_b_2",
+      "x": 1140,
+      "y": 776,
+      "width": -25,
+      "height": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -25,
+          0
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "line",
+      "id": "m6_bus",
+      "x": 1115,
+      "y": 696,
+      "width": 0,
+      "height": 80,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          80
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "arrow",
+      "id": "m6_trunk",
+      "x": 1115,
+      "y": 736.0,
+      "width": 285,
+      "height": -156.0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          114.0,
+          0
+        ],
+        [
+          114.0,
+          -156.0
+        ],
+        [
+          285,
+          -156.0
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -3669,7 +4862,7 @@
       "type": "diamond",
       "id": "gate",
       "x": 1400,
-      "y": 590,
+      "y": 550,
       "width": 240,
       "height": 65,
       "backgroundColor": "#f1f3f5",
@@ -3688,7 +4881,7 @@
       "type": "text",
       "id": "gate_txt",
       "x": 1445.5,
-      "y": 606.0,
+      "y": 566.0,
       "width": 149,
       "height": 33,
       "text": "All Tests Pass &\nNo Compiler Errors?",
@@ -3704,75 +4897,9 @@
     },
     {
       "type": "arrow",
-      "id": "m6_a",
-      "x": 1230,
-      "y": 670,
-      "width": 170,
-      "height": -45,
-      "points": [
-        [
-          0,
-          0
-        ],
-        [
-          170,
-          -45
-        ]
-      ],
-      "strokeColor": "#1e1e1e",
-      "strokeWidth": 2,
-      "strokeStyle": "solid",
-      "endArrowhead": "arrow"
-    },
-    {
-      "type": "arrow",
-      "id": "m6_b",
-      "x": 1230,
-      "y": 715,
-      "width": 170,
-      "height": -90,
-      "points": [
-        [
-          0,
-          0
-        ],
-        [
-          170,
-          -90
-        ]
-      ],
-      "strokeColor": "#1e1e1e",
-      "strokeWidth": 2,
-      "strokeStyle": "solid",
-      "endArrowhead": "arrow"
-    },
-    {
-      "type": "arrow",
-      "id": "m6_c",
-      "x": 1230,
-      "y": 760,
-      "width": 170,
-      "height": -135,
-      "points": [
-        [
-          0,
-          0
-        ],
-        [
-          170,
-          -135
-        ]
-      ],
-      "strokeColor": "#1e1e1e",
-      "strokeWidth": 2,
-      "strokeStyle": "solid",
-      "endArrowhead": "arrow"
-    },
-    {
-      "type": "arrow",
       "id": "e_pass",
       "x": 1640,
-      "y": 622,
+      "y": 582,
       "width": 110,
       "height": 0,
       "points": [
@@ -3785,7 +4912,7 @@
           0
         ]
       ],
-      "strokeColor": "#22c55e",
+      "strokeColor": "#1e1e1e",
       "strokeWidth": 2,
       "strokeStyle": "solid",
       "endArrowhead": "arrow"
@@ -3794,7 +4921,7 @@
       "type": "text",
       "id": "e_pass_lbl",
       "x": 1660.0,
-      "y": 612.0,
+      "y": 572.0,
       "width": 29,
       "height": 15,
       "text": "PASS",
@@ -3804,7 +4931,7 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "strokeColor": "#22c55e",
+      "strokeColor": "#1e1e1e",
       "lineHeight": 1.25,
       "baseline": 10
     },
@@ -3812,12 +4939,12 @@
       "type": "ellipse",
       "id": "fin",
       "x": 1760,
-      "y": 595,
+      "y": 555,
       "width": 240,
       "height": 55,
       "backgroundColor": "#b2f2bb",
       "fillStyle": "solid",
-      "strokeColor": "#22c55e",
+      "strokeColor": "#1e1e1e",
       "strokeWidth": 2,
       "strokeStyle": "solid",
       "boundElements": [
@@ -3831,7 +4958,7 @@
       "type": "text",
       "id": "fin_txt",
       "x": 1763.0,
-      "y": 606.0,
+      "y": 566.0,
       "width": 234,
       "height": 33,
       "text": "Final Translated Repository\nvalidated \u00b7 tested \u00b7 completed",
@@ -3849,9 +4976,9 @@
       "type": "arrow",
       "id": "e_fail",
       "x": 1520,
-      "y": 590,
+      "y": 550,
       "width": 0,
-      "height": -105,
+      "height": -85,
       "points": [
         [
           0,
@@ -3859,10 +4986,10 @@
         ],
         [
           0,
-          -105
+          -85
         ]
       ],
-      "strokeColor": "#ef4444",
+      "strokeColor": "#1e1e1e",
       "strokeWidth": 2,
       "strokeStyle": "solid",
       "endArrowhead": "arrow"
@@ -3871,7 +4998,7 @@
       "type": "text",
       "id": "e_fail_lbl",
       "x": 1485.0,
-      "y": 527.5,
+      "y": 497.5,
       "width": 29,
       "height": 15,
       "text": "FAIL",
@@ -3881,7 +5008,7 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "strokeColor": "#ef4444",
+      "strokeColor": "#1e1e1e",
       "lineHeight": 1.25,
       "baseline": 10
     },
@@ -3889,7 +5016,7 @@
       "type": "rectangle",
       "id": "a7",
       "x": 1400,
-      "y": 420,
+      "y": 400,
       "width": 240,
       "height": 65,
       "backgroundColor": "#b2f2bb",
@@ -3897,6 +5024,7 @@
       "strokeColor": "#1e1e1e",
       "strokeWidth": 2,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -3911,7 +5039,7 @@
       "type": "text",
       "id": "a7_txt",
       "x": 1414.0,
-      "y": 442.5,
+      "y": 422.5,
       "width": 212,
       "height": 20,
       "text": "7. Verdict Panel Agent",
@@ -3929,14 +5057,15 @@
       "type": "rectangle",
       "id": "t7a",
       "x": 1670,
-      "y": 405,
+      "y": 385,
       "width": 150,
-      "height": 24,
+      "height": 22,
       "backgroundColor": "#f8f9fa",
       "fillStyle": "solid",
       "strokeColor": "#495057",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -3951,7 +5080,7 @@
       "type": "text",
       "id": "t7a_txt",
       "x": 1685.5,
-      "y": 410.0,
+      "y": 389.0,
       "width": 119,
       "height": 14,
       "text": "multi_judge_voting",
@@ -3969,9 +5098,9 @@
       "type": "line",
       "id": "t7a_link",
       "x": 1670,
-      "y": 417.0,
+      "y": 396.0,
       "width": 30,
-      "height": 35.0,
+      "height": 36.0,
       "points": [
         [
           0,
@@ -3979,7 +5108,7 @@
         ],
         [
           -30,
-          35.0
+          36.0
         ]
       ],
       "strokeColor": "#adb5bd",
@@ -3991,14 +5120,15 @@
       "type": "rectangle",
       "id": "t7b",
       "x": 1670,
-      "y": 435,
+      "y": 410,
       "width": 150,
-      "height": 24,
+      "height": 22,
       "backgroundColor": "#f8f9fa",
       "fillStyle": "solid",
       "strokeColor": "#495057",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -4013,7 +5143,7 @@
       "type": "text",
       "id": "t7b_txt",
       "x": 1695.5,
-      "y": 440.0,
+      "y": 414.0,
       "width": 99,
       "height": 14,
       "text": "semantic_differ",
@@ -4031,9 +5161,9 @@
       "type": "line",
       "id": "t7b_link",
       "x": 1670,
-      "y": 447.0,
+      "y": 421.0,
       "width": 30,
-      "height": 5.0,
+      "height": 11.0,
       "points": [
         [
           0,
@@ -4041,7 +5171,7 @@
         ],
         [
           -30,
-          5.0
+          11.0
         ]
       ],
       "strokeColor": "#adb5bd",
@@ -4053,14 +5183,15 @@
       "type": "rectangle",
       "id": "t7c",
       "x": 1670,
-      "y": 465,
+      "y": 435,
       "width": 150,
-      "height": 24,
+      "height": 22,
       "backgroundColor": "#f8f9fa",
       "fillStyle": "solid",
       "strokeColor": "#495057",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -4074,12 +5205,12 @@
     {
       "type": "text",
       "id": "t7c_txt",
-      "x": 1708.5,
-      "y": 470.0,
-      "width": 73,
+      "x": 1688.5,
+      "y": 439.0,
+      "width": 113,
       "height": 14,
-      "text": "wasm_oracle",
-      "originalText": "wasm_oracle",
+      "text": "mock_in_isolation",
+      "originalText": "mock_in_isolation",
       "fontSize": 11,
       "fontFamily": 1,
       "textAlign": "center",
@@ -4093,9 +5224,9 @@
       "type": "line",
       "id": "t7c_link",
       "x": 1670,
-      "y": 477.0,
+      "y": 446.0,
       "width": 30,
-      "height": 25.0,
+      "height": 14.0,
       "points": [
         [
           0,
@@ -4103,7 +5234,70 @@
         ],
         [
           -30,
-          -25.0
+          -14.0
+        ]
+      ],
+      "strokeColor": "#adb5bd",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "rectangle",
+      "id": "t7d",
+      "x": 1670,
+      "y": 460,
+      "width": 150,
+      "height": 22,
+      "backgroundColor": "#f8f9fa",
+      "fillStyle": "solid",
+      "strokeColor": "#495057",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "opacity": 100,
+      "roundness": {
+        "type": 3
+      },
+      "boundElements": [
+        {
+          "id": "t7d_txt",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "t7d_txt",
+      "x": 1708.5,
+      "y": 464.0,
+      "width": 73,
+      "height": 14,
+      "text": "wasm_oracle",
+      "originalText": "wasm_oracle",
+      "fontSize": 11,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "t7d",
+      "strokeColor": "#343a40",
+      "lineHeight": 1.25,
+      "baseline": 9
+    },
+    {
+      "type": "line",
+      "id": "t7d_link",
+      "x": 1670,
+      "y": 471.0,
+      "width": 30,
+      "height": 39.0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -30,
+          -39.0
         ]
       ],
       "strokeColor": "#adb5bd",
@@ -4114,15 +5308,16 @@
     {
       "type": "rectangle",
       "id": "c7",
-      "x": 1850,
-      "y": 390,
+      "x": 1840,
+      "y": 370,
       "width": 350,
-      "height": 125,
+      "height": 140,
       "backgroundColor": "#ffffff",
       "fillStyle": "solid",
       "strokeColor": "#ced4da",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -4131,8 +5326,8 @@
     {
       "type": "text",
       "id": "c7_title",
-      "x": 1862,
-      "y": 400,
+      "x": 1852,
+      "y": 380,
       "width": 250,
       "height": 17,
       "text": "Multi-Judge Behavioral Consensus",
@@ -4149,12 +5344,12 @@
     {
       "type": "text",
       "id": "c7_body",
-      "x": 1862,
-      "y": 422,
-      "width": 423,
-      "height": 69,
-      "text": "Compiling code can still diverge in runtime behavior.\nDeploys an ensemble of independent judge agents to score\nbehavioral equivalence between source and target implementations\nacross edge cases, evaluating semantics and execution traces.\nMajority consensus gates release.",
-      "originalText": "Compiling code can still diverge in runtime behavior.\nDeploys an ensemble of independent judge agents to score\nbehavioral equivalence between source and target implementations\nacross edge cases, evaluating semantics and execution traces.\nMajority consensus gates release.",
+      "x": 1852,
+      "y": 402,
+      "width": 291,
+      "height": 97,
+      "text": "Compiling code can still diverge in runtime\nbehavior. Deploys an ensemble of independent\njudge agents to score behavioral equivalence\nbetween source and target implementations\nacross edge cases, evaluating semantics and\nexecution traces. Majority consensus gates\nrelease.",
+      "originalText": "Compiling code can still diverge in runtime\nbehavior. Deploys an ensemble of independent\njudge agents to score behavioral equivalence\nbetween source and target implementations\nacross edge cases, evaluating semantics and\nexecution traces. Majority consensus gates\nrelease.",
       "fontSize": 11,
       "fontFamily": 1,
       "textAlign": "left",
@@ -4168,9 +5363,9 @@
       "type": "ellipse",
       "id": "art7a",
       "x": 1140,
-      "y": 310,
+      "y": 290,
       "width": 180,
-      "height": 34,
+      "height": 32,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -4187,7 +5382,7 @@
       "type": "text",
       "id": "art7a_txt",
       "x": 1175.0,
-      "y": 318.5,
+      "y": 297.5,
       "width": 110,
       "height": 17,
       "text": "ConsensusScore",
@@ -4205,9 +5400,9 @@
       "type": "ellipse",
       "id": "art7b",
       "x": 1140,
-      "y": 355,
+      "y": 335,
       "width": 180,
-      "height": 34,
+      "height": 32,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -4224,7 +5419,7 @@
       "type": "text",
       "id": "art7b_txt",
       "x": 1175.0,
-      "y": 363.5,
+      "y": 342.5,
       "width": 110,
       "height": 17,
       "text": "DiscrepancyLog",
@@ -4239,20 +5434,64 @@
       "baseline": 11
     },
     {
-      "type": "arrow",
-      "id": "f7_a",
+      "type": "line",
+      "id": "f7_trunk",
       "x": 1400,
-      "y": 430,
-      "width": -80,
-      "height": -100,
+      "y": 410,
+      "width": -40,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          -80,
-          -100
+          -40,
+          0
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "line",
+      "id": "f7_bus",
+      "x": 1360,
+      "y": 306,
+      "width": 0,
+      "height": 45,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          45
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "arrow",
+      "id": "f7_b_0",
+      "x": 1360,
+      "y": 306,
+      "width": -40,
+      "height": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -40,
+          0
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -4262,19 +5501,19 @@
     },
     {
       "type": "arrow",
-      "id": "f7_b",
-      "x": 1400,
-      "y": 450,
-      "width": -80,
-      "height": -78,
+      "id": "f7_b_1",
+      "x": 1360,
+      "y": 351,
+      "width": -40,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          -80,
-          -78
+          -40,
+          0
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -4283,42 +5522,94 @@
       "endArrowhead": "arrow"
     },
     {
-      "type": "arrow",
-      "id": "m7_a",
-      "x": 1230,
-      "y": 310,
-      "width": 170,
-      "height": -85,
+      "type": "line",
+      "id": "m7_b_0",
+      "x": 1140,
+      "y": 306,
+      "width": -25,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          170,
-          -85
+          -25,
+          0
         ]
       ],
       "strokeColor": "#1e1e1e",
       "strokeWidth": 2,
       "strokeStyle": "solid",
-      "endArrowhead": "arrow"
+      "endArrowhead": null
     },
     {
-      "type": "arrow",
-      "id": "m7_b",
-      "x": 1230,
-      "y": 355,
-      "width": 170,
-      "height": -130,
+      "type": "line",
+      "id": "m7_b_1",
+      "x": 1140,
+      "y": 351,
+      "width": -25,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          170,
-          -130
+          -25,
+          0
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "line",
+      "id": "m7_bus",
+      "x": 1115,
+      "y": 306,
+      "width": 0,
+      "height": 45,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          45
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "arrow",
+      "id": "m7_trunk",
+      "x": 1115,
+      "y": 328.5,
+      "width": 285,
+      "height": -111.5,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          114.0,
+          0
+        ],
+        [
+          114.0,
+          -111.5
+        ],
+        [
+          285,
+          -111.5
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -4330,7 +5621,7 @@
       "type": "rectangle",
       "id": "a8",
       "x": 1400,
-      "y": 190,
+      "y": 185,
       "width": 240,
       "height": 65,
       "backgroundColor": "#d0bfff",
@@ -4338,6 +5629,7 @@
       "strokeColor": "#1e1e1e",
       "strokeWidth": 2,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -4352,7 +5644,7 @@
       "type": "text",
       "id": "a8_txt",
       "x": 1433.5,
-      "y": 212.5,
+      "y": 207.5,
       "width": 173,
       "height": 20,
       "text": "8. Recruiter Agent",
@@ -4372,12 +5664,13 @@
       "x": 1670,
       "y": 160,
       "width": 150,
-      "height": 24,
+      "height": 22,
       "backgroundColor": "#f8f9fa",
       "fillStyle": "solid",
       "strokeColor": "#495057",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -4392,7 +5685,7 @@
       "type": "text",
       "id": "t8a_txt",
       "x": 1688.5,
-      "y": 165.0,
+      "y": 164.0,
       "width": 113,
       "height": 14,
       "text": "strategy_registry",
@@ -4410,9 +5703,9 @@
       "type": "line",
       "id": "t8a_link",
       "x": 1670,
-      "y": 172.0,
+      "y": 171.0,
       "width": 30,
-      "height": 50.0,
+      "height": 46.0,
       "points": [
         [
           0,
@@ -4420,7 +5713,7 @@
         ],
         [
           -30,
-          50.0
+          46.0
         ]
       ],
       "strokeColor": "#adb5bd",
@@ -4432,14 +5725,15 @@
       "type": "rectangle",
       "id": "t8b",
       "x": 1670,
-      "y": 190,
+      "y": 185,
       "width": 150,
-      "height": 24,
+      "height": 22,
       "backgroundColor": "#f8f9fa",
       "fillStyle": "solid",
       "strokeColor": "#495057",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -4454,7 +5748,7 @@
       "type": "text",
       "id": "t8b_txt",
       "x": 1695.5,
-      "y": 195.0,
+      "y": 189.0,
       "width": 99,
       "height": 14,
       "text": "plateau_breaker",
@@ -4472,9 +5766,9 @@
       "type": "line",
       "id": "t8b_link",
       "x": 1670,
-      "y": 202.0,
+      "y": 196.0,
       "width": 30,
-      "height": 20.0,
+      "height": 21.0,
       "points": [
         [
           0,
@@ -4482,7 +5776,7 @@
         ],
         [
           -30,
-          20.0
+          21.0
         ]
       ],
       "strokeColor": "#adb5bd",
@@ -4494,14 +5788,15 @@
       "type": "rectangle",
       "id": "t8c",
       "x": 1670,
-      "y": 220,
+      "y": 210,
       "width": 150,
-      "height": 24,
+      "height": 22,
       "backgroundColor": "#f8f9fa",
       "fillStyle": "solid",
       "strokeColor": "#495057",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -4516,7 +5811,7 @@
       "type": "text",
       "id": "t8c_txt",
       "x": 1688.5,
-      "y": 225.0,
+      "y": 214.0,
       "width": 113,
       "height": 14,
       "text": "tool_roster_tuner",
@@ -4534,9 +5829,9 @@
       "type": "line",
       "id": "t8c_link",
       "x": 1670,
-      "y": 232.0,
+      "y": 221.0,
       "width": 30,
-      "height": 10.0,
+      "height": 4.0,
       "points": [
         [
           0,
@@ -4544,7 +5839,7 @@
         ],
         [
           -30,
-          -10.0
+          -4.0
         ]
       ],
       "strokeColor": "#adb5bd",
@@ -4556,14 +5851,15 @@
       "type": "rectangle",
       "id": "t8d",
       "x": 1670,
-      "y": 250,
+      "y": 235,
       "width": 150,
-      "height": 24,
+      "height": 22,
       "backgroundColor": "#f8f9fa",
       "fillStyle": "solid",
       "strokeColor": "#495057",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -4578,7 +5874,7 @@
       "type": "text",
       "id": "t8d_txt",
       "x": 1692.0,
-      "y": 255.0,
+      "y": 239.0,
       "width": 106,
       "height": 14,
       "text": "repair_distiller",
@@ -4596,9 +5892,9 @@
       "type": "line",
       "id": "t8d_link",
       "x": 1670,
-      "y": 262.0,
+      "y": 246.0,
       "width": 30,
-      "height": 40.0,
+      "height": 29.0,
       "points": [
         [
           0,
@@ -4606,7 +5902,7 @@
         ],
         [
           -30,
-          -40.0
+          -29.0
         ]
       ],
       "strokeColor": "#adb5bd",
@@ -4617,15 +5913,16 @@
     {
       "type": "rectangle",
       "id": "c8",
-      "x": 1850,
-      "y": 160,
+      "x": 1840,
+      "y": 155,
       "width": 350,
-      "height": 125,
+      "height": 140,
       "backgroundColor": "#ffffff",
       "fillStyle": "solid",
       "strokeColor": "#ced4da",
       "strokeWidth": 1,
       "strokeStyle": "solid",
+      "opacity": 100,
       "roundness": {
         "type": 3
       },
@@ -4634,8 +5931,8 @@
     {
       "type": "text",
       "id": "c8_title",
-      "x": 1862,
-      "y": 170,
+      "x": 1852,
+      "y": 165,
       "width": 312,
       "height": 17,
       "text": "Adaptive Iteration & Strategy Controller",
@@ -4652,12 +5949,12 @@
     {
       "type": "text",
       "id": "c8_body",
-      "x": 1862,
-      "y": 192,
-      "width": 403,
-      "height": 69,
-      "text": "Meta-learning controller triggered when validation fails.\nIf translation plateaus or fails, switches migration strategy\nvia a try-and-fail registry (e.g. Big Bang -> Incremental),\nre-tunes active tools and parameters, and bundles prioritized\ncompiler diagnostics into a distilled repair packet.",
-      "originalText": "Meta-learning controller triggered when validation fails.\nIf translation plateaus or fails, switches migration strategy\nvia a try-and-fail registry (e.g. Big Bang -> Incremental),\nre-tunes active tools and parameters, and bundles prioritized\ncompiler diagnostics into a distilled repair packet.",
+      "x": 1852,
+      "y": 187,
+      "width": 291,
+      "height": 97,
+      "text": "Meta-learning controller triggered when\nvalidation fails. If translation plateaus or\nfails, switches migration strategy via a\ntry-and-fail registry (e.g. Big Bang ->\nIncremental), re-tunes active tools and\nparameters, and bundles prioritized compiler\ndiagnostics into a distilled repair packet.",
+      "originalText": "Meta-learning controller triggered when\nvalidation fails. If translation plateaus or\nfails, switches migration strategy via a\ntry-and-fail registry (e.g. Big Bang ->\nIncremental), re-tunes active tools and\nparameters, and bundles prioritized compiler\ndiagnostics into a distilled repair packet.",
       "fontSize": 11,
       "fontFamily": 1,
       "textAlign": "left",
@@ -4673,10 +5970,10 @@
       "x": 1140,
       "y": 140,
       "width": 180,
-      "height": 34,
+      "height": 32,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
-      "strokeColor": "#ef4444",
+      "strokeColor": "#1e1e1e",
       "strokeWidth": 2,
       "strokeStyle": "dashed",
       "boundElements": [
@@ -4690,7 +5987,7 @@
       "type": "text",
       "id": "art8a_txt",
       "x": 1171.5,
-      "y": 148.5,
+      "y": 147.5,
       "width": 117,
       "height": 17,
       "text": "RecruitmentPlan",
@@ -4700,7 +5997,7 @@
       "textAlign": "center",
       "verticalAlign": "middle",
       "containerId": "art8a",
-      "strokeColor": "#ef4444",
+      "strokeColor": "#1e1e1e",
       "lineHeight": 1.25,
       "baseline": 11
     },
@@ -4710,10 +6007,10 @@
       "x": 1140,
       "y": 185,
       "width": 180,
-      "height": 34,
+      "height": 32,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
-      "strokeColor": "#ef4444",
+      "strokeColor": "#1e1e1e",
       "strokeWidth": 2,
       "strokeStyle": "dashed",
       "boundElements": [
@@ -4727,7 +6024,7 @@
       "type": "text",
       "id": "art8b_txt",
       "x": 1150.5,
-      "y": 194.5,
+      "y": 193.5,
       "width": 159,
       "height": 15,
       "text": "DistilledRepairContext",
@@ -4737,94 +6034,190 @@
       "textAlign": "center",
       "verticalAlign": "middle",
       "containerId": "art8b",
-      "strokeColor": "#ef4444",
+      "strokeColor": "#1e1e1e",
       "lineHeight": 1.25,
       "baseline": 10
     },
     {
-      "type": "arrow",
-      "id": "f8_a",
+      "type": "line",
+      "id": "f8_trunk",
       "x": 1400,
-      "y": 200,
-      "width": -80,
-      "height": -40,
+      "y": 195,
+      "width": -40,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          -80,
-          -40
+          -40,
+          0
         ]
       ],
-      "strokeColor": "#ef4444",
+      "strokeColor": "#1e1e1e",
       "strokeWidth": 2,
       "strokeStyle": "solid",
-      "endArrowhead": "arrow"
+      "endArrowhead": null
     },
     {
-      "type": "arrow",
-      "id": "f8_b",
-      "x": 1400,
-      "y": 220,
-      "width": -80,
-      "height": -18,
+      "type": "line",
+      "id": "f8_bus",
+      "x": 1360,
+      "y": 156,
+      "width": 0,
+      "height": 45,
       "points": [
         [
           0,
           0
         ],
         [
-          -80,
-          -18
+          0,
+          45
         ]
       ],
-      "strokeColor": "#ef4444",
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "arrow",
+      "id": "f8_b_0",
+      "x": 1360,
+      "y": 156,
+      "width": -40,
+      "height": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -40,
+          0
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
       "strokeWidth": 2,
       "strokeStyle": "solid",
       "endArrowhead": "arrow"
     },
     {
       "type": "arrow",
-      "id": "m8_a",
+      "id": "f8_b_1",
+      "x": 1360,
+      "y": 201,
+      "width": -40,
+      "height": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -40,
+          0
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": "arrow"
+    },
+    {
+      "type": "line",
+      "id": "m8_b_0",
       "x": 1140,
-      "y": 157,
-      "width": -60,
-      "height": -49,
+      "y": 156,
+      "width": -25,
+      "height": 0,
       "points": [
         [
           0,
           0
         ],
         [
-          -60,
-          -49
+          -25,
+          0
         ]
       ],
-      "strokeColor": "#ef4444",
+      "strokeColor": "#1e1e1e",
       "strokeWidth": 2,
       "strokeStyle": "solid",
-      "endArrowhead": "arrow"
+      "endArrowhead": null
+    },
+    {
+      "type": "line",
+      "id": "m8_b_1",
+      "x": 1140,
+      "y": 201,
+      "width": -25,
+      "height": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -25,
+          0
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
+    },
+    {
+      "type": "line",
+      "id": "m8_bus",
+      "x": 1115,
+      "y": 156,
+      "width": 0,
+      "height": 45,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          45
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "endArrowhead": null
     },
     {
       "type": "arrow",
-      "id": "m8_b",
-      "x": 1140,
-      "y": 202,
-      "width": -60,
-      "height": -94,
+      "id": "m8_trunk",
+      "x": 1115,
+      "y": 178.5,
+      "width": -15,
+      "height": -83.5,
       "points": [
         [
           0,
           0
         ],
         [
-          -60,
-          -94
+          -6.0,
+          0
+        ],
+        [
+          -6.0,
+          -83.5
+        ],
+        [
+          -15,
+          -83.5
         ]
       ],
-      "strokeColor": "#ef4444",
+      "strokeColor": "#1e1e1e",
       "strokeWidth": 2,
       "strokeStyle": "solid",
       "endArrowhead": "arrow"
@@ -4832,29 +6225,29 @@
     {
       "type": "arrow",
       "id": "repair_loop",
-      "x": 1080,
-      "y": 108,
-      "width": -500,
-      "height": 994,
+      "x": 1100,
+      "y": 95,
+      "width": -510,
+      "height": 982,
       "points": [
         [
           0,
           0
         ],
         [
-          -1065,
+          -1085,
           0
         ],
         [
-          -1065,
-          994
+          -1085,
+          982
         ],
         [
-          -500,
-          994
+          -510,
+          982
         ]
       ],
-      "strokeColor": "#ef4444",
+      "strokeColor": "#1e1e1e",
       "strokeWidth": 2,
       "strokeStyle": "solid",
       "endArrowhead": "arrow"
@@ -4863,7 +6256,7 @@
       "type": "text",
       "id": "repair_lbl",
       "x": 20,
-      "y": 970,
+      "y": 950,
       "width": 195,
       "height": 45,
       "text": "Adaptive Repair Cycle:\nRe-enters Translator with\nnext strategy + diagnostics",
@@ -4873,7 +6266,7 @@
       "textAlign": "left",
       "verticalAlign": "top",
       "containerId": null,
-      "strokeColor": "#ef4444",
+      "strokeColor": "#1e1e1e",
       "lineHeight": 1.25,
       "baseline": 10
     }
