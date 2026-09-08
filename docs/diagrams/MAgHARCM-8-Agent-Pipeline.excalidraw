@@ -6,8 +6,8 @@
     {
       "type": "text",
       "id": "title",
-      "x": 650,
-      "y": 15,
+      "x": 660,
+      "y": 24,
       "width": 965,
       "height": 30,
       "text": "MAgHARCM \u2014 Multi-Agent Architecture Reconstruction & Code Migration",
@@ -22,28 +22,10 @@
       "baseline": 21
     },
     {
-      "type": "text",
-      "id": "subtitle",
-      "x": 670,
-      "y": 46,
-      "width": 900,
-      "height": 19,
-      "text": "8 Specialized Agents \u00b7 Atomic Artifact Decompositions \u00b7 Cascaded Verification \u00b7 Adaptive Repair Loop",
-      "originalText": "8 Specialized Agents \u00b7 Atomic Artifact Decompositions \u00b7 Cascaded Verification \u00b7 Adaptive Repair Loop",
-      "fontSize": 15,
-      "fontFamily": 1,
-      "textAlign": "center",
-      "verticalAlign": "top",
-      "containerId": null,
-      "strokeColor": "#495057",
-      "lineHeight": 1.25,
-      "baseline": 13
-    },
-    {
       "type": "rectangle",
       "id": "leg_agent",
       "x": 650,
-      "y": 72,
+      "y": 68,
       "width": 26,
       "height": 18,
       "backgroundColor": "#a5d8ff",
@@ -61,7 +43,7 @@
       "type": "text",
       "id": "leg_agent_t",
       "x": 682,
-      "y": 73,
+      "y": 69,
       "width": 39,
       "height": 17,
       "text": "Agent",
@@ -79,7 +61,7 @@
       "type": "ellipse",
       "id": "leg_art",
       "x": 745,
-      "y": 70,
+      "y": 66,
       "width": 26,
       "height": 22,
       "backgroundColor": "#f1f3f5",
@@ -93,7 +75,7 @@
       "type": "text",
       "id": "leg_art_t",
       "x": 777,
-      "y": 73,
+      "y": 69,
       "width": 63,
       "height": 17,
       "text": "Artifact",
@@ -111,7 +93,7 @@
       "type": "diamond",
       "id": "leg_gate",
       "x": 850,
-      "y": 68,
+      "y": 64,
       "width": 24,
       "height": 24,
       "backgroundColor": "#f1f3f5",
@@ -125,7 +107,7 @@
       "type": "text",
       "id": "leg_gate_t",
       "x": 880,
-      "y": 73,
+      "y": 69,
       "width": 102,
       "height": 17,
       "text": "Decision Gate",
@@ -143,7 +125,7 @@
       "type": "arrow",
       "id": "leg_fwd",
       "x": 995,
-      "y": 80,
+      "y": 76,
       "width": 30,
       "height": 0,
       "points": [
@@ -165,7 +147,7 @@
       "type": "text",
       "id": "leg_fwd_t",
       "x": 1031,
-      "y": 73,
+      "y": 69,
       "width": 32,
       "height": 17,
       "text": "Flow",
@@ -183,7 +165,7 @@
       "type": "arrow",
       "id": "leg_rep",
       "x": 1085,
-      "y": 80,
+      "y": 76,
       "width": 30,
       "height": 0,
       "points": [
@@ -205,7 +187,7 @@
       "type": "text",
       "id": "leg_rep_t",
       "x": 1121,
-      "y": 73,
+      "y": 69,
       "width": 94,
       "height": 17,
       "text": "Repair Cycle",
@@ -223,7 +205,7 @@
       "type": "arrow",
       "id": "leg_suc",
       "x": 1225,
-      "y": 80,
+      "y": 76,
       "width": 30,
       "height": 0,
       "points": [
@@ -245,7 +227,7 @@
       "type": "text",
       "id": "leg_suc_t",
       "x": 1261,
-      "y": 73,
+      "y": 69,
       "width": 78,
       "height": 17,
       "text": "Completion",
@@ -265,7 +247,7 @@
       "x": 40,
       "y": 105,
       "width": 1020,
-      "height": 480,
+      "height": 565,
       "backgroundColor": "#dbe4ff",
       "fillStyle": "solid",
       "strokeColor": "#91a7ff",
@@ -282,10 +264,10 @@
       "id": "phase1_lbl",
       "x": 55,
       "y": 115,
-      "width": 305,
+      "width": 468,
       "height": 17,
-      "text": "PHASE I: ARCHAEOLOGY & PROJECT ANALYSIS",
-      "originalText": "PHASE I: ARCHAEOLOGY & PROJECT ANALYSIS",
+      "text": "PHASE I: ARCHITECTURE RECONSTRUCTION & PLANNING (AGENTS 1\u20133)",
+      "originalText": "PHASE I: ARCHITECTURE RECONSTRUCTION & PLANNING (AGENTS 1\u20133)",
       "fontSize": 13,
       "fontFamily": 1,
       "textAlign": "left",
@@ -299,9 +281,9 @@
       "type": "rectangle",
       "id": "phase2_bg",
       "x": 40,
-      "y": 600,
+      "y": 690,
       "width": 1020,
-      "height": 540,
+      "height": 260,
       "backgroundColor": "#e5dbff",
       "fillStyle": "solid",
       "strokeColor": "#b197fc",
@@ -317,11 +299,11 @@
       "type": "text",
       "id": "phase2_lbl",
       "x": 55,
-      "y": 610,
-      "width": 250,
+      "y": 700,
+      "width": 320,
       "height": 17,
-      "text": "PHASE II: PLANNING & TRANSLATION",
-      "originalText": "PHASE II: PLANNING & TRANSLATION",
+      "text": "PHASE II: TRANSLATION SYNTHESIS (AGENT 4)",
+      "originalText": "PHASE II: TRANSLATION SYNTHESIS (AGENT 4)",
       "fontSize": 13,
       "fontFamily": 1,
       "textAlign": "left",
@@ -337,7 +319,7 @@
       "x": 1260,
       "y": 105,
       "width": 1020,
-      "height": 505,
+      "height": 515,
       "backgroundColor": "#ffd8a8",
       "fillStyle": "solid",
       "strokeColor": "#ffa94d",
@@ -354,10 +336,10 @@
       "id": "phase3_lbl",
       "x": 1275,
       "y": 115,
-      "width": 312,
+      "width": 429,
       "height": 17,
-      "text": "PHASE III: REVIEW & TOOLCHAIN VALIDATION",
-      "originalText": "PHASE III: REVIEW & TOOLCHAIN VALIDATION",
+      "text": "PHASE III: ADVERSARIAL REVIEW & VALIDATION (AGENTS 5\u20136)",
+      "originalText": "PHASE III: ADVERSARIAL REVIEW & VALIDATION (AGENTS 5\u20136)",
       "fontSize": 13,
       "fontFamily": 1,
       "textAlign": "left",
@@ -371,9 +353,9 @@
       "type": "rectangle",
       "id": "phase4_bg",
       "x": 1260,
-      "y": 625,
+      "y": 640,
       "width": 1020,
-      "height": 515,
+      "height": 375,
       "backgroundColor": "#d3f9d8",
       "fillStyle": "solid",
       "strokeColor": "#8ce99a",
@@ -389,11 +371,11 @@
       "type": "text",
       "id": "phase4_lbl",
       "x": 1275,
-      "y": 635,
-      "width": 375,
+      "y": 650,
+      "width": 219,
       "height": 17,
-      "text": "PHASE IV: BEHAVIORAL CONSENSUS & ADAPTIVE REPAIR",
-      "originalText": "PHASE IV: BEHAVIORAL CONSENSUS & ADAPTIVE REPAIR",
+      "text": "PHASE IV: CONSENSUS & REPAIR",
+      "originalText": "PHASE IV: CONSENSUS & REPAIR",
       "fontSize": 13,
       "fontFamily": 1,
       "textAlign": "left",
@@ -409,7 +391,7 @@
       "x": 600,
       "y": 135,
       "width": 240,
-      "height": 40,
+      "height": 38,
       "backgroundColor": "#e9ecef",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -426,7 +408,7 @@
       "type": "text",
       "id": "repo_txt",
       "x": 586.5,
-      "y": 140.0,
+      "y": 139.0,
       "width": 267,
       "height": 30,
       "text": "Legacy Source Repository\nC sources \u00b7 git history \u00b7 build files",
@@ -444,9 +426,9 @@
       "type": "arrow",
       "id": "e_repo_a1",
       "x": 720,
-      "y": 175,
+      "y": 173,
       "width": 0,
-      "height": 18,
+      "height": 15,
       "points": [
         [
           0,
@@ -454,7 +436,7 @@
         ],
         [
           0,
-          18
+          15
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -468,7 +450,7 @@
       "x": 65,
       "y": 145,
       "width": 360,
-      "height": 135,
+      "height": 130,
       "backgroundColor": "#ffffff",
       "fillStyle": "solid",
       "strokeColor": "#ced4da",
@@ -487,8 +469,8 @@
       "y": 159,
       "width": 281,
       "height": 120,
-      "text": "The journey begins deep within the\nlegacy repository before a single line\nof code is touched. By analyzing years\nof version control commits, structural\nchurn, and tacit developer conventions,\nwe uncover the hidden domain boundaries\nand unspoken co-change couplings that\nformal documentation forgot.",
-      "originalText": "The journey begins deep within the\nlegacy repository before a single line\nof code is touched. By analyzing years\nof version control commits, structural\nchurn, and tacit developer conventions,\nwe uncover the hidden domain boundaries\nand unspoken co-change couplings that\nformal documentation forgot.",
+      "text": "Legacy software migration starts in\nversion control history before touching\nsource files. Analyzing years of git\ncommit churn, directory evolution, and\ntacit naming patterns exposes true\ncomponent boundaries and hidden co-\nchange couplings that formal\nspecifications omit.",
+      "originalText": "Legacy software migration starts in\nversion control history before touching\nsource files. Analyzing years of git\ncommit churn, directory evolution, and\ntacit naming patterns exposes true\ncomponent boundaries and hidden co-\nchange couplings that formal\nspecifications omit.",
       "fontSize": 12,
       "fontFamily": 1,
       "textAlign": "left",
@@ -502,9 +484,9 @@
       "type": "rectangle",
       "id": "a1",
       "x": 580,
-      "y": 193,
+      "y": 188,
       "width": 280,
-      "height": 50,
+      "height": 48,
       "backgroundColor": "#a5d8ff",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -525,7 +507,7 @@
       "type": "text",
       "id": "a1_txt",
       "x": 621.0,
-      "y": 208.5,
+      "y": 202.5,
       "width": 198,
       "height": 19,
       "text": "1. Archaeologist Agent",
@@ -543,9 +525,9 @@
       "type": "ellipse",
       "id": "art1a",
       "x": 490,
-      "y": 275,
+      "y": 265,
       "width": 150,
-      "height": 32,
+      "height": 30,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -562,7 +544,7 @@
       "type": "text",
       "id": "art1a_txt",
       "x": 522.0,
-      "y": 282.5,
+      "y": 271.5,
       "width": 86,
       "height": 17,
       "text": "BoundaryMap",
@@ -580,9 +562,9 @@
       "type": "ellipse",
       "id": "art1b",
       "x": 645,
-      "y": 275,
+      "y": 265,
       "width": 150,
-      "height": 32,
+      "height": 30,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -599,7 +581,7 @@
       "type": "text",
       "id": "art1b_txt",
       "x": 669.0,
-      "y": 282.5,
+      "y": 271.5,
       "width": 102,
       "height": 17,
       "text": "ChurnHotspots",
@@ -617,9 +599,9 @@
       "type": "ellipse",
       "id": "art1c",
       "x": 800,
-      "y": 275,
+      "y": 265,
       "width": 150,
-      "height": 32,
+      "height": 30,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -636,7 +618,7 @@
       "type": "text",
       "id": "art1c_txt",
       "x": 816.5,
-      "y": 282.5,
+      "y": 271.5,
       "width": 117,
       "height": 17,
       "text": "NamingForensics",
@@ -654,9 +636,9 @@
       "type": "line",
       "id": "f1_trunk",
       "x": 720,
-      "y": 243,
+      "y": 236,
       "width": 0,
-      "height": 15,
+      "height": 14,
       "points": [
         [
           0,
@@ -664,7 +646,7 @@
         ],
         [
           0,
-          15
+          14
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -676,7 +658,7 @@
       "type": "line",
       "id": "f1_bus",
       "x": 565,
-      "y": 258,
+      "y": 250,
       "width": 310,
       "height": 0,
       "points": [
@@ -698,9 +680,9 @@
       "type": "arrow",
       "id": "f1_b_0",
       "x": 565,
-      "y": 258,
+      "y": 250,
       "width": 0,
-      "height": 17,
+      "height": 15,
       "points": [
         [
           0,
@@ -708,7 +690,7 @@
         ],
         [
           0,
-          17
+          15
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -720,9 +702,9 @@
       "type": "arrow",
       "id": "f1_b_1",
       "x": 720,
-      "y": 258,
+      "y": 250,
       "width": 0,
-      "height": 17,
+      "height": 15,
       "points": [
         [
           0,
@@ -730,7 +712,7 @@
         ],
         [
           0,
-          17
+          15
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -742,9 +724,9 @@
       "type": "arrow",
       "id": "f1_b_2",
       "x": 875,
-      "y": 258,
+      "y": 250,
       "width": 0,
-      "height": 17,
+      "height": 15,
       "points": [
         [
           0,
@@ -752,7 +734,7 @@
         ],
         [
           0,
-          17
+          15
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -764,7 +746,7 @@
       "type": "line",
       "id": "m1_b_0",
       "x": 565,
-      "y": 307,
+      "y": 295,
       "width": 0,
       "height": 15,
       "points": [
@@ -786,7 +768,7 @@
       "type": "line",
       "id": "m1_b_1",
       "x": 720,
-      "y": 307,
+      "y": 295,
       "width": 0,
       "height": 15,
       "points": [
@@ -808,7 +790,7 @@
       "type": "line",
       "id": "m1_b_2",
       "x": 875,
-      "y": 307,
+      "y": 295,
       "width": 0,
       "height": 15,
       "points": [
@@ -830,7 +812,7 @@
       "type": "line",
       "id": "m1_bus",
       "x": 565,
-      "y": 322,
+      "y": 310,
       "width": 310,
       "height": 0,
       "points": [
@@ -852,9 +834,9 @@
       "type": "arrow",
       "id": "m1_trunk",
       "x": 720,
-      "y": 322,
+      "y": 310,
       "width": 0,
-      "height": 23,
+      "height": 25,
       "points": [
         [
           0,
@@ -862,7 +844,7 @@
         ],
         [
           0,
-          23
+          25
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -874,9 +856,9 @@
       "type": "rectangle",
       "id": "c2",
       "x": 65,
-      "y": 335,
+      "y": 320,
       "width": 360,
-      "height": 135,
+      "height": 130,
       "backgroundColor": "#ffffff",
       "fillStyle": "solid",
       "strokeColor": "#ced4da",
@@ -892,11 +874,11 @@
       "type": "text",
       "id": "c2_body",
       "x": 81,
-      "y": 349,
-      "width": 274,
+      "y": 334,
+      "width": 288,
       "height": 120,
-      "text": "With the historical territory charted,\nwe step into the living anatomy of the\ncodebase. We extract comprehensive\nabstract syntax trees and recover\ndynamic runtime invariants\u2014identifying\npointer lifetimes, memory layouts, and\nidiom targets\u2014to determine the optimal\nglobal migration path.",
-      "originalText": "With the historical territory charted,\nwe step into the living anatomy of the\ncodebase. We extract comprehensive\nabstract syntax trees and recover\ndynamic runtime invariants\u2014identifying\npointer lifetimes, memory layouts, and\nidiom targets\u2014to determine the optimal\nglobal migration path.",
+      "text": "Armed with these recovered boundary\nlines, static and dynamic codebase\nprofiling begins. Extracting abstract\nsyntax trees and mining runtime\ninvariants\u2014such as pointer lifetimes and\nmemory layouts\u2014determines idiomatic\ntarget equivalents and defines the\nglobal migration strategy.",
+      "originalText": "Armed with these recovered boundary\nlines, static and dynamic codebase\nprofiling begins. Extracting abstract\nsyntax trees and mining runtime\ninvariants\u2014such as pointer lifetimes and\nmemory layouts\u2014determines idiomatic\ntarget equivalents and defines the\nglobal migration strategy.",
       "fontSize": 12,
       "fontFamily": 1,
       "textAlign": "left",
@@ -910,9 +892,9 @@
       "type": "rectangle",
       "id": "a2",
       "x": 580,
-      "y": 345,
+      "y": 335,
       "width": 280,
-      "height": 50,
+      "height": 48,
       "backgroundColor": "#c3fae8",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -933,7 +915,7 @@
       "type": "text",
       "id": "a2_txt",
       "x": 643.5,
-      "y": 360.5,
+      "y": 349.5,
       "width": 153,
       "height": 19,
       "text": "2. Analyzer Agent",
@@ -951,9 +933,9 @@
       "type": "ellipse",
       "id": "art2a",
       "x": 490,
-      "y": 427,
+      "y": 412,
       "width": 150,
-      "height": 32,
+      "height": 30,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -970,7 +952,7 @@
       "type": "text",
       "id": "art2a_txt",
       "x": 502.5,
-      "y": 434.5,
+      "y": 418.5,
       "width": 125,
       "height": 17,
       "text": "SourceASTProfile",
@@ -988,9 +970,9 @@
       "type": "ellipse",
       "id": "art2b",
       "x": 645,
-      "y": 427,
+      "y": 412,
       "width": 150,
-      "height": 32,
+      "height": 30,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -1007,7 +989,7 @@
       "type": "text",
       "id": "art2b_txt",
       "x": 651.5,
-      "y": 435.5,
+      "y": 419.5,
       "width": 137,
       "height": 15,
       "text": "LibraryMappingTable",
@@ -1025,9 +1007,9 @@
       "type": "ellipse",
       "id": "art2c",
       "x": 800,
-      "y": 427,
+      "y": 412,
       "width": 150,
-      "height": 32,
+      "height": 30,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -1044,7 +1026,7 @@
       "type": "text",
       "id": "art2c_txt",
       "x": 806.5,
-      "y": 435.5,
+      "y": 419.5,
       "width": 137,
       "height": 15,
       "text": "TargetProjectDesign",
@@ -1062,9 +1044,9 @@
       "type": "line",
       "id": "f2_trunk",
       "x": 720,
-      "y": 395,
+      "y": 383,
       "width": 0,
-      "height": 15,
+      "height": 14,
       "points": [
         [
           0,
@@ -1072,7 +1054,7 @@
         ],
         [
           0,
-          15
+          14
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -1084,7 +1066,7 @@
       "type": "line",
       "id": "f2_bus",
       "x": 565,
-      "y": 410,
+      "y": 397,
       "width": 310,
       "height": 0,
       "points": [
@@ -1106,9 +1088,9 @@
       "type": "arrow",
       "id": "f2_b_0",
       "x": 565,
-      "y": 410,
+      "y": 397,
       "width": 0,
-      "height": 17,
+      "height": 15,
       "points": [
         [
           0,
@@ -1116,7 +1098,7 @@
         ],
         [
           0,
-          17
+          15
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -1128,9 +1110,9 @@
       "type": "arrow",
       "id": "f2_b_1",
       "x": 720,
-      "y": 410,
+      "y": 397,
       "width": 0,
-      "height": 17,
+      "height": 15,
       "points": [
         [
           0,
@@ -1138,7 +1120,7 @@
         ],
         [
           0,
-          17
+          15
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -1150,9 +1132,9 @@
       "type": "arrow",
       "id": "f2_b_2",
       "x": 875,
-      "y": 410,
+      "y": 397,
       "width": 0,
-      "height": 17,
+      "height": 15,
       "points": [
         [
           0,
@@ -1160,7 +1142,7 @@
         ],
         [
           0,
-          17
+          15
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -1172,9 +1154,9 @@
       "type": "line",
       "id": "m2_b_0",
       "x": 565,
-      "y": 459,
+      "y": 442,
       "width": 0,
-      "height": 15,
+      "height": 16,
       "points": [
         [
           0,
@@ -1182,7 +1164,7 @@
         ],
         [
           0,
-          15
+          16
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -1194,9 +1176,9 @@
       "type": "line",
       "id": "m2_b_1",
       "x": 720,
-      "y": 459,
+      "y": 442,
       "width": 0,
-      "height": 15,
+      "height": 16,
       "points": [
         [
           0,
@@ -1204,7 +1186,7 @@
         ],
         [
           0,
-          15
+          16
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -1216,9 +1198,9 @@
       "type": "line",
       "id": "m2_b_2",
       "x": 875,
-      "y": 459,
+      "y": 442,
       "width": 0,
-      "height": 15,
+      "height": 16,
       "points": [
         [
           0,
@@ -1226,7 +1208,7 @@
         ],
         [
           0,
-          15
+          16
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -1238,7 +1220,7 @@
       "type": "line",
       "id": "m2_bus",
       "x": 565,
-      "y": 474,
+      "y": 458,
       "width": 310,
       "height": 0,
       "points": [
@@ -1260,9 +1242,9 @@
       "type": "arrow",
       "id": "m2_trunk",
       "x": 720,
-      "y": 474,
+      "y": 458,
       "width": 0,
-      "height": 211,
+      "height": 27,
       "points": [
         [
           0,
@@ -1270,7 +1252,7 @@
         ],
         [
           0,
-          211
+          27
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -1279,30 +1261,12 @@
       "endArrowhead": "arrow"
     },
     {
-      "type": "text",
-      "id": "m2_trunk_lbl",
-      "x": 680.0,
-      "y": 569.5,
-      "width": 101,
-      "height": 15,
-      "text": "Enter Phase II",
-      "originalText": "Enter Phase II",
-      "fontSize": 12,
-      "fontFamily": 1,
-      "textAlign": "center",
-      "verticalAlign": "top",
-      "containerId": null,
-      "strokeColor": "#1e1e1e",
-      "lineHeight": 1.25,
-      "baseline": 10
-    },
-    {
       "type": "rectangle",
       "id": "c3",
       "x": 65,
-      "y": 660,
+      "y": 470,
       "width": 360,
-      "height": 135,
+      "height": 130,
       "backgroundColor": "#ffffff",
       "fillStyle": "solid",
       "strokeColor": "#ced4da",
@@ -1318,11 +1282,11 @@
       "type": "text",
       "id": "c3_body",
       "x": 81,
-      "y": 674,
+      "y": 484,
       "width": 288,
       "height": 120,
-      "text": "Next, the architectural blueprint is\ndrawn. We decompose the monolithic\nsource into atomic, context-sized syntax\nfragments, untangle circular import\ncycles through reverse-topological\nscheduling, and scaffold compilable\ntarget skeletons so every incoming\nfunction has an immediate anchor.",
-      "originalText": "Next, the architectural blueprint is\ndrawn. We decompose the monolithic\nsource into atomic, context-sized syntax\nfragments, untangle circular import\ncycles through reverse-topological\nscheduling, and scaffold compilable\ntarget skeletons so every incoming\nfunction has an immediate anchor.",
+      "text": "These profiles and invariant models form\nthe foundation for structural\ndecomposition. Breaking monolithic files\ninto dependency-ordered syntax fragments\nresolves cyclic imports through reverse-\ntopological scheduling and generates\ncompilable skeleton targets to anchor\ntranslated logic.",
+      "originalText": "These profiles and invariant models form\nthe foundation for structural\ndecomposition. Breaking monolithic files\ninto dependency-ordered syntax fragments\nresolves cyclic imports through reverse-\ntopological scheduling and generates\ncompilable skeleton targets to anchor\ntranslated logic.",
       "fontSize": 12,
       "fontFamily": 1,
       "textAlign": "left",
@@ -1336,9 +1300,9 @@
       "type": "rectangle",
       "id": "a3",
       "x": 580,
-      "y": 685,
+      "y": 485,
       "width": 280,
-      "height": 50,
+      "height": 48,
       "backgroundColor": "#fff3bf",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -1359,7 +1323,7 @@
       "type": "text",
       "id": "a3_txt",
       "x": 648.0,
-      "y": 700.5,
+      "y": 499.5,
       "width": 144,
       "height": 19,
       "text": "3. Planner Agent",
@@ -1377,9 +1341,9 @@
       "type": "ellipse",
       "id": "art3a",
       "x": 490,
-      "y": 767,
+      "y": 562,
       "width": 150,
-      "height": 32,
+      "height": 30,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -1396,7 +1360,7 @@
       "type": "text",
       "id": "art3a_txt",
       "x": 502.5,
-      "y": 774.5,
+      "y": 568.5,
       "width": 125,
       "height": 17,
       "text": "OrderedFragments",
@@ -1414,9 +1378,9 @@
       "type": "ellipse",
       "id": "art3b",
       "x": 645,
-      "y": 767,
+      "y": 562,
       "width": 150,
-      "height": 32,
+      "height": 30,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -1433,7 +1397,7 @@
       "type": "text",
       "id": "art3b_txt",
       "x": 651.5,
-      "y": 775.5,
+      "y": 569.5,
       "width": 137,
       "height": 15,
       "text": "CompilableSkeletons",
@@ -1451,9 +1415,9 @@
       "type": "ellipse",
       "id": "art3c",
       "x": 800,
-      "y": 767,
+      "y": 562,
       "width": 150,
-      "height": 32,
+      "height": 30,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -1470,7 +1434,7 @@
       "type": "text",
       "id": "art3c_txt",
       "x": 828.0,
-      "y": 774.5,
+      "y": 568.5,
       "width": 94,
       "height": 17,
       "text": "TwoPhasePlan",
@@ -1488,9 +1452,9 @@
       "type": "line",
       "id": "f3_trunk",
       "x": 720,
-      "y": 735,
+      "y": 533,
       "width": 0,
-      "height": 15,
+      "height": 14,
       "points": [
         [
           0,
@@ -1498,7 +1462,7 @@
         ],
         [
           0,
-          15
+          14
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -1510,7 +1474,7 @@
       "type": "line",
       "id": "f3_bus",
       "x": 565,
-      "y": 750,
+      "y": 547,
       "width": 310,
       "height": 0,
       "points": [
@@ -1532,9 +1496,9 @@
       "type": "arrow",
       "id": "f3_b_0",
       "x": 565,
-      "y": 750,
+      "y": 547,
       "width": 0,
-      "height": 17,
+      "height": 15,
       "points": [
         [
           0,
@@ -1542,7 +1506,7 @@
         ],
         [
           0,
-          17
+          15
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -1554,9 +1518,9 @@
       "type": "arrow",
       "id": "f3_b_1",
       "x": 720,
-      "y": 750,
+      "y": 547,
       "width": 0,
-      "height": 17,
+      "height": 15,
       "points": [
         [
           0,
@@ -1564,7 +1528,7 @@
         ],
         [
           0,
-          17
+          15
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -1576,9 +1540,9 @@
       "type": "arrow",
       "id": "f3_b_2",
       "x": 875,
-      "y": 750,
+      "y": 547,
       "width": 0,
-      "height": 17,
+      "height": 15,
       "points": [
         [
           0,
@@ -1586,7 +1550,7 @@
         ],
         [
           0,
-          17
+          15
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -1598,9 +1562,9 @@
       "type": "line",
       "id": "m3_b_0",
       "x": 565,
-      "y": 799,
+      "y": 592,
       "width": 0,
-      "height": 15,
+      "height": 16,
       "points": [
         [
           0,
@@ -1608,7 +1572,7 @@
         ],
         [
           0,
-          15
+          16
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -1620,9 +1584,9 @@
       "type": "line",
       "id": "m3_b_1",
       "x": 720,
-      "y": 799,
+      "y": 592,
       "width": 0,
-      "height": 15,
+      "height": 16,
       "points": [
         [
           0,
@@ -1630,7 +1594,7 @@
         ],
         [
           0,
-          15
+          16
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -1642,9 +1606,9 @@
       "type": "line",
       "id": "m3_b_2",
       "x": 875,
-      "y": 799,
+      "y": 592,
       "width": 0,
-      "height": 15,
+      "height": 16,
       "points": [
         [
           0,
@@ -1652,7 +1616,7 @@
         ],
         [
           0,
-          15
+          16
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -1664,7 +1628,7 @@
       "type": "line",
       "id": "m3_bus",
       "x": 565,
-      "y": 814,
+      "y": 608,
       "width": 310,
       "height": 0,
       "points": [
@@ -1686,9 +1650,9 @@
       "type": "arrow",
       "id": "m3_trunk",
       "x": 720,
-      "y": 814,
+      "y": 608,
       "width": 0,
-      "height": 26,
+      "height": 122,
       "points": [
         [
           0,
@@ -1696,7 +1660,7 @@
         ],
         [
           0,
-          26
+          122
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -1705,12 +1669,30 @@
       "endArrowhead": "arrow"
     },
     {
+      "type": "text",
+      "id": "m3_lbl",
+      "x": 735,
+      "y": 645,
+      "width": 195,
+      "height": 15,
+      "text": "Enter Phase II: Translation",
+      "originalText": "Enter Phase II: Translation",
+      "fontSize": 12,
+      "fontFamily": 1,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "containerId": null,
+      "strokeColor": "#6741d9",
+      "lineHeight": 1.25,
+      "baseline": 10
+    },
+    {
       "type": "rectangle",
       "id": "c4",
       "x": 65,
-      "y": 825,
+      "y": 715,
       "width": 360,
-      "height": 135,
+      "height": 130,
       "backgroundColor": "#ffffff",
       "fillStyle": "solid",
       "strokeColor": "#ced4da",
@@ -1726,11 +1708,11 @@
       "type": "text",
       "id": "c4_body",
       "x": 81,
-      "y": 839,
-      "width": 288,
-      "height": 105,
-      "text": "Here, the active metamorphosis takes\nflight. We translate each fragment in\nscheduled order, threading a continuous\nrolling context of previously translated\ntypes and querying language servers on\ndemand to ensure every new construct\nremains idiomatic and globally coherent.",
-      "originalText": "Here, the active metamorphosis takes\nflight. We translate each fragment in\nscheduled order, threading a continuous\nrolling context of previously translated\ntypes and querying language servers on\ndemand to ensure every new construct\nremains idiomatic and globally coherent.",
+      "y": 729,
+      "width": 281,
+      "height": 120,
+      "text": "With the skeleton scaffolds in place,\nchunked code translation commences.\nTranslating one scheduled fragment at a\ntime while threading a rolling symbol\ntable and querying active language\nservers produces type-safe target\nimplementations that remain globally\nsynchronized.",
+      "originalText": "With the skeleton scaffolds in place,\nchunked code translation commences.\nTranslating one scheduled fragment at a\ntime while threading a rolling symbol\ntable and querying active language\nservers produces type-safe target\nimplementations that remain globally\nsynchronized.",
       "fontSize": 12,
       "fontFamily": 1,
       "textAlign": "left",
@@ -1744,9 +1726,9 @@
       "type": "rectangle",
       "id": "a4",
       "x": 580,
-      "y": 840,
+      "y": 730,
       "width": 280,
-      "height": 50,
+      "height": 48,
       "backgroundColor": "#d0bfff",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -1767,7 +1749,7 @@
       "type": "text",
       "id": "a4_txt",
       "x": 634.5,
-      "y": 855.5,
+      "y": 744.5,
       "width": 171,
       "height": 19,
       "text": "4. Translator Agent",
@@ -1785,9 +1767,9 @@
       "type": "ellipse",
       "id": "art4a",
       "x": 490,
-      "y": 922,
+      "y": 807,
       "width": 150,
-      "height": 32,
+      "height": 30,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -1804,7 +1786,7 @@
       "type": "text",
       "id": "art4a_txt",
       "x": 493.0,
-      "y": 930.5,
+      "y": 814.5,
       "width": 144,
       "height": 15,
       "text": "TranslatedSourceCode",
@@ -1822,9 +1804,9 @@
       "type": "ellipse",
       "id": "art4b",
       "x": 645,
-      "y": 922,
+      "y": 807,
       "width": 150,
-      "height": 32,
+      "height": 30,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -1841,7 +1823,7 @@
       "type": "text",
       "id": "art4b_txt",
       "x": 669.0,
-      "y": 929.5,
+      "y": 813.5,
       "width": 102,
       "height": 17,
       "text": "BuildManifest",
@@ -1859,9 +1841,9 @@
       "type": "ellipse",
       "id": "art4c",
       "x": 800,
-      "y": 922,
+      "y": 807,
       "width": 150,
-      "height": 32,
+      "height": 30,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -1878,7 +1860,7 @@
       "type": "text",
       "id": "art4c_txt",
       "x": 816.5,
-      "y": 929.5,
+      "y": 813.5,
       "width": 117,
       "height": 17,
       "text": "TargetTestSuite",
@@ -1896,9 +1878,9 @@
       "type": "line",
       "id": "f4_trunk",
       "x": 720,
-      "y": 890,
+      "y": 778,
       "width": 0,
-      "height": 15,
+      "height": 14,
       "points": [
         [
           0,
@@ -1906,7 +1888,7 @@
         ],
         [
           0,
-          15
+          14
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -1918,7 +1900,7 @@
       "type": "line",
       "id": "f4_bus",
       "x": 565,
-      "y": 905,
+      "y": 792,
       "width": 310,
       "height": 0,
       "points": [
@@ -1940,9 +1922,9 @@
       "type": "arrow",
       "id": "f4_b_0",
       "x": 565,
-      "y": 905,
+      "y": 792,
       "width": 0,
-      "height": 17,
+      "height": 15,
       "points": [
         [
           0,
@@ -1950,7 +1932,7 @@
         ],
         [
           0,
-          17
+          15
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -1962,9 +1944,9 @@
       "type": "arrow",
       "id": "f4_b_1",
       "x": 720,
-      "y": 905,
+      "y": 792,
       "width": 0,
-      "height": 17,
+      "height": 15,
       "points": [
         [
           0,
@@ -1972,7 +1954,7 @@
         ],
         [
           0,
-          17
+          15
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -1984,9 +1966,9 @@
       "type": "arrow",
       "id": "f4_b_2",
       "x": 875,
-      "y": 905,
+      "y": 792,
       "width": 0,
-      "height": 17,
+      "height": 15,
       "points": [
         [
           0,
@@ -1994,7 +1976,7 @@
         ],
         [
           0,
-          17
+          15
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -2006,9 +1988,9 @@
       "type": "line",
       "id": "m4_b_0",
       "x": 565,
-      "y": 954,
+      "y": 837,
       "width": 0,
-      "height": 14,
+      "height": 13,
       "points": [
         [
           0,
@@ -2016,7 +1998,7 @@
         ],
         [
           0,
-          14
+          13
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -2028,9 +2010,9 @@
       "type": "line",
       "id": "m4_b_1",
       "x": 720,
-      "y": 954,
+      "y": 837,
       "width": 0,
-      "height": 14,
+      "height": 13,
       "points": [
         [
           0,
@@ -2038,7 +2020,7 @@
         ],
         [
           0,
-          14
+          13
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -2050,9 +2032,9 @@
       "type": "line",
       "id": "m4_b_2",
       "x": 875,
-      "y": 954,
+      "y": 837,
       "width": 0,
-      "height": 14,
+      "height": 13,
       "points": [
         [
           0,
@@ -2060,7 +2042,7 @@
         ],
         [
           0,
-          14
+          13
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -2072,7 +2054,7 @@
       "type": "line",
       "id": "m4_bus",
       "x": 565,
-      "y": 968,
+      "y": 850,
       "width": 310,
       "height": 0,
       "points": [
@@ -2094,9 +2076,9 @@
       "type": "arrow",
       "id": "crossover_arrow",
       "x": 720,
-      "y": 968,
+      "y": 850,
       "width": 660,
-      "height": -793,
+      "height": -676,
       "points": [
         [
           0,
@@ -2104,19 +2086,19 @@
         ],
         [
           0,
-          32
+          35
         ],
         [
           440,
-          32
+          35
         ],
         [
           440,
-          -793
+          -676
         ],
         [
           660,
-          -793
+          -676
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -2127,15 +2109,15 @@
     {
       "type": "text",
       "id": "crossover_lbl",
-      "x": 1080,
-      "y": 580,
+      "x": 1175,
+      "y": 520,
       "width": 173,
       "height": 30,
       "text": "Proceed to Phase III:\nAdversarial Quality Gate",
       "originalText": "Proceed to Phase III:\nAdversarial Quality Gate",
       "fontSize": 12,
       "fontFamily": 1,
-      "textAlign": "center",
+      "textAlign": "left",
       "verticalAlign": "top",
       "containerId": null,
       "strokeColor": "#1e1e1e",
@@ -2148,7 +2130,7 @@
       "x": 1380,
       "y": 150,
       "width": 280,
-      "height": 50,
+      "height": 48,
       "backgroundColor": "#eebefa",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -2169,7 +2151,7 @@
       "type": "text",
       "id": "a5_txt",
       "x": 1443.5,
-      "y": 165.5,
+      "y": 164.5,
       "width": 153,
       "height": 19,
       "text": "5. Reviewer Agent",
@@ -2189,7 +2171,7 @@
       "x": 1880,
       "y": 145,
       "width": 360,
-      "height": 135,
+      "height": 130,
       "backgroundColor": "#ffffff",
       "fillStyle": "solid",
       "strokeColor": "#ced4da",
@@ -2206,10 +2188,10 @@
       "id": "c5_body",
       "x": 1896,
       "y": 159,
-      "width": 288,
-      "height": 120,
-      "text": "Before the transformed code ever reaches\na compiler, it enters rigorous\nadversarial inspection. Adopting a\nstrict auditor persona, we aggressively\nhunt for hallucinated APIs, phantom type\nsignatures, and subtle syntax drifts,\nintercepting flaws before expensive\ntoolchains are engaged.",
-      "originalText": "Before the transformed code ever reaches\na compiler, it enters rigorous\nadversarial inspection. Adopting a\nstrict auditor persona, we aggressively\nhunt for hallucinated APIs, phantom type\nsignatures, and subtle syntax drifts,\nintercepting flaws before expensive\ntoolchains are engaged.",
+      "width": 267,
+      "height": 135,
+      "text": "Before newly translated source code\nreaches compiler toolchains, it\nundergoes adversarial inspection.\nPrompting an independent model with a\nstrict auditor persona intercepts\nhallucinated APIs, phantom type\nsignatures, and subtle syntax drifts\nthat generative models routinely\nproduce.",
+      "originalText": "Before newly translated source code\nreaches compiler toolchains, it\nundergoes adversarial inspection.\nPrompting an independent model with a\nstrict auditor persona intercepts\nhallucinated APIs, phantom type\nsignatures, and subtle syntax drifts\nthat generative models routinely\nproduce.",
       "fontSize": 12,
       "fontFamily": 1,
       "textAlign": "left",
@@ -2223,9 +2205,9 @@
       "type": "ellipse",
       "id": "art5a",
       "x": 1350,
-      "y": 232,
+      "y": 227,
       "width": 170,
-      "height": 32,
+      "height": 30,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -2242,7 +2224,7 @@
       "type": "text",
       "id": "art5a_txt",
       "x": 1352.0,
-      "y": 240.5,
+      "y": 234.5,
       "width": 166,
       "height": 15,
       "text": "AdversarialAuditVerdict",
@@ -2260,9 +2242,9 @@
       "type": "ellipse",
       "id": "art5b",
       "x": 1525,
-      "y": 232,
+      "y": 227,
       "width": 170,
-      "height": 32,
+      "height": 30,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -2279,7 +2261,7 @@
       "type": "text",
       "id": "art5b_txt",
       "x": 1535.5,
-      "y": 239.5,
+      "y": 233.5,
       "width": 149,
       "height": 17,
       "text": "DefectLocationNotes",
@@ -2297,9 +2279,9 @@
       "type": "line",
       "id": "f5_trunk",
       "x": 1520,
-      "y": 200,
+      "y": 198,
       "width": 0,
-      "height": 15,
+      "height": 14,
       "points": [
         [
           0,
@@ -2307,7 +2289,7 @@
         ],
         [
           0,
-          15
+          14
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -2319,7 +2301,7 @@
       "type": "line",
       "id": "f5_bus",
       "x": 1435,
-      "y": 215,
+      "y": 212,
       "width": 170,
       "height": 0,
       "points": [
@@ -2341,9 +2323,9 @@
       "type": "arrow",
       "id": "f5_b_0",
       "x": 1435,
-      "y": 215,
+      "y": 212,
       "width": 0,
-      "height": 17,
+      "height": 15,
       "points": [
         [
           0,
@@ -2351,7 +2333,7 @@
         ],
         [
           0,
-          17
+          15
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -2363,9 +2345,9 @@
       "type": "arrow",
       "id": "f5_b_1",
       "x": 1605,
-      "y": 215,
+      "y": 212,
       "width": 0,
-      "height": 17,
+      "height": 15,
       "points": [
         [
           0,
@@ -2373,7 +2355,7 @@
         ],
         [
           0,
-          17
+          15
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -2385,9 +2367,9 @@
       "type": "line",
       "id": "m5_b_0",
       "x": 1435,
-      "y": 264,
+      "y": 257,
       "width": 0,
-      "height": 16,
+      "height": 15,
       "points": [
         [
           0,
@@ -2395,7 +2377,7 @@
         ],
         [
           0,
-          16
+          15
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -2407,9 +2389,9 @@
       "type": "line",
       "id": "m5_b_1",
       "x": 1605,
-      "y": 264,
+      "y": 257,
       "width": 0,
-      "height": 16,
+      "height": 15,
       "points": [
         [
           0,
@@ -2417,7 +2399,7 @@
         ],
         [
           0,
-          16
+          15
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -2429,7 +2411,7 @@
       "type": "line",
       "id": "m5_bus",
       "x": 1435,
-      "y": 280,
+      "y": 272,
       "width": 170,
       "height": 0,
       "points": [
@@ -2451,9 +2433,9 @@
       "type": "arrow",
       "id": "m5_trunk",
       "x": 1520,
-      "y": 280,
+      "y": 272,
       "width": 0,
-      "height": 25,
+      "height": 23,
       "points": [
         [
           0,
@@ -2461,7 +2443,7 @@
         ],
         [
           0,
-          25
+          23
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -2473,9 +2455,9 @@
       "type": "rectangle",
       "id": "a6",
       "x": 1380,
-      "y": 305,
+      "y": 295,
       "width": 280,
-      "height": 50,
+      "height": 48,
       "backgroundColor": "#ffd8a8",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -2496,7 +2478,7 @@
       "type": "text",
       "id": "a6_txt",
       "x": 1439.0,
-      "y": 320.5,
+      "y": 309.5,
       "width": 162,
       "height": 19,
       "text": "6. Validator Agent",
@@ -2514,9 +2496,9 @@
       "type": "rectangle",
       "id": "c6",
       "x": 1880,
-      "y": 295,
+      "y": 280,
       "width": 360,
-      "height": 135,
+      "height": 130,
       "backgroundColor": "#ffffff",
       "fillStyle": "solid",
       "strokeColor": "#ced4da",
@@ -2532,11 +2514,11 @@
       "type": "text",
       "id": "c6_body",
       "x": 1896,
-      "y": 309,
-      "width": 288,
-      "height": 120,
-      "text": "Now the code confronts mechanical ground\ntruth. We execute target compilers and\ntest runners through a strict cascaded\nharness, validating build integrity,\nsynthesizing missing regression tests,\nand enforcing an invariant guard that\nrejects any silently weakened\nassertions.",
-      "originalText": "Now the code confronts mechanical ground\ntruth. We execute target compilers and\ntest runners through a strict cascaded\nharness, validating build integrity,\nsynthesizing missing regression tests,\nand enforcing an invariant guard that\nrejects any silently weakened\nassertions.",
+      "y": 294,
+      "width": 274,
+      "height": 105,
+      "text": "Code clearing adversarial review faces\nmechanical toolchain verification.\nCascading compiler builds, automated\ntest execution, and invariant guards\nverify syntax, detect test weakening,\nand capture diagnostic traces across\nevery compiled module.",
+      "originalText": "Code clearing adversarial review faces\nmechanical toolchain verification.\nCascading compiler builds, automated\ntest execution, and invariant guards\nverify syntax, detect test weakening,\nand capture diagnostic traces across\nevery compiled module.",
       "fontSize": 12,
       "fontFamily": 1,
       "textAlign": "left",
@@ -2550,9 +2532,9 @@
       "type": "ellipse",
       "id": "art6a",
       "x": 1290,
-      "y": 387,
+      "y": 372,
       "width": 150,
-      "height": 32,
+      "height": 30,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -2569,7 +2551,7 @@
       "type": "text",
       "id": "art6a_txt",
       "x": 1285.5,
-      "y": 395.5,
+      "y": 379.5,
       "width": 159,
       "height": 15,
       "text": "CompilationDiagnostics",
@@ -2587,9 +2569,9 @@
       "type": "ellipse",
       "id": "art6b",
       "x": 1445,
-      "y": 387,
+      "y": 372,
       "width": 150,
-      "height": 32,
+      "height": 30,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -2606,7 +2588,7 @@
       "type": "text",
       "id": "art6b_txt",
       "x": 1448.0,
-      "y": 395.5,
+      "y": 379.5,
       "width": 144,
       "height": 15,
       "text": "TestExecutionSummary",
@@ -2624,9 +2606,9 @@
       "type": "ellipse",
       "id": "art6c",
       "x": 1600,
-      "y": 387,
+      "y": 372,
       "width": 150,
-      "height": 32,
+      "height": 30,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -2643,7 +2625,7 @@
       "type": "text",
       "id": "art6c_txt",
       "x": 1620.0,
-      "y": 394.5,
+      "y": 378.5,
       "width": 110,
       "height": 17,
       "text": "CoverageReport",
@@ -2661,9 +2643,9 @@
       "type": "line",
       "id": "f6_trunk",
       "x": 1520,
-      "y": 355,
+      "y": 343,
       "width": 0,
-      "height": 15,
+      "height": 14,
       "points": [
         [
           0,
@@ -2671,7 +2653,7 @@
         ],
         [
           0,
-          15
+          14
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -2683,7 +2665,7 @@
       "type": "line",
       "id": "f6_bus",
       "x": 1365,
-      "y": 370,
+      "y": 357,
       "width": 310,
       "height": 0,
       "points": [
@@ -2705,9 +2687,9 @@
       "type": "arrow",
       "id": "f6_b_0",
       "x": 1365,
-      "y": 370,
+      "y": 357,
       "width": 0,
-      "height": 17,
+      "height": 15,
       "points": [
         [
           0,
@@ -2715,7 +2697,7 @@
         ],
         [
           0,
-          17
+          15
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -2727,9 +2709,9 @@
       "type": "arrow",
       "id": "f6_b_1",
       "x": 1520,
-      "y": 370,
+      "y": 357,
       "width": 0,
-      "height": 17,
+      "height": 15,
       "points": [
         [
           0,
@@ -2737,7 +2719,7 @@
         ],
         [
           0,
-          17
+          15
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -2749,9 +2731,9 @@
       "type": "arrow",
       "id": "f6_b_2",
       "x": 1675,
-      "y": 370,
+      "y": 357,
       "width": 0,
-      "height": 17,
+      "height": 15,
       "points": [
         [
           0,
@@ -2759,7 +2741,7 @@
         ],
         [
           0,
-          17
+          15
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -2771,7 +2753,7 @@
       "type": "line",
       "id": "m6_b_0",
       "x": 1365,
-      "y": 419,
+      "y": 402,
       "width": 0,
       "height": 16,
       "points": [
@@ -2793,7 +2775,7 @@
       "type": "line",
       "id": "m6_b_1",
       "x": 1520,
-      "y": 419,
+      "y": 402,
       "width": 0,
       "height": 16,
       "points": [
@@ -2815,7 +2797,7 @@
       "type": "line",
       "id": "m6_b_2",
       "x": 1675,
-      "y": 419,
+      "y": 402,
       "width": 0,
       "height": 16,
       "points": [
@@ -2837,7 +2819,7 @@
       "type": "line",
       "id": "m6_bus",
       "x": 1365,
-      "y": 435,
+      "y": 418,
       "width": 310,
       "height": 0,
       "points": [
@@ -2859,9 +2841,9 @@
       "type": "arrow",
       "id": "m6_trunk",
       "x": 1520,
-      "y": 435,
+      "y": 418,
       "width": 0,
-      "height": 30,
+      "height": 27,
       "points": [
         [
           0,
@@ -2869,7 +2851,7 @@
         ],
         [
           0,
-          30
+          27
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -2881,7 +2863,7 @@
       "type": "diamond",
       "id": "gate",
       "x": 1390,
-      "y": 465,
+      "y": 445,
       "width": 260,
       "height": 52,
       "backgroundColor": "#f1f3f5",
@@ -2900,7 +2882,7 @@
       "type": "text",
       "id": "gate_txt",
       "x": 1445.5,
-      "y": 474.5,
+      "y": 454.5,
       "width": 149,
       "height": 33,
       "text": "All Tests Pass &\nNo Compiler Errors?",
@@ -2918,8 +2900,8 @@
       "type": "arrow",
       "id": "e_pass",
       "x": 1650,
-      "y": 491,
-      "width": 150,
+      "y": 471,
+      "width": 230,
       "height": 0,
       "points": [
         [
@@ -2927,7 +2909,7 @@
           0
         ],
         [
-          150,
+          230,
           0
         ]
       ],
@@ -2939,8 +2921,8 @@
     {
       "type": "text",
       "id": "e_pass_lbl",
-      "x": 1685.0,
-      "y": 481.0,
+      "x": 1740,
+      "y": 450,
       "width": 29,
       "height": 15,
       "text": "PASS",
@@ -2957,8 +2939,8 @@
     {
       "type": "ellipse",
       "id": "fin",
-      "x": 1820,
-      "y": 466,
+      "x": 1880,
+      "y": 446,
       "width": 260,
       "height": 50,
       "backgroundColor": "#b2f2bb",
@@ -2976,8 +2958,8 @@
     {
       "type": "text",
       "id": "fin_txt",
-      "x": 1833.0,
-      "y": 474.5,
+      "x": 1893.0,
+      "y": 454.5,
       "width": 234,
       "height": 33,
       "text": "Final Translated Repository\nvalidated \u00b7 tested \u00b7 completed",
@@ -2995,9 +2977,9 @@
       "type": "arrow",
       "id": "e_fail",
       "x": 1520,
-      "y": 517,
+      "y": 497,
       "width": 0,
-      "height": 178,
+      "height": 193,
       "points": [
         [
           0,
@@ -3005,7 +2987,7 @@
         ],
         [
           0,
-          178
+          193
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -3016,15 +2998,15 @@
     {
       "type": "text",
       "id": "e_fail_lbl",
-      "x": 1480.0,
-      "y": 596.0,
+      "x": 1535,
+      "y": 580,
       "width": 29,
       "height": 15,
       "text": "FAIL",
       "originalText": "FAIL",
       "fontSize": 12,
       "fontFamily": 1,
-      "textAlign": "center",
+      "textAlign": "left",
       "verticalAlign": "top",
       "containerId": null,
       "strokeColor": "#1e1e1e",
@@ -3035,9 +3017,9 @@
       "type": "rectangle",
       "id": "a7",
       "x": 1380,
-      "y": 695,
+      "y": 690,
       "width": 280,
-      "height": 50,
+      "height": 48,
       "backgroundColor": "#b2f2bb",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -3058,7 +3040,7 @@
       "type": "text",
       "id": "a7_txt",
       "x": 1421.0,
-      "y": 710.5,
+      "y": 704.5,
       "width": 198,
       "height": 19,
       "text": "7. Verdict Panel Agent",
@@ -3076,9 +3058,9 @@
       "type": "rectangle",
       "id": "c7",
       "x": 1880,
-      "y": 680,
+      "y": 675,
       "width": 360,
-      "height": 135,
+      "height": 130,
       "backgroundColor": "#ffffff",
       "fillStyle": "solid",
       "strokeColor": "#ced4da",
@@ -3094,11 +3076,11 @@
       "type": "text",
       "id": "c7_body",
       "x": 1896,
-      "y": 694,
-      "width": 281,
-      "height": 120,
-      "text": "Clean compilation is not the finish\nline; true migration demands behavioral\nfidelity. An ensemble of independent\njudge agents cross-examines execution\ntraces and runtime edge cases against\nthe original source, ensuring exact\nsemantic equivalence across all\noperating conditions.",
-      "originalText": "Clean compilation is not the finish\nline; true migration demands behavioral\nfidelity. An ensemble of independent\njudge agents cross-examines execution\ntraces and runtime edge cases against\nthe original source, ensuring exact\nsemantic equivalence across all\noperating conditions.",
+      "y": 689,
+      "width": 288,
+      "height": 105,
+      "text": "When compiler diagnostics show errors or\nsemantic doubts emerge, an independent\njudge panel convenes. Comparing runtime\nexecution traces and edge-case behavior\nbetween source and target programs\nquantifies behavioral equivalence and\nidentifies semantic discrepancies.",
+      "originalText": "When compiler diagnostics show errors or\nsemantic doubts emerge, an independent\njudge panel convenes. Comparing runtime\nexecution traces and edge-case behavior\nbetween source and target programs\nquantifies behavioral equivalence and\nidentifies semantic discrepancies.",
       "fontSize": 12,
       "fontFamily": 1,
       "textAlign": "left",
@@ -3112,9 +3094,9 @@
       "type": "ellipse",
       "id": "art7a",
       "x": 1350,
-      "y": 777,
+      "y": 767,
       "width": 170,
-      "height": 32,
+      "height": 30,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -3131,7 +3113,7 @@
       "type": "text",
       "id": "art7a_txt",
       "x": 1380.0,
-      "y": 784.5,
+      "y": 773.5,
       "width": 110,
       "height": 17,
       "text": "ConsensusScore",
@@ -3149,9 +3131,9 @@
       "type": "ellipse",
       "id": "art7b",
       "x": 1525,
-      "y": 777,
+      "y": 767,
       "width": 170,
-      "height": 32,
+      "height": 30,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -3168,7 +3150,7 @@
       "type": "text",
       "id": "art7b_txt",
       "x": 1555.0,
-      "y": 784.5,
+      "y": 773.5,
       "width": 110,
       "height": 17,
       "text": "DiscrepancyLog",
@@ -3186,9 +3168,9 @@
       "type": "line",
       "id": "f7_trunk",
       "x": 1520,
-      "y": 745,
+      "y": 738,
       "width": 0,
-      "height": 15,
+      "height": 14,
       "points": [
         [
           0,
@@ -3196,7 +3178,7 @@
         ],
         [
           0,
-          15
+          14
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -3208,7 +3190,7 @@
       "type": "line",
       "id": "f7_bus",
       "x": 1435,
-      "y": 760,
+      "y": 752,
       "width": 170,
       "height": 0,
       "points": [
@@ -3230,9 +3212,9 @@
       "type": "arrow",
       "id": "f7_b_0",
       "x": 1435,
-      "y": 760,
+      "y": 752,
       "width": 0,
-      "height": 17,
+      "height": 15,
       "points": [
         [
           0,
@@ -3240,7 +3222,7 @@
         ],
         [
           0,
-          17
+          15
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -3252,9 +3234,9 @@
       "type": "arrow",
       "id": "f7_b_1",
       "x": 1605,
-      "y": 760,
+      "y": 752,
       "width": 0,
-      "height": 17,
+      "height": 15,
       "points": [
         [
           0,
@@ -3262,7 +3244,7 @@
         ],
         [
           0,
-          17
+          15
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -3274,9 +3256,9 @@
       "type": "line",
       "id": "m7_b_0",
       "x": 1435,
-      "y": 809,
+      "y": 797,
       "width": 0,
-      "height": 16,
+      "height": 15,
       "points": [
         [
           0,
@@ -3284,7 +3266,7 @@
         ],
         [
           0,
-          16
+          15
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -3296,9 +3278,9 @@
       "type": "line",
       "id": "m7_b_1",
       "x": 1605,
-      "y": 809,
+      "y": 797,
       "width": 0,
-      "height": 16,
+      "height": 15,
       "points": [
         [
           0,
@@ -3306,7 +3288,7 @@
         ],
         [
           0,
-          16
+          15
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -3318,7 +3300,7 @@
       "type": "line",
       "id": "m7_bus",
       "x": 1435,
-      "y": 825,
+      "y": 812,
       "width": 170,
       "height": 0,
       "points": [
@@ -3340,9 +3322,9 @@
       "type": "arrow",
       "id": "m7_trunk",
       "x": 1520,
-      "y": 825,
+      "y": 812,
       "width": 0,
-      "height": 25,
+      "height": 23,
       "points": [
         [
           0,
@@ -3350,7 +3332,7 @@
         ],
         [
           0,
-          25
+          23
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -3362,9 +3344,9 @@
       "type": "rectangle",
       "id": "a8",
       "x": 1380,
-      "y": 850,
+      "y": 835,
       "width": 280,
-      "height": 50,
+      "height": 48,
       "backgroundColor": "#d0bfff",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -3385,7 +3367,7 @@
       "type": "text",
       "id": "a8_txt",
       "x": 1439.0,
-      "y": 865.5,
+      "y": 849.5,
       "width": 162,
       "height": 19,
       "text": "8. Recruiter Agent",
@@ -3403,9 +3385,9 @@
       "type": "rectangle",
       "id": "c8",
       "x": 1880,
-      "y": 840,
+      "y": 820,
       "width": 360,
-      "height": 135,
+      "height": 130,
       "backgroundColor": "#ffffff",
       "fillStyle": "solid",
       "strokeColor": "#ced4da",
@@ -3421,11 +3403,11 @@
       "type": "text",
       "id": "c8_body",
       "x": 1896,
-      "y": 854,
-      "width": 281,
+      "y": 834,
+      "width": 288,
       "height": 120,
-      "text": "When tests fail or progress plateaus,\nthe adaptive meta-controller assumes\ncommand. It diagnoses systemic\nbottlenecks, reconfigures migration\nstrategies, tunes model parameters, and\ndistills high-priority diagnostics into\nan actionable repair context that re-\nenters the translation loop.",
-      "originalText": "When tests fail or progress plateaus,\nthe adaptive meta-controller assumes\ncommand. It diagnoses systemic\nbottlenecks, reconfigures migration\nstrategies, tunes model parameters, and\ndistills high-priority diagnostics into\nan actionable repair context that re-\nenters the translation loop.",
+      "text": "If compilation fails, tests break, or\ntranslation progress plateaus, the\nadaptive controller intervenes.\nDiagnosing failure modes, it\nreconfigures translation strategies, re-\ntunes model hyperparameters, and bundles\ndistilled diagnostic context to re-enter\nthe translation stage.",
+      "originalText": "If compilation fails, tests break, or\ntranslation progress plateaus, the\nadaptive controller intervenes.\nDiagnosing failure modes, it\nreconfigures translation strategies, re-\ntunes model hyperparameters, and bundles\ndistilled diagnostic context to re-enter\nthe translation stage.",
       "fontSize": 12,
       "fontFamily": 1,
       "textAlign": "left",
@@ -3439,9 +3421,9 @@
       "type": "ellipse",
       "id": "art8a",
       "x": 1350,
-      "y": 932,
+      "y": 912,
       "width": 170,
-      "height": 32,
+      "height": 30,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -3458,7 +3440,7 @@
       "type": "text",
       "id": "art8a_txt",
       "x": 1376.5,
-      "y": 939.5,
+      "y": 918.5,
       "width": 117,
       "height": 17,
       "text": "RecruitmentPlan",
@@ -3476,9 +3458,9 @@
       "type": "ellipse",
       "id": "art8b",
       "x": 1525,
-      "y": 932,
+      "y": 912,
       "width": 170,
-      "height": 32,
+      "height": 30,
       "backgroundColor": "#f1f3f5",
       "fillStyle": "solid",
       "strokeColor": "#1e1e1e",
@@ -3495,7 +3477,7 @@
       "type": "text",
       "id": "art8b_txt",
       "x": 1530.5,
-      "y": 940.5,
+      "y": 919.5,
       "width": 159,
       "height": 15,
       "text": "DistilledRepairContext",
@@ -3513,9 +3495,9 @@
       "type": "line",
       "id": "f8_trunk",
       "x": 1520,
-      "y": 900,
+      "y": 883,
       "width": 0,
-      "height": 15,
+      "height": 14,
       "points": [
         [
           0,
@@ -3523,7 +3505,7 @@
         ],
         [
           0,
-          15
+          14
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -3535,7 +3517,7 @@
       "type": "line",
       "id": "f8_bus",
       "x": 1435,
-      "y": 915,
+      "y": 897,
       "width": 170,
       "height": 0,
       "points": [
@@ -3557,9 +3539,9 @@
       "type": "arrow",
       "id": "f8_b_0",
       "x": 1435,
-      "y": 915,
+      "y": 897,
       "width": 0,
-      "height": 17,
+      "height": 15,
       "points": [
         [
           0,
@@ -3567,7 +3549,7 @@
         ],
         [
           0,
-          17
+          15
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -3579,9 +3561,9 @@
       "type": "arrow",
       "id": "f8_b_1",
       "x": 1605,
-      "y": 915,
+      "y": 897,
       "width": 0,
-      "height": 17,
+      "height": 15,
       "points": [
         [
           0,
@@ -3589,7 +3571,7 @@
         ],
         [
           0,
-          17
+          15
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -3601,9 +3583,9 @@
       "type": "line",
       "id": "m8_b_0",
       "x": 1435,
-      "y": 964,
+      "y": 942,
       "width": 0,
-      "height": 14,
+      "height": 13,
       "points": [
         [
           0,
@@ -3611,7 +3593,7 @@
         ],
         [
           0,
-          14
+          13
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -3623,9 +3605,9 @@
       "type": "line",
       "id": "m8_b_1",
       "x": 1605,
-      "y": 964,
+      "y": 942,
       "width": 0,
-      "height": 14,
+      "height": 13,
       "points": [
         [
           0,
@@ -3633,7 +3615,7 @@
         ],
         [
           0,
-          14
+          13
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -3645,7 +3627,7 @@
       "type": "line",
       "id": "m8_bus",
       "x": 1435,
-      "y": 978,
+      "y": 955,
       "width": 170,
       "height": 0,
       "points": [
@@ -3667,9 +3649,9 @@
       "type": "arrow",
       "id": "repair_loop",
       "x": 1520,
-      "y": 978,
+      "y": 955,
       "width": -940,
-      "height": -113,
+      "height": -201,
       "points": [
         [
           0,
@@ -3677,19 +3659,19 @@
         ],
         [
           0,
-          92
+          90
         ],
         [
           -1070,
-          92
+          90
         ],
         [
           -1070,
-          -113
+          -201
         ],
         [
           -940,
-          -113
+          -201
         ]
       ],
       "strokeColor": "#1e1e1e",
@@ -3700,8 +3682,8 @@
     {
       "type": "text",
       "id": "repair_lbl",
-      "x": 800,
-      "y": 1080,
+      "x": 780,
+      "y": 1060,
       "width": 620,
       "height": 15,
       "text": "Adaptive Repair Cycle: Re-enters Translator with next strategy + distilled diagnostics",
