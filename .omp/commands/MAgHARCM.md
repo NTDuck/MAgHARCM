@@ -87,23 +87,24 @@ Optional focus argument: `$ARGUMENTS`
 6. Record experimental results in `docs/.paper/sec_eval.tex`.
 7. Commit: `test(benchmarks): record empirical evaluation results`.
 
-## 5. Defend the Codebase and Invariants
+## 5. Implement Primitives and Defend the Codebase
 
-1. Make sure compile-time initializations use the Must pattern and panic on error.
-2. Do not use fallbacks in compile-time configuration.
-3. Read runtime settings from external YAML files in `configs/`.
-4. Keep shared state declarations in `internal/compiletime/state.go`.
+### 5.1. Implement New Research Primitives (Generative)
 
-5. Keep agent artifact types in their producer files. Use type aliases to avoid cycles.
-6. Use the try-and-fail strategy registry in `internal/agents/strategy.go`.
-7. Keep all eight agents wired in `internal/graph/graph.go`.
-8. Use idiomatic Charm libraries in `cmd/MAgHARCM-tui`.
+1. Ensure current codebase is aligned (uptodate) with current research progress and reflects current research progress.
+2. Use ponytail skills to refactor the codebase.
+3. Ensure codebase is ready to run.
+4. Ensure ALL reasonings/intents are documented inline via comments (traceable in future iterations).
 
-9. Do not use `fmt.Print*` in production Go code. Use `internal/logger` instead.
-10. Use plain technical English in messages per ASD-STE100.
-11. Resolve blockers listed in `.obsidian/MAgHARCM/adhoc/Human-Intervention-And-Blockers.md`.
-12. Run `go test ./...` and fix any build breaks.
-13. Commit: `fix(codebase): defend architecture invariants and resolve blockers`.
+### 5.2. Defend Invariants (Defensive)
+
+1. Enforce the `Must` pattern for all compile-time initializations. No silent fallbacks.
+2. Read runtime settings from external YAML files in `configs/`.
+3. Keep shared state declarations in `internal/compiletime/state.go`. Use type aliases to avoid Go import cycles.
+4. Keep all eight agents wired in `internal/graph/graph.go`. Use the try-and-fail strategy registry in `internal/agents/strategy.go`.
+5. Do not use `fmt.Print*` in production Go code. Use `internal/logger` instead.
+6. Resolve blockers listed in `Human-Intervention-And-Blockers.md`. Run `go test ./...` and fix any build breaks.
+7. Commit: `feat(agents): implement PRIM-XX from P-YY and defend invariants`.
 
 ## 6. Synchronize the Academic Paper
 
@@ -175,6 +176,7 @@ Optional focus argument: `$ARGUMENTS`
 2. **SWE-TRACE venue confirmation** (W2 from Wave-19). **CARRIED Wave-21**. arXiv:2604.14820 — April 2026 arXiv preprint only; no peer-reviewed venue confirmation. Re-verify after NeurIPS 2026 notifications (2026-09-24).
 3. **U1 NSE ICML 2026** (Wave-20 placeholder). **RESOLVED in Wave-21**. Re-verified as NSE 2026 Workshop (co-located with ICSE 2026, off-list venue); reclassified as REJECT Q1 and removed from watchlist.
 4. **Strict program-comprehension-mechanism slot** — Wave-21 closed P-150 TestPrune (Observation-phase context pruning) but the residual gap remains: function-level → partition-aligned summary pass. Wave-22 scout carries an explicit `program-comprehension-mechanism` query against NeurIPS 2026 / ICML 2027 / ICLR 2027 listings.
+
 ## 16. Wave-20 Insights (2026-09-07 iter-3)
 
 1. **Program-comprehension-mechanism slot is partially closed.** `[[1.0.0 P-142]]` NESA (Wang et al., FSE 2026, DOI 10.1145/3808161) anchors relational neuro-symbolic static program analysis: a restricted Datalog analysis-policy language decomposes complex comprehension sub-problems into deterministic syntactic slices (handled by parsing-based analysis) and LLM-handled semantic slices. Combined with the Wave-18 anchors (P-130 SSAR + P-131 SemArc + P-132 SemRef architecture-recovery trio + P-133 ADI function-level DA), the comprehension pipeline is now: static CPG → ADI function-level DA → NESA Datalog-policy decomposition → SSAR alignment → SemArc partition → SemRef iterative LLM refinement. The strict program-comprehension-mechanism slot is partially closed; the residual gap (function-level → partition-aligned summary) carries into Wave-21.
@@ -191,7 +193,6 @@ Optional focus argument: `$ARGUMENTS`
 3. **Workshop-track ACCEPT threshold (P-138 RepairKV precedent).** Future borderline workshops on §7 trigger-list MUST be evaluated against P-138's threshold (method-level, single-paper, not workshop-redundant theme).
 4. **R1 ABC arXiv:2602.22302 + R3 Speculative Actions ICLR 2026 Poster** (Wave-21 REJECTS). R1 retest for ICML 2026 / NeurIPS 2026 / ICLR 2027 companion paper at in-list venue; R3 retest for FSE 2027 agentic-comprehension companion paper.
 5. **Wave-21 substrate integration deferral.** Wave-21 papers (P-147..P-150) are research anchors only; integration into `internal/iter_retrieval/kv_eviction.go` (SpecKV, LookaheadKV) and `internal/strategy/speculative.go` (SSD/Saguaro) and `internal/comprehension/observation.go` (TestPrune) deferred to a future sprint. Benchmark re-run deferred to Wave-22 contingent on BLK-04 resolution.
-
 
 ## 18. Wave-21 Insights (2026-09-07 iter-4)
 
@@ -224,7 +225,6 @@ Wave-23 triage ledger per `Wave-23-Candidates.md` line 57: 4 ACCEPT (P-153..P-15
 2. **§11.6 + §11.7 + §11.8 carry-over.** Re-verify `configs/agents.yml` opt-in paths are wired for the §11.6 Program-Comprehension Mechanism, §11.7 Hallucination-Evaluation Triplet, and §11.8 Feedback-Driven Multi-Language Translation substrate claims.
 3. **Wave-23 cross-pattern surveys (Wave-24 forward plan).** Wave-24 may consider formalizing cross-pattern substrates among Wave-17..Wave-23 anchors — e.g. `[[1.0.0 P-129]]` LλMDA × `[[1.0.0 P-150]]` TestPrune, `[[1.0.0 P-154]]` TransAgent × `[[1.0.0 P-151]]` SmartC2Rust, `[[1.0.0 P-155]]` POLA-Tester × `[[1.0.0 P-153]]` CoReX, `[[1.0.0 P-156]]` ACONITE × `[[1.0.0 P-140]]` Panta.
 4. **Wave-23 substrate integration deferral.** Wave-23 papers (P-153..P-156) are research anchors only; integration into `internal/comprehension/refinement_slicing.go` (P-153 CoReX), `internal/translation/multi_agent_critic.go` (P-154 TransAgent), `internal/staticanalysis/syntactic_dependency_mining.go` (P-155 POLA-Tester), and `internal/comprehension/backward_slicing_test_generation.go` (P-156 ACONITE) deferred to a future sprint. Benchmark re-run deferred to Wave-24 contingent on BLK-04 resolution.
-
 
 ## 22. Wave-23 Insights (2026-09-08 iter-1)
 

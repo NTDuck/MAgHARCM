@@ -1,0 +1,3 @@
+[submodule "benchmarks/assets/ReCodeAgent"]
+	path = benchmarks/assets/ReCodeAgent
+	url = https://github.com/Intelligent-CAT-Lab/ReCodeAgent
