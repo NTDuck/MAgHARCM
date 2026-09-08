@@ -1,7 +1,7 @@
 ---
 title: MAgHARCM Strategic Direction & Future Roadmap
-date: 2026-09-07
-last_updated: 2026-09-07 (iter-6, wave-22)
+date: 2026-09-08
+last_updated: 2026-09-08 (iter-1, wave-23)
 aliases:
   - "Strategic-Direction-And-Roadmap"
   - "Strategic Direction and Roadmap"
@@ -12,14 +12,14 @@ tags: [adhoc, strategy, roadmap, future, slm, "[[2.0.0 MAgHARCM]]"]
 
 # [[2.0.0 MAgHARCM Strategic Direction & Roadmap]]
 
-> **Executive Overview**: Outlines the long-term vision, technological direction, and phased roadmap for MAgHARCM as an autonomous, edge-capable repository modernization platform.
+> **Executive Overview**: Outlines the long-term architectural vision, edge-native SLM strategy, and phased modernization roadmap for MAgHARCM. For definitions of system acronyms (SLM, KV-cache, MaTTS, ACI, CPG), consult the [[Glossary|Domain Acronyms & Terminology Glossary]].
 
 ---
 
 ## 1. Core Strategic Thesis
 
 ### Edge-Native, Small-Language-Model (SLM) First (4B–30B)
-- **Constraint**: Cloud frontier models (GPT-4o, Claude 3.5 Sonnet) are cost-prohibitive for large enterprise migrations ($100k+ LoC) and raise severe IP/data privacy concerns for proprietary legacy systems.
+- **Constraint**: Cloud frontier models (GPT-4o, Claude 3.5 Sonnet) are cost-prohibitive for large enterprise migrations ($100k+ LoC) and raise severe intellectual property and data privacy concerns for proprietary legacy codebases.
 - **Solution**: MAgHARCM is engineered to achieve frontier-grade repository translation using **local 4B–30B open models** (e.g. Qwen2.5-Coder:7B/32B `[[1.0.0 P-21]]`, StarCoder2:15B `[[1.0.0 P-22]]`, Phi-3-mini:3.8B `[[1.0.0 P-27]]`).
 - **Mechanism**: Offset small-model capacity limits through **structured multi-agent decomposition**, **reverse-topological skeleton planning**, **formal CPG graph retrieval**, and **iterative compiler feedback cascades**.
 
@@ -40,15 +40,15 @@ Phase 1: Foundations & Parity (COMPLETED)
          ▼
 Phase 2: Local SLM Fine-Tuning & Prompt Specialization (CURRENT)
   ├── Structured output cloze slots (PRIM-22, PRIM-24)
-  ├── KV Cache chunk compression (KVPress, ChunkKV P-105; KVzip P-128 + RepairKV P-138 + KVFlow P-141 for agent-loop substrate)
+  ├── KV Cache chunk compression (KVPress, ChunkKV P-105; KVzip P-128 + RepairKV P-138 + KVFlow P-141)
   ├── Memory-augmented Test-Time Scaling (MaTTS in internal/memorystore)
-  ├── SLM-as-Judge pipeline (T1 P-125 + SLM-as-a-Judge P-127; defended by HalluShield P-143 + validated by SPECS P-135 + CaTS P-136 + ContextPRM P-146)
-  └── Program-comprehension mechanism substrate (NESA P-142 + SSAR/SemArc/SemRef P-130..P-132 + ADI P-133; §11.6)
+  ├── SLM-as-Judge pipeline (T1 P-125 + SLM-as-a-Judge P-127; defended by HalluShield P-143)
+  └── Program-comprehension mechanism substrate (CoReX P-153 closes residual slot; NESA P-142, ADI P-133)
          │
          ▼
 Phase 3: Deep Enterprise Modernization (UPCOMING)
-  ├── C/C++ to Safe Rust memory safety oracle (Syzygy P-124)
-  ├── Java Spring / Jakarta to Go microservices decomposition
+  ├── C/C++ to Safe Rust memory safety oracle (Syzygy P-124; SmartC2Rust P-151; TransAgent P-154)
+  ├── Java Spring / Jakarta to Go microservices decomposition (Commons-Validator resolution)
   └── Automated dependency tree migration via UniAST (ABCoder P-14)
          │
          ▼
@@ -61,50 +61,43 @@ Phase 4: Autonomous Verified SWE-Bench Zero-Shot Modernizer (FUTURE)
 
 ## 3. Near-Term Initiatives
 
-1. **Resolve MemoryStore MaTTS Integration**:
-   - Establish the canonical `MaTTSDefaultBudget` configuration in `compiletime` to restore `memorystore` buildability.
-   - Wire vector memory retrieval for cross-sprint strategy reuse.
-2. **Expand Language Pairs Beyond C $	o$ Rust**:
-   - Primary: Java $	o$ Rust (addressing the `Commons-Validator` plateau).
-   - Secondary: Python 2 $	o$ Python 3 / Go (addressing scientific computing stacks).
-3. **Formalize Benchmark Telemetry**:
-   - Integrate automated wall-clock, memory, and token telemetry into the Charm TUI dashboard.
-4. **Wave-20 program-comprehension-mechanism substrate**:
-   - The strict program-comprehension-mechanism slot (open since Wave-17) is partially closed by `[[1.0.0 P-142]]` NESA self-evolving graph pre-analysis. The substrate is opt-in via `configs/agents.yml:comprehension.graph_self_evolving: true`.
-   - Wave-21 priority: function-level → partition-aligned summary pass (residual gap); re-scout NeurIPS 2026 / ICML 2027 / ICLR 2027.
-5. **Wave-20 SLM-as-Judge closed-loop**:
-   - PRIM-7 substrate is now closed-loop: judgement (`[[1.0.0 P-125]]` T1 / `[[1.0.0 P-127]]` SLM-as-a-Judge) → defence (`[[1.0.0 P-143]]` HalluShield) → validation (`[[1.0.0 P-135]]` SPECS / `[[1.0.0 P-136]]` CaTS / `[[1.0.0 P-146]]` ContextPRM).
-6. **Wave-20 PRIM-21 strategy-selection closed-loop**:
-   - PRIM-21 substrate is now closed-loop: try-and-fail registry (`[[1.0.0 P-122]]` ReasoningBank) → strategy selection (`[[1.0.0 P-145]]` TerraMod / `[[1.0.0 P-123]]` CodeChemist) → execution (`[[1.0.0 P-137]]` SuffixDecoding) → judgement (`[[1.0.0 P-143]]` HalluShield).
-7. **Wave-20 prompt-trace training data**:
-   - `[[1.0.0 P-144]]` TraceCoder extends the PRIM-29 + PRIM-31 substrate with prompt-trace training-data construction.
-8. **Wave-21 KV-cache × speculative-decoding substrate**:
-   - PRIM-21 / PRIM-31 substrate is now closed-loop for KV-cache eviction + speculative-decoding: draft-model-driven lookahead (`[[1.0.0 P-147]]` SpecKV) → parameter-efficient LoRA-modules on target model (`[[1.0.0 P-148]]` LookaheadKV) → asynchronous draft-verify pipeline (`[[1.0.0 P-149]]` SSD/Saguaro). All three are opt-in via `configs/agents.yml:agents.kv_cache.eviction.strategy` / `agents.speculative.async_pipeline`.
-9. **Wave-21 coverage-driven context pruning**:
-   - `[[1.0.0 P-150]]` TestPrune extends PRIM-22 Observation-phase substrate with coverage-driven test minimisation. The substrate is opt-in via `configs/agents.yml:agents.comprehension.observation.test_prune: true`.
-10. **Wave-21 forward to Wave-22**:
-   - The residual strict-mechanism program-comprehension-mechanism slot (function-level → partition-aligned summary pass) carries to Wave-22; explicit query against NeurIPS 2026 / ICML 2027 / ICLR 2027 listings.
-   - W1 SWE-TRACE re-verification after NeurIPS 2026 author notifications (2026-09-24); fourth carry if no peer-reviewed venue.
-   - Wave-22 to integrate SpecKV's draft-model KV-eviction path into the existing benchmark harness and re-run the four repositories if BLK-04 (GPU/LLM endpoint) resolves.
+### 3.1. Core Architecture & Benchmark Modernization
 
-11. **Wave-22 feedback-driven C-to-Rust translation substrate**:
-   - `[[1.0.0 P-151]]` SmartC2Rust (ICSE 2026, DOI 10.1145/3744916.3773259) extends the Phase-3 C/C++ → Safe Rust oracle with iterative context-aware segmentation + three-signal feedback loop (target compiler errors, semantic-equivalence diffs, residual unsafe-block counts). The C-to-Rust analogue of `[[1.0.0 P-124]]` Syzygy's Go-to-Rust three-signal loop. Anchors `PRIM-23` Chunked Translation, `PRIM-29` Dynamic Iteration Recruiter, `PRIM-31` Iterative Retrieval. The substrate is opt-in via `configs/agents.yml:translation.feedback_driven: true`.
-12. **Wave-22 hallucination-evaluation triplet substrate**:
-   - `[[1.0.0 P-152]]` Hallu-Eval / Hallu-Shield (FSE 2026, DOI 10.1145/3808189) closes the systematic hallucination-evaluation slot for SLM-scale comprehension + translation. Triplet = (Hallu-Eval 800-pair benchmark with natural + induced logical hallucinations) + (Hallu-Det detection approach) + (Hallu-Shield inference-time mitigation). Anchors `PRIM-22` Four Phases Comprehension, `PRIM-25` Role-Flip De-Hallucination. The substrate is opt-in via `configs/agents.yml:comprehension.hallucination_evaluation: true`.
-13. **Wave-22 forward to Wave-23**:
-   - The residual strict-mechanism program-comprehension-mechanism slot (function-level → partition-aligned summary pass) carries to Wave-23; explicit query against NeurIPS 2026 / ICML 2027 / ICLR 2027 listings.
-   - W1 SWE-TRACE re-verification after NeurIPS 2026 author notifications (2026-09-24); fifth carry if no peer-reviewed venue, then retire.
-   - Wave-23 to integrate SmartC2Rust's three-signal feedback loop + Hallu-Eval's hallucination-evaluation triplet into the benchmark harness and re-run the four repositories if BLK-04 (GPU/LLM endpoint) resolves.
-14. **Wave-23 context-aware refinement-based slicing substrate**:
-   - `[[1.0.0 P-153]]` CoReX (ICSE 2026, April 12-18 2026, Rio de Janeiro) extends PRIM-22 Four Phases of Comprehension (Structure phase) with function-level DA pattern from P-133 ADI and PRIM-31 Iterative Retrieval Refinement (refinement-based slicing = context-conditioned summary pass). **Closes the strict program-comprehension-mechanism residual slot** carried forward from Wave-17/Wave-18/Wave-19/Wave-20/Wave-21/Wave-22. Substrate is opt-in via `configs/agents.yml:comprehension.graph_self_evolving: true` (existing path).
-15. **Wave-23 multi-agent translation pipeline substrate**:
-   - `[[1.0.0 P-154]]` TransAgent (FSE 2026, July 5-9 2026, Montréal) extends PRIM-23 Chunked Translation (multi-agent translator + execution-aligned critic) and PRIM-31 Iterative Retrieval Refinement (execution-aligned critic feedback = retrieval refinement substrate). Complements P-151 SmartC2Rust's single-LLM iterative feedback. Substrate is opt-in via `configs/agents.yml:translation.feedback_driven: true` (shared path with SmartC2Rust).
-16. **Wave-23 static-analysis co-evolution substrate**:
-   - `[[1.0.0 P-155]]` POLA-Tester (ICSE 2026, April 2026, Rio de Janeiro) extends PRIM-12 Static Analysis Co-Evolution with agentic wait + syntactic dependency mining + iterative retrofit validation; LLM-augmented static-analysis pattern. Substrate is opt-in via `configs/agents.yml:comprehension.graph_self_evolving: true` (shared path with §11.6).
-17. **Wave-23 LLM-augmented test-generation substrate**:
-   - `[[1.0.0 P-156]]` ACONITE (ICSE 2026, April 2026, Rio de Janeiro) extends PRIM-22 Four Phases of Comprehension (Structure phase — backward slicing + execution annotations = LLM-augmented static-analysis pattern complementing P-129 LλMDA's partial-PDG pattern) and PRIM-29 Dynamic Iteration Recruiter (close-test retrieval + execution annotation = retrieval-and-recruitment substrate). Substrate is opt-in via `configs/agents.yml:translation.feedback_driven: true` (shared path with §11.8).
-18. **Wave-23 forward to Wave-24**:
-   - Re-verify W23-W1 SWE-TRACE venue after NeurIPS 2026 author notifications (2026-09-24); sixth carry = retire threshold per Wave-21 carry rule.
-   - Wave-24 may consider formalizing cross-pattern surveys among Wave-17..Wave-23 anchors (e.g. P-129 LλMDA × P-150 TestPrune, P-154 TransAgent × P-151 SmartC2Rust, P-155 POLA-Tester × P-153 CoReX, P-156 ACONITE × P-140 Panta) as new §11.9-§11.12 SLM-Era General-Purpose Patterns or extensions of §11.6/§11.8 (forward plan, not Wave-23 watchlist items).
-   - §11.6 carry-over: re-verify opt-in path is wired.
-   - Wave-24 to integrate P-153 CoReX's context-aware refinement-based slicing + P-156 ACONITE's backward slicing + execution annotations into the comprehension substrate and re-run the four repositories if BLK-04 (GPU/LLM endpoint) resolves.
+1. **Resolve MemoryStore MaTTS Integration**:
+   - Canonical `MaTTSDefaultBudget = 10` established in `internal/compiletime/compiletime.go` (BLK-01 resolved).
+   - Wire persistent vector memory retrieval for cross-sprint strategy reuse.
+2. **Expand Language Pairs Beyond C to Rust**:
+   - **Primary**: Java to Rust (addressing the `Commons-Validator` plateau by engineering regex/inheritance mappings).
+   - **Secondary**: Python 2 to Python 3 / Go (addressing legacy enterprise and scientific computing stacks).
+3. **Formalize Benchmark Telemetry**:
+   - Integrate automated wall-clock, memory, and token telemetry streaming into the Charm TUI dashboard.
+
+---
+
+### 3.2. Closed-Loop Substrate Implementations (Waves 20–23)
+
+1. **Program-Comprehension Mechanism**:
+   - Residual program-comprehension slot (open since Wave-17) is **closed** via `[[1.0.0 P-153]]` CoReX context-aware refinement slicing, joining `[[1.0.0 P-142]]` NESA self-evolving graph pre-analysis and `[[1.0.0 P-133]]` ADI frame lifetime traces.
+2. **SLM-as-Judge Closed-Loop (`PRIM-7`)**:
+   - Judgement (`[[1.0.0 P-125]]` T1 / `[[1.0.0 P-127]]` SLM-as-a-Judge) $\to$ Defence (`[[1.0.0 P-143]]` HalluShield) $\to$ Validation (`[[1.0.0 P-135]]` SPECS / `[[1.0.0 P-136]]` CaTS / `[[1.0.0 P-146]]` ContextPRM).
+3. **Strategy-Selection Closed-Loop (`PRIM-21`)**:
+   - Registry (`[[1.0.0 P-122]]` ReasoningBank) $\to$ Selection (`[[1.0.0 P-145]]` TerraMod / `[[1.0.0 P-123]]` CodeChemist) $\to$ Execution (`[[1.0.0 P-137]]` SuffixDecoding) $\to$ Judgement (`[[1.0.0 P-143]]` HalluShield).
+4. **KV-Cache Eviction & Speculative Decoding (`PRIM-21, 31`)**:
+   - Draft-model lookahead (`[[1.0.0 P-147]]` SpecKV) $\to$ LoRA-augmented target retention (`[[1.0.0 P-148]]` LookaheadKV) $\to$ Asynchronous verification pipeline (`[[1.0.0 P-149]]` SSD/Saguaro).
+5. **Feedback-Driven Multi-Agent Translation (`PRIM-23, 29, 31`)**:
+   - Context-aware chunking and three-signal loop (`[[1.0.0 P-151]]` SmartC2Rust) paired with multi-agent critic feedback (`[[1.0.0 P-154]]` TransAgent).
+6. **Context Pruning & Test Synthesis (`PRIM-12, 22, 29`)**:
+   - Coverage-driven test minimization (`[[1.0.0 P-150]]` TestPrune), static-analysis co-evolution (`[[1.0.0 P-155]]` POLA-Tester), and execution-annotated backward slicing (`[[1.0.0 P-156]]` ACONITE).
+
+---
+
+### 3.3. Wave-24 Forward Strategic Objectives
+
+1. **Watchlist Triage**:
+   - Re-verify W23-W1 SWE-TRACE (`arXiv:2604.14820`) after NeurIPS 2026 author notifications (2026-09-24); apply the sixth-carry retire threshold if still lacking a peer-reviewed venue.
+2. **Substrate Configuration Wiring**:
+   - Wire target opt-in configuration paths (`configs/agents.yml:comprehension.graph_self_evolving`, `configs/agents.yml:translation.feedback_driven`) and verify with integration tests.
+3. **Cross-Pattern Literature Surveys**:
+   - Formalize cross-pattern studies among Wave-17..23 anchors (e.g. `P-129 × P-150`, `P-154 × P-151`, `P-155 × P-153`, `P-156 × P-140`) as general-purpose SLM modernization patterns.
+4. **Empirical Benchmark Re-Measurement**:
+   - Re-run the four benchmark repositories ($K=3$ stochastic trials) when local GPU inference (BLK-04) is restored.
