@@ -85,8 +85,8 @@ tags: [adhoc, progress, milestones, status, parity, "[[2.0.0 MAgHARCM]]"]
 | :--- | :--- | :--- | :--- |
 | **`[[1.0.0 P-153]]` CoReX** (Sun et al.) | ICSE 2026 | **ACCEPT** | `PRIM-22` (Structure Phase), `PRIM-31` (Retrieval Refinement) |
 | **`[[1.0.0 P-154]]` TransAgent** (Roh et al.) | FSE 2026 | **ACCEPT** | `PRIM-23` (Chunked Translation), `PRIM-31` (Critic Feedback) |
-| **`[[1.0.0 P-155]]` POLA-Tester** (Sun et al.) | ICSE 2026 | **ACCEPT** | `PRIM-12` (Static Analysis Co-Evolution) |
-| **`[[1.0.0 P-156]]` ACONITE** (Sun et al.) | ICSE 2026 | **ACCEPT** | `PRIM-22` (Backward Slicing), `PRIM-29` (Test Recruiter) |
+| **`[[1.0.0 P-155]]` CodeCureAgent** (Joos et al.) | FSE 2026 | **ACCEPT** | `PRIM-13` (Warning-Classification Guard), `PRIM-22` (Observation Phase), `PRIM-29` (Acceptance Heuristic) |
+| **`[[1.0.0 P-156]]` TestWeaver** (Le et al.) | ICSE 2026 | **ACCEPT** | `PRIM-22` (Backward Slicing), `PRIM-29` (Close-Test Retrieval), `PRIM-31` (Retrieval Refinement) |
 | **R1 AutoCodeSherpa** (Yunbo Lyu et al.) | ISSTA 2026 | **REJECT (Q1)** | N/A (Off-list venue; ISSTA not on §7 trigger list) |
 | **W23-W1 SWE-TRACE** (`arXiv:2604.14820`) | Pre-print | **WATCHLIST** | 5th carry (NeurIPS 2026 notifications pending 2026-09-24) |
 

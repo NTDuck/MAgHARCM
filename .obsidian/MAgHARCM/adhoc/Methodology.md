@@ -491,8 +491,8 @@ Wave 9 anchors (verified):
 - **Accepted Papers (4)**:
   1. `[[1.0.0 P-153]]` **CoReX** (Sun et al., ICSE 2026): Context-aware refinement-based slicing (`[[1.0.0 PRIM-22]]`, `[[1.0.0 PRIM-31]]`).
   2. `[[1.0.0 P-154]]` **TransAgent** (Roh et al., FSE 2026): Critic-feedback multi-agent translation (`[[1.0.0 PRIM-23]]`, `[[1.0.0 PRIM-31]]`).
-  3. `[[1.0.0 P-155]]` **POLA-Tester** (Sun et al., ICSE 2026): Static analysis co-evolution (`[[1.0.0 PRIM-12]]`).
-  4. `[[1.0.0 P-156]]` **ACONITE** (Sun et al., ICSE 2026): LLM-augmented regression test generation (`[[1.0.0 PRIM-22]]`, `[[1.0.0 PRIM-29]]`).
+  3. `[[1.0.0 P-155]]` **CodeCureAgent** (Joos et al., FSE 2026): Agentic static-analysis warning classification + repair (`[[1.0.0 PRIM-13]]`, `[[1.0.0 PRIM-22]]`, `[[1.0.0 PRIM-29]]`).
+  4. `[[1.0.0 P-156]]` **TestWeaver** (Le et al., ICSE 2026): LLM-augmented regression test generation via backward slicing + close-test retrieval + execution annotation (`[[1.0.0 PRIM-22]]`, `[[1.0.0 PRIM-29]]`, `[[1.0.0 PRIM-31]]`).
 - **Triage Summary**: 4 ACCEPT, 1 REJECT Q1 (R1 AutoCodeSherpa, ISSTA 2026 off-list), 1 WATCHLIST (W23-W1 SWE-TRACE 5th carry, pending NeurIPS notifications 2026-09-24).
 - **Forward Initiative (Wave-24)**: Re-verify SWE-TRACE venue; evaluate cross-pattern surveys among Wave-17..23 anchors; wire target config paths.
 
@@ -638,7 +638,7 @@ Wave-22 anchors are listed inline at §7 Wave 22 trigger evaluation. Wave-22 pri
 
 ## 18. Wave-24 Anchor Plan (forward plan; Wave-23 closed via P-153 — see §21 + §22)
 
-0. **Wave-23 close-out (2026-09-08 iter-1).** Wave-23 fired with 4 ACCEPT (P-153 CoReX ICSE 2026, P-154 TransAgent FSE 2026, P-155 POLA-Tester ICSE 2026, P-156 ACONITE ICSE 2026) + 1 REJECT Q1 (R1 AutoCodeSherpa ISSTA 2026, off-list venue) + 1 watchlist carry (W23-W1 SWE-TRACE fifth carry). P-153 CoReX closes the strict program-comprehension-mechanism residual slot carried forward from Wave-17 first opening. Wave-23 anchors are listed at §21 (forward pointer); Wave-23 forward plan to Wave-24 is at §22. Items 1–4 below are Wave-24 forward-plan candidates.
+0. **Wave-23 close-out (2026-09-08 iter-1).** Wave-23 fired with 4 ACCEPT (P-153 CoReX ICSE 2026, P-154 TransAgent FSE 2026, P-155 CodeCureAgent FSE 2026, P-156 TestWeaver ICSE 2026) + 1 REJECT Q1 (R1 AutoCodeSherpa ISSTA 2026, off-list venue) + 1 watchlist carry (W23-W1 SWE-TRACE fifth carry). P-153 CoReX closes the strict program-comprehension-mechanism residual slot carried forward from Wave-17 first opening. Wave-23 anchors are listed at §21 (forward pointer); Wave-23 forward plan to Wave-24 is at §22. Items 1–4 below are Wave-24 forward-plan candidates.
 1. Re-scout strict program-comprehension-mechanism slot (function-level → partition-aligned summary pass) against NeurIPS 2026 (post 2026-09-24), ICML 2027 (Jan 2027 deadline), ICLR 2027 (Sep 2026 deadline — embargoed).
 
 2. Re-verify W1 SWE-TRACE arXiv:2604.14820 — if no peer-reviewed venue by NeurIPS 2026 author notification, retire to a `rejected_archive` block and stop carrying.
@@ -669,7 +669,7 @@ The Wave-23 triage ledger (`Wave-23-Candidates.md` line 57: `ACCEPT = 4, REJECT 
 
 1. **§11.6 carry-over (config-claim verification).** The §11.6 Program-Comprehension Mechanism substrate claim is opt-in via `configs/agents.yml:comprehension.graph_self_evolving: true`; Wave-24 should re-verify the opt-in path is wired. (Carried forward from Wave-21 → Wave-22 → Wave-23 as a config-claim verification item.)
 2. **§11.7 + §11.8 carry-over.** §11.7 (P-152 Hallu-Eval triplet) and §11.8 (P-151 SmartC2Rust three-signal loop) substrate claims remain opt-in via `configs/agents.yml`; Wave-24 should re-verify the opt-in paths are wired.
-3. **Wave-23 cross-pattern surveys (Wave-24 forward plan, not Wave-23 watchlist).** Wave-24 may consider formalizing cross-pattern substrates among Wave-17..Wave-23 anchors — e.g. `[[1.0.0 P-129]]` LλMDA × `[[1.0.0 P-150]]` TestPrune (context-augment partial-program static-analysis), `[[1.0.0 P-154]]` TransAgent × `[[1.0.0 P-151]]` SmartC2Rust (single-vs-multi-agent translation trade-off matrix), `[[1.0.0 P-155]]` POLA-Tester × `[[1.0.0 P-153]]` CoReX (static-analysis co-evolution with iterative feedback), `[[1.0.0 P-156]]` ACONITE × `[[1.0.0 P-140]]` Panta (LLM-augmented test-generation substrate).
+3. **Wave-23 cross-pattern surveys (Wave-24 forward plan, not Wave-23 watchlist).** Wave-24 may consider formalizing cross-pattern substrates among Wave-17..Wave-23 anchors — e.g. `[[1.0.0 P-129]]` LλMDA × `[[1.0.0 P-150]]` TestPrune (context-augment partial-program static-analysis), `[[1.0.0 P-154]]` TransAgent × `[[1.0.0 P-151]]` SmartC2Rust (single-vs-multi-agent translation trade-off matrix), `[[1.0.0 P-155]]` CodeCureAgent × `[[1.0.0 P-153]]` CoReX (static-analysis co-evolution with iterative feedback), `[[1.0.0 P-156]]` TestWeaver × `[[1.0.0 P-140]]` Panta (LLM-augmented test-generation substrate).
 
 > **Sprint retraction note 2026-09-08 iter-1.** Earlier drafts of §22 enumerated W1-W5 cross-pattern audits as Wave-23 watchlist entries, but the Wave-23 triage ledger records only the W23-W1 SWE-TRACE carry. The cross-pattern surveys are Wave-24 forward-plan candidates, not Wave-23 watchlist items. The §23 "Wave-23 Negative-Evidence Registry" section that referenced R2 AutoCodeSherpa ASE 2026 NIER and R3 Multi-Agent Translation Pipeline arXiv 2607.XXXXX was entirely fabricated against non-existent Wave-23 REJECT entries (R1 is the only Wave-23 REJECT, ISSTA 2026 Q1) and is deleted in this retraction pass.
 
