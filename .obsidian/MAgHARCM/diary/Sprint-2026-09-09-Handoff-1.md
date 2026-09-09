@@ -11,6 +11,8 @@ date: 2026-09-09
 
 Sprint 2026-09-09 closed. Wave-24 research triage, vault sync (including the Wave-22/23 lineage parity gap-fill), a bounded empirical probe, structured-output hardening, paper sync, and a section-9 command prune all landed. All gates pass.
 
+> **Supersession note**: this is session 2 of 2026-09-09. `Sprint-2026-09-09-Handoff-0.md` (restored from commit `839c52e`) records the earlier same-day session (P-58..P-65 anchors, three waves, STE100 audit); this handoff covers everything after it — Wave-24 onward.
+
 ## Research — Wave-24 (1 ACCEPT, 1 REJECT, 4 WATCHLIST)
 
 - [[P-157 — An et al. 2026 — ReST-KV]] (ICLR 2026 poster): layer-wise output-reconstruction KV eviction + spatial-temporal smoothing. Anchors `[[1.0.0 PRIM-31]]` (eviction fidelity governs retrieval-loop context) and `[[1.0.0 PRIM-21]]` (reconstruction-vs-attention eviction = strategy knob in the SpecKV/LookaheadKV family).
