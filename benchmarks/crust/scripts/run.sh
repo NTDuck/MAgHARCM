@@ -255,13 +255,13 @@ run_one() {
     return 0
 }
 
-# each_config: iterate the selected configs as proj names on stdout.
+# each_config: iterate the selected configs as config paths on stdout.
 each_config() {
     for cfg in "$CONFIGS_DIR"/*.yml; do
         local proj
         proj="$(basename "$cfg" .yml)"
         [[ -n "$ONLY" && "$proj" != "$ONLY" ]] && continue
-        echo "$proj"
+        echo "$cfg"
     done
 }
 
@@ -277,8 +277,9 @@ fi
 build_binary
 
 ran=0; skipped=0
-for proj in $(each_config); do
-    run_one "$proj"
+for cfg in $(each_config); do
+    proj="$(basename "$cfg" .yml)"
+    run_one "$cfg"
     if completed_p "$proj"; then
         skipped=$((skipped + 1))
     else
