@@ -1,6 +1,6 @@
 {
   "vault_version": "1.0.0",
-  "last_updated": "2026-09-07 (iter-6, wave-22)",
+  "last_updated": "2026-09-09 (iter-1, wave-24)",
   "description": "Machine-readable research knowledgebase for MAgHARCM. Optimized for autonomous LLM agent lookup, synthesis, and verification.",
   "pipeline_agents": [
     {
@@ -5681,6 +5681,52 @@
         "PRIM-29": "TestWeaver close-test retrieval + execution annotation = retrieval-and-recruitment substrate for test-generation agents.",
         "PRIM-31": "TestWeaver close-test retrieval + backward slicing = iterative retrieval refinement substrate for test-generation agents."
       }
+    },
+    {
+      "id": "P-157",
+      "version_marker": "[[1.0.0 P-157]]",
+      "title": "P-157 ReST-KV: Robust KV Cache Eviction with Layer-wise Output Reconstruction and Spatial-Temporal Smoothing",
+      "bibkey": "restkv2026iclr",
+      "authors": "An, Yongqi and Lu, Chang and Zhu, Kuan and Yu, Tao and Zhao, Chaoyang and Wu, Hong and Tang, Ming and Wang, Jinqiao",
+      "year": 2026,
+      "venue": "ICLR 2026 (Poster)",
+      "eprint_or_doi": "arXiv:2605.08840; OpenReview PhEHuo7oMm",
+      "anchored_primitives": [
+        "PRIM-21",
+        "PRIM-31"
+      ],
+      "tags": [
+        "paper",
+        "kv-cache-eviction",
+        "output-reconstruction",
+        "spatial-temporal-smoothing",
+        "slm-era",
+        "[[1.0.0 PRIM-21]]",
+        "[[1.0.0 PRIM-31]]",
+        "[[1.0.0 P-147]]",
+        "[[1.0.0 P-148]]",
+        "[[1.0.0 P-134]]",
+        "wave-24"
+      ],
+      "verified": true,
+      "hop1_references": [
+        "[[1.0.0 P-147]] SpecKV (ICLR 2026, Wave-21) — draft-model-driven KV eviction with adaptive gamma controller. ReST-KV shares the eviction-importance substrate but replaces lookahead scoring with output-reconstruction optimization.",
+        "[[1.0.0 P-148]] LookaheadKV (ICLR 2026, Wave-21) — parameter-efficient LoRA lookahead for eviction. ReST-KV is the training-free alternative in the same ICLR 2026 venue family.",
+        "[[1.0.0 P-134]] RelayCaching (ICML 2026, Wave-19) — cross-agent KV reuse. ReST-KV governs per-layer eviction quality that determines what the reuse substrate retains.",
+        "[[1.0.0 P-141]] KVFlow (Wave-19) — workflow-aware eviction for multi-agent pipelines; ReST-KV provides the output-fidelity objective KVFlow's workflow signal lacks."
+      ],
+      "hop2_references": [
+        "H2O / heavy-hitter oracle eviction (Zhang 2023) — raw-attention-importance eviction baseline family ReST-KV shows to be blind to attention redistribution.",
+        "Optimal Brain Surgeon (LeCun 1990; Frantar & Alistarh 2023 SparseGPT) — parameter-removal-with-reconstruction lineage; ReST-KV transfers the reconstruction objective from weight pruning to KV eviction."
+      ],
+      "summary": "ReST-KV formulates KV cache eviction as a layer-wise output-reconstruction optimization: for each token candidate, model how its removal perturbs the layer output and evict the minimum-discrepancy KV pairs, then smooth importance spatial-temporally (EMA over decoding steps + adaptive windows over positions). Surpasses attention-scoring baselines by +2.58% LongBench / +15.2% RULER with 10.61x decoding-latency reduction at 128k context.",
+      "venue_verification": "Verified via iclr.cc/virtual/2026/poster/10009650 and OpenReview forum PhEHuo7oMm (ICLR 2026 poster).",
+      "mechanism_summary": "(a) layer-wise output reconstruction: eviction formulated as optimization minimizing output discrepancy, capturing attention-redistribution effects; (b) spatial-temporal smoothing: EMA over temporal variation + adaptive window for spatial patterns; (c) training-free, evaluated at 128k context.",
+      "anchor_table": {
+        "PRIM-31": "ReST-KV output-reconstruction-governed eviction determines what retained context the iterative retrieval loop sees; eviction fidelity is a retrieval-refinement precondition.",
+        "PRIM-21": "ReST-KV reconstruction-based vs attention-heuristic eviction = eviction-strategy choice knob in the SpecKV/LookaheadKV strategy family."
+      },
+      "file": "research/papers/P-157-ReST-KV-ICLR-2026.md"
     }
   ],
   "reject_registry": {
@@ -5844,6 +5890,15 @@
         "verdict": "Q1 (off-list venue)",
         "rationale": "ISSTA 2026 is not on the section 7 trigger list (NeurIPS / ICML / ICLR / ICSE / ASE / TOSEM / TSE / FSE). Section 7 trigger list permits workshop-track ACCEPT only for method-level single-paper mechanism work, and ISSTA is a main conference (not workshop). Off-list per section 7 strict-venue interpretation. Watch for a section 7-list venue companion paper (ICSE 2027 / FSE 2027)."
       }
+    ],
+    "wave-24": [
+      {
+        "bibkey": "mixkv2026iclr",
+        "title": "MixKV: Mixing Importance with Diversity for KV Cache Compression in LVLMs (Liu, Gui, Zhang & Zhang)",
+        "venue": "ICLR 2026",
+        "verdict": "Q3 (off-axis modality)",
+        "rationale": "ICLR 2026 accepted (github.com/xuyang-liu16/MixKV), so Q1 passes; but the mechanism targets large vision-language model KV caches (modality-specific, head-wise semantic redundancy). MAgHARCM's pipeline is text-only code translation; no primitive defends or is defended by an LVLM-specific compression mechanism. Off-axis per Q3."
+      }
     ]
   },
   "watchlist": {
@@ -5955,6 +6010,48 @@
         "carry_count": 5,
         "next_verification_trigger": "NeurIPS 2026 author notifications (2026-09-24); sixth carry = retire threshold per Wave-21 carry rule",
         "rationale": "arXiv preprint only; no peer-reviewed venue confirmation at any section 7 venue. NeurIPS 2026 notifications 17 days out. Sixth carry triggers retire-or-confirm decision in Wave-24."
+      }
+    ],
+    "wave-24": [
+      {
+        "candidate_id": "W24-W1",
+        "short_name": "SWE-TRACE",
+        "title": "Optimizing Long-Horizon SWE Agents Through Rubric Process Reward Models and Heuristic Test-Time Scaling",
+        "arxiv": "2604.14820",
+        "first_carried": "Wave-19 (W2)",
+        "carry_count": 6,
+        "next_verification_trigger": "NeurIPS 2026 author notifications (2026-09-24); sixth carry reached = retire-or-confirm decision mandatory at Wave-25 per Wave-21 carry rule",
+        "rationale": "Re-verified 2026-09-09: arXiv:2604.14820 remains preprint-only; no venue acceptance found. NeurIPS 2026 notifications 15 days out. Wave-25 must confirm a venue or retire."
+      },
+      {
+        "candidate_id": "W24-W2",
+        "short_name": "MemArt",
+        "title": "KVCache-Centric Memory for LLM Agents",
+        "arxiv": "OpenReview YolJOZOGhI",
+        "first_carried": "Wave-24",
+        "carry_count": 1,
+        "next_verification_trigger": "ICLR 2026 acceptance decision publication",
+        "rationale": "In-review ICLR 2026 submission; OpenReview forum behind browser verification, no dblp/program entry found as of 2026-09-09. Mechanism (latent KV-block agent memory) adjacent to P-134 RelayCaching. Re-verify at Wave-25."
+      },
+      {
+        "candidate_id": "W24-W3",
+        "short_name": "MemDecay",
+        "title": "Region-Aware KV Cache Eviction for Efficient LLM Agent Inference",
+        "arxiv": "2607.10582",
+        "first_carried": "Wave-24",
+        "carry_count": 1,
+        "next_verification_trigger": "Peer-reviewed venue acceptance (NeurIPS 2026 / ICLR 2027 cycle)",
+        "rationale": "SLM-relevant mechanism (region-aware eviction + pinning, Qwen2.5-1.5B/3B) but arXiv-only as of 2026-09-09. Re-verify at Wave-25."
+      },
+      {
+        "candidate_id": "W24-W4",
+        "short_name": "ReCache",
+        "title": "ReCache: Efficient KV Cache Reuse and Compression for Tool-Augmented LLM Agents",
+        "arxiv": "2608.19662",
+        "first_carried": "Wave-24",
+        "carry_count": 1,
+        "next_verification_trigger": "Peer-reviewed venue acceptance; method-level single-paper mechanism, no duplicate coverage — fires at Q1 confirmation per P-138 RepairKV precedent",
+        "rationale": "arXiv:2608.19662 (2026-08-20) preprint only; no venue acceptance as of 2026-09-09. Q2 concrete (resource-wise attention producing composition-invariant tool-schema KV blocks), Q3 on-target (cross-agent/tool-schema KV reuse = Wave-23 forward-plan family; P-134 RelayCaching tool-side analogue). Fails Q1 venue gate; watchlist for Wave-25."
       }
     ]
   }
