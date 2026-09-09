@@ -1723,3 +1723,11 @@
   doi       = {10.1145/3744916.3787805},
   note      = {Execution-aware, feedback-driven regression test generation. Three-mechanism composition: (a) backward slicing for context reduction (LLM receives a backward slice from the target line); (b) close-test retrieval (identifies prior tests sharing control-flow similarity with the path to the target line); (c) execution in-line annotations (variable-state comments along the executed path injected into the prompt). Addresses the coverage-plateau problem in LLM-based regression test generation. Anchors PRIM-22 (Four Phases Comprehension: three new comprehension-mechanism anchors via backward slicing + close-test retrieval + execution annotation) and PRIM-29 (Dynamic Iteration Recruiter: retrieval-and-recruitment substrate for test-generation agents). Source: dl.acm.org/doi/10.1145/3744916.3787805; arXiv:2508.01255.}
 }
+
+@inproceedings{p157_an_restkv_2026,
+  title     = {{ReST-KV: Robust KV Cache Eviction with Layer-wise Output Reconstruction and Spatial-Temporal Smoothing}},
+  author    = {An, Yongqi and Lu, Chang and Zhu, Kuan and Yu, Tao and Zhao, Chaoyang and Wu, Hong and Tang, Ming and Wang, Jinqiao},
+  booktitle = {International Conference on Learning Representations (ICLR 2026)},
+  year      = {2026},
+  note      = {Training-free KV cache eviction formulated as a layer-wise output-reconstruction optimization: for each candidate token, model how its removal perturbs the layer output and evict the minimum-discrepancy KV pairs, capturing attention-redistribution effects that raw-attention-importance scoring (the H2O family) misses; exponential-moving-average smoothing over decoding steps plus an adaptive window mechanism add spatial-temporal robustness. Surpasses attention-scoring baselines by +2.58\% on LongBench and +15.2\% on RULER with a 10.61$\times$ decoding-latency reduction at 128k context. Anchors PRIM-31 (Iterative Retrieval Refinement: eviction fidelity governs what retained context the retrieval loop sees) and PRIM-21 (Migration Strategy Selection: reconstruction-based vs attention-heuristic eviction as strategy knob in the SpecKV/LookaheadKV family). Source: iclr.cc/virtual/2026/poster/10009650; OpenReview PhEHuo7oMm; arXiv:2605.08840.}
+}
