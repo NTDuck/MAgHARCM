@@ -43,7 +43,7 @@ Commit rules: run commands from the repository root. Make one conventional commi
 ## 4. Run Empirical Experiments
 
 1. Run the translation benchmark suite through the crust pipeline (`benchmarks/crust/scripts/run.sh`), or the K-trial pipeline (`scripts/run-samples-k.sh`). Read the current target repositories from `benchmarks/crust/configs/` and `benchmarks/crust/README.md`. If a target is missing, record it as a blocker; do not silently shrink the suite.
-2. Record compilation status as `Pass` only when `cargo check` exits 0 and the entire test suite executes. Record `Fail` when the run executed and did not pass. If the run was stopped before completion by the operator or the environment, record it as deferred with the partial log path.
+2. Record compilation status as `Pass` only when `cargo check` exits 0 and the entire test suite executes. Record `Fail` when the run executed and did not pass. If the run was stopped before completion by the operator or the environment, record it as deferred with the partial log path. When a run fails, name the failing pipeline node and error in the results note.
 3. Record exact test counts and percentages, for example `24/42 (57.1%)`.
 4. Record numbers only from machine-readable artifacts: `benchmarks/crust/results/<12-char HEAD>/<proj>/result.yml` when a run completes, `docs/sample-results/k-summary.json` after a K-trial run, or the last `FINALSUM` log line from `internal/agents/validator.go`. Link the artifact path beside every recorded row.
 5. Never mock, fake, or skip experiments. If the inference daemon is offline (see the phase-1 blocker record), record the deferred experiments in `.obsidian/MAgHARCM/adhoc/Benchmark-Results-And-Evaluation.md` and continue to phase 5. Do not invent numbers.
@@ -87,9 +87,9 @@ Commit rules: run commands from the repository root. Make one conventional commi
 
 ## 9. Standing Governance Rules
 
-1. **Dating (BLK-06)**: `date -u` or the orchestration layer is the only authoritative date. Never extrapolate future dates from git history or older notes. Every YAML `date` must equal its filename date. A session may run all phases or a subset; record completed phases and the next phase in the handoff.
-2. **Registries (BLK-08)**: every triage wave appends rejects to `reject_registry.wave-<N>` and unverified candidates to `watchlist.wave-<N>` in `Research-Database.json`, using the field names of existing entries. Never fabricate citations or metrics.
-3. **Sandbox Batch Commit**: if git mutations are blocked (sandbox, index lock, credentials), accumulate artifacts in the working tree and batch-commit when git works again. Use per-phase commits again as soon as it recovers.
+1. **Dating**: `date -u` or the orchestration layer is the only authoritative date. Never extrapolate future dates from git history or older notes. Every YAML `date` must equal its filename date. A session may run all phases or a subset; record completed phases and the next phase in the handoff.
+2. **Registries**: every triage wave appends rejects to `reject_registry.wave-<N>` and unverified candidates to `watchlist.wave-<N>` in `Research-Database.json`, using the field names of existing entries. Never fabricate citations or metrics. A paper already anchored under another P-number is a non-event: record it in the memo only, never in a registry.
+3. **Sandbox Batch Commit**: if git mutations are blocked, accumulate artifacts in the working tree and batch-commit when git works again. Use per-phase commits again as soon as it recovers.
 
 ## 10. Durable Watchlist Constraints
 
