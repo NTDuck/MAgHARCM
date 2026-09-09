@@ -1,0 +1,12 @@
+project: 2dpartint
+config: benchmarks/crust/configs/2dpartint.yml
+status: interrupted
+exit_code: -
+wall_seconds: 145
+compile_ok: unknown
+tests_passed: 0
+tests_total: 0
+pass_rate: 0.0
+iterations: 0
+per_iteration:
+

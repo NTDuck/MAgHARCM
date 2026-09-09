@@ -1,0 +1,45 @@
+[23:38:58] Run: source=benchmarks/assets/ReCodeAgent/data/tool_projects/crust/2dpartint/c srcLang=C target=.artifacts/crust/2dpartint/rust tgtLang=Rust toolchain=cargo
+[23:38:58] Run ID: benchmarks-assets-ReCodeAgent-data-tool_projects-crust-2dpartint-c
+[23:38:58] Connect to Ollama models at `http://localhost:11434`
+[23:38:58] Reasoning Model: `qwen3:30b-a3b-thinking-2507-q4_K_M`
+[23:38:58] Coding Model:    `hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4_K_XL`
+[23:38:58] Build 8-agent Eino Graph: Archaeologist, Analyzer, Planner, Translator, Reviewer, Validator, VerdictPanel, Recruiter
+[23:38:58] Start multi-agent translation execution
+[23:38:58] [Archaeologist] Starting pre-planning software archaeology
+[23:38:58] [Archaeology] starting pass for benchmarks/assets/ReCodeAgent/data/tool_projects/crust/2dpartint/c
+[23:38:58] archaeology: 11/5/0/24/1
+[23:38:58] [Archaeologist] Excavation complete: 11 boundaries, 0 churn hotspots, 24 forensics
+[23:38:58] [Analyzer] Starting source project analysis: source=benchmarks/assets/ReCodeAgent/data/tool_projects/crust/2dpartint/c srcLang=C tgtLang=Rust
+[23:38:58] Scanning directory hierarchy via `get_directory_tree`
+[23:38:58] [Tool: `get_directory_tree`] Found 14 source/header/test files in `benchmarks/assets/ReCodeAgent/data/tool_projects/crust/2dpartint/c`
+[23:38:58] Parsing AST structure with Tree-Sitter: `Makefile`
+[23:38:58] [Tool: `get_file_structure`] `Makefile` -> 2 AST elements, 0 imports
+[23:38:58] Parsing AST structure with Tree-Sitter: `README.md`
+[23:38:58] [Tool: `get_file_structure`] `README.md` -> 0 AST elements, 0 imports
+[23:38:58] Parsing AST structure with Tree-Sitter: `example_simulation_config.txt`
+[23:38:58] [Tool: `get_file_structure`] `example_simulation_config.txt` -> 0 AST elements, 0 imports
+[23:38:58] Parsing AST structure with Tree-Sitter: `simulacion.gif`
+[23:38:58] [Tool: `get_file_structure`] `simulacion.gif` -> 0 AST elements, 0 imports
+[23:38:58] Parsing AST structure with Tree-Sitter: `collisions.c`
+[23:38:58] [Tool: `get_file_structure`] `collisions.c` -> 5 AST elements, 5 imports
+[23:38:58] Parsing AST structure with Tree-Sitter: `functions.c`
+[23:38:58] [Tool: `get_file_structure`] `functions.c` -> 0 AST elements, 5 imports
+[23:38:58] Parsing AST structure with Tree-Sitter: `collisions.h`
+[23:38:58] [Tool: `get_file_structure`] `collisions.h` -> 3 AST elements, 1 imports
+[23:38:58] Parsing AST structure with Tree-Sitter: `config.h`
+[23:38:58] [Tool: `get_file_structure`] `config.h` -> 2 AST elements, 0 imports
+[23:38:58] Parsing AST structure with Tree-Sitter: `csv.h`
+[23:38:58] [Tool: `get_file_structure`] `csv.h` -> 3 AST elements, 1 imports
+[23:38:58] Parsing AST structure with Tree-Sitter: `data.h`
+[23:38:58] [Tool: `get_file_structure`] `data.h` -> 5 AST elements, 0 imports
+[23:38:58] Parsing AST structure with Tree-Sitter: `debug.h`
+[23:38:58] [Tool: `get_file_structure`] `debug.h` -> 1 AST elements, 1 imports
+[23:38:58] Parsing AST structure with Tree-Sitter: `functions.h`
+[23:38:58] [Tool: `get_file_structure`] `functions.h` -> 4 AST elements, 1 imports
+[23:38:58] Parsing AST structure with Tree-Sitter: `initialization.h`
+[23:38:58] [Tool: `get_file_structure`] `initialization.h` -> 1 AST elements, 1 imports
+[23:38:58] Parsing AST structure with Tree-Sitter: `functions_spec.c`
+[23:38:58] [Tool: `get_file_structure`] `functions_spec.c` -> 27 AST elements, 5 imports
+[23:41:23] [ERROR] run failed: execute pipeline: [NodeRunError] structured: unmarshal tool args: json: cannot unmarshal string into Go struct field AnalyzerSchema.libraries of type agents.AnalyzerLibraryEntrySchema (raw={"overview": "2D particle simulation for geotechnical analysis, handling collisions, forces, and particle movement using a linked list and grid-based collision detection.", "directory_structure": "src/\n├── collisions.c\n├── dat…)
+------------------------
+node path: [analyzer]

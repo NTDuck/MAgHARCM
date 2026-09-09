@@ -1,7 +1,7 @@
 ---
 title: MAgHARCM Benchmark Results & Empirical Evaluation
 date: 2026-09-08
-last_updated: 2026-09-08 (iter-1, wave-23)
+last_updated: 2026-09-09 (iter-1, wave-24)
 aliases:
   - "Benchmark-Results-And-Evaluation"
   - "Benchmark Results and Evaluation"
@@ -57,7 +57,7 @@ tags: [adhoc, benchmark, evaluation, slm, metrics, "[[2.0.0 MAgHARCM]]"]
 
 ---
 
-## 4. Historical Audit Trail & Substrate Evolution (Waves 20–23)
+## 4. Historical Audit Trail & Substrate Evolution (Waves 20–24)
 
 ### Empirical Baseline Disclaimer (Standing Rule)
 Benchmark numbers reported in Section 1 reflect the verified Wave-17 empirical run ($K=3$). In subsequent sprints (Waves 20–23), empirical re-runs were deferred because:
@@ -67,6 +67,19 @@ Benchmark numbers reported in Section 1 reflect the verified Wave-17 empirical r
 
 An empirical rebase will be scheduled once BLK-04 resolves and the respective opt-in substrate gates are toggled.
 
+
+### Wave-24 Empirical Probe (2026-09-09)
+
+**BLK-04 partially resolved on this workstation**: the local Ollama daemon is reachable (`http://localhost:11434`, models `qwen3:30b-a3b-thinking-2507-q4_K_M` + `hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4_K_XL` per the crust configs), so a bounded empirical probe ran instead of a deferral.
+
+| Project | Run | Status | Artifact |
+| :--- | :--- | :--- | :--- |
+| 2dpartint (C to Rust) | crust runner, single trial | **Fail** — pipeline aborted at the `analyzer` node: `structured: unmarshal tool args: unexpected end of JSON input (raw=)` (model emitted neither a tool call nor content; no FINALSUM emitted) | `benchmarks/crust/results/768d4bd9f5120500a6909fb9acdc0d988dbb1422/2dpartint/.log` |
+
+- **Runner fix landed first**: `benchmarks/crust/scripts/run.sh` passed the bare project name where the binary expected a config path; fixed in commit `aa75ccb` (`fix(benchmark): pass config path through crust runner`). The two pre-fix runs (`839c52ea…`, `6df14943…`) panicked at config load and were discarded; their result dirs were removed.
+- **No Section-1 row changed**: the run produced no compilation or test-pass numbers, so the verified Wave-17 baseline in Section 1 stands unchanged.
+- **Known bug surface for the next code phase** (located, not fixed this sprint): `internal/llm/structured.go::Extract` is single-shot — no retry on empty/unparseable model output, and the `AnalyzerSchema.libraries` nested field can arrive as a JSON string instead of an object (same qwen3-thinking JSON-as-content family fixed for `PlanningSchema` in commit `3f4249e`). A corrective-prompt retry loop on unmarshal failure is the recommended fix.
+
 ### Consolidated Substrate Evolution Matrix
 
 | Wave | Sprint Date | Newly Anchored Substrates & Literature | Specified Target Config Gates (configs/agents.yml) | Re-run Condition |
@@ -75,3 +88,4 @@ An empirical rebase will be scheduled once BLK-04 resolves and the respective op
 | **Wave 21** | 2026-09-07 (iter-4) | - Draft KV Eviction (`[[1.0.0 P-147]]` SpecKV)<br>- LoRA-augmented Lookahead (`[[1.0.0 P-148]]` LookaheadKV)<br>- Async Speculative Pipeline (`[[1.0.0 P-149]]` SSD/Saguaro)<br>- Coverage Test Minimization (`[[1.0.0 P-150]]` TestPrune) | `agents.kv_cache.eviction.strategy: speckv`<br>`agents.kv_cache.eviction.strategy: lookaheadkv`<br>`agents.speculative.async_pipeline: true`<br>`agents.comprehension.observation.test_prune: true` | Re-run $K=3$ once BLK-04 resolves and any Wave-21 gate is toggled. |
 | **Wave 22** | 2026-09-07 (iter-6) | - Feedback-Driven C-to-Rust (`[[1.0.0 P-151]]` SmartC2Rust)<br>- Hallucination Benchmark Triplet (`[[1.0.0 P-152]]` Hallu-Eval) | `agents.translation.feedback_driven: true`<br>`agents.comprehension.hallucination_evaluation: true` | Re-run $K=3$ once BLK-04 resolves and any Wave-22 gate is toggled. |
 | **Wave 23** | 2026-09-08 (iter-1) | - Context-Aware Refinement Slicing (`[[1.0.0 P-153]]` CoReX)<br>- Critic-Feedback Multi-Agent (`[[1.0.0 P-154]]` TransAgent)<br>- Agentic Warning Classification + Repair (`[[1.0.0 P-155]]` CodeCureAgent)<br>- LLM Test-Generation (`[[1.0.0 P-156]]` TestWeaver) | `comprehension.graph_self_evolving: true` (shared with §11.6)<br>`translation.feedback_driven: true` (shared with SmartC2Rust) | Re-run $K=3$ once BLK-04 resolves and Wave-23 substrates are active. |
+| **Wave 24** | 2026-09-09 (iter-1) | - Output-Reconstruction KV Eviction (`[[1.0.0 P-157]]` ReST-KV) | `agents.kv_cache.eviction.strategy: restkv` (hypothetical gate; not wired) | Re-run $K=3$ once the structured-output retry fix lands and any Wave-24 gate is toggled. |
