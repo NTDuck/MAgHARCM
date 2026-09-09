@@ -1,7 +1,7 @@
 ---
 title: MAgHARCM Project Progress & Milestones Tracker
 date: 2026-09-09
-last_updated: 2026-09-09 (iter-1, wave-24)
+last_updated: 2026-09-09 (iter-3, wave-25)
 aliases:
   - "Project-Progress-And-Milestones"
   - "Project Progress and Milestones"
@@ -21,8 +21,8 @@ tags: [adhoc, progress, milestones, status, parity, "[[2.0.0 MAgHARCM]]"]
 | :--- | :--- | :--- | :--- |
 | **Primitives Implemented** | 31 | 31 | **100.0%** (`[[1.0.0 PRIM-1]]`..`[[1.0.0 PRIM-31]]`) |
 | **Agent Units Wired** | 8 | 8 | **100.0%** (Eino cyclic graph in `internal/graph/graph.go`) |
-| **Research Papers Cataloged** | 145+ | 157 | **100.0%** (`[[1.0.0 P-01]]`..`[[1.0.0 P-157]]`) |
-| **Research Waves Fired** | 20 | 24 | **100.0%** (Wave-1 through Wave-24 closed; Wave-24 added 2026-09-09 iter-1) |
+| **Research Papers Cataloged** | 145+ | 158 | **100.0%** (`[[1.0.0 P-01]]`..`[[1.0.0 P-158]]`) |
+| **Research Waves Fired** | 20 | 25 | **100.0%** (Wave-1 through Wave-25 closed; Wave-25 added 2026-09-09 iter-3) |
 | **Architecture Decision Records** | Active | 3 ADRs | ADR-C-001..015, ADR-V-001..007 captured |
 
 ---
@@ -73,10 +73,27 @@ tags: [adhoc, progress, milestones, status, parity, "[[2.0.0 MAgHARCM]]"]
 | **2026-09-07 (iter-6)** | Wave 22 | 2 papers accepted (P-151..P-152); SmartC2Rust, Hallu-Eval triplet. | Completed |
 | **2026-09-08 (iter-1)** | Wave 23 | 4 papers accepted (P-153..P-156); CoReX closes residual comprehension slot. | Completed |
 | **2026-09-09 (iter-1)** | Wave 24 | 1 paper accepted (P-157 ReST-KV); cross-agent KV-cache forward-plan family. | Completed |
+| **2026-09-09 (iter-3)** | Wave 25 | 1 paper accepted (P-158 Agentic Rubrics); SWE-TRACE retired at sixth carry. | Completed |
 
 ---
 
 ### Detailed Sprint Breakdown (Recent Iterations)
+
+#### Sprint 2026-09-09 (iter-3): Wave-25 Execution-Free Verification Anchor
+- **Core Achievement**: Wave-25 anchors execution-free patch verification via `[[1.0.0 P-158]]` Agentic Rubrics (Raghavendra et al., ACL 2026 Long Papers), which anchors `PRIM-7` (Multi-Agent Verdict Validation: expert agent emits a context-grounded rubric checklist; candidate patches scored without test execution as a complementary VerdictPanel signal; 54.2% SWE-Bench Verified on Qwen3-Coder-30B-A3B, +3.5pp over the strongest baseline).
+- **Candidate Triage Ledger**:
+
+| Candidate / Paper | Venue | Verdict | Anchored Primitives / Role |
+| :--- | :--- | :--- | :--- |
+| **`[[1.0.0 P-158]]` Agentic Rubrics** (Raghavendra et al.) | ACL 2026 | **ACCEPT** | `PRIM-7` (Execution-Free Checklist-Grounded Verification) |
+| **W24-W1 SWE-TRACE** (`arXiv:2604.14820`) | dblp CoRR-only | **RETIRED** | Sixth carry without venue — Wave-21 carry rule applied |
+| **W25-W1 ReCache** | arXiv | **WATCHLIST** | Carry 2 (venue unconfirmed) |
+| **W25-W2 MemArt + MemDecay** | unverified | **WATCHLIST** | Carry 2 (venue unconfirmed) |
+
+- **Deliverables & Synchronization**:
+  - Vault and research database synchronized: 1 paper note persisted (`P-158`), `Research-Database.json` updated with `watchlist.wave-25` (including W25-RETIRED SWE-TRACE for the record).
+  - Venue-list amendment: ACL Long Papers added to the §7 trigger list (peer-reviewed NLP flagship; omission inconsistent with the LLM-based substrate).
+  - Forward plan to Wave-26: re-verify ReCache and MemArt/MemDecay venues; SLM follow-on watch for rubric scoring at 4B–13B scale.
 
 #### Sprint 2026-09-09 (iter-1): Wave-24 KV-Cache Eviction Anchor
 - **Core Achievement**: Wave-24 anchors cross-agent KV-cache eviction via `[[1.0.0 P-157]]` ReST-KV (An et al., ICLR 2026), which anchors `PRIM-31` (eviction fidelity governs retained-context for the retrieval loop) and `PRIM-21` (reconstruction-vs-attention-heuristic eviction = strategy knob in the SpecKV/LookaheadKV family).

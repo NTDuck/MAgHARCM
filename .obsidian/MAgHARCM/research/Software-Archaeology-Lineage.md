@@ -3,7 +3,7 @@ title: Software Archaeology & Legacy System Modernization Lineage
 date: 2026-09-09
 backlink: [[2.0.0 Software-Archaeology-Lineage]]
 last_updated: 2026-09-09
-tags: [research, software-archaeology, modernization, lineage, synthesis, [[2.0.0 MAgHARCM]], "[[1.0.0 P-122]]", "[[1.0.0 P-123]]", "[[1.0.0 P-124]]", wave-16, wave-17, wave-22, wave-23, wave-24, "[[1.0.0 P-157]]"]
+tags: [research, software-archaeology, modernization, lineage, synthesis, [[2.0.0 MAgHARCM]], "[[1.0.0 P-122]]", "[[1.0.0 P-123]]", "[[1.0.0 P-124]]", wave-16, wave-17, wave-22, wave-23, wave-24, "[[1.0.0 P-157]]", wave-25, "[[1.0.0 P-158]]"]
 ---
 
 ## 1. Executive Summary & Epistemological Stance
@@ -130,7 +130,7 @@ The MAgHARCM pipeline grounds modern agentic reasoning in 45+ years of rigorous 
 | `[[1.0.0 PRIM-4]]` | SpecMiner Dynamic Invariants | Syzygy [[1.0.0 P-14]], Daikon | Dynamic Invariant Detection (Ernst) | `internal/agents/specminer.go` |
 | `[[1.0.0 PRIM-5]]` | Test Co-Translation & Synth | Pynguin [[1.0.0 P-23]], ReCodeAgent; [[1.0.0 P-56]] Zan ([[1.0.0 P-56]]) Multi-SWE-bench; [[1.0.0 P-109]] SWE-bench Verified; [[1.0.0 P-111]] SWE-bench original (Jimenez ICLR 2024); [[1.0.0 P-112]] SWE-agent (Yang 2024); [[1.0.0 P-118]] SWE-bench Lite (Jimenez 2024) | [[1.0.0 P-24 Feathers]] (2004) Characterization Tests; multilingual SLM baseline (Java/Go/Rust/C); verified real-GitHub-issue benchmark; original SWE-bench evaluation benchmark; tool-calling agent scaffold for SWE-bench resolution; leaner 300-instance curated subset of SWE-bench for faster SLM-era iteration | `internal/agents/validator.go` |
 | `[[1.0.0 PRIM-6]]` | Multi-Stage Build/Test Repair | AlphaTrans [[1.0.0 P-02]], ReCodeAgent; [[1.0.0 P-54]] Phi-3; [[1.0.0 P-109]] SWE-bench Verified; [[1.0.0 P-111]] SWE-bench original (Jimenez ICLR 2024); [[1.0.0 P-112]] SWE-agent (Yang 2024); [[1.0.0 P-118]] SWE-bench Lite (Jimenez 2024) | Automated Program Repair (Le Goues); Phi-3 chat-format alignment for repair prompts; verified real-GitHub-issue repair benchmark; original SWE-bench evaluation benchmark; tool-calling agent scaffold for SWE-bench resolution; leaner 300-instance curated subset of SWE-bench for faster SLM-era iteration | `internal/agents/validator.go` |
-| `[[1.0.0 PRIM-7]]` | Multi-Agent Verdict Validation | MatchFixAgent [[1.0.0 P-08]]; [[1.0.0 P-57]] Speculative Decoding; [[1.0.0 P-78]] EAGLE-3; [[1.0.0 P-92]] Lightman process reward model; [[1.0.0 P-95]] Code Llama verifier baseline; [[1.0.0 P-97]] Welleck self-correct; [[1.0.0 P-98]] Large Language Monkeys; [[1.0.0 P-108]] EAGLE-3 training-time-test draft model (SLM speculative decoding path); [[1.0.0 P-114]] Medusa (Cai 2024) | N-Version Programming (Avizienis); [[1.0.0 P-52]] Self-Consistency; [[1.0.0 P-83]] code-specialised self-consistency; speculative draft/target for SLM fleet; step-by-step verifier as PRM critic; trained self-correction alternative to 3-voter panel; EAGLE-3 training-time-test draft model = 4B-target SLM speculative decoding path; Medusa multi-head drafting as parallel-voter-equivalent verdict panel | `internal/agents/verdict_panel.go` |
+| `[[1.0.0 PRIM-7]]` | Multi-Agent Verdict Validation | MatchFixAgent [[1.0.0 P-08]]; [[1.0.0 P-57]] Speculative Decoding; [[1.0.0 P-78]] EAGLE-3; [[1.0.0 P-92]] Lightman process reward model; [[1.0.0 P-95]] Code Llama verifier baseline; [[1.0.0 P-97]] Welleck self-correct; [[1.0.0 P-98]] Large Language Monkeys; [[1.0.0 P-108]] EAGLE-3 training-time-test draft model (SLM speculative decoding path); [[1.0.0 P-114]] Medusa (Cai 2024) | N-Version Programming (Avizienis); [[1.0.0 P-52]] Self-Consistency; [[1.0.0 P-83]] code-specialised self-consistency; speculative draft/target for SLM fleet; step-by-step verifier as PRM critic; trained self-correction alternative to 3-voter panel; EAGLE-3 training-time-test draft model = 4B-target SLM speculative decoding path; Medusa multi-head drafting as parallel-voter-equivalent verdict panel; [[1.0.0 P-158]] Agentic Rubrics execution-free checklist-grounded patch verification (wave-25) | `internal/agents/verdict_panel.go` |
 | `[[1.0.0 PRIM-8]]` | State-Grounded Mock Validation | TRAM [[1.0.0 P-10]] | [[1.0.0 P-24 Feathers]] (2004) Sensing Pins | `internal/agents/mock_validator.go` |
 | `[[1.0.0 PRIM-9]]` | Tri-Representation Code Graph | RepoGraph [[1.0.0 P-14]], Yamaguchi; [[1.0.0 P-110]] GraphCoder / CodeGraphRAG; [[1.0.0 P-113]] AutoCodeRover (Zhang 2024); [[1.0.0 P-116]] Aider (Gauthier 2024-2025); [[1.0.0 P-117]] RepoCoder (Zhang ICLR 2023) | Code Property Graphs (Yamaguchi 2014); graph-RAG for code retrieval with LLM-guided subgraph extraction; AutoCodeRover retrieval+synthesis via code-property-graph traversal; Aider tree-sitter-derived repo-map with call-graph + definition + reference edges; RepoCoder iterative retrieval-augmented repository-level completion loop | `internal/agents/cpg.go` |
 | `[[1.0.0 PRIM-10]]` | Feature-Mapping Validation | Oxidizer [[1.0.0 P-05]], RustRepoTrans; [[1.0.0 P-43]] FODA (Kang 1990) | Language Idiom Mapping (Czarnecki) | `internal/agents/feature_mapping.go` |
@@ -559,3 +559,29 @@ Non-event venue note: `[[1.0.0 P-01]]` ReCodeAgent has an ASE 2026 main-track ve
 - Watchlist: `.obsidian/MAgHARCM/Research-Database.json::watchlist.wave-24`
 - Sprint 2026-09-09 audit block: `.obsidian/MAgHARCM/diary/Sprint-2026-09-09-Handoff.md`
 - Methodology §7 Wave-24 trigger evaluation (NEW): output-reconstruction KV-eviction mechanism anchored; partition-aligned comprehension residuals (concept-assignment / temporal-coupling / DSM) dry at all concluded 2026 venues — next look NeurIPS 2026 (post-09-24) and ICML 2027 / ICLR 2027
+
+## 16. Wave-25 SLM-Era Anchors (2026-09-09 iter-3)
+
+1 ACCEPT + 1 RETIREMENT + 2 WATCHLIST carries = 4 triaged. Wave-25 adds an execution-free checklist-grounded verification anchor for the VerdictPanel primitive and applies the Wave-21 carry rule to retire SWE-TRACE after six carries without a peer-reviewed venue.
+
+### 16.1 Accepted anchors
+
+- `[[1.0.0 P-158]]` **Agentic Rubrics as Contextual Verifiers for SWE Agents** (Raghavendra, Gunjal, Liu & He, ACL 2026 Long Papers, DOI 10.18653/v1/2026.acl-long.697, pages 15265-15290, arXiv:2601.04171, Scale AI) — an expert agent explores the repository and emits a context-grounded rubric checklist; candidate patches are scored against the rubric WITHOUT test execution; 54.2% SWE-Bench Verified on Qwen3-Coder-30B-A3B under parallel TTS (+3.5pp over the strongest baseline); 40.6% on Qwen3-32B; rubric scores are consistent with ground-truth tests while flagging issues the tests miss. Anchors `[[1.0.0 PRIM-7]]` Multi-Agent Verdict Validation (execution-free checklist-grounded verification as a complementary VerdictPanel signal when the compile+test cascade is too expensive at SLM scale).
+
+### 16.2 Retired (1)
+
+- **W24-W1 SWE-TRACE** (arXiv:2604.14820) — RETIRED. Sixth carry without a peer-reviewed venue; the Wave-21 carry rule is applied; dblp still lists CoRR-only as of 2026-09-09. Retirement is not a quality judgment; the candidate is re-openable via a fresh peer-reviewed venue.
+
+### 16.3 Watchlist (2 carries)
+
+- **W25-W1 ReCache** — arXiv:2608.19662, carry 2. Q2 concrete, Q3 on-target; fails Q1 only (no confirmed peer-reviewed venue yet).
+- **W25-W2 MemArt + MemDecay** — OpenReview YolJOZOGhI + arXiv:2607.10582, carry 2.
+
+Venue-list amendment: ACL Long Papers added to the §7 trigger list (peer-reviewed NLP flagship; the prior omission was inconsistent with the LLM-based substrate).
+
+**Cross-reference**:
+- Wave-25 candidates memo: `.obsidian/MAgHARCM/research/diary/Wave-25-Candidates.md`
+- Wave-25 paper note: `.obsidian/MAgHARCM/research/papers/P-158-Agentic-Rubrics-ACL-2026.md`
+- Watchlist: `.obsidian/MAgHARCM/Research-Database.json::watchlist.wave-25`
+- Sprint 2026-09-09 (iter-3) handoff: `.obsidian/MAgHARCM/diary/Sprint-2026-09-09-Handoff-2.md`
+- Methodology §7 Wave-25 trigger evaluation: ACL Long Papers venue-list amendment + execution-free rubric verification anchored

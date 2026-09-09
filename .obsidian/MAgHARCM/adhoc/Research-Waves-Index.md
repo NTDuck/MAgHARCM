@@ -1,17 +1,22 @@
 ---
 title: MAgHARCM Research Waves Synthesis & Literature Index
 date: 2026-09-09
-last_updated: 2026-09-09 (iter-1, wave-24)
+last_updated: 2026-09-09 (iter-3, wave-25)
 aliases:
   - "Research-Waves-Index"
   - "Research Waves Index"
   - "Waves"
-tags: [adhoc, research-waves, literature, synthesis, papers, wave-24, "[[1.0.0 P-157]]", "[[2.0.0 MAgHARCM]]"]
+tags: [adhoc, research-waves, literature, synthesis, papers, wave-24, wave-25, "[[1.0.0 P-157]]", "[[1.0.0 P-158]]", "[[2.0.0 MAgHARCM]]"]
 ---
 
-# [[2.0.0 MAgHARCM Research Waves Index (Waves 1–24)]]
+# [[2.0.0 MAgHARCM Research Waves Index (Waves 1–25)]]
 
-> **Executive Overview**: Comprehensive chronological catalog and thematic synthesis of all 24 research waves, mapping 157 literature papers to the MAgHARCM multi-agent modernization substrate. Acronyms and technical terms are defined in the [[Glossary|Domain Acronyms & Terminology Glossary]].
+> **Executive Overview**: Comprehensive chronological catalog and thematic synthesis of all 25 research waves, mapping 158 literature papers to the MAgHARCM multi-agent modernization substrate. Acronyms and technical terms are defined in the [[Glossary|Domain Acronyms & Terminology Glossary]].
+
+| Wave Range | Core Theme | Target Primitives | Key Literature Anchors |
+| :--- | :--- | :--- | :--- |
+| **Wave 25** | Execution-Free SWE Verification | `PRIM-7` | Agentic Rubrics (`[[1.0.0 P-158]]`) |
+| **Wave 24** | Cross-Agent KV-Cache Eviction & Reuse | `PRIM-21, 31` | ReST-KV (`[[1.0.0 P-157]]`) |
 
 ---
 
@@ -31,12 +36,17 @@ tags: [adhoc, research-waves, literature, synthesis, papers, wave-24, "[[1.0.0 P
 | **Waves 7–10** | SLM-Era Modernization (4B–30B) | `PRIM-3, 6, 7, 21, 23` | Qwen2.5-Coder (`[[1.0.0 P-21]]`, `[[1.0.0 P-58]]`), Phi-3 (`[[1.0.0 P-27]]`), EAGLE-3 (`[[1.0.0 P-78]]`), Self-Consistency (`[[1.0.0 P-83]]`) |
 | **Wave 6** | Software Archaeology Foundations | `PRIM-14, 18, 19, 20` | Parnas 1972 (`[[1.0.0 P-31]]`), Lehman 1980 (`[[1.0.0 P-32]]`), Chikofsky & Cross (`[[1.0.0 P-33]]`), Baldwin & Clark (`[[1.0.0 P-34]]`) |
 | **Waves 1–5** | Core Systems & Foundations | `PRIM-1` to `PRIM-30` | ReCodeAgent (`[[1.0.0 P-01]]`), AlphaTrans (`[[1.0.0 P-02]]`), CodePlan (`[[1.0.0 P-03]]`), MetaGPT (`[[1.0.0 P-11]]`), ChatDev (`[[1.0.0 P-12]]`), ABCoder (`[[1.0.0 P-14]]`) |
-
 ---
 
 ## 2. Detailed Chronological Wave Catalog
 
-### Recent Research Waves (Waves 18–24)
+### Recent Research Waves (Waves 18–25)
+
+#### Wave 25: Execution-Free SWE Verification
+- **Scope**: Adds a test-execution-free verification signal for the VerdictPanel; retires the SWE-TRACE watchlist carry at the mandated threshold.
+- **Accepted Papers (1)**:
+  - `[[1.0.0 P-158]]` **Agentic Rubrics** (Raghavendra et al., ACL 2026): expert agent emits a context-grounded rubric checklist; patches scored without test execution; 54.2% SWE-Bench Verified on Qwen3-Coder-30B-A3B (`PRIM-7`).
+- **Triage**: 1 RETIREMENT (SWE-TRACE, sixth carry without venue — Wave-21 carry rule); 2 WATCHLIST (ReCache carry 2; MemArt/MemDecay carry 2). Venue-list amendment: ACL Long Papers added to the §7 list.
 
 #### Wave 24: Cross-Agent KV-Cache Eviction & Reuse
 - **Scope**: Reinforces the KV-cache $\times$ speculative-decoding loop; closes the Wave-23 forward-plan cross-agent KV-cache family.

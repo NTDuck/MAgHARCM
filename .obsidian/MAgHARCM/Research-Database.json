@@ -1,6 +1,6 @@
 {
   "vault_version": "1.0.0",
-  "last_updated": "2026-09-09 (iter-1, wave-24)",
+  "last_updated": "2026-09-09 (iter-3, wave-25)",
   "description": "Machine-readable research knowledgebase for MAgHARCM. Optimized for autonomous LLM agent lookup, synthesis, and verification.",
   "pipeline_agents": [
     {
@@ -5727,6 +5727,45 @@
         "PRIM-21": "ReST-KV reconstruction-based vs attention-heuristic eviction = eviction-strategy choice knob in the SpecKV/LookaheadKV strategy family."
       },
       "file": "research/papers/P-157-ReST-KV-ICLR-2026.md"
+    },
+    {
+      "id": "P-158",
+      "version_marker": "[[1.0.0 P-158]]",
+      "title": "P-158 Agentic Rubrics as Contextual Verifiers for SWE Agents",
+      "bibkey": "raghavendra2026agenticrubrics",
+      "authors": "Raghavendra, Mohit and Gunjal, Anisha and Liu, Bing and He, Yunzhong",
+      "year": 2026,
+      "venue": "ACL 2026 (Long Papers)",
+      "eprint_or_doi": "DOI 10.18653/v1/2026.acl-long.697; arXiv:2601.04171",
+      "anchored_primitives": [
+        "PRIM-7"
+      ],
+      "tags": [
+        "paper",
+        "verification",
+        "rubric-checklist",
+        "execution-free",
+        "swe-agents",
+        "slm-era",
+        "[[1.0.0 PRIM-7]]",
+        "[[1.0.0 P-146]]",
+        "wave-25"
+      ],
+      "verified": true,
+      "hop1_references": [
+        "[[1.0.0 P-146]] ContextPRM (ICLR 2026, Wave-20) — workflow-aware process reward modeling. Agentic Rubrics replaces the learned PRM with a self-generated checklist; both score intermediate/patch quality without ground-truth execution.",
+        "[[1.0.0 P-127]] SLM-as-a-Judge (Wave-18) — SLM-scale verdict validation; Agentic Rubrics provides the structured rubric that a small judge model can apply without test execution."
+      ],
+      "hop2_references": [
+        "Self-consistency / majority-vote verification baselines (Wang 2022) — the execution-free verification family Agentic Rubrics outperforms on SWE-Bench Verified."
+      ],
+      "summary": "Agentic Rubrics: an expert agent explores the repository and emits a context-grounded rubric checklist; candidate patches are scored against the checklist without executing tests. 54.2% on SWE-Bench Verified with Qwen3-Coder-30B-A3B under parallel test-time scaling, at least +3.5pp over the strongest baseline; rubric scores correlate with ground-truth tests while flagging issues tests miss. Ablations show agentic context gathering is essential for codebase-specific, unambiguous criteria.",
+      "venue_verification": "Verified at the primary source: aclanthology.org/2026.acl-long.697 (Proceedings of the 64th Annual Meeting of the ACL, Volume 1: Long Papers, pages 15265-15290, July 2026, DOI 10.18653/v1/2026.acl-long.697). Admitted under the Wave-25 venue-list amendment (ACL Long Papers added to the section-7 list) + P-138 RepairKV precedent (method-level single-paper mechanism, no duplicate coverage).",
+      "mechanism_summary": "(a) expert agent explores the repository and emits a context-grounded rubric checklist; (b) candidate patches scored against the checklist without test execution; (c) consistent with ground-truth tests while flagging issues tests do not capture.",
+      "anchor_table": {
+        "PRIM-7": "Agentic Rubrics execution-free checklist-grounded patch verification = complementary VerdictPanel signal when the compile+test cascade is too expensive for the SLM repair loop."
+      },
+      "file": "research/papers/P-158-Agentic-Rubrics-ACL-2026.md"
     }
   ],
   "reject_registry": {
@@ -5899,7 +5938,8 @@
         "verdict": "Q3 (off-axis modality)",
         "rationale": "ICLR 2026 accepted (github.com/xuyang-liu16/MixKV), so Q1 passes; but the mechanism targets large vision-language model KV caches (modality-specific, head-wise semantic redundancy). MAgHARCM's pipeline is text-only code translation; no primitive defends or is defended by an LVLM-specific compression mechanism. Off-axis per Q3."
       }
-    ]
+    ],
+    "wave-25": []
   },
   "watchlist": {
     "wave-19": [
@@ -6052,6 +6092,38 @@
         "carry_count": 1,
         "next_verification_trigger": "Peer-reviewed venue acceptance; method-level single-paper mechanism, no duplicate coverage — fires at Q1 confirmation per P-138 RepairKV precedent",
         "rationale": "arXiv:2608.19662 (2026-08-20) preprint only; no venue acceptance as of 2026-09-09. Q2 concrete (resource-wise attention producing composition-invariant tool-schema KV blocks), Q3 on-target (cross-agent/tool-schema KV reuse = Wave-23 forward-plan family; P-134 RelayCaching tool-side analogue). Fails Q1 venue gate; watchlist for Wave-25."
+      }
+    ],
+    "wave-25": [
+      {
+        "candidate_id": "W25-W1",
+        "short_name": "ReCache",
+        "title": "ReCache: Efficient KV Cache Reuse and Compression for Tool-Augmented LLM Agents",
+        "arxiv": "2608.19662",
+        "first_carried": "Wave-24 (W24-W4)",
+        "carry_count": 2,
+        "next_verification_trigger": "Peer-reviewed venue acceptance; fires at Q1 confirmation per P-138 RepairKV precedent",
+        "rationale": "Re-verified 2026-09-09: still arXiv-only. Q2 concrete (resource-wise attention, composition-invariant tool-schema KV blocks), Q3 on-target (PRIM-31 + PRIM-9)."
+      },
+      {
+        "candidate_id": "W25-W2",
+        "short_name": "MemArt + MemDecay",
+        "title": "MemArt: KVCache-Centric Memory for LLM Agents; MemDecay: Region-Aware KV Cache Eviction for Efficient LLM Agent Inference",
+        "arxiv": "OpenReview YolJOZOGhI; 2607.10582",
+        "first_carried": "Wave-24",
+        "carry_count": 2,
+        "next_verification_trigger": "ICLR 2026 decision publication / NeurIPS 2026 cycle",
+        "rationale": "No new venue evidence in Wave-25; both remain unverified."
+      },
+      {
+        "candidate_id": "W25-RETIRED",
+        "short_name": "SWE-TRACE",
+        "title": "Optimizing Long-Horizon SWE Agents Through Rubric Process Reward Models and Heuristic Test-Time Scaling",
+        "arxiv": "2604.14820",
+        "first_carried": "Wave-19 (W2)",
+        "carry_count": 6,
+        "next_verification_trigger": "RETIRED at Wave-25 per Wave-21 carry rule (sixth carry without venue). dblp still CoRR-only as of 2026-09-09.",
+        "rationale": "Retirement is not a quality judgment: if a peer-reviewed venue later surfaces, a fresh wave may re-open it as a new candidate. Mechanism (rubric-PRM + heuristic TTS) remains real."
       }
     ]
   }

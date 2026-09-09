@@ -9,7 +9,7 @@ aliases:
   - "primitives/Primitives-Index"
 date: 2026-09-09
 last_updated: 2026-09-09
-tags: [primitives, catalog, status, [[1.0.0 PRIM-1]]..[[1.0.0 PRIM-31]], "[[1.0.0 P-122]]", "[[1.0.0 P-123]]", "[[1.0.0 P-124]]", "[[1.0.0 P-134]]".."[[1.0.0 P-141]]", wave-16, wave-17, wave-19, "[[1.0.0 P-157]]"]
+tags: [primitives, catalog, status, [[1.0.0 PRIM-1]]..[[1.0.0 PRIM-31]], "[[1.0.0 P-122]]", "[[1.0.0 P-123]]", "[[1.0.0 P-124]]", "[[1.0.0 P-134]]".."[[1.0.0 P-141]]", wave-16, wave-17, wave-19, "[[1.0.0 P-157]]", "[[1.0.0 P-158]]"]
 ---
 
 A primitive is a small, named, reusable capability within the MAgHARCM pipeline.
@@ -32,7 +32,7 @@ Status legend:
 | `[[1.0.0 PRIM-4]]` | SpecMiner Dynamic Invariant Recovery | `internal/agents/specminer.go` | [[Syzygy-2024]], Ernst Daikon | implemented |
 | `[[1.0.0 PRIM-5]]` | Test Suite Co-Translation & Synthesis | `internal/agents/validator.go::generateAdditionalTests` | [[Pynguin-2021]], [[1.0.0 P-24]] Feathers, [[1.0.0 P-56]] Multi-SWE-bench, [[1.0.0 P-109]] SWE-bench Verified | implemented |
 | `[[1.0.0 PRIM-6]]` | Multi-Stage Build/Test Feedback Repair | `internal/agents/validator.go::Run` | [[AlphaTrans-2024]], Le Goues, [[1.0.0 P-54]] Phi-3, [[1.0.0 P-109]] SWE-bench Verified | implemented |
-| `[[1.0.0 PRIM-7]]` | Multi-Agent Verdict Validation | `internal/agents/verdict_panel.go` | [[MatchFixAgent-2024]], Avizienis, [[1.0.0 P-57]] Speculative Decoding, [[1.0.0 P-61]] RedCode, [[1.0.0 P-78]] EAGLE-3, [[1.0.0 P-83]] code-specialised self-consistency, [[1.0.0 P-92]] Lightman PRM, [[1.0.0 P-95]] Code Llama verifier baseline, [[1.0.0 P-108]] EAGLE-3 speculative decoding (SLM draft model), [[1.0.0 P-125]] T1 tool-integrated verification (wave-18), [[1.0.0 P-126]] ARC-Decode risk-bounded acceptance (wave-18), [[1.0.0 P-127]] SLM-as-a-Judge (wave-18), [[1.0.0 P-135]] SPECS speculative drafts + soft verification + dynamic switch (wave-19), [[1.0.0 P-136]] CaTS Self-Calibration frontier-PRM replacement (wave-19), [[1.0.0 P-137]] SuffixDecoding model-free suffix-tree draft (wave-19) | implemented |
+| `[[1.0.0 PRIM-7]]` | Multi-Agent Verdict Validation | `internal/agents/verdict_panel.go` | [[MatchFixAgent-2024]], Avizienis, [[1.0.0 P-57]] Speculative Decoding, [[1.0.0 P-61]] RedCode, [[1.0.0 P-78]] EAGLE-3, [[1.0.0 P-83]] code-specialised self-consistency, [[1.0.0 P-92]] Lightman PRM, [[1.0.0 P-95]] Code Llama verifier baseline, [[1.0.0 P-108]] EAGLE-3 speculative decoding (SLM draft model), [[1.0.0 P-125]] T1 tool-integrated verification (wave-18), [[1.0.0 P-126]] ARC-Decode risk-bounded acceptance (wave-18), [[1.0.0 P-127]] SLM-as-a-Judge (wave-18), [[1.0.0 P-135]] SPECS speculative drafts + soft verification + dynamic switch (wave-19), [[1.0.0 P-136]] CaTS Self-Calibration frontier-PRM replacement (wave-19), [[1.0.0 P-137]] SuffixDecoding model-free suffix-tree draft (wave-19); [[1.0.0 P-158]] Agentic Rubrics execution-free checklist-grounded patch verification (wave-25) | implemented |
 | `[[1.0.0 PRIM-8]]` | State-Grounded Mock-Based In-Isolation Validation | `internal/agents/mock_validator.go` | [[TRAM-2024]], [[1.0.0 P-24]] Feathers | implemented |
 | `[[1.0.0 PRIM-9]]` | Tri-Representation Hybrid Code Graph | `internal/agents/cpg.go` | [[RepoGraph-2024]], Yamaguchi, [[1.0.0 P-110]] GraphCoder / CodeGraphRAG, [[1.0.0 P-124]] Syzygy runtime-mined aliasing/bounds/nullability as fourth representation (wave-17), [[1.0.0 P-129]] LλMDA LLM-aided partial program dependence (wave-18), [[1.0.0 P-130]] SSAR architecture recovery (wave-18), [[1.0.0 P-131]] SemArc semantic-enhanced architecture recovery (wave-18), [[1.0.0 P-132]] SemRef semantic-enhanced refinement (wave-18), [[1.0.0 P-134]] RelayCaching cross-agent prefill reuse on the 8-agent graph (wave-19), [[1.0.0 P-139]] TypePro inter-procedural SDG slicing as fourth representation (wave-19) | implemented |
 | `[[1.0.0 PRIM-10]]` | Feature-Mapping & Type-Compatibility Validation | `internal/agents/feature_mapping.go` | [[Oxidizer-2023]], Czarnecki, [[1.0.0 P-43]] FODA | implemented |
@@ -217,3 +217,12 @@ All 31 primitives are compiled into the codebase, preserving architectural integ
 - **Total paper notes**: 157 (156 prior + P-157).
 - **Parity**: 31/31/31 unchanged.
 - **Sources**: `.obsidian/MAgHARCM/research/diary/Wave-24-Candidates.md` + paper note `P-157-ReST-KV-ICLR-2026.md`.
+
+## Sprint 2026-09-09 Vault Sync Audit (Wave-25, session 3)
+
+- **Wave-25 FIRED** 2026-09-09. 1 ACCEPT ([[1.0.0 P-158]] Agentic Rubrics ACL 2026 Long Papers) + 1 RETIREMENT (SWE-TRACE, sixth carry without venue — Wave-21 carry rule) + 2 WATCHLIST carries (ReCache; MemArt/MemDecay, both second carry).
+- **Venue-list amendment**: ACL Long Papers added to the §7 trigger list (peer-reviewed NLP flagship; omission inconsistent with the LLM-based substrate).
+- **Cross-links propagated**: P-158 → PRIM-7 (execution-free checklist-grounded verification = complementary VerdictPanel signal).
+- **Total paper notes**: 158 (157 prior + P-158).
+- **Parity**: 31/31/31 unchanged.
+- **Sources**: `.obsidian/MAgHARCM/research/diary/Wave-25-Candidates.md` + paper note `P-158-Agentic-Rubrics-ACL-2026.md`.

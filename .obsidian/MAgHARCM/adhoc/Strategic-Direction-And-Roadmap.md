@@ -1,7 +1,7 @@
 ---
 title: MAgHARCM Strategic Direction & Future Roadmap
 date: 2026-09-08
-last_updated: 2026-09-09 (iter-1, wave-24)
+last_updated: 2026-09-09 (iter-3, wave-25)
 aliases:
   - "Strategic-Direction-And-Roadmap"
   - "Strategic Direction and Roadmap"
@@ -93,7 +93,7 @@ Phase 4: Autonomous Verified SWE-Bench Zero-Shot Modernizer (FUTURE)
 
 ### 3.3. Wave-24 Status & Forward Strategic Objectives
 
-Wave-24 fired 2026-09-09 and anchored `[[1.0.0 P-157]]` ReST-KV (ICLR 2026) for cross-agent KV-cache eviction (`PRIM-21, 31`), with 4 watchlist carries (SWE-TRACE, MemArt, MemDecay, ReCache) pending NeurIPS 2026 notifications (2026-09-24).
+Wave-24 fired 2026-09-09 and anchored `[[1.0.0 P-157]]` ReST-KV (ICLR 2026) for cross-agent KV-cache eviction (`PRIM-21, 31`), with 4 watchlist carries (SWE-TRACE, MemArt, MemDecay, ReCache) pending NeurIPS 2026 notifications (2026-09-24). Wave-25 (session 3, 2026-09-09) anchored `[[1.0.0 P-158]]` Agentic Rubrics (ACL 2026) for execution-free verification (`PRIM-7`) and retired SWE-TRACE at the sixth carry; ReCache/MemArt/MemDecay carry to Wave-26.
 
 1. **Watchlist Triage**:
    - Re-verify W24-W1 SWE-TRACE (`arXiv:2604.14820`) after NeurIPS 2026 author notifications (2026-09-24); retire-or-confirm at Wave-25 if still lacking a peer-reviewed venue.
