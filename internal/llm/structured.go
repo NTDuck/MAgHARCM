@@ -9,7 +9,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-
+	"strings"
 	"github.com/cloudwego/eino/components/model"
 	"github.com/cloudwego/eino/components/tool/utils"
 	"github.com/cloudwego/eino/schema"
@@ -58,7 +58,6 @@ func (e *StructuredExtractor[T]) Extract(ctx context.Context, system, user strin
 	if e == nil || e.bound == nil {
 		return zero, fmt.Errorf("structured: extractor not initialised")
 	}
-	out := [][]*schema.Message{}
 	allMsgs := make([]*schema.Message, 0, len(msgs)+1)
 	if system != "" {
 		allMsgs = append(allMsgs, schema.SystemMessage(system))
@@ -74,6 +73,8 @@ func (e *StructuredExtractor[T]) Extract(ctx context.Context, system, user strin
 		return zero, fmt.Errorf("structured: nil response")
 	}
 
+	// Path 1: canonical tool-call argument. Most Ollama chat models honour
+	// the bound tool and surface arguments in resp.ToolCalls.
 	var args string
 	for _, tc := range resp.ToolCalls {
 		if tc.Function.Arguments == "" {
@@ -82,16 +83,27 @@ func (e *StructuredExtractor[T]) Extract(ctx context.Context, system, user strin
 		args = tc.Function.Arguments
 		break
 	}
-	if args == "" {
-		return zero, fmt.Errorf("structured: model returned no tool call arguments (finish_reason=%v, content=%q)",
-			resp.ResponseMeta, truncateForErr(resp.Content))
+	// Path 2: JSON-as-content fallback. Several qwen3-MOE-thinking
+	// variants we benchmark emit the schema-shaped payload as content
+	// instead of as a wire-level tool call, especially under long prompts.
+	// We strip markdown fences, locate the outermost balanced {...}, and
+	// try to unmarshal directly. If the model also wrapped the args in
+	// `{name, arguments}` (the format Ollama's chat template prefers when
+	// tools are bound), we unwrap before unmarshalling.
+	if args == "" && resp.Content != "" {
+		if unwrapped, ok := extractJSONObject(resp.Content); ok {
+			if inner, ok := unwrapToolCallEnvelope(unwrapped); ok {
+				args = inner
+			} else {
+				args = unwrapped
+			}
+		}
 	}
 
 	var typed T
 	if err := json.Unmarshal([]byte(args), &typed); err != nil {
 		return zero, fmt.Errorf("structured: unmarshal tool args: %w (raw=%s)", err, truncateForErr(args))
 	}
-	_ = out // keep out reachable for future streaming variant
 	return typed, nil
 }
 
@@ -101,4 +113,77 @@ func truncateForErr(s string) string {
 		return s
 	}
 	return s[:cap] + "…"
+}
+
+// extractJSONObject returns the first top-level balanced {...} substring
+// found in s, after stripping ```json ... ``` fences the model may wrap
+// the payload in. Strings are honoured while counting braces so embedded
+// '{' / '}' inside string literals do not throw the parser off. Returns
+// ok=false when no balanced JSON object is present.
+func extractJSONObject(s string) (string, bool) {
+	t := strings.TrimSpace(s)
+	if i := strings.Index(t, "```"); i >= 0 {
+		if j := strings.Index(t[i+3:], "```"); j >= 0 {
+			inner := t[i+3 : i+3+j]
+			if k := strings.Index(inner, "\n"); k >= 0 {
+				inner = inner[k+1:]
+			}
+			t = inner
+		}
+	}
+	open := strings.IndexByte(t, '{')
+	if open < 0 {
+		return "", false
+	}
+	depth, inStr, esc := 0, false, false
+	for i := open; i < len(t); i++ {
+		c := t[i]
+		switch {
+		case esc:
+			esc = false
+		case c == '\\' && inStr:
+			esc = true
+		case c == '"':
+			inStr = !inStr
+		case !inStr && c == '{':
+			depth++
+		case !inStr && c == '}':
+			depth--
+			if depth == 0 {
+				return t[open : i+1], true
+			}
+		}
+	}
+	return "", false
+}
+
+// unwrapToolCallEnvelope peels Ollama's `{name, arguments}` envelope off
+// a JSON object produced by a model that knows it was asked for a tool
+// call but emitted the wrapper as content instead of as ToolCalls. The
+// arguments value can be either a JSON object (the happy path) or a JSON
+// string holding a JSON object (some Ollama chat templates double-encode
+// it). Returns ok=false when the input does not look like the envelope.
+func unwrapToolCallEnvelope(j string) (string, bool) {
+	var probe struct {
+		Name      string          `json:"name"`
+		Arguments json.RawMessage `json:"arguments"`
+	}
+	if err := json.Unmarshal([]byte(j), &probe); err != nil {
+		return "", false
+	}
+	if probe.Name == "" || len(probe.Arguments) == 0 {
+		return "", false
+	}
+	a := strings.TrimSpace(string(probe.Arguments))
+	if len(a) > 0 && a[0] == '{' {
+		return a, true
+	}
+	if len(a) > 0 && a[0] == '"' {
+		var nested string
+		if err := json.Unmarshal([]byte(a), &nested); err != nil {
+			return "", false
+		}
+		return nested, true
+	}
+	return "", false
 }

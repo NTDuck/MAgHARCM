@@ -2,6 +2,7 @@ package llm
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
@@ -13,7 +14,6 @@ import (
 
 	"MAgHARCM/internal/config"
 )
-
 type Models struct {
 	Reasoning      model.BaseChatModel
 	Coding         model.BaseChatModel
@@ -77,28 +77,36 @@ func NewModels(ctx context.Context, cfg *config.Config) (*Models, error) {
 		Timeout: requestTimeout,
 	}
 
-	reasoningModel, err := ollama.NewChatModel(ctx, &ollama.ChatModelConfig{
-		BaseURL:    cfg.OllamaBaseURL,
-		Model:      cfg.ReasoningModel,
-		Timeout:    requestTimeout,
-		HTTPClient: httpClient,
-		Options:    defaultChatOptions,
-	})
-	if err != nil {
-		return nil, err
-	}
+// reasoningFormat forces the reasoning model to emit JSON output. Several
+// qwen3-MOE-thinking variants we benchmark (notably qwen3:30b-a3b-thinking)
+// honor Ollama's `format: "json"` constraint reliably even under long,
+// structured prompts, but emit the schema as content rather than as a
+// wire-level `tool_calls` field. The JSON-content fallback in
+// StructuredExtractor handles that emission path. Coding model is left
+// untouched.
+reasoningFormat := json.RawMessage(`"json"`)
+reasoningModel, err := ollama.NewChatModel(ctx, &ollama.ChatModelConfig{
+	BaseURL:    cfg.OllamaBaseURL,
+	Model:      cfg.ReasoningModel,
+	Timeout:    requestTimeout,
+	HTTPClient: httpClient,
+	Options:    defaultChatOptions,
+	Format:     reasoningFormat,
+})
+if err != nil {
+	return nil, err
+}
 
-	codingModel, err := ollama.NewChatModel(ctx, &ollama.ChatModelConfig{
-		BaseURL:    cfg.OllamaBaseURL,
-		Model:      cfg.CodingModel,
-		Timeout:    requestTimeout,
-		HTTPClient: httpClient,
-		Options:    defaultChatOptions,
-	})
-	if err != nil {
-		return nil, err
-	}
-
+codingModel, err := ollama.NewChatModel(ctx, &ollama.ChatModelConfig{
+	BaseURL:    cfg.OllamaBaseURL,
+	Model:      cfg.CodingModel,
+	Timeout:    requestTimeout,
+	HTTPClient: httpClient,
+	Options:    defaultChatOptions,
+})
+if err != nil {
+	return nil, err
+}
 	return &Models{
 		Reasoning:      reasoningModel,
 		Coding:         codingModel,
