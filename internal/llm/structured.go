@@ -21,7 +21,8 @@ import (
 // only — the underlying ChatModel is never mutated, so the same model can
 // still be used elsewhere with a different schema.
 type StructuredExtractor[T any] struct {
-	bound model.ToolCallingChatModel
+	bound    model.ToolCallingChatModel
+	toolName string
 }
 
 // NewStructuredExtractor binds a JSON schema derived from the Go type T to
@@ -46,31 +47,61 @@ func NewStructuredExtractor[T any](m model.BaseChatModel, toolName, toolDesc str
 	if err != nil {
 		return nil, fmt.Errorf("structured: bind tool %q: %w", toolName, err)
 	}
-	return &StructuredExtractor[T]{bound: bound}, nil
+	return &StructuredExtractor[T]{bound: bound, toolName: toolName}, nil
 }
 
-// Extract runs a single Generate call with the bound schema. The model MUST
-// produce a tool call to the bound tool; any other outcome (refusal, free
-// text, wrong tool) is reported as an error so the caller can decide between
-// retry, repair, or bail.
+// Extract runs a Generate call with the bound schema and returns the typed
+// value. When the model returns neither a tool call nor parseable JSON
+// content, Extract retries with a corrective prompt (up to
+// structuredMaxAttempts total attempts) before surfacing the error: the
+// qwen3-MOE-thinking variants we benchmark intermittently emit empty or
+// free-text output under long prompts, and one retry recovers most of
+// those rounds (observed in the Wave-24 2dpartint probe).
 func (e *StructuredExtractor[T]) Extract(ctx context.Context, system, user string, msgs ...*schema.Message) (T, error) {
 	var zero T
 	if e == nil || e.bound == nil {
 		return zero, fmt.Errorf("structured: extractor not initialised")
 	}
-	allMsgs := make([]*schema.Message, 0, len(msgs)+1)
+
+	allMsgs := make([]*schema.Message, 0, len(msgs)+3)
 	if system != "" {
 		allMsgs = append(allMsgs, schema.SystemMessage(system))
 	}
 	allMsgs = append(allMsgs, msgs...)
 	allMsgs = append(allMsgs, schema.UserMessage(user))
 
-	resp, err := e.bound.Generate(ctx, allMsgs)
+	var lastErr error
+	for attempt := range structuredMaxAttempts {
+		if attempt > 0 {
+			// Corrective round: replay the full conversation plus the
+			// failure and a one-line instruction to emit the tool call.
+			allMsgs = append(allMsgs, schema.UserMessage(fmt.Sprintf(
+				"Your previous response was not usable (%s). Call the %s tool with the complete structured payload as its arguments. Do not emit any other text.",
+				lastErr, e.toolName)))
+		}
+		typed, err := e.attempt(ctx, allMsgs)
+		if err == nil {
+			return typed, nil
+		}
+		lastErr = err
+	}
+	return zero, fmt.Errorf("structured: %d attempts exhausted: %w", structuredMaxAttempts, lastErr)
+}
+
+// structuredMaxAttempts bounds the corrective-prompt retry loop: one
+// original round plus one correction keeps the added latency bounded while
+// recovering the intermittent empty-output failure mode.
+const structuredMaxAttempts = 2
+
+// attempt runs one Generate round and unmarshals the response into T.
+func (e *StructuredExtractor[T]) attempt(ctx context.Context, msgs []*schema.Message) (T, error) {
+	var zero T
+	resp, err := e.bound.Generate(ctx, msgs)
 	if err != nil {
-		return zero, fmt.Errorf("structured: model call: %w", err)
+		return zero, fmt.Errorf("model call: %w", err)
 	}
 	if resp == nil {
-		return zero, fmt.Errorf("structured: nil response")
+		return zero, fmt.Errorf("nil response")
 	}
 
 	// Path 1: canonical tool-call argument. Most Ollama chat models honour
@@ -102,14 +133,13 @@ func (e *StructuredExtractor[T]) Extract(ctx context.Context, system, user strin
 
 	var typed T
 	if args == "" {
-		return zero, fmt.Errorf("structured: no tool call arguments (model returned neither a tool call nor parseable JSON content)")
+		return zero, fmt.Errorf("no tool call arguments (model returned neither a tool call nor parseable JSON content)")
 	}
 	if err := json.Unmarshal([]byte(args), &typed); err != nil {
-		return zero, fmt.Errorf("structured: unmarshal tool args: %w (raw=%s)", err, truncateForErr(args))
+		return zero, fmt.Errorf("unmarshal tool args: %w (raw=%s)", err, truncateForErr(args))
 	}
 	return typed, nil
 }
-
 func truncateForErr(s string) string {
 	const cap = 240
 	if len(s) <= cap {
