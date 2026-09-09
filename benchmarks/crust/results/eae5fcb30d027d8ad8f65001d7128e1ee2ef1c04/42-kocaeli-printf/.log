@@ -1,0 +1,32 @@
+[08:27:00] Run: source=benchmarks/assets/ReCodeAgent/data/tool_projects/crust/42-kocaeli-printf/c srcLang=C target=.artifacts/crust/42-kocaeli-printf/rust tgtLang=Rust toolchain=cargo
+[08:27:00] Run ID: benchmarks-assets-ReCodeAgent-data-tool_projects-crust-42-kocaeli-printf-c
+[08:27:00] Connect to Ollama models at `http://localhost:11434`
+[08:27:00] Reasoning Model: `qwen3:30b-a3b-thinking-2507-q4_K_M`
+[08:27:00] Coding Model:    `hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4_K_XL`
+[08:27:00] Build 8-agent Eino Graph: Archaeologist, Analyzer, Planner, Translator, Reviewer, Validator, VerdictPanel, Recruiter
+[08:27:00] Start multi-agent translation execution
+[08:27:00] [Archaeologist] Starting pre-planning software archaeology
+[08:27:00] [Archaeology] starting pass for benchmarks/assets/ReCodeAgent/data/tool_projects/crust/42-kocaeli-printf/c
+[08:27:00] archaeology: 5/5/0/15/1
+[08:27:00] [Archaeologist] Excavation complete: 5 boundaries, 0 churn hotspots, 15 forensics
+[08:27:00] [Analyzer] Starting source project analysis: source=benchmarks/assets/ReCodeAgent/data/tool_projects/crust/42-kocaeli-printf/c srcLang=C tgtLang=Rust
+[08:27:00] Scanning directory hierarchy via `get_directory_tree`
+[08:27:00] [Tool: `get_directory_tree`] Found 9 source/header/test files in `benchmarks/assets/ReCodeAgent/data/tool_projects/crust/42-kocaeli-printf/c`
+[08:27:00] Parsing AST structure with Tree-Sitter: `Makefile`
+[08:27:00] [Tool: `get_file_structure`] `Makefile` -> 0 AST elements, 0 imports
+[08:27:00] Parsing AST structure with Tree-Sitter: `README.md`
+[08:27:00] [Tool: `get_file_structure`] `README.md` -> 0 AST elements, 0 imports
+[08:27:00] Parsing AST structure with Tree-Sitter: `coverage_report.json`
+[08:27:00] [Tool: `get_file_structure`] `coverage_report.json` -> 0 AST elements, 0 imports
+[08:27:00] Parsing AST structure with Tree-Sitter: `libftprintf.a`
+[08:27:00] [Tool: `get_file_structure`] `libftprintf.a` -> 0 AST elements, 0 imports
+[08:27:00] Parsing AST structure with Tree-Sitter: `ft_printf.c`
+[08:27:00] [Tool: `get_file_structure`] `ft_printf.c` -> 8 AST elements, 1 imports
+[08:27:00] Parsing AST structure with Tree-Sitter: `ft_printf.h`
+[08:27:00] [Tool: `get_file_structure`] `ft_printf.h` -> 8 AST elements, 0 imports
+[08:27:00] Parsing AST structure with Tree-Sitter: `test_1`
+[08:27:00] [Tool: `get_file_structure`] `test_1` -> 0 AST elements, 0 imports
+[08:27:00] Parsing AST structure with Tree-Sitter: `writenumber_test.c`
+[08:27:00] [Tool: `get_file_structure`] `writenumber_test.c` -> 1 AST elements, 3 imports
+[08:27:00] Parsing AST structure with Tree-Sitter: `writestring_test.c`
+[08:27:00] [Tool: `get_file_structure`] `writestring_test.c` -> 1 AST elements, 4 imports

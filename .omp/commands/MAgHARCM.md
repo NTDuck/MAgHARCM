@@ -73,11 +73,12 @@ Optional focus argument: `$ARGUMENTS`
 
 ## 4. Run Empirical Experiments
 
-1. Test the system on the four benchmark repositories:
+1. Test the system on the benchmark repositories:
    - GildedRose (C to Rust).
-   - Gohistogram (Go to Rust).
+
+   <!--- Gohistogram (Go to Rust).
    - Stats (Go to Rust).
-   - Commons-Validator (Java to Rust).
+   - Commons-Validator (Java to Rust).-->
 
 2. Record the binary compilation status as Pass or Fail. Do not record partial compilation.
 3. Record the exact test pass count and test pass percentage.
@@ -92,7 +93,7 @@ Optional focus argument: `$ARGUMENTS`
 ### 5.1. Implement New Research Primitives (Generative)
 
 1. Ensure current codebase is aligned (uptodate) with current research progress and reflects current research progress.
-2. Use ponytail skills to refactor the codebase.
+2. Use eino-* and ponytail-* skills to refactor the codebase. Ensure readability, and ensure that the codebase is using the minimal amount of code.
 3. Ensure codebase is ready to run.
 4. Ensure ALL reasonings/intents are documented inline via comments (traceable in future iterations).
 
