@@ -21,15 +21,7 @@ func stubServer(content string) *httptest.Server {
 	}
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		body := `{
-  "model": "stub",
-  "done_reason": "stop",
-  "message": {
-    "role": "assistant",
-    "content": ` + string(c) + `,
-    "tool_calls": null
-  }
-}`
+		body := `{"model": "stub", "created_at": "2026-09-09T00:00:00Z", "done": true, "done_reason": "stop", "message": {"role": "assistant", "content": ` + string(c) + `, "tool_calls": null}}`
 		_, _ = w.Write([]byte(body))
 	}))
 }

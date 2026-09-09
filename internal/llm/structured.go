@@ -9,10 +9,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"strings"
 	"github.com/cloudwego/eino/components/model"
 	"github.com/cloudwego/eino/components/tool/utils"
 	"github.com/cloudwego/eino/schema"
+	"strings"
 )
 
 // StructuredExtractor is the typed-output facade. It is constructed once per
@@ -101,6 +101,9 @@ func (e *StructuredExtractor[T]) Extract(ctx context.Context, system, user strin
 	}
 
 	var typed T
+	if args == "" {
+		return zero, fmt.Errorf("structured: no tool call arguments (model returned neither a tool call nor parseable JSON content)")
+	}
 	if err := json.Unmarshal([]byte(args), &typed); err != nil {
 		return zero, fmt.Errorf("structured: unmarshal tool args: %w (raw=%s)", err, truncateForErr(args))
 	}
