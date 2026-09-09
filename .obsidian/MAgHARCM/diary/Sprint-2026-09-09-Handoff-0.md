@@ -2,6 +2,7 @@
 title: Sprint 2026-09-09 Handoff
 backlink: "[[3.0.0 Sprint 2026-09-09 Handoff]]"
 tags: [sprint, handoff, [[2.0.0 MAgHARCM]], [[1.0.0 PRIM-31]], slm, ponytail, paper-sync]
+date: 2026-09-09
 ---
 
 # [[3.0.0 Sprint 2026-09-09 Handoff]]
