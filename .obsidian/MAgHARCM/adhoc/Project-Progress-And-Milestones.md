@@ -1,7 +1,7 @@
 ---
 title: MAgHARCM Project Progress & Milestones Tracker
-date: 2026-09-08
-last_updated: 2026-09-08 (iter-1, wave-23)
+date: 2026-09-09
+last_updated: 2026-09-09 (iter-1, wave-24)
 aliases:
   - "Project-Progress-And-Milestones"
   - "Project Progress and Milestones"
@@ -21,8 +21,8 @@ tags: [adhoc, progress, milestones, status, parity, "[[2.0.0 MAgHARCM]]"]
 | :--- | :--- | :--- | :--- |
 | **Primitives Implemented** | 31 | 31 | **100.0%** (`[[1.0.0 PRIM-1]]`..`[[1.0.0 PRIM-31]]`) |
 | **Agent Units Wired** | 8 | 8 | **100.0%** (Eino cyclic graph in `internal/graph/graph.go`) |
-| **Research Papers Cataloged** | 145+ | 156 | **100.0%** (`[[1.0.0 P-01]]`..`[[1.0.0 P-156]]`) |
-| **Research Waves Fired** | 20 | 23 | **100.0%** (Wave-1 through Wave-23 closed; Wave-23 added 2026-09-08 iter-1) |
+| **Research Papers Cataloged** | 145+ | 157 | **100.0%** (`[[1.0.0 P-01]]`..`[[1.0.0 P-157]]`) |
+| **Research Waves Fired** | 20 | 24 | **100.0%** (Wave-1 through Wave-24 closed; Wave-24 added 2026-09-09 iter-1) |
 | **Architecture Decision Records** | Active | 3 ADRs | ADR-C-001..015, ADR-V-001..007 captured |
 
 ---
@@ -72,10 +72,29 @@ tags: [adhoc, progress, milestones, status, parity, "[[2.0.0 MAgHARCM]]"]
 | **2026-09-07 (iter-4)** | Wave 21 | 4 papers accepted (P-147..P-150); SpecKV, LookaheadKV, Saguaro, TestPrune. | Completed |
 | **2026-09-07 (iter-6)** | Wave 22 | 2 papers accepted (P-151..P-152); SmartC2Rust, Hallu-Eval triplet. | Completed |
 | **2026-09-08 (iter-1)** | Wave 23 | 4 papers accepted (P-153..P-156); CoReX closes residual comprehension slot. | Completed |
+| **2026-09-09 (iter-1)** | Wave 24 | 1 paper accepted (P-157 ReST-KV); cross-agent KV-cache forward-plan family. | Completed |
 
 ---
 
 ### Detailed Sprint Breakdown (Recent Iterations)
+
+#### Sprint 2026-09-09 (iter-1): Wave-24 KV-Cache Eviction Anchor
+- **Core Achievement**: Wave-24 anchors cross-agent KV-cache eviction via `[[1.0.0 P-157]]` ReST-KV (An et al., ICLR 2026), which anchors `PRIM-31` (eviction fidelity governs retained-context for the retrieval loop) and `PRIM-21` (reconstruction-vs-attention-heuristic eviction = strategy knob in the SpecKV/LookaheadKV family).
+- **Candidate Triage Ledger**:
+
+| Candidate / Paper | Venue | Verdict | Anchored Primitives / Role |
+| :--- | :--- | :--- | :--- |
+| **`[[1.0.0 P-157]]` ReST-KV** (An et al.) | ICLR 2026 | **ACCEPT** | `PRIM-21` (Strategy Knob), `PRIM-31` (Retrieval-Loop Context Fidelity) |
+| **R1 MixKV** | ICLR 2026 | **REJECT (Q3)** | N/A (Off-axis LVLM focus) |
+| **W24-W1 SWE-TRACE** (`arXiv:2604.14820`) | Pre-print | **WATCHLIST** | 6th carry (NeurIPS 2026 notifications pending 2026-09-24) |
+| **W24-W2 MemArt** | OpenReview | **WATCHLIST** | Venue unconfirmed |
+| **W24-W3 MemDecay** | arXiv | **WATCHLIST** | Venue unconfirmed |
+| **W24-W4 ReCache** | arXiv | **WATCHLIST** | Venue unconfirmed |
+
+- **Deliverables & Synchronization**:
+  - Vault and research database synchronized: 1 paper note persisted (`P-157`), `Research-Database.json` updated with `reject_registry.wave-24` and `watchlist.wave-24`.
+  - Venue note: `[[1.0.0 P-01]]` ReCodeAgent ASE 2026 main-track version = venue upgrade, no new mechanism, not triaged.
+  - Forward plan to Wave-25: re-verify SWE-TRACE (retire-or-confirm after NeurIPS 2026 notifications 2026-09-24) + venue checks for MemArt/MemDecay/ReCache.
 
 #### Sprint 2026-09-08 (iter-1): Wave-23 Anchors & Residual Slot Closure
 - **Core Achievement**: Wave-23 **closes the strict program-comprehension-mechanism residual slot** carried forward from Wave-17 via context-aware refinement-based slicing (`[[1.0.0 P-153]]` CoReX).

@@ -1,7 +1,7 @@
 ---
 title: Human Intervention Required & Active Project Blockers
 date: 2026-09-08
-last_updated: 2026-09-08 (iter-1, wave-23)
+last_updated: 2026-09-09 (iter-1, wave-24)
 aliases:
   - "Human-Intervention-And-Blockers"
   - "Human Intervention and Blockers"
@@ -26,6 +26,12 @@ These items represent current project constraints or decision points requiring h
 | **BLK-03** | Literature Verification | **INFORMATIONAL** | Papers P-85, P-86, P-89 carry `UNVERIFIED placeholder` tags in older research waves. | Confirm peer-reviewed venue publication or replace with verified counterparts (e.g. Li et al. ASE 2024). |
 | **BLK-04** | Runtime Environment | **INFORMATIONAL** | Local GPU inference endpoint (Ollama/vLLM daemon) is offline in standard CI sandbox. | Configure workstation GPU allocation or provide fallback remote API credentials in `.env` to enable stochastic re-runs. |
 | **W23-W1** | Research Watchlist | **WATCHLIST** | SWE-TRACE (`arXiv:2604.14820`) is on its fifth carry awaiting NeurIPS 2026 notifications (2026-09-24). | Re-verify on 2026-09-24. If still lacking a peer-reviewed venue, apply the Wave-21 carry rule to retire the paper. |
+| **W24-W1** | Research Watchlist | **WATCHLIST** | SWE-TRACE (`arXiv:2604.14820`) sixth carry; NeurIPS 2026 notifications 2026-09-24. | Retire-or-confirm at Wave-25 per Wave-21 carry rule. |
+
+#### W24-W1: SWE-TRACE Sixth Carry
+- **Context**: SWE-TRACE (`arXiv:2604.14820`) carried from Wave-23 W23-W1 as the sixth consecutive watchlist carry; no peer-reviewed venue confirmed as of 2026-09-09.
+- **Status**: Retained under `watchlist.wave-24` in `Research-Database.json`.
+- **Action Plan**: Retire-or-confirm at Wave-25, after NeurIPS 2026 author notifications (2026-09-24), per the Wave-21 carry rule.
 
 ---
 

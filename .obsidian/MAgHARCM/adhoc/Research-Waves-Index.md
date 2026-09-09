@@ -1,17 +1,17 @@
 ---
 title: MAgHARCM Research Waves Synthesis & Literature Index
-date: 2026-09-08
-last_updated: 2026-09-08 (iter-1, wave-23)
+date: 2026-09-09
+last_updated: 2026-09-09 (iter-1, wave-24)
 aliases:
   - "Research-Waves-Index"
   - "Research Waves Index"
   - "Waves"
-tags: [adhoc, research-waves, literature, synthesis, papers, "[[2.0.0 MAgHARCM]]"]
+tags: [adhoc, research-waves, literature, synthesis, papers, wave-24, "[[1.0.0 P-157]]", "[[2.0.0 MAgHARCM]]"]
 ---
 
-# [[2.0.0 MAgHARCM Research Waves Index (Waves 1–23)]]
+# [[2.0.0 MAgHARCM Research Waves Index (Waves 1–24)]]
 
-> **Executive Overview**: Comprehensive chronological catalog and thematic synthesis of all 23 research waves, mapping 156 literature papers to the MAgHARCM multi-agent modernization substrate. Acronyms and technical terms are defined in the [[Glossary|Domain Acronyms & Terminology Glossary]].
+> **Executive Overview**: Comprehensive chronological catalog and thematic synthesis of all 24 research waves, mapping 157 literature papers to the MAgHARCM multi-agent modernization substrate. Acronyms and technical terms are defined in the [[Glossary|Domain Acronyms & Terminology Glossary]].
 
 ---
 
@@ -19,6 +19,7 @@ tags: [adhoc, research-waves, literature, synthesis, papers, "[[2.0.0 MAgHARCM]]
 
 | Wave Range | Core Theme | Target Primitives | Key Literature Anchors |
 | :--- | :--- | :--- | :--- |
+| **Wave 24** | Cross-Agent KV-Cache Eviction & Reuse | `PRIM-21, 31` | ReST-KV (`[[1.0.0 P-157]]`) |
 | **Wave 23** | Context-Aware Refinement Slicing + Multi-Agent Translation + Agentic Warning Repair + Test Generation | `PRIM-13, 22, 23, 29, 31` | CoReX (`[[1.0.0 P-153]]`), TransAgent (`[[1.0.0 P-154]]`), CodeCureAgent (`[[1.0.0 P-155]]`), TestWeaver (`[[1.0.0 P-156]]`) |
 | **Wave 22** | Feedback-Driven C-to-Rust Translation + Systematic Hallucination Evaluation | `PRIM-22, 23, 25, 29, 31` | SmartC2Rust (`[[1.0.0 P-151]]`), Hallu-Eval (`[[1.0.0 P-152]]`) |
 | **Wave 21** | KV-Cache $\times$ Speculative-Decoding Substrate + Static-Analysis Context Pruning | `PRIM-21, 22, 31` | SpecKV (`[[1.0.0 P-147]]`), LookaheadKV (`[[1.0.0 P-148]]`), SSD/Saguaro (`[[1.0.0 P-149]]`), TestPrune (`[[1.0.0 P-150]]`) |
@@ -35,9 +36,16 @@ tags: [adhoc, research-waves, literature, synthesis, papers, "[[2.0.0 MAgHARCM]]
 
 ## 2. Detailed Chronological Wave Catalog
 
-### Recent Research Waves (Waves 18–23)
+### Recent Research Waves (Waves 18–24)
+
+#### Wave 24: Cross-Agent KV-Cache Eviction & Reuse
+- **Scope**: Reinforces the KV-cache $\times$ speculative-decoding loop; closes the Wave-23 forward-plan cross-agent KV-cache family.
+- **Accepted Papers (1)**:
+  - `[[1.0.0 P-157]]` **ReST-KV** (An et al., ICLR 2026): Layer-wise output-reconstruction KV eviction with spatial-temporal smoothing (EMA + adaptive windows); +2.58% LongBench, +15.2% RULER, 10.61$\times$ decoding-latency reduction at 128k (`PRIM-21`, `PRIM-31`).
+- **Triage**: 1 REJECT (R1 MixKV off-axis LVLM); 4 WATCHLIST (SWE-TRACE 6th carry, MemArt, MemDecay, ReCache); 1 non-event venue note (P-01 ReCodeAgent ASE 2026 version).
 
 #### Wave 23: Program Comprehension Residual Slot Closure & Test Synthesis
+
 - **Scope**: Closes the strict program-comprehension-mechanism residual slot carried forward from Wave-17.
 - **Accepted Papers (4)**:
   - `[[1.0.0 P-153]]` **CoReX** (Sun et al., ICSE 2026): Context-aware refinement-based slicing for regression failure localization (`PRIM-22`, `PRIM-31`).
