@@ -14,12 +14,10 @@ import (
 	"strings"
 
 	"github.com/cloudwego/eino/components/model"
-	"github.com/cloudwego/eino/schema"
-
 	"MAgHARCM/internal/compiletime"
+	"MAgHARCM/internal/llm"
 	"MAgHARCM/internal/logger"
 )
-
 // roleflipLogTruncateLen is the maximum length (in bytes) the reviewer
 // remark is allowed to occupy in the structured log buffer before
 // truncate() caps it. Local constant; centralised values live in
@@ -39,12 +37,24 @@ type RoleFlipVerdict struct {
 // (typically the reasoning model — see internal/llm/llm.go).
 type RoleFlipGate struct {
 	Model model.BaseChatModel
+	// structured binds RoleFlipSchema -> emit_review tool. The reviewer is
+	// forced to a single tool call whose defect/accepted boolean replaces
+	// the brittle NO_DEFECT token substring scan the gate used to do.
+	structured *llm.StructuredExtractor[RoleFlipSchema]
 }
 
 // NewRoleFlipGate wires a RoleFlipGate to the supplied chat model. Pass nil
 // to obtain a disabled gate (Inspect returns ErrRoleFlipGateNotConfigured).
-func NewRoleFlipGate(m model.BaseChatModel) *RoleFlipGate {
-	return &RoleFlipGate{Model: m}
+func NewRoleFlipGate(m model.BaseChatModel) (*RoleFlipGate, error) {
+	if m == nil {
+		return nil, nil
+	}
+	extractor, err := llm.NewStructuredExtractor[RoleFlipSchema](m, "emit_review",
+		"Review the translator's output and either surface a defect or accept it. Always respond by calling the emit_review tool with `defect_found` (boolean), `reason`, and `retry_hint` populated; do not emit any other text. Set `defect_found` to false and explain why in `reason` when the output is acceptable.")
+	if err != nil {
+		return nil, fmt.Errorf("role flip gate: build structured extractor: %w", err)
+	}
+	return &RoleFlipGate{Model: m, structured: extractor}, nil
 }
 
 // MustRoleFlipGate wires a RoleFlipGate to the supplied chat model and panics
@@ -54,7 +64,11 @@ func MustRoleFlipGate(m model.BaseChatModel) *RoleFlipGate {
 	if m == nil {
 		panic("compiletime.MustRoleFlipGate: Model must not be nil")
 	}
-	return NewRoleFlipGate(m)
+	g, err := NewRoleFlipGate(m)
+	if err != nil {
+		panic(fmt.Sprintf("compiletime.MustRoleFlipGate: %v", err))
+	}
+	return g
 }
 // RepresentativeTranslationSample picks a deterministic, representative file
 // from the translated project for review. Map iteration order is random in
@@ -98,33 +112,31 @@ func RepresentativeTranslationSample(files map[string]string) (content, path str
 // claim (empty, or containing the NO_DEFECT token) is treated as acceptance
 // (DefectFound=false) so a chatty base model cannot deadlock the pipeline.
 func (g *RoleFlipGate) Inspect(ctx context.Context, filePath, translatorOutput string) (RoleFlipVerdict, error) {
-	if g == nil || g.Model == nil {
-		return RoleFlipVerdict{}, compiletime.ErrRoleFlipGateNotConfigured
-	}
-
-	logger.LogAgent(compiletime.LogScopeRoleFlip, "Invoking role-flipped reviewer on %s (%d bytes of translator output)", filePath, len(translatorOutput))
-
 	userContent := translatorOutput
 	if filePath != "" {
 		userContent = fmt.Sprintf("File: %s\n\n%s", filePath, translatorOutput)
 	}
-	resp, err := g.Model.Generate(ctx, []*schema.Message{
-		schema.SystemMessage(compiletime.RoleFlipSystemPrompt),
-		schema.UserMessage(userContent),
-	})
+	if g.structured == nil {
+		return RoleFlipVerdict{}, fmt.Errorf("role flip gate: structured extractor not initialised (call NewRoleFlipGate with a ToolCallingChatModel)")
+	}
+	out, err := g.structured.Extract(ctx, compiletime.RoleFlipSystemPrompt, userContent)
 	if err != nil {
 		return RoleFlipVerdict{}, err
 	}
-
-	reply := strings.TrimSpace(resp.Content)
-	if reply == "" || strings.Contains(reply, compiletime.RoleFlipNoDefectToken) {
-		return RoleFlipVerdict{DefectFound: false, Reason: compiletime.RoleFlipAcceptedReason}, nil
+	if !out.Defect {
+		reason := strings.TrimSpace(out.Reason)
+		if reason == "" {
+			reason = compiletime.RoleFlipAcceptedReason
+		}
 	}
-	logger.LogValidation("RoleFlipGate surfaced defect: %s", truncate(reply, roleflipLogTruncateLen))
-	return RoleFlipVerdict{DefectFound: true, Reason: reply, RetryHint: compiletime.RoleFlipRetryHint}, nil
+	reason := strings.TrimSpace(out.Reason)
+	logger.LogValidation("RoleFlipGate surfaced defect: %s", truncate(reason, roleflipLogTruncateLen))
+	retryHint := strings.TrimSpace(out.RetryHint)
+	if retryHint == "" {
+		retryHint = compiletime.RoleFlipRetryHint
+	}
+	return RoleFlipVerdict{DefectFound: true, Reason: reason, RetryHint: retryHint}, nil
 }
-
-// truncate caps a reviewer remark for logging so a runaway generation cannot
 // blow up the structured log buffer.
 func truncate(s string, n int) string {
 	if len(s) <= n {

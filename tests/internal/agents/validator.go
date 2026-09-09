@@ -6,8 +6,10 @@ import (
 )
 
 func TestDetectTestWeakening(t *testing.T) {
-	v := agents.NewValidatorAgent(nil, "")
-
+	v, err := agents.NewValidatorAgent(nil, "")
+	if err != nil {
+		t.Fatalf("NewValidatorAgent: %v", err)
+	}
 	prev := map[string]string{
 		"tests/test_basic.rs": `
 			#[test]

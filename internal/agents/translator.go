@@ -8,9 +8,9 @@ import (
 	"strings"
 
 	"github.com/cloudwego/eino/components/model"
-	"github.com/cloudwego/eino/schema"
 	"MAgHARCM/internal/compiletime"
 	"MAgHARCM/internal/checkpoint"
+	"MAgHARCM/internal/llm"
 	"MAgHARCM/internal/logger"
 	"MAgHARCM/internal/tools"
 )
@@ -29,18 +29,26 @@ type TranslatorAgent struct {
 	// end of every Run (both success and error paths). Empty RunID disables
 	// checkpointing — used by callers that don't want disk persistence.
 	RunID string
+	// structured binds TranslatorSchema -> emit_files tool. Single-shot
+	// translate, repair, and chunked translateFragment all share the same
+	// schema and extractor; the model is forced to emit a single tool call
+	// whose `files` map replaces the brittle FILE: / ```lang path``` parsing.
+	structured *llm.StructuredExtractor[TranslatorSchema]
 	// IterativeNavigator is the PRIM-31 dynamic fragment index.
 	IterativeNavigator *IterativeNavigator
 }
 
-// compiletime.TranslatedProject contains the files written or edited in the target
-// repository. Producer: TranslatorAgent (this file).
-// NewTranslatorAgent creates a TranslatorAgent instance. runID enables
-// per-run checkpoint persistence; pass "" to disable checkpointing.
-func NewTranslatorAgent(m model.BaseChatModel, runID string) *TranslatorAgent {
-	return &TranslatorAgent{Model: m, RunID: runID}
+// NewTranslatorAgent wires the translator to a chat model and prepares its typed-output
+// schema (TranslatorSchema -> emit_files tool). Returns an error when the model
+// cannot be used as a ToolCallingChatModel.
+func NewTranslatorAgent(m model.BaseChatModel, runID string) (*TranslatorAgent, error) {
+	extractor, err := llm.NewStructuredExtractor[TranslatorSchema](m, "emit_files",
+		"Emit every target-language file as a single tool call. `files` is a map from relative path (e.g. `src/lib.rs`, `tests/unit_tests.rs`) to the full file content. Do not emit any other text.")
+	if err != nil {
+		return nil, fmt.Errorf("translator: build structured extractor: %w", err)
+	}
+	return &TranslatorAgent{Model: m, RunID: runID, structured: extractor}, nil
 }
-
 // Run translates the code and tests, or executes repairs if validation report has failures.
 func (t *TranslatorAgent) Run(ctx context.Context, state *compiletime.State) (*compiletime.State, error) {
 	defer t.checkpoint(state)
@@ -70,8 +78,6 @@ func (t *TranslatorAgent) Run(ctx context.Context, state *compiletime.State) (*c
 	logger.LogAgent("Translator", "Initial Translation Mode: Implementing Part A Source and Part B Tests")
 	return t.translate(ctx, state)
 }
-
-// checkpoint persists a snapshot of state if RunID is set. Errors are logged
 // but never propagated — checkpointing is best-effort and must not abort the
 // pipeline when the disk is full or the runID is empty.
 func (t *TranslatorAgent) checkpoint(state *State) {
@@ -166,34 +172,35 @@ func (t *TranslatorAgent) resolvePackageName(targetDir, targetLang string) strin
 // generateTranslation renders the translation prompt and queries the coding model.
 func (t *TranslatorAgent) generateTranslation(ctx context.Context, state *compiletime.State, sourceFiles []string, packageName string) (map[string]string, error) {
 	logger.LogStep("Prompting Coding Model for complete `%s` translation", state.Task.TargetLang)
-
+	if t.structured == nil {
+		return nil, fmt.Errorf("translator: structured extractor not initialised (call NewTranslatorAgent with a ToolCallingChatModel)")
+	}
 	prompt, err := renderPromptTemplate("translator_translate", translatorTranslatePromptTemplate, map[string]any{
-		"PackageName":        packageName,
-		"SourceLang":         state.Task.SourceLang,
-		"TargetLang":         state.Task.TargetLang,
-		"TargetLangLower":    strings.ToLower(state.Task.TargetLang),
-		"SourceFiles":        strings.Join(sourceFiles, "\n"),
-		"TargetDesign":       state.AnalyzerOutput.Design.RawMarkdown,
-		"compiletime.ImplementationPlan": state.PlanningOutput.Plan.RawPlan,
+		"PackageName":                       packageName,
+		"SourceLang":                        state.Task.SourceLang,
+		"TargetLang":                        state.Task.TargetLang,
+		"TargetLangLower":                   strings.ToLower(state.Task.TargetLang),
+		"SourceFiles":                       strings.Join(sourceFiles, "\n"),
+		"TargetDesign":                      state.AnalyzerOutput.Design.RawMarkdown,
+		"compiletime.ImplementationPlan":    state.PlanningOutput.Plan.RawPlan,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to render translator prompt: %w", err)
 	}
-
-	resp, err := t.Model.Generate(ctx, []*schema.Message{
-		schema.SystemMessage("You are an expert systems programmer translating source code into idiomatic, safe target code."),
-		schema.UserMessage(prompt),
-	})
+	system := "You are an expert systems programmer translating source code into idiomatic, safe target code. Always respond by calling the emit_files tool with the `files` map populated; do not emit any other text."
+	out, err := t.structured.Extract(ctx, system, prompt)
 	if err != nil {
 		return nil, fmt.Errorf("translator model call failed: %w", err)
 	}
-
-	return parseAllFileMarkers(resp.Content), nil
+	return out.Files, nil
 }
 
 // generateRepair renders the repair prompt and queries the coding model for targeted fixes.
 func (t *TranslatorAgent) generateRepair(ctx context.Context, state *compiletime.State, targetFiles []string, packageName string) (map[string]string, error) {
 	logger.LogStep("Feeding compiler diagnostics, current files, and test failures to Coding Model for targeted repair")
+	if t.structured == nil {
+		return nil, fmt.Errorf("translator: structured extractor not initialised (call NewTranslatorAgent with a ToolCallingChatModel)")
+	}
 	prompt, err := renderPromptTemplate("translator_repair", translatorRepairPromptTemplate, map[string]any{
 		"PackageName":         packageName,
 		"TargetLang":          state.Task.TargetLang,
@@ -205,16 +212,12 @@ func (t *TranslatorAgent) generateRepair(ctx context.Context, state *compiletime
 	if err != nil {
 		return nil, fmt.Errorf("failed to render repair prompt: %w", err)
 	}
-
-	resp, err := t.Model.Generate(ctx, []*schema.Message{
-		schema.SystemMessage("You are an expert systems programmer debugging compiler errors and test failures. Output only the requested code files inside fenced code blocks."),
-		schema.UserMessage(prompt),
-	})
+	system := "You are an expert systems programmer debugging compiler errors and test failures. Always respond by calling the emit_files tool with the corrected `files` map; do not emit any other text."
+	out, err := t.structured.Extract(ctx, system, prompt)
 	if err != nil {
 		return nil, fmt.Errorf("translator repair call failed: %w", err)
 	}
-
-	return parseAllFileMarkers(resp.Content), nil
+	return out.Files, nil
 }
 
 // syncFilesToDisk cleans, writes files to disk, and updates the in-memory state.

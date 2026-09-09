@@ -31,17 +31,32 @@ func NewMAgHARCMGraph(ctx context.Context, models *llm.Models, runID string) (*M
 
 	// 1. Initialize independent agent execution units
 	archaeologistAgent := agents.NewArchaeologist()
-	analyzerAgent := agents.NewAnalyzerAgent(models.Reasoning)
-	planningAgent := agents.NewPlanningAgent(models.Reasoning)
-	translatorAgent := agents.NewTranslatorAgent(models.Coding, runID)
-	reviewerAgent := agents.NewRoleFlipGate(models.Reasoning)
-	validatorAgent := agents.NewValidatorAgent(models.Reasoning, runID)
-	verdictPanelAgent := agents.NewVerdictPanel(models.Reasoning)
+	analyzerAgent, err := agents.NewAnalyzerAgent(models.Reasoning)
+	if err != nil {
+		return nil, fmt.Errorf("graph: build analyzer: %w", err)
+	}
+	planningAgent, err := agents.NewPlanningAgent(models.Reasoning)
+	if err != nil {
+		return nil, fmt.Errorf("graph: build planner: %w", err)
+	}
+	translatorAgent, err := agents.NewTranslatorAgent(models.Coding, runID)
+	if err != nil {
+		return nil, fmt.Errorf("graph: build translator: %w", err)
+	}
+	reviewerAgent, err := agents.NewRoleFlipGate(models.Reasoning)
+	if err != nil {
+		return nil, fmt.Errorf("graph: build role flip gate: %w", err)
+	}
+	verdictPanelAgent, err := agents.NewVerdictPanel(models.Reasoning)
+	if err != nil {
+		return nil, fmt.Errorf("graph: build verdict panel: %w", err)
+	}
+	validatorAgent, err := agents.NewValidatorAgent(models.Reasoning, runID)
+	if err != nil {
+		return nil, fmt.Errorf("graph: build validator: %w", err)
+	}
 	recruiterAgent := agents.NewRecruiter()
 
-	// 2. Register agent nodes in the Eino Graph
-
-	// Node 1: Archaeologist (PRIM-14, 18, 19, 20, 22)
 	if err := g.AddLambdaNode("archaeologist", compose.InvokableLambda(func(ctx context.Context, state *compiletime.State) (*compiletime.State, error) {
 		logger.LogAgent("Archaeologist", "Starting pre-planning software archaeology")
 		if state.Task.SourceDir != "" {

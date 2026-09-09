@@ -11,11 +11,13 @@ import (
 	"time"
 
 	"github.com/cloudwego/eino/components/model"
-	"github.com/cloudwego/eino/schema"
+
 	"MAgHARCM/internal/compiletime"
 	"MAgHARCM/internal/checkpoint"
+	"MAgHARCM/internal/llm"
 	"MAgHARCM/internal/logger"
 	"MAgHARCM/internal/tools"
+
 )
 
 // Locality of Behaviour (ADR-C-014): producer-side artifact methods live in
@@ -49,6 +51,11 @@ type ValidatorAgent struct {
 	// adding a new optional check (PRIM-7 verdict, PRIM-8 mock, PRIM-11 IO,
 	// PRIM-12 wasm) does NOT require touching the core cascade. nil-safe.
 	OptionalChecks []OptionalCheck
+	// structured binds ValidatorCoverageSchema -> emit_tests tool. Coverage-
+	// guided test synthesis in generateAdditionalTests is forced to a single
+	// tool call whose `files` map replaces the brittle FILE: / fenced
+	// block parsing the validator used to do.
+	structured *llm.StructuredExtractor[ValidatorCoverageSchema]
 }
 
 // OptionalCheck is the contract implemented by auxiliary validation primitives.
@@ -80,8 +87,16 @@ const optionalCheckLogTruncateLen = 120
 
 // NewValidatorAgent creates a ValidatorAgent instance. runID enables
 // per-run checkpoint persistence; pass "" to disable checkpointing.
-func NewValidatorAgent(m model.BaseChatModel, runID string) *ValidatorAgent {
-	return &ValidatorAgent{Model: m, RunID: runID, Plateau: NewPlateauDetector()}
+func NewValidatorAgent(m model.BaseChatModel, runID string) (*ValidatorAgent, error) {
+	if m == nil {
+		return &ValidatorAgent{Model: m, RunID: runID, Plateau: NewPlateauDetector()}, nil
+	}
+	extractor, err := llm.NewStructuredExtractor[ValidatorCoverageSchema](m, "emit_tests",
+		"Emit every additional test file needed to cover the uncovered functions as a single tool call. `files` is a map from relative path (e.g. `tests/integration_tests.rs`) to the full file content. Do not emit any other text.")
+	if err != nil {
+		return nil, fmt.Errorf("validator: build structured extractor: %w", err)
+	}
+	return &ValidatorAgent{Model: m, RunID: runID, Plateau: NewPlateauDetector(), structured: extractor}, nil
 }
 
 // Run validates the target project and produces a compiletime.ValidationReport.
@@ -104,11 +119,6 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *compiletime.State) (*co
 	}
 
 	buildRes, err := v.checkCompilation(ctx, state)
-	if err != nil {
-		return nil, err
-	}
-
-	report.CompilationSuccess = buildRes.Success
 	report.CompilationErrors = buildRes.Errors
 
 	if !buildRes.Success {
@@ -172,7 +182,7 @@ func (v *ValidatorAgent) Run(ctx context.Context, state *compiletime.State) (*co
 	logger.LogStep("ITER[%d] comp=%v tests=%d/%d pass-rate=%.1f%% wall=%dms per-file=%d",
 		state.Iteration, report.CompilationSuccess, report.PassedTests, report.TotalTests, report.TestPassRate,
 		report.IterationWallMs, len(report.PerFile))
-	logger.LogStep("ITER[%d] real_tests=%d min=%d vacuous=%t", state.Iteration, report.RealTests, report.MinRealTests, report.RealTests == 0)
+	logger.LogStep("FINALSUM comp=%v tests=%d/%d all_success=%v wall=%dms iter=%d", report.CompilationSuccess, report.PassedTests, report.TotalTests, report.IsAllSuccess(), report.IterationWallMs, state.Iteration)
 	return state, nil
 }
 
@@ -358,6 +368,10 @@ func (v *ValidatorAgent) generateAdditionalTests(ctx context.Context, state *com
 		}
 	}
 
+	if v.structured == nil {
+		logger.LogError("Validator structured extractor not initialised; skipping additional test synthesis")
+		return
+	}
 	prompt, err := renderPromptTemplate("validator_coverage", validatorCoveragePromptTemplate, map[string]any{
 		"TargetLang":         state.Task.TargetLang,
 		"TargetLangLower":    strings.ToLower(state.Task.TargetLang),
@@ -370,13 +384,10 @@ func (v *ValidatorAgent) generateAdditionalTests(ctx context.Context, state *com
 		logger.LogError("Failed to render validator coverage prompt: %v", err)
 		return
 	}
-	resp, err := v.Model.Generate(ctx, []*schema.Message{
-		schema.SystemMessage("You are an expert test engineer writing thorough unit tests."),
-		schema.UserMessage(prompt),
-	})
-	if err == nil && resp != nil {
-		files := parseAllFileMarkers(resp.Content)
-		for relPath, testCode := range files {
+	system := "You are an expert test engineer writing thorough unit tests. Always respond by calling the emit_tests tool with the `files` map populated; do not emit any other text."
+	out, err := v.structured.Extract(ctx, system, prompt)
+	if err == nil {
+		for relPath, testCode := range out.Files {
 			if strings.HasPrefix(relPath, "tests/") {
 				cleaned := tools.CleanCodeContent(testCode)
 				cleaned = NormalizeRustTestImports(cleaned, state)
@@ -386,6 +397,8 @@ func (v *ValidatorAgent) generateAdditionalTests(ctx context.Context, state *com
 				logger.LogTool("write_file", "Updated tests in `%s`, %d bytes", relPath, len(cleaned))
 			}
 		}
+	} else {
+		logger.LogError("Validator coverage tool call failed: %v", err)
 	}
 }
 

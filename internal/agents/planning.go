@@ -2,15 +2,15 @@ package agents
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 	"unicode"
+
 	"MAgHARCM/internal/compiletime"
 	"github.com/cloudwego/eino/components/model"
-	"github.com/cloudwego/eino/schema"
+	"MAgHARCM/internal/llm"
 
 	"MAgHARCM/internal/languages"
 	"MAgHARCM/internal/logger"
@@ -28,13 +28,23 @@ type PlanningOutput = compiletime.PlanningOutput
 // PlanningAgent extracts translation units, maps symbols to target conventions, generates project skeletons, and devises execution plans.
 type PlanningAgent struct {
 	Model model.BaseChatModel
+	// structured binds PlanningSchema -> emit_plan tool. The model is forced
+	// to call this single tool, replacing the brittle "extract a JSON block
+	// from a fenced code section" path the planner used to rely on.
+	structured *llm.StructuredExtractor[PlanningSchema]
 }
 
-// NewPlanningAgent creates a PlanningAgent instance.
-func NewPlanningAgent(m model.BaseChatModel) *PlanningAgent {
-	return &PlanningAgent{Model: m}
+// NewPlanningAgent wires the planner to a chat model and prepares its typed-output
+// schema (PlanningSchema -> emit_plan tool). Returns an error when the model
+// cannot be used as a ToolCallingChatModel.
+func NewPlanningAgent(m model.BaseChatModel) (*PlanningAgent, error) {
+	extractor, err := llm.NewStructuredExtractor[PlanningSchema](m, "emit_plan",
+		"Emit the implementation plan: source -> target symbol name map, skeleton files keyed by relative path, and the implementation plan overview / Part A (source) / Part B (test) steps.")
+	if err != nil {
+		return nil, fmt.Errorf("planning: build structured extractor: %w", err)
+	}
+	return &PlanningAgent{Model: m, structured: extractor}, nil
 }
-
 // compiletime.PlanStep represents a single step in Part A or Part B of the
 // implementation plan. Producer: PlanningAgent (this file).
 // Run executes the planning phase and populates compiletime.PlanningOutput in state.
@@ -42,27 +52,26 @@ func (p *PlanningAgent) Run(ctx context.Context, state *compiletime.State) (*com
 	logger.LogAgent("Planning", "Decomposing translation into granular translation units and constructing plan")
 	state.PlanningOutput.ArtifactSchemaVersion = compiletime.CurrentSchemaVersion
 
-
 	fragments, sourceSummaries, err := p.extractFragments(state.Task.SourceDir)
 	if err != nil {
 		return nil, err
 	}
 	state.PlanningOutput.Fragments = fragments
 
-	rawContent, err := p.generatePlanningArtifacts(ctx, state, sourceSummaries)
+	plan, err := p.generatePlanningArtifacts(ctx, state, sourceSummaries, fragments)
 	if err != nil {
 		return nil, err
 	}
 
-	state.PlanningOutput.NameMapping = p.parseNameMapping(rawContent)
-	skeletonFiles := p.resolveSkeletonFiles(rawContent, state, fragments)
+	state.PlanningOutput.NameMapping = plan.NameMapping
+	skeletonFiles := p.resolveSkeletonFiles(plan, state, fragments)
 	state.PlanningOutput.SkeletonFiles = skeletonFiles
 
 	if err := p.writeSkeletonFiles(state.Task.TargetDir, skeletonFiles); err != nil {
 		return nil, err
 	}
 
-	state.PlanningOutput.Plan = p.parseImplementationPlan(rawContent, fragments)
+	state.PlanningOutput.Plan = p.buildImplementationPlan(plan, fragments)
 	logger.LogAgent("Planning", "Planning complete: %d skeleton files written, %d steps in reverse-topological order",
 		len(skeletonFiles), len(state.PlanningOutput.Plan.PartA))
 	return state, nil
@@ -143,41 +152,32 @@ func (p *PlanningAgent) extractFragments(sourceDir string) ([]string, []string, 
 	return fragments, sourceSummaries, nil
 }
 
-// generatePlanningArtifacts queries the reasoning model for name mapping, skeleton, and implementation plan.
-func (p *PlanningAgent) generatePlanningArtifacts(ctx context.Context, state *compiletime.State, sourceSummaries []string) (string, error) {
+// generatePlanningArtifacts queries the reasoning model via the structured
+// emit_plan tool. The model returns the symbol name map, skeleton file map,
+// and implementation plan as a single typed tool call — no string parsing
+// required.
+func (p *PlanningAgent) generatePlanningArtifacts(ctx context.Context, state *compiletime.State, sourceSummaries []string, fragments []string) (PlanningSchema, error) {
+	if p.structured == nil {
+		return PlanningSchema{}, fmt.Errorf("planning: structured extractor not initialised (call NewPlanningAgent with a ToolCallingChatModel)")
+	}
 	prompt, err := renderPromptTemplate("planning", planningPromptTemplate, map[string]any{
 		"SourceLang":   state.Task.SourceLang,
 		"TargetLang":   state.Task.TargetLang,
 		"SourceFiles":  strings.Join(sourceSummaries, "\n"),
 		"TargetDesign": state.AnalyzerOutput.Design.RawMarkdown,
+		"Fragments":    strings.Join(fragments, "\n"),
 	})
 	if err != nil {
-		return "", fmt.Errorf("failed to render planning prompt: %w", err)
+		return PlanningSchema{}, fmt.Errorf("failed to render planning prompt: %w", err)
 	}
-
-	resp, err := p.Model.Generate(ctx, []*schema.Message{
-		schema.SystemMessage("You are an expert software engineer and project planner specializing in language-agnostic code translation."),
-		schema.UserMessage(prompt),
-	})
-	if err != nil {
-		return "", fmt.Errorf("planning model call failed: %w", err)
-	}
-	return resp.Content, nil
+	system := "You are an expert software engineer and project planner specializing in language-agnostic code translation. Always respond by calling the emit_plan tool with the structured fields; do not emit any other text."
+	return p.structured.Extract(ctx, system, prompt)
 }
 
-// parseNameMapping extracts and decodes the JSON symbol name mapping from model output.
-func (p *PlanningAgent) parseNameMapping(rawContent string) map[string]string {
-	nameMapping := make(map[string]string)
-	if jsonStr := extractBlock(rawContent, "=== NAME_MAPPING_JSON ===", "==="); jsonStr != "" {
-		_ = json.Unmarshal([]byte(jsonStr), &nameMapping)
-	}
-	logger.LogTool("name_mapping", "Created %d symbol mappings", len(nameMapping))
-	return nameMapping
-}
-
-// resolveSkeletonFiles extracts skeleton files or synthesizes default boilerplate for the target language.
-func (p *PlanningAgent) resolveSkeletonFiles(rawContent string, state *compiletime.State, fragments []string) map[string]string {
-	skeletonFiles := parseFileBlocks(rawContent, "=== SKELETON_FILES ===")
+// resolveSkeletonFiles selects skeleton files from the typed plan, falling
+// back to language-specific boilerplate when the LLM did not emit any.
+func (p *PlanningAgent) resolveSkeletonFiles(plan PlanningSchema, state *compiletime.State, fragments []string) map[string]string {
+	skeletonFiles := plan.SkeletonFiles
 	if len(skeletonFiles) == 0 {
 		logger.LogWarning("Planning LLM did not emit explicit skeleton files; generating fallback skeleton for `%s`", state.Task.TargetLang)
 		skeletonFiles = DefaultProjectSkeleton(state.Task.TargetDir, state.Task.TargetLang, fragments)
@@ -186,6 +186,9 @@ func (p *PlanningAgent) resolveSkeletonFiles(rawContent string, state *compileti
 			projectName := resolvePackageName(state.Task.TargetDir, state.Task.TargetLang)
 			skeletonFiles["Cargo.toml"] = fmt.Sprintf("[package]\nname = \"%s\"\nversion = \"0.1.0\"\nedition = \"2021\"\n\n[dependencies]\n", projectName)
 		}
+	}
+	if plan.NameMapping != nil {
+		logger.LogTool("name_mapping", "Created %d symbol mappings", len(plan.NameMapping))
 	}
 	return skeletonFiles
 }
@@ -205,40 +208,42 @@ func (p *PlanningAgent) writeSkeletonFiles(targetDir string, skeletonFiles map[s
 	return nil
 }
 
-// parseImplementationPlan parses the implementation plan sections into structured steps
-// and schedules them in reverse topological order (NEW-PRIM-1, NEW-PRIM-2 / GAP-02).
-func (p *PlanningAgent) parseImplementationPlan(rawContent string, fragments []string) compiletime.ImplementationPlan {
-	planStr := extractBlock(rawContent, "=== IMPLEMENTATION_PLAN ===", "")
-	if planStr == "" {
-		planStr = rawContent
-	}
-
-	orderedFrags := ComputeReverseTopoOrder(fragments, nil)
-	var partASteps []compiletime.PlanStep
-	if len(orderedFrags) > 0 {
-		for i, frag := range orderedFrags {
-			partASteps = append(partASteps, compiletime.PlanStep{
-				ID:              fmt.Sprintf("A%d", i+1),
-				Description:     fmt.Sprintf("Translate module fragment: %s", frag),
-				Type:            "source",
-				StepName:        frag,
-				ReverseTopoRank: i + 1,
-			})
+// buildImplementationPlan merges the LLM-emitted Part A / Part B steps with
+// the deterministic reverse-topological fragment order. When the LLM
+// emitted no Part A steps, the planner falls back to the fragment list so
+// downstream phases always have work to dispatch.
+func (p *PlanningAgent) buildImplementationPlan(plan PlanningSchema, fragments []string) compiletime.ImplementationPlan {
+	partASteps := plan.PartA
+	if len(partASteps) == 0 {
+		orderedFrags := ComputeReverseTopoOrder(fragments, nil)
+		if len(orderedFrags) > 0 {
+			for i, frag := range orderedFrags {
+				partASteps = append(partASteps, compiletime.PlanStep{
+					ID:              fmt.Sprintf("A%d", i+1),
+					Description:     fmt.Sprintf("Translate module fragment: %s", frag),
+					Type:            "source",
+					StepName:        frag,
+					ReverseTopoRank: i + 1,
+				})
+			}
+		} else {
+			partASteps = []compiletime.PlanStep{
+				{ID: "A1", Description: "Translate all source modules to target language", Type: "source", ReverseTopoRank: 1},
+			}
 		}
-	} else {
-		partASteps = []compiletime.PlanStep{
-			{ID: "A1", Description: "Translate all source modules to target language", Type: "source", ReverseTopoRank: 1},
+	}
+	partBSteps := plan.PartB
+	if len(partBSteps) == 0 {
+		partBSteps = []compiletime.PlanStep{
+			{ID: "B1", Description: "Translate and execute test suite", Type: "test", ReverseTopoRank: len(partASteps) + 1},
 		}
 	}
-
 	return compiletime.ImplementationPlan{
 		ArtifactSchemaVersion: compiletime.CurrentSchemaVersion,
-		Overview:              extractSection(planStr, "## Overview", "## Part A"),
+		Overview:              plan.Overview,
 		PartA:                 partASteps,
-		PartB: []compiletime.PlanStep{
-			{ID: "B1", Description: "Translate and execute test suite", Type: "test", ReverseTopoRank: len(partASteps) + 1},
-		},
-		RawPlan: planStr,
+		PartB:                 partBSteps,
+		RawPlan:               plan.Overview,
 	}
 }
 
@@ -325,20 +330,7 @@ func sanitizeProjectName(name string) string {
 	return res
 }
 
-func extractBlock(doc, startTag, endTag string) string {
-	startIdx := strings.Index(doc, startTag)
-	if startIdx == -1 {
-		return ""
-	}
-	content := doc[startIdx+len(startTag):]
-	if endTag != "" {
-		endIdx := strings.Index(content, endTag)
-		if endIdx != -1 {
-			content = content[:endIdx]
-		}
-	}
-	return strings.TrimSpace(content)
-}
+
 
 // isTranslatableFile determines if a file is a source, test, or build manifest
 // eligible for AST fragment extraction.

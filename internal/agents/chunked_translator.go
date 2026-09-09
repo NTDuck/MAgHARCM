@@ -10,8 +10,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/cloudwego/eino/schema"
 	"MAgHARCM/internal/compiletime"
+
 	"MAgHARCM/internal/logger"
 )
 
@@ -267,6 +267,9 @@ func (t *TranslatorAgent) translateFragment(
 	state *compiletime.State,
 	packageName, sourceBlock, priorSummary string,
 ) (map[string]string, error) {
+	if t.structured == nil {
+		return nil, fmt.Errorf("chunked translator: structured extractor not initialised")
+	}
 	prompt, err := renderPromptTemplate("translator_chunked", translatorChunkedPromptTemplate, map[string]any{
 		"PackageName":     packageName,
 		"TargetLang":      state.Task.TargetLang,
@@ -279,16 +282,12 @@ func (t *TranslatorAgent) translateFragment(
 	if err != nil {
 		return nil, fmt.Errorf("failed to render chunked translator prompt: %w", err)
 	}
-
-	resp, err := t.Model.Generate(ctx, []*schema.Message{
-		schema.SystemMessage("You are an expert systems programmer translating a single source file into idiomatic, safe target code. Output only the requested code file inside a fenced code block."),
-		schema.UserMessage(prompt),
-	})
+	system := "You are an expert systems programmer translating a single source file into idiomatic, safe target code. Always respond by calling the emit_files tool with the `files` map populated; do not emit any other text."
+	out, err := t.structured.Extract(ctx, system, prompt)
 	if err != nil {
 		return nil, fmt.Errorf("chunked translator model call failed: %w", err)
 	}
-
-	return parseAllFileMarkers(resp.Content), nil
+	return out.Files, nil
 }
 
 // buildPriorModulesSummary renders a compact "what's already been emitted"

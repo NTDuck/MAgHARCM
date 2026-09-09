@@ -12,9 +12,8 @@ import (
 	"strings"
 
 	"github.com/cloudwego/eino/components/model"
-	"github.com/cloudwego/eino/schema"
-
 	"MAgHARCM/internal/compiletime"
+	"MAgHARCM/internal/llm"
 	"MAgHARCM/internal/logger"
 )
 
@@ -50,13 +49,23 @@ type JudgeOpinion struct {
 // same world view and disagreements are meaningful rather than noise.
 type VerdictPanel struct {
 	Model model.BaseChatModel
+	// structured binds JudgeSchema -> emit_verdict tool. Each judge in the
+	// panel is forced to a single tool call whose verdict and rationale
+	// fields replace the brittle "first non-empty line is the verdict token"
+	// parsing the panel used to do.
+	structured *llm.StructuredExtractor[JudgeSchema]
 }
 
 // NewVerdictPanel constructs a VerdictPanel backed by the given chat model.
 // Pass llm.Models.Reasoning so the panel uses the smaller reasoning model
 // rather than the coding model.
-func NewVerdictPanel(m model.BaseChatModel) *VerdictPanel {
-	return &VerdictPanel{Model: m}
+func NewVerdictPanel(m model.BaseChatModel) (*VerdictPanel, error) {
+	extractor, err := llm.NewStructuredExtractor[JudgeSchema](m, "emit_verdict",
+		"Emit your equivalence verdict as a single tool call. `verdict` must be one of: NOT_EQUIVALENT, EQUIVALENT. `rationale` is a short free-text explanation. Do not emit any other text.")
+	if err != nil {
+		return nil, fmt.Errorf("verdict panel: build structured extractor: %w", err)
+	}
+	return &VerdictPanel{Model: m, structured: extractor}, nil
 }
 
 // MustVerdictPanel constructs a VerdictPanel and panics if the chat model
@@ -66,7 +75,11 @@ func MustVerdictPanel(m model.BaseChatModel) *VerdictPanel {
 	if m == nil {
 		panic("compiletime.MustVerdictPanel: Model must not be nil")
 	}
-	return NewVerdictPanel(m)
+	vp, err := NewVerdictPanel(m)
+	if err != nil {
+		panic(fmt.Sprintf("compiletime.MustVerdictPanel: %v", err))
+	}
+	return vp
 }
 
 // MustPanelSize returns n when positive; otherwise it returns DefaultPanelSize.
@@ -79,8 +92,6 @@ func MustPanelSize(n int) int {
 	return n
 }
 
-// verdictEquivalentSet / verdictNotEquivalentSet memoise the alias lists
-// from compiletime for O(1) lookup in normalizeVerdictToken.
 var (
 	verdictEquivalentSet    = stringSet(append([]string{compiletime.VerdictEquivalent}, compiletime.VerdictAliasEquivalent...))
 	verdictNotEquivalentSet = stringSet(append([]string{compiletime.VerdictNotEquivalent, "NOT-EQUIVALENT"}, compiletime.VerdictAliasNotEquivalent...))
@@ -134,29 +145,24 @@ func (vp *VerdictPanel) Judge(ctx context.Context, source, target string, n int)
 	return aggregateVerdict(opinions), nil
 }
 
-// singleJudge issues one equivalence-query prompt and parses the first-line
-// verdict token out of the response.
+// singleJudge issues one equivalence-query prompt and parses the verdict via
+// the structured emit_verdict tool — replacing the brittle first-line token
+// scan the panel used to do.
 func (vp *VerdictPanel) singleJudge(ctx context.Context, judgeID, source, target string) (JudgeOpinion, error) {
-	resp, err := vp.Model.Generate(ctx, []*schema.Message{
-		schema.SystemMessage(verdictJudgeSystemPrompt),
-		schema.UserMessage(verdictJudgeUserPrompt(judgeID, source, target)),
-	})
+	if vp.structured == nil {
+		return JudgeOpinion{}, fmt.Errorf("verdict panel: structured extractor not initialised (call NewVerdictPanel with a ToolCallingChatModel)")
+	}
+	prompt := verdictJudgeUserPrompt(judgeID, source, target)
+	out, err := vp.structured.Extract(ctx, verdictJudgeSystemPrompt, prompt)
 	if err != nil {
 		return JudgeOpinion{}, fmt.Errorf("model generate: %w", err)
 	}
-	if resp == nil {
-		return JudgeOpinion{}, fmt.Errorf("model returned nil response")
-	}
-
-	raw := strings.TrimSpace(resp.Content)
-	verdict, rationale := parseJudgeVerdict(raw)
 	return JudgeOpinion{
 		JudgeID:   judgeID,
-		Verdict:   verdict,
-		Rationale: rationale,
+		Verdict:   strings.TrimSpace(out.Verdict),
+		Rationale: strings.TrimSpace(out.Rationale),
 	}, nil
 }
-
 // aggregateVerdict reduces the per-judge opinions into a single Verdict by
 // strict majority. Equivalence votes are counted; if they reach the majority
 // threshold (rounded up) the pair is treated as equivalent. Any judges that
