@@ -19,7 +19,7 @@ tags: [adhoc, research-waves, literature, synthesis, papers, "[[2.0.0 MAgHARCM]]
 
 | Wave Range | Core Theme | Target Primitives | Key Literature Anchors |
 | :--- | :--- | :--- | :--- |
-| **Wave 23** | Context-Aware Refinement Slicing + Multi-Agent Translation + Static-Analysis Co-Evolution + Test Generation | `PRIM-12, 22, 23, 29, 31` | CoReX (`[[1.0.0 P-153]]`), TransAgent (`[[1.0.0 P-154]]`), POLA-Tester (`[[1.0.0 P-155]]`), ACONITE (`[[1.0.0 P-156]]`) |
+| **Wave 23** | Context-Aware Refinement Slicing + Multi-Agent Translation + Agentic Warning Repair + Test Generation | `PRIM-13, 22, 23, 29, 31` | CoReX (`[[1.0.0 P-153]]`), TransAgent (`[[1.0.0 P-154]]`), CodeCureAgent (`[[1.0.0 P-155]]`), TestWeaver (`[[1.0.0 P-156]]`) |
 | **Wave 22** | Feedback-Driven C-to-Rust Translation + Systematic Hallucination Evaluation | `PRIM-22, 23, 25, 29, 31` | SmartC2Rust (`[[1.0.0 P-151]]`), Hallu-Eval (`[[1.0.0 P-152]]`) |
 | **Wave 21** | KV-Cache $\times$ Speculative-Decoding Substrate + Static-Analysis Context Pruning | `PRIM-21, 22, 31` | SpecKV (`[[1.0.0 P-147]]`), LookaheadKV (`[[1.0.0 P-148]]`), SSD/Saguaro (`[[1.0.0 P-149]]`), TestPrune (`[[1.0.0 P-150]]`) |
 | **Wave 20** | Program-Comprehension Mechanism + SLM Verification Substrate | `PRIM-7, 9, 21, 22, 25, 31` | NESA (`[[1.0.0 P-142]]`), HalluShield (`[[1.0.0 P-143]]`), TraceCoder (`[[1.0.0 P-144]]`), TerraMod (`[[1.0.0 P-145]]`), ContextPRM (`[[1.0.0 P-146]]`) |
@@ -42,8 +42,8 @@ tags: [adhoc, research-waves, literature, synthesis, papers, "[[2.0.0 MAgHARCM]]
 - **Accepted Papers (4)**:
   - `[[1.0.0 P-153]]` **CoReX** (Sun et al., ICSE 2026): Context-aware refinement-based slicing for regression failure localization (`PRIM-22`, `PRIM-31`).
   - `[[1.0.0 P-154]]` **TransAgent** (Roh et al., FSE 2026): Multi-agent translation pipeline with fine-grained critic feedback (`PRIM-23`, `PRIM-31`).
-  - `[[1.0.0 P-155]]` **POLA-Tester** (Sun et al., ICSE 2026): Syntactic dependency mining and iterative retrofit validation (`PRIM-12`).
-  - `[[1.0.0 P-156]]` **ACONITE** (Sun et al., ICSE 2026): Execution-annotated backward slicing for LLM regression test generation (`PRIM-22`, `PRIM-29`).
+  - `[[1.0.0 P-155]]` **CodeCureAgent** (Joos et al., FSE 2026): Agentic warning classification + repair with three-step build+test acceptance heuristic (`PRIM-13`, `PRIM-22`, `PRIM-29`).
+  - `[[1.0.0 P-156]]` **TestWeaver** (Le et al., ICSE 2026): Execution-annotated backward slicing and close-test retrieval for LLM regression test generation (`PRIM-22`, `PRIM-29`, `PRIM-31`).
 - **Triage**: 1 REJECT (R1 AutoCodeSherpa, ISSTA off-list); 1 WATCHLIST (SWE-TRACE 5th carry).
 
 #### Wave 22: Feedback-Driven Translation & Hallucination Defense

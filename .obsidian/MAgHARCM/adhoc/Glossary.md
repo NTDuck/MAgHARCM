@@ -39,7 +39,7 @@ tags: [adhoc, glossary, definitions, terminology, "[[2.0.0 MAgHARCM]]"]
 | **SDG** | System Dependence Graph | Inter-procedural extension of the PDG representing multiple functions, callsites, and global data flows across an entire repository (`TypePro` `[[1.0.0 P-139]]`). |
 | **DRSpaces** | Design Rule Spaces | Architectural analysis method (Baldwin & Clark; Xiao et al.) decomposing software into design-rule hierarchies and identifying coupling and churn hotspots (`[[1.0.0 PRIM-14]]`, `[[1.0.0 PRIM-18]]`). |
 | **DA** | Dynamic Analysis | Software analysis performed by executing code with concrete inputs to observe runtime invariants, aliasing, and memory safety (`Syzygy` `[[1.0.0 P-124]]`). |
-| **SA** | Static Analysis | Code analysis conducted without execution, analyzing ASTs, types, and control/data flows (`POLA-Tester` `[[1.0.0 P-155]]`). |
+| **SA** | Static Analysis | Code analysis conducted without execution, analyzing ASTs, types, and control/data flows (`CodeCureAgent` `[[1.0.0 P-155]]`). |
 
 ---
 

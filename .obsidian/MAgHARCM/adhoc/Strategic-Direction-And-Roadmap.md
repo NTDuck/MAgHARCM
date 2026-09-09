@@ -87,7 +87,7 @@ Phase 4: Autonomous Verified SWE-Bench Zero-Shot Modernizer (FUTURE)
 5. **Feedback-Driven Multi-Agent Translation (`PRIM-23, 29, 31`)**:
    - Context-aware chunking and three-signal loop (`[[1.0.0 P-151]]` SmartC2Rust) paired with multi-agent critic feedback (`[[1.0.0 P-154]]` TransAgent).
 6. **Context Pruning & Test Synthesis (`PRIM-12, 22, 29`)**:
-   - Coverage-driven test minimization (`[[1.0.0 P-150]]` TestPrune), static-analysis co-evolution (`[[1.0.0 P-155]]` POLA-Tester), and execution-annotated backward slicing (`[[1.0.0 P-156]]` ACONITE).
+   - Coverage-driven test minimization (`[[1.0.0 P-150]]` TestPrune), agentic warning classification + repair (`[[1.0.0 P-155]]` CodeCureAgent), and execution-annotated backward slicing (`[[1.0.0 P-156]]` TestWeaver).
 
 ---
 
