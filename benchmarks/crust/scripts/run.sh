@@ -30,7 +30,6 @@
 #   bash benchmarks/crust/scripts/run.sh                       # full batch
 #   bash benchmarks/crust/scripts/run.sh --only 2dpartint       # single proj
 #   bash benchmarks/crust/scripts/run.sh --commit HEAD~1        # pin commit
-#   bash benchmarks/crust/scripts/run.sh --timeout 5400         # per-proj sec
 #   bash benchmarks/crust/scripts/run.sh --dry-run              # list only
 #
 # Interruption:
@@ -50,14 +49,12 @@ SCRIPT_NAME="$(basename "$0")"
 # --- args ----------------------------------------------------------------
 ONLY=""
 PIN_COMMIT=""
-TIMEOUT_SEC=7200
 DRY_RUN=0
 RESUME=1   # default on; --no-resume disables
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --only)        ONLY="$2"; shift 2 ;;
         --commit)      PIN_COMMIT="$2"; shift 2 ;;
-        --timeout)     TIMEOUT_SEC="$2"; shift 2 ;;
         --dry-run)     DRY_RUN=1; shift ;;
         --no-resume)   RESUME=0; shift ;;
         -h|--help)
@@ -248,20 +245,14 @@ run_one() {
     local start end wall rc final iters
     start=$(date +%s)
     # shellcheck disable=SC2086
-    timeout --foreground "$TIMEOUT_SEC" \
-        "$REPO_ROOT/bin/MAgHARCM" --config "$cfg" >"$log" 2>&1
-    rc=$?
+    "$REPO_ROOT/bin/MAgHARCM" --config "$cfg" >"$log" 2>&1
     end=$(date +%s)
     wall=$((end - start))
 
     iters="$(scrape_iterations "$log")"
     final="$(scrape_final "$log")"
 
-    if [[ $rc -eq 124 ]]; then
-        # timeout killed it
-        mark_interrupted "$proj" "$log" "$wall" "$iters"
-        echo "[time ] $proj wall=${wall}s (timed out)"
-    elif [[ -z "$(grep -E '^\[.*\] FINALSUM ' "$log" 2>/dev/null)" ]]; then
+    if [[ -z "$(grep -E '^\[.*\] FINALSUM ' "$log" 2>/dev/null)" ]]; then
         # pipeline crashed before FINALSUM
         mark_interrupted "$proj" "$log" "$wall" "$iters"
         echo "[err  ] $proj wall=${wall}s (no FINALSUM; rc=$rc)"
@@ -275,7 +266,7 @@ run_one() {
 }
 
 # --- main -----------------------------------------------------------------
-echo "[$SCRIPT_NAME] commit=$COMMIT_SHORT  results=$RESULTS_DIR  timeout=${TIMEOUT_SEC}s/proj"
+echo "[$SCRIPT_NAME] commit=$COMMIT_SHORT  results=$RESULTS_DIR"
 [[ -d "$CONFIGS_DIR" ]] || { echo "[$SCRIPT_NAME] no configs at $CONFIGS_DIR" >&2; exit 1; }
 
 if [[ "$DRY_RUN" -eq 1 ]]; then

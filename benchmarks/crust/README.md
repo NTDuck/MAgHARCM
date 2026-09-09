@@ -34,9 +34,6 @@ bash benchmarks/crust/scripts/run.sh --only 2dpartint
 # Pin a past commit's results.
 bash benchmarks/crust/scripts/run.sh --commit HEAD~1
 
-# Lower per-project wall budget.
-bash benchmarks/crust/scripts/run.sh --timeout 5400
-
 # Dry-run: list every config without executing.
 bash benchmarks/crust/scripts/run.sh --dry-run
 ```
@@ -55,7 +52,7 @@ Invalidation removes `.interrupted` and the stale `result.yml` before the new ru
 
 `Ctrl-C` / `SIGTERM`:
 
-1. Let the current project's `timeout` finish (or kill it).
+1. Let the current project finish (or kill it).
 2. Mark the current project as interrupted (`.interrupted` sentinel + `status: interrupted`).
 3. Rebuild `index.yml` with the partial set.
 4. Exit with `130`.
