@@ -27,15 +27,15 @@
 #     downstream consumers never see half-finished artefacts.
 #
 # Usage:
-#   bash benchmarks/crust/scripts/run.sh                       # full batch
-#   bash benchmarks/crust/scripts/run.sh --only 2dpartint       # single proj
-#   bash benchmarks/crust/scripts/run.sh --commit HEAD~1        # pin commit
-#   bash benchmarks/crust/scripts/run.sh --dry-run              # list only
+#   bash benchmarks/crust/scripts/run.sh                    # full batch
+#   bash benchmarks/crust/scripts/run.sh --only 2dpartint   # single proj
+#   bash benchmarks/crust/scripts/run.sh --commit HEAD~1    # pin commit
+#   bash benchmarks/crust/scripts/run.sh --dry-run          # list only
 #
 # Interruption:
 #   Ctrl-C / SIGTERM: finishes the current project's log capture,
-#   marks it as interrupted, then exits with the next project NOT
-#   being started. Re-running the script resumes from after that point.
+#   marks it as interrupted, then exits without starting the next
+#   project. Re-running the script resumes from after that point.
 
 set -uo pipefail
 
@@ -46,7 +46,7 @@ CONFIGS_DIR="$REPO_ROOT/benchmarks/crust/configs"
 RESULTS_ROOT="$REPO_ROOT/benchmarks/crust/results"
 SCRIPT_NAME="$(basename "$0")"
 
-# --- args ----------------------------------------------------------------
+# --- args -----------------------------------------------------------------
 ONLY=""
 PIN_COMMIT=""
 DRY_RUN=0
@@ -58,7 +58,7 @@ while [[ $# -gt 0 ]]; do
         --dry-run)     DRY_RUN=1; shift ;;
         --no-resume)   RESUME=0; shift ;;
         -h|--help)
-            sed -n '2,46p' "$0" | sed 's/^# \{0,1\}//'
+            sed -n '2,47p' "$0" | sed 's/^# \{0,1\}//'
             exit 0 ;;
         *) echo "[$SCRIPT_NAME] unknown arg: $1" >&2; exit 2 ;;
     esac
@@ -96,52 +96,56 @@ trap 'on_signal INT'  INT
 trap 'on_signal TERM' TERM
 
 # --- helpers --------------------------------------------------------------
+log() { echo "[$SCRIPT_NAME] $*"; }
+
 build_binary() {
     local bin="$REPO_ROOT/bin/MAgHARCM"
     if [[ -x "$bin" && "$bin" -nt "$REPO_ROOT/cmd/MAgHARCM/main.go" ]]; then
         return 0
     fi
-    echo "[$SCRIPT_NAME] building magharcm-cli..."
-    go build -o "$bin" ./cmd/MAgHARCM || { echo "[$SCRIPT_NAME] build failed" >&2; exit 1; }
+    log "building magharcm-cli..."
+    go build -o "$bin" ./cmd/MAgHARCM || { log "build failed" >&2; exit 1; }
 }
 
-# Uses the last FINALSUM line the validator emits per iteration.
+# completed_p <proj> -> rc 0 when result.yml says status: completed
+completed_p() {
+    grep -qE '^status: completed$' "$RESULTS_DIR/$1/result.yml" 2>/dev/null
+}
+
+# scrape_final <log> -> "comp=… pass=… tot=… all_success=… iter=…"
+# Reads the last FINALSUM line the validator emits. Keys name the
+# variables the consumer sets via eval.
 scrape_final() {
-    local log=$1
     local line
-    line="$(grep -E '^\[.*\] FINALSUM ' "$log" | tail -1 || true)"
+    line="$(grep -E '^\[.*\] FINALSUM ' "$1" | tail -1 || true)"
     if [[ -z "$line" ]]; then
-        echo "comp=unknown tests_passed=0 tests_total=0 all_success=false iter=0"
+        echo "comp=unknown pass=0 tot=0 all_success=false iter=0"
         return 0
     fi
-    local comp all_succ pass tot iter
-    comp="$(echo "$line" | grep -oE 'comp=[^ ]+' | cut -d= -f2)"
-    pass="$(echo "$line" | grep -oE 'tests=[0-9]+' | cut -d= -f2)"
-    tot="$(echo "$line" | grep -oE 'tests=[0-9]+/[0-9]+' | cut -d/ -f2)"
-    all_succ="$(echo "$line" | grep -oE 'all_success=[^ ]+' | cut -d= -f2)"
-    iter="$(echo "$line" | grep -oE 'iter=[0-9]+' | cut -d= -f2)"
-    comp=${comp:-unknown}
-    pass=${pass:-0}
-    tot=${tot:-0}
-    all_succ=${all_succ:-false}
-    iter=${iter:-0}
-    echo "comp=$comp tests_passed=$pass tests_total=$tot all_success=$all_succ iter=$iter"
+    local field comp pass tot all_success iter
+    field() { grep -oE "$1=[^ ]+" <<<"$line" | cut -d= -f2; }
+    comp="$(field comp)"
+    tot="$(grep -oE 'tests=[0-9]+/[0-9]+' <<<"$line" | cut -d/ -f2)"
+    all_success="$(field all_success)"
+    iter="$(field iter)"
+    pass="$(grep -oE 'tests=[0-9]+(/[0-9]+)?' <<<"$line" | cut -d= -f2 | cut -d/ -f1)"
+    echo "comp=${comp:-unknown} pass=${pass:-0} tot=${tot:-0} all_success=${all_success:-false} iter=${iter:-0}"
 }
 
-# scrape_iterations <log> -> echoes semicolon-separated ITER entries
-# (one per validator iteration). Used so result.yml can record the
-# per-iteration trajectory, not just the final snapshot.
+# scrape_iterations <log> -> semicolon-separated ITER entries (one per
+# validator iteration). Lets result.yml record the per-iteration
+# trajectory, not just the final snapshot.
 scrape_iterations() {
-    local log=$1
-    grep -E '^\[.*\] ITER\[' "$log" \
+    grep -E '^\[.*\] ITER\[' "$1" \
         | sed -E 's/^.*ITER\[([0-9]+)\] comp=([a-z]+) tests=([0-9]+)\/([0-9]+).*/\1 comp=\2 tests_passed=\3 tests_total=\4/' \
-        | tr '\n' ';' || true
+        | paste -sd';' - || true
 }
 
+# write_result_yml <proj> <rc> <wall> <iters> <final>
 write_result_yml() {
-    local proj=$1 log=$2 wall=$3 rc=$4 iters=$5 final=$6
-    local comp pass tot all_succ iter
-    eval "$final"  # sets comp tests_passed tests_total all_success iter
+    local proj=$1 rc=$2 wall=$3 iters=$4 final=$5
+    local comp pass tot all_success iter
+    eval "$final"  # sets comp pass tot all_success iter
     local rate="0.0"
     if [[ "$tot" -gt 0 ]]; then
         rate="$(awk -v p="$pass" -v t="$tot" 'BEGIN{printf "%.4f", p/t}')"
@@ -165,8 +169,9 @@ $(echo "$iters" | tr ';' '\n' | sed '/^$/d' | sed 's/^/  - /')
 EOF
 }
 
+# mark_interrupted <proj> <wall> <iters>
 mark_interrupted() {
-    local proj=$1 log=$2 wall=$3 iters=$4
+    local proj=$1 wall=$2 iters=$3
     cat > "$RESULTS_DIR/$proj/result.yml" <<EOF
 project: $proj
 config: benchmarks/crust/configs/${proj}.yml
@@ -195,33 +200,21 @@ rebuild_index() {
             local proj
             proj="$(basename "$d")"
             awk -v proj="$proj" '
-                /^project:/    {print "  - project: " $2}
-                /^status:/     {print "    status: " $2}
+                /^project:/      {print "  - project: " $2}
+                /^status:/       {print "    status: " $2}
                 /^wall_seconds:/ {print "    wall_seconds: " $2}
-                /^compile_ok:/ {print "    compile_ok: " $2}
+                /^compile_ok:/   {print "    compile_ok: " $2}
                 /^tests_passed:/ {print "    tests_passed: " $2}
-                /^tests_total:/ {print "    tests_total: " $2}
-                /^pass_rate:/ {print "    pass_rate: " $2}
-                /^iterations:/ {print "    iterations: " $2}
-                /^exit_code:/  {print "    exit_code: " $2}
+                /^tests_total:/  {print "    tests_total: " $2}
+                /^pass_rate:/    {print "    pass_rate: " $2}
+                /^iterations:/   {print "    iterations: " $2}
+                /^exit_code:/    {print "    exit_code: " $2}
             ' "$d/result.yml"
         done
     } > "$INDEX_FILE"
 }
 
-invalidate_stale() {
-    local proj=$1
-    local proj_dir="$RESULTS_DIR/$proj"
-    # Considered "stale" when:
-    #   - .interrupted sentinel exists, OR
-    #   - result.yml absent, OR
-    #   - result.yml says status != completed
-    if [[ -f "$proj_dir/.interrupted" ]]; then return 0; fi
-    if [[ ! -f "$proj_dir/result.yml" ]]; then return 0; fi
-    if ! grep -qE '^status: completed$' "$proj_dir/result.yml"; then return 0; fi
-    return 1
-}
-
+# run_one <cfg>: run one project unless resume says it is already done.
 run_one() {
     local cfg=$1
     local proj
@@ -230,10 +223,7 @@ run_one() {
     local proj_dir="$RESULTS_DIR/$proj"
     local log="$proj_dir/.log"
 
-    # Resume: skip if completed and resume enabled.
-    if [[ "$RESUME" -eq 1 && -f "$proj_dir/result.yml" ]] \
-        && grep -qE '^status: completed$' "$proj_dir/result.yml" \
-        && [[ ! -f "$proj_dir/.interrupted" ]]; then
+    if [[ "$RESUME" -eq 1 ]] && completed_p "$proj" && [[ ! -f "$proj_dir/.interrupted" ]]; then
         echo "[skip ] $proj (completed)"
         return 0
     fi
@@ -246,18 +236,18 @@ run_one() {
     start=$(date +%s)
     # shellcheck disable=SC2086
     "$REPO_ROOT/bin/MAgHARCM" --config "$cfg" >"$log" 2>&1
-    end=$(date +%s)
-    wall=$((end - start))
+    rc=$?
+    wall=$(( $(date +%s) - start ))
 
     iters="$(scrape_iterations "$log")"
     final="$(scrape_final "$log")"
 
     if [[ -z "$(grep -E '^\[.*\] FINALSUM ' "$log" 2>/dev/null)" ]]; then
         # pipeline crashed before FINALSUM
-        mark_interrupted "$proj" "$log" "$wall" "$iters"
+        mark_interrupted "$proj" "$wall" "$iters"
         echo "[err  ] $proj wall=${wall}s (no FINALSUM; rc=$rc)"
     else
-        write_result_yml "$proj" "$log" "$wall" "$rc" "$iters" "$final"
+        write_result_yml "$proj" "$rc" "$wall" "$iters" "$final"
         echo "[done ] $proj wall=${wall}s rc=$rc $final"
     fi
 
@@ -265,35 +255,37 @@ run_one() {
     return 0
 }
 
+# each_config: iterate the selected configs as proj names on stdout.
+each_config() {
+    for cfg in "$CONFIGS_DIR"/*.yml; do
+        local proj
+        proj="$(basename "$cfg" .yml)"
+        [[ -n "$ONLY" && "$proj" != "$ONLY" ]] && continue
+        echo "$proj"
+    done
+}
+
 # --- main -----------------------------------------------------------------
-echo "[$SCRIPT_NAME] commit=$COMMIT_SHORT  results=$RESULTS_DIR"
-[[ -d "$CONFIGS_DIR" ]] || { echo "[$SCRIPT_NAME] no configs at $CONFIGS_DIR" >&2; exit 1; }
+log "commit=$COMMIT_SHORT  results=$RESULTS_DIR"
+[[ -d "$CONFIGS_DIR" ]] || { log "no configs at $CONFIGS_DIR" >&2; exit 1; }
 
 if [[ "$DRY_RUN" -eq 1 ]]; then
-    echo "[$SCRIPT_NAME] dry-run; configs:"
-    for cfg in "$CONFIGS_DIR"/*.yml; do
-        n="$(basename "$cfg" .yml)"
-        if [[ -n "$ONLY" && "$n" != "$ONLY" ]]; then continue; fi
-        echo "  $n"
-    done
+    log "dry-run; configs:"
+    each_config | sed 's/^/  /'
     exit 0
 fi
 build_binary
 
 ran=0; skipped=0
-for cfg in "$CONFIGS_DIR"/*.yml; do
-    [[ -n "$ONLY" ]] || true
-    n="$(basename "$cfg" .yml)"
-    if [[ -n "$ONLY" && "$n" != "$ONLY" ]]; then continue; fi
-    if run_one "$cfg"; then
-        if grep -qE '^status: completed$' "$RESULTS_DIR/$n/result.yml" 2>/dev/null; then
-            skipped=$((skipped + 1))
-        else
-            ran=$((ran + 1))
-        fi
+for proj in $(each_config); do
+    run_one "$proj"
+    if completed_p "$proj"; then
+        skipped=$((skipped + 1))
+    else
+        ran=$((ran + 1))
     fi
     [[ "$INTERRUPTED" -eq 1 ]] && break
 done
 
 rebuild_index
-echo "[$SCRIPT_NAME] done: ran=$ran skipped=$skipped  index=$INDEX_FILE"
+log "done: ran=$ran skipped=$skipped  index=$INDEX_FILE"
