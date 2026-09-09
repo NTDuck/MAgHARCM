@@ -6,113 +6,92 @@ description: "Execute a research sprint, vault sync, empirical tests, code defen
 
 ## 1. Start the Sprint
 
-1. Read the system reminder or run `date -u` to get the authoritative current date in `YYYY-MM-DD` format.
-2. Never extrapolate future dates from git history or older notes.
-3. Make sure note metadata headers (`date:` and `last_updated:`) match the current date (rule BLK-06).
-4. Set the sprint handoff path to `.obsidian/MAgHARCM/diary/Sprint-YYYY-MM-DD-Handoff.md`.
-5. If a handoff file exists for today, increment the suffix (`-1`, `-2`, `-N`).
-6. Read the latest handoff note in `.obsidian/MAgHARCM/diary/` for pending tasks.
-7. Read `.obsidian/MAgHARCM/adhoc/Human-Intervention-And-Blockers.md` to identify active blockers.
-8. Delete stale temporary files from `.artifacts/local/` and test caches.
-9. Commit: `docs(diary): start sprint YYYY-MM-DD`.
+1. Get the authoritative date in `YYYY-MM-DD` format from the system reminder or `date -u`; never extrapolate future dates (BLK-06).
+2. Make sure note metadata headers (`date:`, `last_updated:`) match the current date.
+3. Set the sprint handoff path to `.obsidian/MAgHARCM/diary/Sprint-YYYY-MM-DD-Handoff.md`; increment suffix (`-1`, `-2`, `-N`) if it exists.
+4. Read the latest handoff note for pending tasks.
+5. Read `.obsidian/MAgHARCM/adhoc/Human-Intervention-And-Blockers.md` for active blockers.
+6. Delete stale temporary files from `.artifacts/local/` and test caches.
+7. Commit: `docs(diary): start sprint YYYY-MM-DD`.
 
 ## 2. Research and Literature Expansion
 
-1. Search for papers in top peer-reviewed venues: NeurIPS, ICML, ICLR, FSE, ICSE, ASE, TOSEM, and TSE.
-2. Evaluate each candidate paper against three mandatory gates:
-   - **Q1 (Venue)**: Is the paper in a recognized top venue? Workshop papers require single-paper method novelty and a non-redundant theme (P-138 threshold; empirical/diagnostic papers disqualified).
-   - **Q2 (Mechanism)**: Does the paper define a concrete algorithmic mechanism rather than a prompt tweak?
-   - **Q3 (Anchor)**: Does the mechanism anchor or defend a MAgHARCM primitive (`PRIM-01` to `PRIM-33`)?
-3. Enforce the two-hop citation lineage for every admitted paper:
-   - Hop 1: Direct mechanism support.
-   - Hop 2: Foundational literature anchor.
-4. Focus research on small language models (4B-30B) and software archaeology:
-   - Program slicing, dynamic invariants, execution traces, concept assignment, dependency graphs.
-   - KV cache compression, speculative decoding, SLM verification, test-time compute.
-5. Record non-admitted candidates in the candidate memo and registries (rule BLK-08):
-   - Save candidate triage to `.obsidian/MAgHARCM/research/diary/Wave-NN-Candidates.md`.
-   - Record rejected candidates in `reject_registry.wave-NN` with bibkey, title, venue, verdict (Q1/Q2/Q3), and a four-way classification rationale:
-     (a) hallucinated-venue, (b) off-list venue, (c) mechanism-overlap, or (d) off-axis target-language/problem.
-   - Record unverified candidates in `watchlist.wave-NN` for re-verification in subsequent waves.
-6. Never fabricate citations or metrics. Mark unverified candidates as placeholders in blockers.
+1. Search top venues: NeurIPS, ICML, ICLR, FSE, ICSE, ASE, TOSEM, TSE.
+2. Admit a paper only when it passes three gates:
+   - **Q1 (Venue)**: peer-reviewed top venue; workshop papers need single-paper method novelty and non-redundant theme (P-138 threshold; empirical/diagnostic work disqualified).
+   - **Q2 (Mechanism)**: concrete algorithmic mechanism, not a prompt tweak.
+   - **Q3 (Anchor)**: anchors or defends a MAgHARCM primitive (`PRIM-01`–`PRIM-33`).
+3. Record two citation hops per admitted paper: Hop 1 direct mechanism support, Hop 2 foundational anchor.
+4. Scout SLM (4B–30B) and software-archaeology candidates; the active substrate focus is §6, not a free-form list.
+5. Record non-admitted candidates (BLK-08):
+   - Triage memo: `.obsidian/MAgHARCM/research/diary/Wave-NN-Candidates.md`.
+   - `reject_registry.wave-NN` entries: bibkey, title, venue, verdict (Q1/Q2/Q3), and a four-way rationale: (a) hallucinated-venue, (b) off-list venue, (c) mechanism-overlap, (d) off-axis target-language/problem.
+   - Unverified candidates: `watchlist.wave-NN` for re-verification in later waves.
+6. Never fabricate citations or metrics; label unverified candidates as placeholders in the blockers note.
 7. Commit: `feat(research): add wave research papers`.
 
 ## 3. Synchronize the Obsidian Vault
 
-1. Update `.obsidian/MAgHARCM/Research-Database.json` with all new paper and primitive entries:
-   - Supply all required fields: `id`, `title`, `authors`, `year`, `venue`, `bibkey`, identifier (DOI, OpenReview ID, or arXiv ID), `citations`, and `summaries`.
-   - Append rejected candidates to `reject_registry.wave-NN` and watchlisted candidates to `watchlist.wave-NN`.
-   - Make sure JSON parses cleanly: `python3 -c "import json; json.load(open('.obsidian/MAgHARCM/Research-Database.json'))"`.
-2. Save paper notes to `.obsidian/MAgHARCM/research/papers/P-NN-<Name>.md`:
-   - Declare YAML aliases including the version marker (`[[1.0.0 P-NN]]`).
+1. Update `.obsidian/MAgHARCM/Research-Database.json`:
+   - Required fields: `id`, `title`, `authors`, `year`, `venue`, `bibkey`, identifier (DOI, OpenReview ID, or arXiv ID), `citations`, `summaries`.
+   - Append rejects to `reject_registry.wave-NN`; unverified candidates to `watchlist.wave-NN`.
+   - Verify JSON parses: `python3 -c "import json; json.load(open('.obsidian/MAgHARCM/Research-Database.json'))"`.
+2. Save paper notes to `.obsidian/MAgHARCM/research/papers/P-NN-<Name>.md`; declare YAML aliases including the version marker (`[[1.0.0 P-NN]]`).
 3. Update human reports in `.obsidian/MAgHARCM/adhoc/`:
-   - `Methodology.md`: Update primitive anchors, methodology justifications, closed slots, and changelog.
-   - `Project-Progress-And-Milestones.md`: Update metrics, wave tables, and milestone status.
-   - `Strategic-Direction-And-Roadmap.md`: Update roadmap and wave plans.
-   - `Human-Intervention-And-Blockers.md`: Update active blockers and resolved items.
-   - `Benchmark-Results-And-Evaluation.md`: Update empirical evaluation data.
-   - `Architecture-And-Dataflow.md`: Update architecture and dataflow diagrams.
-   - `Research-Waves-Index.md`: Update the wave index ledger.
-4. Update lineage and primitive indices:
-   - Cross-reference papers in `.obsidian/MAgHARCM/research/Software-Archaeology-Lineage.md`.
-   - Update `.obsidian/MAgHARCM/primitives/Primitives-Index.md`.
-   - Maintain full parity across the primitives index, lineage matrix, and codebase.
-5. Use Camel-Case with hyphens for all file names in the vault.
-6. Run `./scripts/lint_vault.sh` from the repository root and make sure it exits with code 0.
-7. Commit: `feat(vault): sync research database and adhoc reports`.
+   - `Methodology.md`: anchors, justifications, closed slots, changelog.
+   - `Project-Progress-And-Milestones.md`: metrics, wave tables, milestones.
+   - `Strategic-Direction-And-Roadmap.md`: roadmap, wave plans.
+   - `Human-Intervention-And-Blockers.md`: blockers, resolutions.
+   - `Benchmark-Results-And-Evaluation.md`: empirical data.
+   - `Architecture-And-Dataflow.md`: state and graph diagrams.
+   - `Research-Waves-Index.md`: wave index ledger.
+4. Cross-reference new papers in `.obsidian/MAgHARCM/research/Software-Archaeology-Lineage.md`; update `.obsidian/MAgHARCM/primitives/Primitives-Index.md`.
+5. Maintain full parity across primitives index, lineage matrix, and code.
+6. Use Camel-Case with hyphens for all vault file names.
+7. Run `./scripts/lint_vault.sh` from the repo root; make sure it exits with code 0.
+8. Commit: `feat(vault): sync research database and adhoc reports`.
 
 ## 4. Run Empirical Experiments
 
-1. Run translation benchmarks on target repositories:
-   - GildedRose (C to Rust).
-2. Record binary compilation status as `Pass` or `Fail`. Do not record partial compilation.
-3. Record exact test pass counts and pass percentages ($N/M$, $P\%$).
+1. Run translation benchmarks on GildedRose (C to Rust).
+2. Record binary compilation status as `Pass` or `Fail`; no partial-compile results.
+3. Record exact test pass count and percentage ($N/M$, $P\%$).
 4. Never mock, fake, or skip experiments.
-5. Record experimental results in:
-   - `.obsidian/MAgHARCM/adhoc/Benchmark-Results-And-Evaluation.md`.
-   - `docs/.paper/sec_eval.tex`.
+5. Write results to `.obsidian/MAgHARCM/adhoc/Benchmark-Results-And-Evaluation.md` and `docs/.paper/sec_eval.tex`.
 6. Commit: `test(benchmarks): record empirical evaluation results`.
 
 ## 5. Implement Primitives and Defend the Codebase
 
 ### 5.1 Generative Implementation
 
-1. Keep codebase aligned with current research progress and admitted primitives.
-2. Apply minimal code principles (ponytail and eino):
-   - Prefer Go standard library over external dependencies.
-   - Delete dead code, unused abstractions, and redundant shims.
-   - Keep implementations minimal, readable, and directly executable.
-3. Document all design decisions and intent inline with comments referencing primitive IDs and paper bibkeys for auditability.
+1. Keep code aligned with admitted primitives and current research progress.
+2. Apply ponytail and eino principles: prefer the Go standard library; delete dead code, unused abstractions, and redundant shims; keep implementations minimal, readable, and executable.
+3. Document design intent inline with comments referencing primitive IDs and paper bibkeys.
 
 ### 5.2 Defensive Invariants
 
-1. Enforce compile-time safety and architectural boundaries:
-   - Apply the `Must` pattern for compile-time initializations. Reject silent fallbacks.
-   - Read runtime configuration from external YAML files in `configs/`.
-   - Declare shared state in `internal/compiletime/state.go`. Use type aliases in producer packages to satisfy ADR-C-014 locality of behavior while preventing Go import cycles.
-   - Wire all eight agents in `internal/graph/graph.go` to maintain the cyclic repair loop:
-     Archaeologist (AST/archaeology), Analyzer (signal profiling), Planner (decomposition), Translator (chunked translation), Reviewer (role-flip gate), VerdictPanel (consensus scoring), Validator (compilation/tests), and Recruiter (strategy iteration).
-   - Maintain the five Mueller strategies in canonical order in `internal/agents/strategy.go`:
-     Big Bang (tiny project), Pilot (very large), Frozen Legacy (untested), Parallel Cutover (modular with tests), and Incremental (default).
-   - Use `internal/logger` for logging. Do not use `fmt.Print*` in production Go code.
-2. Defend codebase integrity:
-   - Resolve blockers listed in `Human-Intervention-And-Blockers.md`.
-   - Run `go test ./...` and make sure all tests pass without errors.
-3. Commit: `feat(agents): implement PRIM-XX from P-YY and defend invariants`.
+1. Initialization and configuration: apply the `Must` pattern for compile-time initialization (no silent fallbacks); read runtime settings from YAML in `configs/`.
+2. Architecture:
+   - Shared state lives in `internal/compiletime/state.go`; producer packages use type aliases to satisfy ADR-C-014 locality of behavior without Go import cycles.
+   - Wire all eight agents in `internal/graph/graph.go` (cyclic repair loop): Archaeologist, Analyzer, Planner, Translator, Reviewer, VerdictPanel, Validator, Recruiter.
+   - Keep the five Mueller strategies in canonical order in `internal/agents/strategy.go`: Big Bang, Pilot, Frozen Legacy, Parallel Cutover, Incremental.
+   - Log through `internal/logger`; never use `fmt.Print*` in production Go code.
+3. Resolve blockers from `Human-Intervention-And-Blockers.md`; run `go test ./...` and make sure every test passes.
+4. Commit: `feat(agents): implement PRIM-XX from P-YY and defend invariants`.
 
 ## 6. Synchronize the Academic Paper
 
-1. Update `docs/.paper/sec_method.tex` and `main.tex` with newly admitted research primitives and mechanisms.
+1. Update `docs/.paper/sec_method.tex` and `main.tex` with newly admitted primitives and mechanisms.
 2. Add verified BibTeX entries to `docs/.paper/refs.bib`.
 3. Update `docs/.paper/sec_eval.tex` with verified benchmark numbers.
-4. Make sure claims across paper, codebase, and vault match completely.
+4. Make sure claims match across paper, codebase, and vault.
 5. Commit: `docs(paper): update method and references`.
 
 ## 7. Evolve This Command File
 
 1. Read `.omp/commands/MAgHARCM.md`.
-2. Remove directives and watchlist entries that describe completed work.
-3. Add newly admitted research anchors, active watchlists, and resolved blockers.
+2. Remove directives that describe completed work.
+3. Add new research anchors, active watchlists, and resolved blockers.
 4. Keep this command concise, exhaustive, and compliant with ASD-STE100.
 5. Commit: `feat(command): evolve MAgHARCM sprint workflow`.
 
@@ -124,36 +103,26 @@ description: "Execute a research sprint, vault sync, empirical tests, code defen
 
 ## 9. Canonical Substrate and Anchor Matrix
 
-| Primitive | Canonical Substrate Anchors | Mechanism and Operational Role |
+Three closed-loop substrate stacks anchor the SLM comprehension, de-hallucination, and translation primitives: static-graph refinement (relational Datalog policies + context-conditioned slicing), systematic hallucination evaluation (perturbation benchmark + detection + decode-time re-ranking), and feedback-driven translation (single-LLM three-signal loop + multi-agent execution critic).
+
+| Primitive | Canonical Anchors | Operational Mechanism |
 | :--- | :--- | :--- |
-| **PRIM-07** (SLM Verifier & Judge) | T1 (P-125), ARC-Decode (P-126), SLM-as-a-Judge (P-127), SPECS (P-135), CaTS (P-136), ContextPRM (P-146), HalluShield (P-143) | SLM test-time search, contextual-coherence PRM, value-model guidance for closed-loop verifiers. |
-| **PRIM-09** (Hybrid Code Graph) | SSAR (P-130), SemArc (P-131), SemRef (P-132) | Semantic similarity + structural dependency edge weights, canonical pattern base, iterative LLM refinement. |
-| **PRIM-12** (Static Analysis Co-Evolution) | LλMDA (P-129), CoReX (P-153), POLA-Tester (P-155) | Partial-PDG context augmentation, context-aware regression slicing, agentic syntactic-dependency mining. |
-| **PRIM-21 / PRIM-31** (KV Cache & Speculative Decoding) | KVzip (P-128), RelayCaching (P-134), SuffixDecoding (P-137), SpecKV (P-147), LookaheadKV (P-148), SSD/Saguaro (P-149) | Query-agnostic KV eviction, cross-agent KV cache reuse, LoRA-module eviction, asynchronous draft-verify pipelines. |
-| **PRIM-22 / PRIM-25** (Comprehension & De-Hallucination) | ADI (P-133), NESA (P-142), TestPrune (P-150), Hallu-Eval / Hallu-Shield (P-152), CoReX (P-153), ACONITE (P-156) | Function lifetime tracing, relational Datalog policies, coverage-driven test pruning, semantic perturbation benchmark, backward slicing. |
-| **PRIM-23 / PRIM-29** (Multi-Language Translation) | Syzygy (P-124), SmartC2Rust (P-151), TransAgent (P-154) | Dual-mode translation: single-LLM 3-signal iterative feedback (C/Go to Rust) + multi-agent execution-aligned critic. |
+| **PRIM-07** (SLM Verifier & Judge) | T1 (P-125), ARC-Decode (P-126), SLM-as-a-Judge (P-127), SPECS (P-135), CaTS (P-136), ContextPRM (P-146), HalluShield (P-143) | SLM test-time search, contextual-coherence PRM, value-model guidance. |
+| **PRIM-09** (Hybrid Code Graph) | SSAR (P-130), SemArc (P-131), SemRef (P-132) | Semantic + structural edge weights, iterative LLM refinement. |
+| **PRIM-12** (Static Analysis Co-Evolution) | LλMDA (P-129), CoReX (P-153), POLA-Tester (P-155) | Partial-PDG augmentation, regression slicing, dependency mining. |
+| **PRIM-21 / PRIM-31** (KV Cache & Speculative Decoding) | KVzip (P-128), RelayCaching (P-134), SuffixDecoding (P-137), SpecKV (P-147), LookaheadKV (P-148), SSD/Saguaro (P-149) | Query-agnostic eviction, KV reuse, asynchronous draft-verify. |
+| **PRIM-22 / PRIM-25** (Comprehension & De-Hallucination) | ADI (P-133), NESA (P-142), TestPrune (P-150), Hallu-Eval (P-152), CoReX (P-153), ACONITE (P-156) | Lifetime tracing, Datalog decomposition, coverage pruning, perturbation benchmark. |
+| **PRIM-23 / PRIM-29** (Multi-Language Translation) | Syzygy (P-124), SmartC2Rust (P-151), TransAgent (P-154) | Three-signal feedback loop, execution-aligned critic pipeline. |
 
-## 10. Three-Deep Substrate Reinforcement Architecture
+## 10. Standing Governance Rules
 
-The SLM comprehension, de-hallucination, and translation stack is anchored by three reinforced closed-loop substrates:
+1. **Dating Rule (BLK-06)**: `date -u` or the system reminder is the only authoritative date; never extrapolate; YAML date must equal filename date.
+2. **REJECT and Watchlist Registry (BLK-08)**: append every Q1/Q2/Q3 reject to `reject_registry.wave-NN` with a four-way rationale; track unverified candidates in `watchlist.wave-NN`.
+3. **Sandbox Batch Commit (temporary)**: when git mutations are blocked, accumulate artifacts in the working tree and batch-commit on recovery; revert to per-phase commits immediately after.
 
-1. **Static-Graph Refinement (§11.6)**: Relational Datalog policy decomposition (P-142 NESA) combined with context-conditioned regression slicing (P-153 CoReX) anchors deterministic syntactic and semantic decomposition for `PRIM-09` and `PRIM-12`.
-2. **Systematic Hallucination-Evaluation Triplet (§11.7)**: 800-pair semantic perturbation benchmark (Hallu-Eval), mutation-aware detection (Hallu-Det), and decode-time value-model re-ranking (Hallu-Shield) anchor `PRIM-22` and `PRIM-25`.
-3. **Feedback-Driven Multi-Language Translation (§11.8)**: Dual-mode architecture combining single-LLM three-signal feedback (P-151 SmartC2Rust: compiler errors, AST diffs, residual unsafe blocks) with multi-agent execution-aligned critic (P-154 TransAgent) anchors `PRIM-23` and `PRIM-29`.
+## 11. Active Watchlist and Strategic Roadmap
 
-## 11. Standing Governance Rules
-
-1. **Dating Rule (BLK-06)**: Use `date -u` or system reminder as authoritative date. Never extrapolate future dates. Ensure YAML metadata date matches filename date.
-2. **REJECT and Watchlist Registry (BLK-08)**: Every candidate rejected at Q1/Q2/Q3 must be appended to `reject_registry.wave-NN` in `Research-Database.json` with bibkey, title, venue, verdict, and classification rationale. Unverified candidates must be tracked in `watchlist.wave-NN`.
-3. **Temporary Governance Rule (Wave-21+ Sandbox Restriction)**: When environment restrictions block git operations during a sprint, accumulate all artifacts cleanly in the working tree and execute the conventional batch commit when the sandbox recovers. Revert to standard per-phase commits immediately upon recovery.
-
-## 12. Active Watchlist and Strategic Forward Roadmap
-
-1. **Strict Program-Comprehension Mechanism Slot (CLOSED)**: `[[1.0.0 P-153]]` CoReX (context-aware refinement slicing) definitively closed the residual program-comprehension slot carried through Waves 17–22. Autonomous scouts must not reopen broad comprehension search queries.
-2. **W23-W1 SWE-TRACE** (`arXiv:2604.14820`): Re-verify peer-reviewed venue status following NeurIPS 2026 author notifications (2026-09-24). Sixth carry triggers automatic retirement to reject archive.
-3. **Substrate Configuration Wiring**: Verify opt-in runtime wiring in `configs/agents.yml` for NESA (§11.6), Hallu-Eval triplet (§11.7), and SmartC2Rust feedback (§11.8).
-4. **Cross-Pattern Formalization (Wave-24 Roadmap)**:
-   - LλMDA (P-129) × TestPrune (P-150): Partial PDG context augmentation with coverage-driven input reduction.
-   - TransAgent (P-154) × SmartC2Rust (P-151): Dual-mode translation integrating single-LLM feedback with execution critics.
-   - POLA-Tester (P-155) × CoReX (P-153): Syntactic dependency mining paired with refinement slicing.
-   - ACONITE (P-156) × Panta (P-140): Backward slicing test generation combined with hybrid static/dynamic analysis.
+1. **Program-Comprehension Mechanism Slot: CLOSED** by `[[1.0.0 P-153]]` CoReX (context-aware refinement slicing, Waves 17–22); scouts must not reopen broad comprehension queries.
+2. **W23-W1 SWE-TRACE** (`arXiv:2604.14820`): re-verify venue after NeurIPS 2026 notifications (2026-09-24); sixth carry retires it to the reject archive.
+3. **Substrate Wiring Check**: verify opt-in runtime wiring in `configs/agents.yml` for NESA (§11.6), Hallu-Eval triplet (§11.7), and SmartC2Rust feedback (§11.8).
+4. **Wave-24 Cross-Pattern Formalization (speculative)**: LλMDA × TestPrune, TransAgent × SmartC2Rust, POLA-Tester × CoReX, ACONITE × Panta.
